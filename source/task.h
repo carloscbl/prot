@@ -68,13 +68,8 @@ private:
     };
 public:
     string id;
-    task():dateUTC(time(nullptr)){
-        static int acummulator = 0;
-        id = "task" + to_string(acummulator++);
-    }
-    virtual ~task(){
-      cout << "~destroying " << this->id <<endl;
-    }
+    task();
+    virtual ~task();
     void set_day(string day){
 
         //cout << asctime(localtime(&dateUTC))<< endl;

@@ -7,6 +7,8 @@
 
 #include <string>
 #include <map>
+#include <functional>
+
 #include "iactionable.h"
 #include "icommandable.h"
 
@@ -24,13 +26,7 @@ private:
 
 public:
   virtual ~form(){};
-  void send_action(std::string action ,map<char,string> params) override{
-      if(form_map.find(action) != form_map.end()){
-        form_map[action](params);
-      }else{
-        cout << "Not provided correct arguments";
-      }
-  }
+  void send_action(std::string action ,map<char,string> params) override;
   string name = "Washer_family_stationale_per_kg";
   map<string,string> form_statements{
     {"Do you have washer","no"},
