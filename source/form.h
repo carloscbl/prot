@@ -54,17 +54,7 @@ public:
   //3 Ejecutar con computo de variables
   //4 Hacer sencillo el pipeline de inputs
 
-  void perform_taskstory(){
-    // for(auto & e  : taskstory){
-    //   //
-    // }
-  }
-
-
-
-
+  void perform_taskstory();
 };
-
-
 
 #endif //FORM_H

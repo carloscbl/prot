@@ -3,14 +3,15 @@ Prot
 To compile the project you need to have:
 - Installed boost 1.69 libs and includes in your machine as CMake will look for it in the local machine
 - C++ 17 compiler
+- cmake > 3.10
 
-- cd build/
-- cmake ..
-- make
+sudo apt install gcc g++ make cmake
 
-if you get an error
+To build:
 
-- rm -rf build
-- mkdir build
+From prot root directory:
 
-and try again step 1
+1- mkdir build
+2- cd build
+3- cmake ..
+4- make
