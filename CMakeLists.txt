@@ -2,8 +2,8 @@ cmake_minimum_required(VERSION 3.10.0)
 
 project(prot)
 
-#SET(CMAKE_CXX_FLAGS "-g -Wall -Werror -std=c++17")
-SET(CMAKE_CXX_FLAGS "-g -Wall -std=c++17")
+SET(CMAKE_CXX_FLAGS "-g -Wall -Werror -std=c++17")
+#SET(CMAKE_CXX_FLAGS "-g -Wall -std=c++17")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 FIND_PACKAGE( Boost 1.69 COMPONENTS program_options REQUIRED )
@@ -33,7 +33,11 @@ if(protobuf_)
     add_executable (prot ${PROJECT_SOURCE_DIR}/source/main.cpp ${PROTO_SRCS} ${PROTO_HDRS})
     TARGET_LINK_LIBRARIES(prot  ${PROTOBUF_LIBRARY})
 else()
-    add_executable (prot ${PROJECT_SOURCE_DIR}/source/main.cpp source/form.h source/command_processor.h source/iactionable.h)
+file(GLOB SOURCES
+    ${PROJECT_SOURCE_DIR}/source/*.h
+    ${PROJECT_SOURCE_DIR}/source/*.cpp
+)
+    add_executable (prot ${PROJECT_SOURCE_DIR}/source/main.cpp ${SOURCES})
     TARGET_LINK_LIBRARIES( prot LINK_PUBLIC ${Boost_LIBRARIES} )
 
 endif()

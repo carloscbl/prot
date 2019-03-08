@@ -13,18 +13,9 @@
 #include "form.h"
 #include "iactionable.h"
 
-
-
-
-#ifdef PROTOBUF_RUNNING
-  #include "task.pb.h"
-#endif
 #define p(X) std::cout <<  X  <<std::endl;
 
 using namespace std;
-
-
-
 
 int main(int argc, char const *argv[])
 {
@@ -45,53 +36,26 @@ int main(int argc, char const *argv[])
   */
 
   command_processor cp;
-  task task_ ;
+  task task_;
   form form_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
 
-
-
-
-
   vector<string> arg_i(argv + 1, argv + argc);
 
-  /*for(auto e : arg_i){
-    p(e);
-  }*/
   p("Starting program \n\n");
   cp.perform_command(arg_i);
-//  for(auto && e : env::tasker){
-//    cout << e.first << "-:-" << e.second->id <<endl;
-//    e.second->print_();
-//  }
+
   p("write \"exit\" to finish");
-    while (true){
+  while (true){
 
-      string st;
-      getline(cin,st);
-      if(st == "exit"){
-        break;
-      }
-      cp.perform_command(st);
+    string st;
+    getline(cin,st);
+    if(st == "exit"){
+      break;
     }
-  
-    // GOOGLE_PROTOBUF_VERIFY_VERSION;
-    // /* code */
-    // prot::task tk;
-    // tk.set_id(25);
-    // tk.set_stamp_creation(static_cast<int64_t>(std::time(0)));
-    // tk.set_stamp_end(static_cast<int64_t>(std::time(0)));
-    // prot::general_priority priority;
+    cp.perform_command(st);
+  }
 
-    // priority = prot::general_priority::not_urgent;
-
-    // cout << priority << endl;
-    // fstream output(argv[1], ios::out | ios::trunc | ios::binary);
-    // if (!tk.SerializeToOstream(&output)) {
-    //   cerr << "Failed to write address book." << endl;
-    //   return -1;
-    // }
-    // p("prot bye")
-    return 0;
+  return 0;
 }

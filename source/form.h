@@ -25,7 +25,7 @@ private:
     };
 
 public:
-  virtual ~form(){};
+  virtual ~form();
   void send_action(std::string action ,map<char,string> params) override;
   string name = "Washer_family_stationale_per_kg";
   map<string,string> form_statements{
@@ -55,9 +55,9 @@ public:
   //4 Hacer sencillo el pipeline de inputs
 
   void perform_taskstory(){
-    for(auto & e  : taskstory){
-      //
-    }
+    // for(auto & e  : taskstory){
+    //   //
+    // }
   }
 
 
