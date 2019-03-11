@@ -19,6 +19,9 @@ namespace env
 {
 static map<string, unique_ptr<form>> forms;
 }
+
+class
+
 class form : public iactionable
 {
 
