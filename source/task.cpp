@@ -15,10 +15,10 @@ void task::add(map<char,string>params){
   if(params.size() == 0) cout << "nothing done" << endl;
   auto it = setters.end();
   for(auto e: params){
-      it = setters.find(e.first);
-      if(it != setters.end()){
-          setters[e.first](*this,e.second);
-      }
+    it = setters.find(e.first);
+    if(it != setters.end()){
+        setters[e.first](*this,e.second);
+    }
   }
 }
 void task::remove(map<char,string>params){
@@ -82,7 +82,7 @@ void task::send_action(std::string action, std::map<char,std::string> params){
   if(tasks_map.find(action) != tasks_map.end()){
     tasks_map[action](params);
   }else{
-    cout << "Not provided correct arguments";
+    cout << action << " :Does not match. Not provided correct arguments" <<endl;
   }
 }
 
