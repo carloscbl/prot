@@ -8,13 +8,28 @@
 #include <map>
 
 using namespace std;
-class question_node;
-class form_traverser
-{
+
+struct question_node{
+    int id = 0;
+    string Question;
+    string Answer;
+    string task;
+    map<string,int> branches;//"string:Yes -> id 50 is the next Question"
+    //set<string> tags;
+};
+
+class form_traverser {
 private:
-    const map<int id,const question_node *> qmap;
+    using question_node_id = int;
+    const map<question_node_id, unique_ptr<question_node> > qmap;
+
+    enum class UsualStates : int {
+        exit = -1
+    };
+
+    UsualStates us = UsualStates::exit;
 public:
-    form_traverser());
+    form_traverser();
 
     void run();
 };

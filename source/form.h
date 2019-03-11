@@ -12,15 +12,14 @@
 
 #include "iactionable.h"
 #include "icommandable.h"
+#include "form_traverser.h"
 
 using namespace std;
 class form;
 namespace env
 {
-static map<string, unique_ptr<form>> forms;
+  static map<string, unique_ptr<form>> forms;
 }
-
-class
 
 class form : public iactionable
 {
