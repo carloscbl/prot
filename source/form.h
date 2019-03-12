@@ -23,10 +23,11 @@ namespace env
 
 class form : public iactionable
 {
-
 private:
   using subaction_map = map<string, function<void(map<char, string>)>>;
   using map_f = map<char,function<void(form&,string)> >;
+  unique_ptr<form_traverser> ftraverser;
+
   subaction_map form_map{
       {"add", [](map<char, string> s) {
          unique_ptr<form> form_ = make_unique<form>();
@@ -45,6 +46,8 @@ public:
   string id;
   form();
   virtual ~form();
+  using validated_json_form_parsed_struct = string;//To be removed by strong types
+  void set_validated_JSON(validated_json_form_parsed_struct json);
   void send_action(std::string action, map<char, string> params) override;
   string name = "Washer_family_stationale_per_kg";
   map<string, string> form_statements{
@@ -60,18 +63,6 @@ public:
       {"a3", "task add -nd \"Collect the clothes\" \"Hang out the washing \""},
       {"a4", "task add -nd \"Iron the clothes\" \"Take a while with some interesting podcast or netflix an let perfect the clothes for the week \""},
   };
-  //Setear las task cuando se llama al formulario hay que setear todas las task a un usuario
-  //Si no hay usuario asumimos que solo existe 1 usuario
-  //entonces si relanzamos el formulario, debemos de impedir que se relance el seteo de task redundantes pero si actualizar las existentes
-  //hay que hacer un match o identificacion de tasks con el form
-  //mas adelante hacerlo con inferencia inteligente basada en tags o campos o quizas no haga falta
-
-  //Computar variables del form sobre las tasks
-
-  //1 Ejecutar las task
-  //2 Ejecutar sin que pisen las existentes ni se dupliquen
-  //3 Ejecutar con computo de variables
-  //4 Hacer sencillo el pipeline de inputs
   void add(map<char, string> params);
   void perform_taskstory(string s);
 };
