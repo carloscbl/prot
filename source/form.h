@@ -15,55 +15,65 @@
 #include "form_traverser.h"
 
 using namespace std;
+
 class form;
-namespace env
-{
+namespace env {
   static map<string, unique_ptr<form>> forms;
 }
 
-class form : public iactionable
-{
+class form : public iactionable {
 private:
+  using question_node_id = int;
   using subaction_map = map<string, function<void(map<char, string>)>>;
-  using map_f = map<char,function<void(form&,string)> >;
+  using map_f = map<char, function<void(form &, string)> >;
+
+  //Components
   unique_ptr<form_traverser> ftraverser;
 
   subaction_map form_map{
-      {"add", [](map<char, string> s) {
-         unique_ptr<form> form_ = make_unique<form>();
-         form_->add(s);
-         env::forms[form_->id] = move(form_);
-       }},
-      {"remove", [](map<char, string> s) {}},
-      {"update", [](map<char, string> s) {}},
+    {"add",    [](map<char, string> s) {
+      vector<question_node> qn {
+        question_node{.id=1,.Question="", .Answer="",.task="",.branches={{"yes", static_cast<int>(UsualStates::exit)}}},
+      };
+      map<question_node_id, unique_ptr<question_node> > q;
+      for(auto & e : qn){
+        q[e.id] = make_unique<question_node>(e);
+      }
+      unique_ptr<form> form_ = make_unique<form>();
+      form_->add(s);
+      env::forms[form_->id] = move(form_);
+    }},
+    {"remove", [](map<char, string> s) {}},
+    {"update", [](map<char, string> s) {}},
   };
 
   map_f setters{
-      {'n', &form::perform_taskstory},
+    {'n', &form::perform_taskstory},
   };
 
 public:
   string id;
+
+  form(map<question_node_id, unique_ptr<question_node> > &&questions);
+
   form();
+
   virtual ~form();
-  using validated_json_form_parsed_struct = string;//To be removed by strong types
-  void set_validated_JSON(validated_json_form_parsed_struct json);
+
   void send_action(std::string action, map<char, string> params) override;
+
   string name = "Washer_family_stationale_per_kg";
-  map<string, string> form_statements{
-      {"Do you have washer", "no"},
-      {"How much people in home", "3"},
-      {"Kg of capacity of the washer", "7KG"},
-      {"Is winter or autumn?", "yes"},
-  };
+
 
   map<string, string> taskstory{
-      {"a1", "task add -hmDMYnd %d %d %d %d %d \"Collect the clothes over home\" \"Gather all the clothes susceptible to be washed and put them in the washer \""},
-      {"a2", "task add -nd \"Put the washer\" \"Turn on the machine\""},
-      {"a3", "task add -nd \"Collect the clothes\" \"Hang out the washing \""},
-      {"a4", "task add -nd \"Iron the clothes\" \"Take a while with some interesting podcast or netflix an let perfect the clothes for the week \""},
+    {"a1", "task add -hmDMYnd %d %d %d %d %d \"Collect the clothes over home\" \"Gather all the clothes susceptible to be washed and put them in the washer \""},
+    {"a2", "task add -nd \"Put the washer\" \"Turn on the machine\""},
+    {"a3", "task add -nd \"Collect the clothes\" \"Hang out the washing \""},
+    {"a4", "task add -nd \"Iron the clothes\" \"Take a while with some interesting podcast or netflix an let perfect the clothes for the week \""},
   };
+
   void add(map<char, string> params);
+
   void perform_taskstory(string s);
 };
 

@@ -6,6 +6,7 @@
 #define FORM_TRAVERSER_H
 
 #include <map>
+#include <memory>
 
 using namespace std;
 
@@ -18,20 +19,24 @@ struct question_node{
     //set<string> tags;
 };
 
+enum class UsualStates : int {
+  exit = -1
+};
+
 class form_traverser {
 private:
     using question_node_id = int;
     const map<question_node_id, unique_ptr<question_node> > qmap;
 
-    enum class UsualStates : int {
-        exit = -1
-    };
+
 
     UsualStates us = UsualStates::exit;
 public:
-    form_traverser();
+
+    form_traverser(map<question_node_id, unique_ptr<question_node> > && questions);
 
     void run();
+    void process_branches_outputs(unique_ptr<question_node> node) const noexcept;
 };
 
 
