@@ -8,14 +8,23 @@
 #include <map>
 #include <memory>
 
+#include <vector>
+
 using namespace std;
 
 struct question_node{
+    using posible_answer_given = string;
+    struct branch
+    {
+        unique_ptr<vector<string> > local_taskstory;
+        int next_node_id;
+        //map<string,string> params;
+    };
     int id = 0;
     string Question;
     string Answer;
-    string task;
-    map<string,int> branches;//"string:Yes -> id 50 is the next Question"
+
+    map<posible_answer_given,branch> branches;//"yes" : branch {"task add -n washer", UsualStates::exit};
     //set<string> tags;
 };
 
