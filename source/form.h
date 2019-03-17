@@ -26,21 +26,20 @@ private:
   using question_node_id = int;
   using subaction_map = map<string, function<void(map<char, string>)>>;
   using map_f = map<char, function<void(form &, string)> >;
-  using branch = question_node::branch;
   //Components
   unique_ptr<form_traverser> ftraverser;
 
   subaction_map form_map{
     {"add",    [](map<char, string> s) {
-      auto br = branch{std::unique_ptr<vector<string>>{nullptr},2};
 
-      vector<question_node> qn {
-        /*question_node{.id=1,.Question="Do you have washer", .Answer="", .branches=map<string,branch>()}*/
-      };
-      map<question_node_id, unique_ptr<question_node> > q;
+
+      map<question_node_id, question_node> q;
+
+      
       // for(auto & e : qn){
       //   q[e.id] = make_unique<question_node>(e);
       // }
+
       unique_ptr<form> form_ = make_unique<form>();
       form_->add(s);
       env::forms[form_->id] = move(form_);
