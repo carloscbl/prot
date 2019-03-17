@@ -3,9 +3,10 @@
 using namespace std;
 
 
-form::form(map<question_node_id, unique_ptr<question_node> > && questions):form(){
-  ftraverser = make_unique<form_traverser>(move(questions));
+form::form(map<question_node_id, question_node > & questions):form(){
+  ftraverser = form_traverser(questions);
 }
+
 form::form(){
   static int acummulator = 0;
   id = "form" + to_string(acummulator++);
