@@ -3,8 +3,8 @@
 using namespace std;
 
 
-form::form(map<question_node_id, question_node > & questions):form(){
-  ftraverser = form_traverser(questions);
+form::form(const map<question_node_id, question_node > * questions):form(){
+  ftraverser =form_traverser(questions);
 }
 
 form::form(){

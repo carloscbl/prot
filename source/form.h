@@ -44,7 +44,7 @@ private:
       //   q[e.id] = make_unique<question_node>(e);
       // }
 
-      unique_ptr<form> form_ = make_unique<form>();
+      unique_ptr<form> form_ = make_unique<form>(q);
       form_->add(s);
       env::forms[form_->id] = move(form_);
     }},
@@ -59,7 +59,7 @@ private:
 public:
   string id;
 
-  form(map<question_node_id, question_node> & questions);
+  form(const map<question_node_id, question_node> * questions);
 
   form();
 

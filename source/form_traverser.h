@@ -36,15 +36,15 @@ enum class UsualStates : int {
 class form_traverser {
 private:
     using question_node_id = int;
-    const map<question_node_id, question_node > & qmap;
+    const map<question_node_id, question_node > * qmap = nullptr;
 
 
 
     UsualStates us = UsualStates::exit;
 public:
 
-    form_traverser(map<question_node_id, question_node> & questions);
-
+    constexpr form_traverser(const map<question_node_id, question_node> * questions):qmap(questions){}
+    form_traverser() = default;
     void run();
     void process_branches_outputs(question_node node) const noexcept;
 };
