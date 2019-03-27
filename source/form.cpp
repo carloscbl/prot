@@ -3,7 +3,7 @@
 using namespace std;
 
 
-form::form(const map<question_node_id, question_node > * questions):form(){
+form::form(map<question_node_id, question_node > * questions):form(){
   ftraverser =form_traverser(questions);
 }
 
@@ -52,4 +52,7 @@ void form::perform_taskstory(string s)
     //
     cout << e.second << endl;
   }
+  cout << endl;
+  ftraverser.print_out();
+
 }

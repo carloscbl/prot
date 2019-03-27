@@ -31,19 +31,18 @@ private:
 
   subaction_map form_map{
     {"add",    [](map<char, string> s) {
+        //we should parse p, with a new component called form parser, and pass it to the map question node
 
-
-      map<question_node_id, question_node> * q = new map<question_node_id, question_node>{
+      using state_machine = map<question_node_id, question_node>;
+      vector<string> l_task{"task add aa bb","task add ccc ddd"};
+      state_machine * q = new state_machine{
         {1,question_node{
-          .id = 1, .Question="",.Answer=""
+          .id = 1, .Question="Have you washer",.Answer="No" ,.branches={{"Yes",branch{
+            .local_taskstory = l_task,.next_node_id=2}}}
         }}
       };
 
-      
-      // for(auto & e : qn){
-      //   q[e.id] = make_unique<question_node>(e);
-      // }
-
+      //Creates a new form and store it with index id and passing a states machine graph
       unique_ptr<form> form_ = make_unique<form>(q);
       form_->add(s);
       env::forms[form_->id] = move(form_);
@@ -59,7 +58,7 @@ private:
 public:
   string id;
 
-  form(const map<question_node_id, question_node> * questions);
+  form(map<question_node_id, question_node> * questions);
 
   form();
 

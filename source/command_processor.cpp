@@ -6,7 +6,7 @@
 
 using namespace std;
 
-bool command_processor::params_sanity(const vector<string> s, map<char, string> &correspondance)
+bool command_processor::params_sanity(vector<string> s, map<char, string> &correspondance)
 {
   if (s.size() <= 0)
   {

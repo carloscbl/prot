@@ -47,7 +47,7 @@ private:
     }},
   };
 
-  bool params_sanity(const vector<string> s,map<char,string> & correspondance);
+  bool params_sanity(vector<string> s,map<char,string> & correspondance);
   void route_positional_param (vector<string> args);
 
 public:
