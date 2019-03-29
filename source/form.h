@@ -21,29 +21,23 @@ namespace env {
   static map<string, unique_ptr<form>> forms;
 }
 
+using question_node_id = int;
+using subaction_map = map<string, function<void(map<char, string>)>>;
+using map_f = map<char, function<void(form &, string)> >;
+using state_machine = map<question_node_id, question_node>;
+
+
 class form : public iactionable {
 private:
-  using question_node_id = int;
-  using subaction_map = map<string, function<void(map<char, string>)>>;
-  using map_f = map<char, function<void(form &, string)> >;
   //Components
   form_traverser ftraverser;
 
   subaction_map form_map{
-    {"add",    [](map<char, string> s) {
+    {"add",    [this](map<char, string> s) {
         //we should parse p, with a new component called form parser, and pass it to the map question node
 
-      using state_machine = map<question_node_id, question_node>;
-      vector<string> l_task{"task add aa bb","task add ccc ddd"};
-      state_machine * q = new state_machine{
-        {1,question_node{
-          .id = 1, .Question="Have you washer",.Answer="No" ,.branches={{"Yes",branch{
-            .local_taskstory = l_task,.next_node_id=2}}}
-        }}
-      };
-
       //Creates a new form and store it with index id and passing a states machine graph
-      unique_ptr<form> form_ = make_unique<form>(q);
+      unique_ptr<form> form_ = make_unique<form>(test_filler_());
       form_->add(s);
       env::forms[form_->id] = move(form_);
     }},
@@ -55,10 +49,11 @@ private:
     {'n', &form::perform_taskstory},
   };
 
+  state_machine test_filler_();
 public:
   string id;
 
-  form(map<question_node_id, question_node> * questions);
+  form(state_machine questions);
 
   form();
 

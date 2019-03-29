@@ -3,8 +3,8 @@
 using namespace std;
 
 
-form::form(map<question_node_id, question_node > * questions):form(){
-  ftraverser =form_traverser(questions);
+form::form(state_machine questions):form(){
+  ftraverser.set_questions(questions);
 }
 
 form::form(){
@@ -49,10 +49,23 @@ void form::perform_taskstory(string s)
   cout << "taskstory" << endl;
   for (auto &e : taskstory)
   {
-    //
     cout << e.second << endl;
   }
   cout << endl;
   ftraverser.print_out();
+}
 
+
+state_machine form::test_filler_(){
+  vector<string> l_task = {"task add aa bb","task del p"};
+
+  auto bran = map<string,branch>{
+    {"Yes",branch{l_task,2}},
+    {"No",branch{l_task, static_cast<int>(UsualStates::exit)}}
+  };
+
+  state_machine q {
+    {1,question_node{1, "Have you washer","No",bran}}
+  };
+  return q;
 }
