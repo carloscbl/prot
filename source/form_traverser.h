@@ -7,12 +7,12 @@
 
 #include <map>
 #include <memory>
-
 #include <iostream>
 #include <vector>
 #include <string>
 
 using namespace std;
+
 struct branch
 {
   //This struct designate the source of actions that will be executed because of this branch election
@@ -21,6 +21,8 @@ struct branch
   //map<string,string> params;
 };
 struct question_node{
+  //Handle the base question, with the Q and stores the answer given, but the posible branches from this
+  //As.. the usual bool case, no -> Exit | yes -> question id 2
     using posible_answer_given = string;
 
     int                              id               = 0;
@@ -46,23 +48,14 @@ public:
 
     form_traverser(map<question_node_id, question_node> questions):state_machine(questions){validate_form();}
     form_traverser() = default;
-    void set_questions(map<question_node_id, question_node > questions){
-      state_machine = questions;
-      validate_form();
-    }
     bool is_valid(){return is_valid_;}
     void run();
     void process_branches_outputs(question_node node) const noexcept;
+    void print_out() const;
 
-    void print_out(){
-      cout << "is valid : " << is_valid_ << endl;
-      for (const auto & e : state_machine)
-      {
-        for(const auto & ee : e.second.branches.begin()->second.local_taskstory){
-          cout << e.second.id << ":" << e.second.Question << ":" << e.second.Answer << ":" << ":" << ee
-          << ":" << e.second.branches.begin()->second.next_node_id << endl;
-        }
-      }
+    inline void set_questions(map<question_node_id, question_node > questions){
+      state_machine = questions;
+      validate_form();
     }
 };
 
