@@ -26,16 +26,16 @@ using subaction_map = map<string, function<void(map<char, string>)>>;
 using map_f = map<char, function<void(form &, string)> >;
 using state_machine = map<question_node_id, question_node>;
 
-
+//the form class stores the form in raw internally and process it to be able to present it externally
 class form : public iactionable {
 private:
   //Components
   form_traverser ftraverser;
 
+  //This map, handles the posible actions to be performed from outside commands
+  //Positional params
   subaction_map form_map{
     {"add",    [this](map<char, string> s) {
-        //we should parse p, with a new component called form parser, and pass it to the map question node
-
       //Creates a new form and store it with index id and passing a states machine graph
       unique_ptr<form> form_ = make_unique<form>(test_filler_());
       form_->add(s);
@@ -45,6 +45,7 @@ private:
     {"update", [](map<char, string> s) {}},
   };
 
+  //Modulator params like -h -n -P
   map_f setters{
     {'n', &form::perform_taskstory},
   };
@@ -52,18 +53,9 @@ private:
   state_machine test_filler_();
 public:
   string id;
-
-  form(state_machine questions);
-
-  form();
-
-  virtual ~form();
-
-  void send_action(std::string action, map<char, string> params) override;
-
   string name = "Washer_family_stationale_per_kg";
-
-
+  //TODO, resolve the variabilitization of the taskstory
+  //The taskstory handles externally all the posible commands for this form
   map<string, string> taskstory{
     {"a1", "task add -hmDMYnd %d %d %d %d %d \"Collect the clothes over home\" \"Gather all the clothes susceptible to be washed and put them in the washer \""},
     {"a2", "task add -nd \"Put the washer\" \"Turn on the machine\""},
@@ -71,8 +63,14 @@ public:
     {"a4", "task add -nd \"Iron the clothes\" \"Take a while with some interesting podcast or netflix an let perfect the clothes for the week \""},
   };
 
-  void add(map<char, string> params);
+  form(state_machine questions);
+  form();
+  virtual ~form();
 
+  //iactionable
+  void send_action(std::string action, map<char, string> params) override;
+  //mapped to add
+  void add(map<char, string> params);
   void perform_taskstory(string s);
 };
 

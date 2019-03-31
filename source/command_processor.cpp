@@ -10,7 +10,6 @@ bool command_processor::params_sanity(vector<string> s, map<char, string> &corre
 {
   if (s.size() <= 0)
   {
-    //      p("No params");
     return false;
   }
   if (s[0][0] == '-')

@@ -57,15 +57,19 @@ void form::perform_taskstory(string s)
 
 
 state_machine form::test_filler_(){
-  vector<string> l_task = {"task add aa bb","task del p"};
+  //Generation of test cases for development test
+  //lt -> 'l'ocal 't'askstory
+  auto lt_q1_yes_ = new vector<string>();
+    lt_q1_yes_->push_back("task add -hmDMYnd %d %d %d %d %d \"Collect the clothes over home\" \"Gather all the clothes susceptible to be washed and put them in the washer \"");
+    lt_q1_yes_->push_back("task del p");
+    
 
-  auto bran = map<string,branch>{
-    {"Yes",branch{l_task,2}},
-    {"No",branch{l_task, static_cast<int>(UsualStates::exit)}}
-  };
+  auto q1_branch = map<string,branch>();
+    q1_branch["Yes"] = branch{lt_q1_yes_,2};
+    q1_branch["No"] =  branch{nullptr, static_cast<int>(UsualStates::exit)};
 
   state_machine q {
-    {1,question_node{1, "Have you washer","No",bran}}
+    {1,question_node{1, "Have you washer","No",q1_branch}}
   };
   return q;
 }

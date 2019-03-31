@@ -16,26 +16,31 @@ using namespace std;
 struct branch
 {
   //This struct designate the source of actions that will be executed because of this branch election
-  vector<string> local_taskstory;
-  int next_node_id;
-  //map<string,string> params;
+  vector<string> * local_taskstory = nullptr;
+  unique_ptr<vector<string>> tsk;
+  int next_node_id = 0;
+  branch(vector<string> *local_taskstory, int next_node_id):local_taskstory(local_taskstory),next_node_id(next_node_id),tsk(){}
+  virtual ~branch(){if(local_taskstory){delete local_taskstory;}}
 };
 struct question_node{
+  //The most primal shape of a node in the state machine self-contained all the necesary info, to move on
+  //or the actions associated
   //Handle the base question, with the Q and stores the answer given, but the posible branches from this
   //As.. the usual bool case, no -> Exit | yes -> question id 2
-    using posible_answer_given = string;
+  using posible_answer_given = string;
 
-    int                              id               = 0;
-    string                           Question;
-    string                           Answer;
-    map<posible_answer_given,branch> branches;//"yes" : branch {"task add -n washer", UsualStates::exit};
-    //set<string> tags;
+  int                              id               = 0;
+  string                           Question;
+  string                           Answer;
+  map<posible_answer_given,branch> branches;//"yes" : branch {"task add -n washer", UsualStates::exit};
 };
 
 enum class UsualStates : int {
-  exit = -1
+  exit = -1,
+  begin = 0,
 };
 
+//the form_traverser handles the state machine, providing, traversal, code logic parsing and routing
 class form_traverser {
 private:
     using question_node_id = int;
@@ -48,7 +53,7 @@ public:
 
     form_traverser(map<question_node_id, question_node> questions):state_machine(questions){validate_form();}
     form_traverser() = default;
-    bool is_valid(){return is_valid_;}
+    inline bool is_valid(){return is_valid_;}
     void run();
     void process_branches_outputs(question_node node) const noexcept;
     void print_out() const;
