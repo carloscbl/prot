@@ -13,15 +13,6 @@
 
 using namespace std;
 
-struct branch
-{
-  //This struct designate the source of actions that will be executed because of this branch election
-  vector<string> * local_taskstory = nullptr;
-  int next_node_id = 0;
-  branch() = default;
-  branch(vector<string> *local_taskstory, int next_node_id);
-  virtual ~branch(){if(local_taskstory){delete local_taskstory;}}
-};
 struct question_node{
   //The most primal shape of a node in the state machine self-contained all the necesary info, to move on
   //or the actions associated
@@ -36,8 +27,10 @@ struct question_node{
 };
 
 enum class UsualStates : int {
-  exit = -1,
-  begin = 0,
+  begin =  0,
+  exit  = -1,
+  self  = -2,
+  error = -3,
 };
 
 //the form_traverser handles the state machine, providing, traversal, code logic parsing and routing

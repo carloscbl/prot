@@ -16,7 +16,7 @@
 
 using namespace std;
 
-class form;
+class form;//Handles the result, executable of a form, and passes through to its components to auto compose
 namespace env {
   static map<string, unique_ptr<form>> forms;
 }
