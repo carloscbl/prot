@@ -1,5 +1,7 @@
 #include "form_traverser.h"
 
+branch::branch(vector<string> *local_taskstory, int next_node_id):
+  local_taskstory(local_taskstory),next_node_id(next_node_id){}
 
 void form_traverser::run(){
 
@@ -18,13 +20,13 @@ void form_traverser::validate_form(){
   }
 }
 
-void form_traverser::print_out(){
+void form_traverser::print_out() const{
 cout << "is valid : " << is_valid_ << endl;
   for (const auto & e : state_machine)
   {
-    for(const auto & ee : e.second.branches.begin()->second.local_taskstory){
+    for(const auto & ee : *e.second.branches.cbegin()->second.local_taskstory){
       cout << e.second.id << ":" << e.second.Question << ":" << e.second.Answer << ":" << ":" << ee
-      << ":" << e.second.branches.begin()->second.next_node_id << endl;
+      << ":" << e.second.branches.cbegin()->second.next_node_id << endl;
     }
   }
 }

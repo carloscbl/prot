@@ -64,9 +64,9 @@ state_machine form::test_filler_(){
     lt_q1_yes_->push_back("task del p");
     
 
-  auto q1_branch = map<string,branch>();
-    q1_branch["Yes"] = branch{lt_q1_yes_,2};
-    q1_branch["No"] =  branch{nullptr, static_cast<int>(UsualStates::exit)};
+  map<string,branch> q1_branch;
+    q1_branch.insert(make_pair("yes", branch{lt_q1_yes_,2}));
+    q1_branch.insert(make_pair("no", branch{nullptr, static_cast<int>(UsualStates::exit)}));
 
   state_machine q {
     {1,question_node{1, "Have you washer","No",q1_branch}}

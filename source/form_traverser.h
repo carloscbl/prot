@@ -17,9 +17,9 @@ struct branch
 {
   //This struct designate the source of actions that will be executed because of this branch election
   vector<string> * local_taskstory = nullptr;
-  unique_ptr<vector<string>> tsk;
   int next_node_id = 0;
-  branch(vector<string> *local_taskstory, int next_node_id):local_taskstory(local_taskstory),next_node_id(next_node_id),tsk(){}
+  branch() = default;
+  branch(vector<string> *local_taskstory, int next_node_id);
   virtual ~branch(){if(local_taskstory){delete local_taskstory;}}
 };
 struct question_node{
@@ -43,25 +43,25 @@ enum class UsualStates : int {
 //the form_traverser handles the state machine, providing, traversal, code logic parsing and routing
 class form_traverser {
 private:
-    using question_node_id = int;
-    map<question_node_id, question_node > state_machine;
+  using question_node_id = int;
+  map<question_node_id, question_node > state_machine;
 
-    UsualStates us = UsualStates::exit;
-    bool is_valid_= false;
-    void validate_form();
+  UsualStates us = UsualStates::exit;
+  bool is_valid_= false;
+  void validate_form();
 public:
 
-    form_traverser(map<question_node_id, question_node> questions):state_machine(questions){validate_form();}
-    form_traverser() = default;
-    inline bool is_valid(){return is_valid_;}
-    void run();
-    void process_branches_outputs(question_node node) const noexcept;
-    void print_out() const;
+  form_traverser(map<question_node_id, question_node> questions):state_machine(questions){validate_form();}
+  form_traverser() = default;
+  inline bool is_valid(){return is_valid_;}
+  void run();
+  void process_branches_outputs(question_node node) const noexcept;
+  void print_out() const;
 
-    inline void set_questions(map<question_node_id, question_node > questions){
-      state_machine = questions;
-      validate_form();
-    }
+  inline void set_questions(map<question_node_id, question_node > questions){
+    state_machine = questions;
+    validate_form();
+  }
 };
 
 
