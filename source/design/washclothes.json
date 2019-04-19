@@ -1,0 +1,101 @@
+﻿{
+  "variables": {
+    "time.minutes.WaitToCollect": 75
+  },
+  "configurables":[
+    "time.minutes.WaitToCollect"
+  ],
+  "questions": [
+    {
+      "id": 1,
+      "question": "Do you have washer?",
+      "answer_tag": "washer",
+      "type_user_input": "STRING",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "predefined_boolean_yes_no_affirmative_yes": {
+          "true": 72,
+          "else": -1
+        }
+      }
+    },
+    {
+      "id": 72,
+      "question": "How many Kilograms have your washer capacity?",
+      "answer_tag": "kg_capacity",
+      "type": "INTEGER",
+      "mode": [
+        "sequential",
+        "if_error_repeat"
+      ],
+      "answers_branches": [
+        {
+          "range": {
+            "values": {
+              ">": 30,
+              "<": 1000
+            },
+            "if_branch": 3,
+            "id": 1
+          }
+        },
+        {
+          "range": {
+            "values": {
+              ">": 0,
+              "<": 30
+            },
+            "if_branch": 0,
+            "id": 2
+          }
+        },
+        {
+          "range": {
+            "values": {
+              "<": 0,
+              ">": 1000
+            },
+            "if_branch": -1,
+            "id": 3
+          }
+        }
+      ],
+      "taskstorys": [
+        {
+          "branch_id": 2,
+          "taskstory": [
+            {
+              "command":"task add -ud {user.user} 'Gather Clothes'",
+              "name":""
+            },
+            {
+              "command":"task add -ud {user.user} 'Put them inside and start the machine'",
+              "name":"washer_start"
+            },
+            {
+              "command":"task add -ud {user.user} 'Collect the washed clothes' --stamp {next_add_task_story_stamp(washer_start.stamp,time.minutes.WaitToCollect)}",
+              "name":"washer_end"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "question": "Your washer is a industrial one?",
+      "answer_tag": "industrial",
+      "type": "BOOL",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "yes": 0,
+        "no": 0
+      }
+    }
+  ]
+}

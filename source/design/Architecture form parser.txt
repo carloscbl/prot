@@ -1,0 +1,68 @@
+At the most high level, there is the form:
+A file designed to hold all the machine state and its
+relations with the next steps in the states machine
+
+being the follow estructure a good example
+
+form.name = "Washer easer"
+author.name = "carlos bernal"
+
+{
+  "questions": [
+    {
+      "id": 1,
+      "question": "Do you have washer?",
+      "answer_tag": "washer",
+      "type": "STRING",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "predefined_boolean_yes_no_affirmative_yes": {
+          "true": 72,
+          "else": -1
+        }
+      }
+    },
+    {
+      "id": 72,
+      "question": "How many Kilograms have your washer capacity?",
+      "answer_tag": "kg_capacity",
+      "type": "INTEGER",
+      "mode": [
+        "sequential",
+        "if_error_repeat"
+      ],
+      "answers_branches": [
+        {
+          "range": {
+            "values": {
+              ">": 86,
+              "<": 1000
+            },
+            "if_branch": 3
+          }
+        },
+        {
+          "range": {
+            "values": {
+              ">": 0,
+              "<": 86
+            },
+            "if_branch": 0
+          }
+        },
+        {
+          "range": {
+            "values": {
+              "<": 0,
+              ">": 1000
+            },
+            "if_branch": -1
+          }
+        }
+      ]
+    }
+  ]
+}
