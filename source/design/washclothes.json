@@ -1,4 +1,11 @@
 ﻿{
+  "expressions":{
+    "buildInExpr":"next_add_task_story_stamp",
+    "mapTo":"next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect",
+    "args":[
+      "washer_start.stamp","time.minutes.WaitToCollect"
+    ]
+  },
   "variables": {
     "time.minutes.WaitToCollect": 75
   },
@@ -76,7 +83,7 @@
               "name":"washer_start"
             },
             {
-              "command":"task add -ud {user.user} 'Collect the washed clothes' --stamp {next_add_task_story_stamp(washer_start.stamp,time.minutes.WaitToCollect)}",
+              "command":"task add -ud {user.user} 'Collect the washed clothes' --stamp {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect}",
               "name":"washer_end"
             }
           ]
