@@ -17,7 +17,7 @@ questions: it is a decision tree with questions and posible flow answers, that p
    id: unique id of a node(QA's),
    question: the output text to the user
    answer_tag: the tag that bring info, that you can use in the future to dont repeat questions of similar forms
-   type: the data type expected of answer
+   type: the data type expected of answer INTEGER | BOOL | FLOAT
    mode: this states some flow meta that will alter the flow for special cases
     sequential: means it follows a normal flow,
     if_error_repeat: means if the answer given is not suitable as the "type" given will repeat the question not exit
@@ -25,6 +25,18 @@ questions: it is a decision tree with questions and posible flow answers, that p
   taskstorys: the array of posible taskstory to perform after get the current answer if the select meets or is specified the tag("taskstorys") optional, not all branches have to perform a taskstory
     branch_id: select by the posible answer given, if not given, will take the branch id with 0 as id
     taskstory: a sucession of commands that will represent as tasks the choices of the user by a given branch_id
+      command: the command to evaluate and perform
+      name: the key to find or refer to this command in this form
     branch_id: tasktory correspond to the given branch_id as answer
+  answers_branches: you can define the answer that will enroute the next branch to follow
+    custom: you can define any string that you want
+    range[]: you can set a group of ranges matching the numeric values and its possible routes
+      values:
+        <: less than
+        >: greater than
+        >=: greater or equal than
+        <=: less or equal than
+      if_branch: next node to follow
+      id: answer id to select a taskstory in the taskstorys
 
 
