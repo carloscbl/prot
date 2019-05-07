@@ -1,0 +1,12 @@
+Architecture of parser
+-json validator + reader
+-map functionality
+    -general form class containing
+        -name
+        -author
+    -Expressions map k: name V:Expression_t -> args, parsed function
+    -Variables map
+    -Publish Variables
+    -Questions map, keep it flat
+
+-Expressionables
