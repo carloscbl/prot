@@ -4,8 +4,8 @@ Architecture of parser
     -general form class containing
         -name
         -author
-    -Expressions map k: name V:Expression_t -> args, parsed function
-    -Variables map
+    -Expressions map k: name V:Expression_t -> args, parsed function callback, argument return
+    -Variables map k:name of variable V: valueStruct with type
     -Publish Variables
     -Questions map, keep it flat
 
