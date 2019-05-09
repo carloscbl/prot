@@ -57,10 +57,15 @@ void form::perform_taskstory(string s)
 }
 
 void test_type_container(){
-  type_container<int32_t>("INTEGER",32);
+  type_container<int32_t> thre_two ("INTEGER","32");
+  cout << thre_two.value << endl;
+  type_container<string> str ("STRING","Lemons are my favourite");
+  cout << str.value << endl;
 }
 
 state_machine form::test_filler_(){
+  test_type_container();
+  cout << "we are freeee to crash" << endl;
   //Generation of test cases for development test
   //lt -> 'l'ocal 't'askstory
   auto lt_q1_yes_ = new vector<string>();
