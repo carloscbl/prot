@@ -11,7 +11,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/source)
 find_package(Threads REQUIRED)
 
-include_directories(thirdparty/nlohmann_json)
+include_directories("thirdparty/nlohmann_json")
 
 SET(protobuf_ false)
 if(protobuf_)
@@ -38,7 +38,10 @@ else()
 file(GLOB SOURCES
     ${PROJECT_SOURCE_DIR}/source/*.h
     ${PROJECT_SOURCE_DIR}/source/*.cpp
+    ${PROJECT_SOURCE_DIR}/thirdparty/nlohmann_json/json.hpp
 )
+message(${SOURCES})
+
     add_executable (prot ${PROJECT_SOURCE_DIR}/source/main.cpp ${SOURCES} )
     TARGET_LINK_LIBRARIES( prot LINK_PUBLIC ${Boost_LIBRARIES})
 

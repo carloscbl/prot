@@ -11,9 +11,6 @@ using namespace std;
 
 class branch
 {
-
-
-
 public:
   //This struct designate the source of actions that will be executed because of this branch election
   vector<string> * local_taskstory = nullptr;
@@ -21,7 +18,12 @@ public:
 
   
   branch(vector<string> *local_taskstory, int next_node_id);
-  virtual ~branch(){if(local_taskstory){delete local_taskstory;}}
+  virtual ~branch(){
+    if(local_taskstory != nullptr)
+    {
+      delete local_taskstory;
+    }
+  }
 };
 
 #endif //BRANCH_H

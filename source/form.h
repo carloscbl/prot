@@ -37,7 +37,7 @@ private:
   subaction_map form_map{
     {"add",    [this](map<char, string> s) {
       //Creates a new form and store it with index id and passing a states machine graph
-      unique_ptr<form> form_ = make_unique<form>(test_filler_());
+      unique_ptr<form> form_ = make_unique<form>();
       form_->add(s);
       env::forms[form_->id] = move(form_);
     }},

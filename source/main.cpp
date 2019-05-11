@@ -12,6 +12,7 @@
 #include "task.h"
 #include "form.h"
 #include "iactionable.h"
+#include "form_reader.h"
 
 #define p(X) std::cout <<  X  <<std::endl;
 
@@ -40,7 +41,7 @@ int main(int argc, char const *argv[])
   form form_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
-
+  form_reader fr("");
   vector<string> arg_i(argv + 1, argv + argc);
 
   p("Starting program \n\n");

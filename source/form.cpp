@@ -63,27 +63,4 @@ void test_type_container(){
   cout << str.value << endl;
 }
 
-state_machine form::test_filler_(){
-  test_type_container();
-  cout << "we are freeee to crash" << endl;
-  //Generation of test cases for development test
-  //lt -> 'l'ocal 't'askstory
-  auto lt_q1_yes_ = new vector<string>();
-    lt_q1_yes_->push_back("task add -hmDMYnd %d %d %d %d %d \"Collect the clothes over home\" \"Gather all the clothes susceptible to be washed and put them in the washer \"");
-    lt_q1_yes_->push_back("task del p");
-    vector<string> lt_q2{"More days variable"};
-
-  map<string,branch>  q1_branch, q2_branch;
-  //q1_branch.insert(make_pair("", branch{nullptr, static_cast<int>(UsualStates::self)}));
-  q1_branch.insert(make_pair("yes", branch{lt_q1_yes_,2}));
-  q1_branch.insert(make_pair("no", branch{nullptr, static_cast<int>(UsualStates::exit)}));
-
-  
-
-  state_machine q {
-    {1,question_node{1, "Do you have washer","No",q1_branch}},
-    {2,question_node{2, "How much kg it have","No",q2_branch}},
-  };
-  return q;
-}
 
