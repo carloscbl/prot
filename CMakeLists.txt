@@ -14,6 +14,7 @@ find_package(Threads REQUIRED)
 include_directories("thirdparty/nlohmann_json")
 
 SET(protobuf_ false)
+#add_compile_definitions(DEBUG)
 if(protobuf_)
     add_compile_definitions(PROTOBUF_RUNNING)
     message("My src = ${PROJECT_SOURCE_DIR}/source")

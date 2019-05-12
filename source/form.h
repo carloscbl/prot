@@ -31,6 +31,7 @@ class form : public iactionable {
 private:
   //Components
   form_traverser ftraverser;
+  form_reader json_reader;
 
   //This map, handles the posible actions to be performed from outside commands
   //Positional params

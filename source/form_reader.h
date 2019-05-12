@@ -1,30 +1,21 @@
 #ifndef FORM_READER_H
 #define FORM_READER_H
+#include <string>
 #include "json.hpp"
-#include <iostream>
-#include <iomanip>
+
 using json = nlohmann::json;
 class form_reader
 {
 private:
     mutable json j;
+    std::string original_file_path;
 public:
     const json & get_json() const{
         return j;
     }
-    form_reader(std::string file_path){
-        
-        file_path = "../source/design/washclothes.json";
-        std::ifstream i(file_path);
-        i >> j;
-
-        //j["pi"] = 3.141; Example
-        std::cout << j.dump(4) << std::endl;
-
-        std::ofstream o("pretty.json");
-        o << std::setw(4) << j << std::endl;
-    }
-
+    form_reader(std::string file_path);
+    void save_to_file();
+    void save_to_file(std::string new_path);
 };
 
 
