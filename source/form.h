@@ -13,6 +13,7 @@
 #include "iactionable.h"
 #include "icommandable.h"
 #include "form_traverser.h"
+#include "form_reader.h"
 
 using namespace std;
 
@@ -31,7 +32,7 @@ class form : public iactionable {
 private:
   //Components
   form_traverser ftraverser;
-  form_reader json_reader;
+  unique_ptr<form_reader> json_reader;
 
   //This map, handles the posible actions to be performed from outside commands
   //Positional params
@@ -47,10 +48,10 @@ private:
   };
 
   //Modulator params like -h -n -P
-  map_f setters{
-    {'n', &form::perform_taskstory},
+  map_f setters{ 
+    {'P', &form::set_path},
   };
-
+  void set_path(const string & s);
   state_machine test_filler_();
 public:
   string id;
@@ -64,7 +65,7 @@ public:
     {"a4", "task add -nd \"Iron the clothes\" \"Take a while with some interesting podcast or netflix an let perfect the clothes for the week \""},
   };
 
-  form(state_machine questions);
+  form(const std::string & path);
   form();
   virtual ~form();
 

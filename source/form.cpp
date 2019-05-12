@@ -4,8 +4,8 @@
 using namespace std;
 
 
-form::form(state_machine questions):form(){
-  ftraverser.set_questions(questions);
+form::form(const string & path):form(){
+  json_reader = make_unique<form_reader>(path);
 }
 
 form::form(){
@@ -30,12 +30,16 @@ void form::send_action(std::string action, map<char, string> params)
   }
 }
 
+void form::set_path(const string & s){
+  const auto & path = s;
+  json_reader = make_unique<form_reader>(path);
+}
 
 void form::add(map<char,string> params){
-  if(params.size() == 0) cout << "nothing done" << endl;
-
-  this->perform_taskstory("");
-
+  if(params.size() == 0){
+    cout << "nothing done" << endl;
+    return;
+  }
   auto it = setters.end();
   for(auto e: params){
     it = setters.find(e.first);
@@ -43,17 +47,6 @@ void form::add(map<char,string> params){
         setters[e.first](*this,e.second);
     }
   }
-}
-
-void form::perform_taskstory(string s)
-{
-  cout << "taskstory" << endl;
-  for (auto &e : taskstory)
-  {
-    cout << e.second << endl;
-  }
-  cout << endl;
-  ftraverser.print_out();
 }
 
 void test_type_container(){

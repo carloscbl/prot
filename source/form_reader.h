@@ -13,9 +13,10 @@ public:
     const json & get_json() const{
         return j;
     }
-    form_reader(std::string file_path);
+    form_reader(const std::string & file_path);
     void save_to_file();
     void save_to_file(std::string new_path);
+    void reload();
 };
 
 
