@@ -14,6 +14,7 @@
 #include "iactionable.h"
 #include "form_reader.h"
 #include "form_parser.h"
+#include "form_collector.h"
 
 #define p(X) std::cout <<  X  <<std::endl;
 
@@ -42,7 +43,7 @@ int main(int argc, char const *argv[])
   form form_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
-
+  form_collector fc;
   //form_reader fr("../source/design/washclothes.json");
   //form_parser fp(fr.get_json());
 

@@ -55,15 +55,8 @@ private:
   state_machine test_filler_();
 public:
   string id;
-  string name = "Washer_family_stationale_per_kg";
-  //TODO, resolve the variabilitization of the taskstory
-  //The taskstory handles externally all the posible commands for this form
-  map<string, string> taskstory{
-    {"a1", "task add -hmDMYnd %d %d %d %d %d \"Collect the clothes over home\" \"Gather all the clothes susceptible to be washed and put them in the washer \""},
-    {"a2", "task add -nd \"Put the washer\" \"Turn on the machine\""},
-    {"a3", "task add -nd \"Collect the clothes\" \"Hang out the washing \""},
-    {"a4", "task add -nd \"Iron the clothes\" \"Take a while with some interesting podcast or netflix an let perfect the clothes for the week \""},
-  };
+  string name;//name of the form
+  map<string, string> taskstory;//The taskstory handles all the posible commands for this form
 
   form(const std::string & path);
   form();
