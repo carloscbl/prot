@@ -43,7 +43,7 @@ int main(int argc, char const *argv[])
   form form_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
-  form_collector fc;
+  //form_collector fc;
   //form_reader fr("../source/design/washclothes.json");
   //form_parser fp(fr.get_json());
 

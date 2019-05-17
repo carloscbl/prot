@@ -8,10 +8,10 @@ form_reader::form_reader(const std::string & file_path):original_file_path(file_
     i >> j;
 
     //j["pi"] = 3.141; Example
-    std::cout << j.dump(4) << std::endl;
+    //std::cout << j.dump(4) << std::endl;
 
-    std::ofstream o("pretty.json");
-    o << std::setw(4) << j << std::endl;
+    //std::ofstream o("pretty.json");
+    //o << std::setw(4) << j << std::endl;
 }
 
 void form_reader::save_to_file(){

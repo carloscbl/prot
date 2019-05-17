@@ -5,7 +5,7 @@ using namespace std;
 
 
 form::form(const string & path):form(){
-  json_reader = make_unique<form_reader>(path);
+  pipelined_json_data_setter(path);
 }
 
 form::form(){
@@ -32,7 +32,12 @@ void form::send_action(std::string action, map<char, string> params)
 
 void form::set_path(const string & s){
   const auto & path = s;
-  json_reader = make_unique<form_reader>(path);
+  pipelined_json_data_setter(path);
+}
+
+void form::pipelined_json_data_setter(const string & json_path){
+  json_reader = make_unique<form_reader>(json_path);
+  json_parser = make_unique<form_parser>(json_reader->get_json());
 }
 
 void form::add(map<char,string> params){

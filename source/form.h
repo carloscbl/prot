@@ -14,6 +14,7 @@
 #include "icommandable.h"
 #include "form_traverser.h"
 #include "form_reader.h"
+#include "form_parser.h"
 
 using namespace std;
 
@@ -33,6 +34,7 @@ private:
   //Components
   form_traverser ftraverser;
   unique_ptr<form_reader> json_reader;
+  unique_ptr<form_parser> json_parser;
 
   //This map, handles the posible actions to be performed from outside commands
   //Positional params
@@ -52,6 +54,7 @@ private:
     {'P', &form::set_path},
   };
   void set_path(const string & s);
+  void pipelined_json_data_setter(const string & json_path);
   state_machine test_filler_();
 public:
   string id;
