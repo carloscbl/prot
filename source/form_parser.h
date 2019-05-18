@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <iostream>
+#include <any>
 #include "json.hpp"
 
 using namespace std;
@@ -17,13 +18,14 @@ public:
             std::cout << *it << '\n'; //* operator seems to be overloaded to point to the value
         }
         for(auto & [key, value]: metadata_json.items()){
+            metadata[key] = value;
             cout << key << "--" 
-            << value.get<string>()
+            << any_cast<decltype(value)>(metadata[key])
              << endl;
         }
     }
 private:
-    map<string,string> metadata;
+    map<string,any> metadata;
 };
 
 class form_parser{
