@@ -12,7 +12,6 @@
 
 #include "iactionable.h"
 #include "icommandable.h"
-#include "form_traverser.h"
 #include "form_reader.h"
 #include "form_parser.h"
 
@@ -26,13 +25,11 @@ namespace env {
 using question_node_id = int;
 using subaction_map = map<string, function<void(map<char, string>)>>;
 using map_f = map<char, function<void(form &, string)> >;
-using state_machine = map<question_node_id, question_node>;
 
 //the form class stores the form in raw internally and process it to be able to present it externally
 class form : public iactionable {
 private:
   //Components
-  form_traverser ftraverser;
   unique_ptr<form_reader> json_reader;
   unique_ptr<form_parser> json_parser;
 
@@ -55,7 +52,6 @@ private:
   };
   void set_path(const string & s);
   void pipelined_json_data_setter(const string & json_path);
-  state_machine test_filler_();
 public:
   string id;
   string name;//name of the form
