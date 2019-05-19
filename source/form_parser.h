@@ -8,7 +8,6 @@
 
 using namespace std;
 using json = nlohmann::json;
-using bsjson = nlohmann::basic_json<>;
 
 class form_subsection_ADT{
 protected:
@@ -17,9 +16,29 @@ protected:
         const auto & section_json = j[section_name];
         for(auto & [key, value]: section_json.items()){
             section[key] = value;
-            // cout << key << "--" 
-            // << any_cast<decltype(value)>(section[key])
-            //  << endl;
+        }
+    }
+    void print_section(){
+        for(const auto & [k, v]: section){
+            cout << k << "--" << v << endl;
+            //section["form.name"].value.type
+            switch (v.type())
+            {
+                case json::value_t::null:
+                    cout << "null" << endl;
+                case json::value_t::object:
+                    cout << "object" << endl;
+                case json::value_t::array:
+                    cout << "array" << endl;
+                case json::value_t::string:
+                    cout << "string" << endl;
+                case json::value_t::boolean:
+                    cout << "boolean" << endl;
+                case json::value_t::discarded:
+                    cout << "discarded" << endl;
+                default:
+                    cout << "number" << endl;
+            }
         }
     }
     map<string,json> section;
@@ -28,10 +47,7 @@ protected:
 class form_metadata : public form_subsection_ADT{
 public:
     form_metadata(const json & j):form_subsection_ADT(j,"form"){
-
-        for(const auto & [k, v]: section){
-            cout << k << "--" << section[k] << endl;
-        }
+        print_section();
     }
 };
 

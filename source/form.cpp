@@ -32,7 +32,16 @@ void form::send_action(std::string action, map<char, string> params)
 
 void form::set_path(const string & s){
   const auto & path = s;
-  pipelined_json_data_setter(path);
+  try
+  {
+    pipelined_json_data_setter(path);
+  }
+  catch(const std::exception& e)
+  {
+    std::cerr << e.what() << '\n';
+    std::cerr << "Wrong File Path or bad format JSON" << '\n';
+  }
+  
 }
 
 void form::pipelined_json_data_setter(const string & json_path){
