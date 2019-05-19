@@ -8,24 +8,31 @@
 
 using namespace std;
 using json = nlohmann::json;
+using bsjson = nlohmann::basic_json<>;
 
-class form_metadata{
-public:
-    form_metadata(const json & j){
-        const auto & metadata_json = j["form"];
-        std::cout << metadata_json.dump(4) << std::endl;
-        for (json::const_iterator it = metadata_json.cbegin(); it != metadata_json.cend(); ++it) {
-            std::cout << *it << '\n'; //* operator seems to be overloaded to point to the value
-        }
-        for(auto & [key, value]: metadata_json.items()){
-            metadata[key] = value;
-            cout << key << "--" 
-            << any_cast<decltype(value)>(metadata[key])
-             << endl;
+class form_subsection_ADT{
+protected:
+    string section_name;
+    form_subsection_ADT(const json & j,string sec_name):section_name(sec_name){
+        const auto & section_json = j[section_name];
+        for(auto & [key, value]: section_json.items()){
+            section[key] = value;
+            // cout << key << "--" 
+            // << any_cast<decltype(value)>(section[key])
+            //  << endl;
         }
     }
-private:
-    map<string,any> metadata;
+    map<string,json> section;
+};
+
+class form_metadata : public form_subsection_ADT{
+public:
+    form_metadata(const json & j):form_subsection_ADT(j,"form"){
+
+        for(const auto & [k, v]: section){
+            cout << k << "--" << section[k] << endl;
+        }
+    }
 };
 
 class form_parser{
