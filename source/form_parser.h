@@ -24,20 +24,36 @@ protected:
             //section["form.name"].value.type
             switch (v.type())
             {
-                case json::value_t::null:
-                    cout << "null" << endl;
-                case json::value_t::object:
-                    cout << "object" << endl;
-                case json::value_t::array:
-                    cout << "array" << endl;
                 case json::value_t::string:
                     cout << "string" << endl;
+                    break;
+                case json::value_t::number_integer:
+                    cout << "integer" << endl;
+                    break;
+                case json::value_t::number_unsigned:
+                    cout << "unsigned" << endl;
+                    break;
+                case json::value_t::number_float:
+                    cout << "float" << endl;
+                    break;
+                case json::value_t::null:
+                    cout << "null" << endl;
+                    break;
+                case json::value_t::object:
+                    cout << "object" << endl;
+                    break;
+                case json::value_t::array:
+                    cout << "array" << endl;
+                    break;
                 case json::value_t::boolean:
                     cout << "boolean" << endl;
+                    break;
                 case json::value_t::discarded:
                     cout << "discarded" << endl;
+                    break;
                 default:
                     cout << "number" << endl;
+                    break;
             }
         }
     }
