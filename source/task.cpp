@@ -11,7 +11,7 @@ task::~task(){
   cout << "~destroying " << this->id <<endl;
 }
 
-void task::remove(map<char,string>params){
+void task::remove(map<char,string>params, T & instance){
   auto it = params.end();
 
   it = params.find('i');
@@ -23,25 +23,25 @@ void task::remove(map<char,string>params){
   }
 }
 
-void task::update(map<char,string>params){
-  auto it = params.end();
+// void task::update(map<char,string>params){
+//   auto it = params.end();
 
-  it = params.find('i');
-  if(it != params.end()){
-    auto & t = env::tasker[it->second];
+//   it = params.find('i');
+//   if(it != params.end()){
+//     auto & t = env::tasker[it->second];
 
-    for(auto e : params){
-      auto  et = setters.end();
-      et = setters.find(e.first);
-      if(et != setters.end()){
-        setters[e.first](*t,e.second);
-      }
-    }
-  }else{
-    cout << "please provide 'i' argument";
-    return;
-  }
-}
+//     for(auto e : params){
+//       auto  et = setters.end();
+//       et = setters.find(e.first);
+//       if(et != setters.end()){
+//         setters[e.first](*t,e.second);
+//       }
+//     }
+//   }else{
+//     cout << "please provide 'i' argument";
+//     return;
+//   }
+// }
 
 void task::print_remain(){
   double remain_sec = difftime(this->dateUTC ,time(nullptr) );

@@ -32,8 +32,15 @@ public:
             }
         }
     };
-    virtual void remove(map<char,string>params){ };
-    virtual void update(map<char,string>params){ };
+    virtual void remove(map<char,string>params, T & instance){ };
+    virtual void update(map<char,string>params, T & instance){
+        for(auto e : params){
+        auto  et = setters.end();
+        et = setters.find(e.first);
+        if(et != setters.end()){
+            setters[e.first](*instance,e.second);
+        }
+    };
 };
 
 #endif //CRUD_H

@@ -45,11 +45,29 @@ private:
         env::tasker[task_->id] = move(task_);
     }
     },
-    {"remove",[this](map<char,string>s){
-        this->remove(s);
+    {"remove",[this](map<char,string>params){
+      auto it = params.end();
+
+      it = params.find('i');
+      if(it != params.end()){
+        env::tasker.erase(it->second);
+      }else{
+        cout << "please provide 'i' argument";
+        return;
+      }
     }},
-    {"update",[this](map<char,string> s){
-        this->update(s);
+    {"update",[this](map<char,string> params){
+        
+      auto it = params.end();
+
+      it = params.find('i');
+      if(it != params.end()){
+        auto & instance = env::tasker[it->second];
+        this->update(params, *instance);
+      }else{
+        cout << "please provide 'i' argument";
+        return;
+      }
     }},
     {"list",[&](map<char,string> s){
         if(env::tasker.size()==0) cout << "Empty list, no task provided" << endl;
@@ -78,7 +96,7 @@ public:
     void set_user(string user_){m_user = user_;}
 
     void remove(map<char,string>params);
-    void update(map<char,string>params);
+    //void update(map<char,string>params);
 
     void print_remain();
 
