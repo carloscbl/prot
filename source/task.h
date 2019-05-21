@@ -10,7 +10,7 @@
 #include <memory>
 #include <ctime>
 #include <cmath>
-#include "iactionable.h"
+#include "CRUD_actionable.h"
 
 using namespace std;
 
@@ -18,17 +18,15 @@ class task;
 namespace env{
   static map<string,unique_ptr< task>> tasker;
 }
-class task : public iactionable{
+class task : public CRUD_actionable<task>{
 private:
   string name = "";
   string description;
   string stamp;
   string /*user*/ m_user;
   time_t dateUTC;
-  using map_f = map<char,function<void(task&,string)> >;
-  using subaction_map = map<string,function<void(map<char,string>)>> ;
 
-  map_f setters{
+  map_local_functions setters{
       {'n',&task::set_name},
       {'d',&task::set_description},
       {'e',&task::set_user},
@@ -40,7 +38,7 @@ private:
       // {"T",&task::set_stamp},//unixTimeStamp
   };
 
-  subaction_map tasks_map{
+  CRUD_plus_actions_map tasks_map{
     {"add",[](map<char,string>s){
         unique_ptr<task> task_ = make_unique<task>();
         task_->add(s);
@@ -78,9 +76,7 @@ public:
     void set_description(string description_){description = description_;}
     void set_stamp( string stamp_){stamp = stamp_;}
     void set_user(string user_){m_user = user_;}
-    void add(map<char,string>params);
 
-        //now we need to interpret every param and dispatch
     void remove(map<char,string>params);
     void update(map<char,string>params);
 

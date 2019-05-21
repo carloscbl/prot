@@ -8,7 +8,7 @@ form::form(const string & path):form(){
   pipelined_json_data_setter(path);
 }
 
-form::form(){
+form::form():CRUD_actionable(form_map,setters){
   static int acummulator = 0;
   id = "form" + to_string(acummulator++);
 }
@@ -47,20 +47,6 @@ void form::set_path(const string & s){
 void form::pipelined_json_data_setter(const string & json_path){
   json_reader = make_unique<form_reader>(json_path);
   json_parser = make_unique<form_parser>(json_reader->get_json());
-}
-
-void form::add(map<char,string> params){
-  if(params.size() == 0){
-    cout << "nothing done" << endl;
-    return;
-  }
-  auto it = setters.end();
-  for(auto e: params){
-    it = setters.find(e.first);
-    if(it != setters.end()){
-        setters[e.first](*this,e.second);
-    }
-  }
 }
 
 void test_type_container(){

@@ -2,7 +2,7 @@
 
 using namespace std;
 
-task::task():dateUTC(time(nullptr)){
+task::task():CRUD_actionable(this->tasks_map,setters),dateUTC(time(nullptr)){
   static int acummulator = 0;
   id = "task" + to_string(acummulator++);
 }
@@ -11,16 +11,6 @@ task::~task(){
   cout << "~destroying " << this->id <<endl;
 }
 
-void task::add(map<char,string>params){
-  if(params.size() == 0) cout << "nothing done" << endl;
-  auto it = setters.end();
-  for(auto e: params){
-    it = setters.find(e.first);
-    if(it != setters.end()){
-        setters[e.first](*this,e.second);
-    }
-  }
-}
 void task::remove(map<char,string>params){
   auto it = params.end();
 
