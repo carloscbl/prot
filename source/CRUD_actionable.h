@@ -2,12 +2,13 @@
 // Created by carlos on 2/03/19.
 //
 
-#ifndef CRUD_H
-#define CRUD_H
+#ifndef CRUD_ACTIONABLE_H
+#define CRUD_ACTIONABLE_H
 #include <iostream>
 #include "iactionable.h"
 
 using namespace std;
+
 template<typename T>
 class CRUD_actionable : public iactionable{
 protected:
@@ -35,12 +36,13 @@ public:
     virtual void remove(map<char,string>params, T & instance){ };
     virtual void update(map<char,string>params, T & instance){
         for(auto e : params){
-        auto  et = setters.end();
-        et = setters.find(e.first);
-        if(et != setters.end()){
-            setters[e.first](*instance,e.second);
+            auto  et = setters.end();
+            et = setters.find(e.first);
+            if(et != setters.end()){
+                setters[e.first](instance,e.second);
+            }
         }
     };
 };
 
-#endif //CRUD_H
+#endif //CRUD_ACTIONABLE_H

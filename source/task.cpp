@@ -11,7 +11,7 @@ task::~task(){
   cout << "~destroying " << this->id <<endl;
 }
 
-void task::remove(map<char,string>params, T & instance){
+void task::remove(map<char,string>params, task & instance){
   auto it = params.end();
 
   it = params.find('i');

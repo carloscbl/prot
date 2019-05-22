@@ -15,9 +15,11 @@
 using namespace std;
 
 class task;
+
 namespace env{
   static map<string,unique_ptr< task>> tasker;
 }
+
 class task : public CRUD_actionable<task>{
 private:
   string name = "";
@@ -62,7 +64,7 @@ private:
 
       it = params.find('i');
       if(it != params.end()){
-        auto & instance = env::tasker[it->second];
+        auto instance = env::tasker[it->second].get();
         this->update(params, *instance);
       }else{
         cout << "please provide 'i' argument";
@@ -95,7 +97,7 @@ public:
     void set_stamp( string stamp_){stamp = stamp_;}
     void set_user(string user_){m_user = user_;}
 
-    void remove(map<char,string>params);
+    void remove(map<char,string>params, task & instance);
     //void update(map<char,string>params);
 
     void print_remain();
