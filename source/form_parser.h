@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include <any>
+#include <memory>
 #include "json.hpp"
 
 using namespace std;
@@ -70,13 +71,7 @@ public:
 class form_parser{
 private:
     const json & j;
-    //map<string> taskstories;
-    form_metadata fm;
-    //map<string,string> form_metadata;
-    map<string,string> expressions;
-    map<string,string> variables;
-    map<string,string> configurables;
-    map<string,string> questions;
+    map<string,unique_ptr<form_subsection_ADT>> subsections;
 public:
     form_parser(const json & j);
 
