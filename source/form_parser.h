@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include <any>
+#include <array>
 #include <memory>
 #include "json.hpp"
 
@@ -11,15 +12,17 @@ using namespace std;
 using json = nlohmann::json;
 
 class form_subsection_ADT{
-protected:
+public:
     string section_name;
     form_subsection_ADT(const json & j,string sec_name):section_name(sec_name){
         const auto & section_json = j[section_name];
         for(auto & [key, value]: section_json.items()){
             section[key] = value;
         }
+        print_section();
     }
     void print_section(){
+        cout << "Section: " << this->section_name << endl;
         for(const auto & [k, v]: section){
             cout << k << "--" << v << endl;
             //section["form.name"].value.type
@@ -61,20 +64,17 @@ protected:
     map<string,json> section;
 };
 
-class form_metadata : public form_subsection_ADT{
-public:
-    form_metadata(const json & j):form_subsection_ADT(j,"form"){
-        print_section();
-    }
-};
 
 class form_parser{
 private:
     const json & j;
     map<string,unique_ptr<form_subsection_ADT>> subsections;
+    map<string,unique_ptr<form_subsection_ADT>> discover;
 public:
     form_parser(const json & j);
-
+    const array<string,5> subsection_names{
+        "form","expressions","variables", "configurables", "questions"
+    };
 
 };
 
