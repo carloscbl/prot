@@ -64,6 +64,34 @@ public:
     map<string,json> section;
 };
 
+class answer_branches{
+    map<string,int> branch_name_kind;
+    map<string, kind_branch> kind_branch{
+        {"range", make_range},
+        {"predefined_boolean_yes_no_affirmative_yes", make_predef_bool},
+    }
+};
+
+class taskstory{
+    string command;
+    string name;
+};
+
+class taskstorys{
+    int branch_id;
+    vector<taskstory> taskstory_;
+};
+
+class questions{
+    int id;
+    string question;
+    string answer_tag;
+    string type_user_input;
+    vector<string> mode;
+    answer_branches branches;
+    map<int,taskstory> taskstorys;
+    questions(const json & j);
+};
 
 class form_parser{
 private:
@@ -75,7 +103,6 @@ public:
     const array<string,5> subsection_names{
         "form","expressions","variables", "configurables", "questions"
     };
-
 };
 
 #endif //FORM_PARSER_H
