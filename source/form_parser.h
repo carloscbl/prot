@@ -65,8 +65,20 @@ public:
 };
 
 class answer_branches{
+    answer_branches(const json & j, string answer){
+        for (auto & [key, value]: j.items())
+        {
+            if (kind_branch_map.end() != kind_branch_map.find(key))
+            {
+                //This performs the call strategy for this branch
+                kind_branch_map[key](j[key], answer);
+            }
+        }
+        
+        
+    }
     map<string,int> branch_name_kind;
-    map<string, kind_branch> kind_branch{
+    map<string, kind_branch> kind_branch_map{
         {"range", make_range},
         {"predefined_boolean_yes_no_affirmative_yes", make_predef_bool},
     }
