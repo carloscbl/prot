@@ -68,10 +68,13 @@ class answer_branches{
     answer_branches(const json & j, string answer){
         for (auto & [key, value]: j.items())
         {
+            //in case of be a predefined structure of answer
             if (kind_branch_map.end() != kind_branch_map.find(key))
             {
                 //This performs the call strategy for this branch
                 kind_branch_map[key](j[key], answer);
+            }else{// in case it is not a mapped but a json mapped
+                
             }
         }
         
