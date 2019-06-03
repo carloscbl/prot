@@ -64,27 +64,33 @@ public:
     map<string,json> section;
 };
 
+
 class answer_branches{
-    answer_branches(const json & j, string answer){
-        for (auto & [key, value]: j.items())
-        {
-            //in case of be a predefined structure of answer
-            if (kind_branch_map.end() != kind_branch_map.find(key))
-            {
-                //This performs the call strategy for this branch
-                kind_branch_map[key](j[key], answer);
-            }else{// in case it is not a mapped but a json mapped
-                
-            }
-        }
-        
+public:
+    using answer_t = string;
+    using answer_type_t = string;
+    using function_signature_t = function<int(answer_t, answer_type_t)>;
+
+    struct kind_branch{
+        answer_type_t answer_type;
+        function_signature_t func;
+    };
+
+    answer_branches(const json & j, string answer):{
+
+    }
+    void enroute(){
         
     }
-    map<string,int> branch_name_kind;
-    map<string, kind_branch> kind_branch_map{
-        {"range", make_range},
-        {"predefined_boolean_yes_no_affirmative_yes", make_predef_bool},
+    static int plzhdr(string answer, string answer_type){
+        return 0;
     }
+
+    //C++17, with inline you can use header :O
+    inline const static map<string_view, kind_branch> kind_branch_map{
+        {"range",kind_branch{"INTEGER",plzhdr}},
+        {"predefined_boolean_yes_no_affirmative_yes", kind_branch{"BOOLEAN",plzhdr}},
+    };
 };
 
 class taskstory{
