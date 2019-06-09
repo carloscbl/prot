@@ -15,5 +15,6 @@ form_parser::form_parser(const json & j):j(j){
         }
         discover[k] = make_unique<form_subsection_ADT>(j,k);
     }
-    answer_branches<string> branches(j,"Lemonade");
+    form_traverse();
+    //answer_branches<string> branches(j,"Lemonade");
 }
