@@ -127,7 +127,7 @@ private:
             case json::value_t::number_integer:
                 cout << "integer" << endl;
                 
-                //return answer_branches(v,v.value.get<int>() ).get_next_branch();
+                return answer_branches(v,v.get<int>() ).get_next_branch();
                 break;
             case json::value_t::number_unsigned:
                 cout << "unsigned" << endl;
