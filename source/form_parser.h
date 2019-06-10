@@ -60,30 +60,11 @@ private:
         {"predefined_boolean_yes_no_affirmative_yes", kind_branch_t{"BOOLEAN",plzhdr}},
     };
 
-    void enroute(const json & j){
-        //for mapped strategies
-        for(const auto & [k,v] : j.items()){
-            //We test for every structure in order
-            const auto & it = kind_branch_t_map.find(k);//matching json structure
-            const auto & opt = it->second.func(this->answer,it->second.answer_type);
-            if(opt.has_value()){
-                next_branch_result = opt;
-                break;
-            }
-        }
-        const auto & modulated_answer = answer_transformation_strategy(answer);
-        //Match custom selectors
-        if(j.find(modulated_answer) != j.end()){
-            //"Yes":2, "YEEEESSS":2 , "No":5
-            next_branch_result = j[modulated_answer];
-        }else{
-            next_branch_result = std::nullopt;
-        }
-    }
+    void enroute(const json & j);
 
 public:
     static const int default_brach_error = -9999;
-    answer_branches(const json & j,const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr)
+    answer_branches(const json & j, const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr)
     :answer(answer)
     {
         if (answer_transformation_strategy_ != nullptr)
