@@ -42,12 +42,18 @@ private:
     {"remove", [](map<char, string> s) {}},
     {"update", [](map<char, string> s) {}},
     {"compute", [](map<char, string> s) {}},
+    {"list", [](map<char, string> s) {
+      for(const auto & form : env::forms){
+        cout << form.second->name << endl;
+      }
+    }},
   };
 
   //Modulator params like -h -n -P
   map_local_functions setters{ 
     {'P', &form::set_path},
   };
+  
   void set_path(const string & s);
   void pipelined_json_data_setter(const string & json_path);
 public:
