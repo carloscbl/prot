@@ -104,11 +104,13 @@ private:
     
     void form_traverse(){
         int id = get_next_id();
+        cout << id << endl;
         while( is_traversable_id(id) )
         {
+            cout << id << endl;
             const auto & question = find_questions_by_id(id);
             if(question.has_value()){
-                question.value();
+                cout << question.value()["question"].get<string>() << endl;
             }
             id = get_next_id();
         }

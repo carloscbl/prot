@@ -64,6 +64,7 @@ int form_parser::get_next_id(){
     int next = error_;
     if(this->current_id == static_cast<int>(e_branches::START)){
         next = static_cast<int>(e_branches::FIRST);
+        return next;
     }
     for( auto [k,v] : subsections["questions"]->section ){
         next = enroute_json_type(v);
