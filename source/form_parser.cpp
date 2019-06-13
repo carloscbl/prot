@@ -85,7 +85,7 @@ optional<json> form_parser::find_questions_by_id(int id) noexcept{
 }
         
 
-template<typename T>answer_branches<T>::answer_branches(const json & j, const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr)
+template<typename T>answer_branches<T>::answer_branches(const json & j, const T & answer, function<T(T)> answer_transformation_strategy_)
 :answer(answer)
 {
     if (answer_transformation_strategy_ != nullptr)

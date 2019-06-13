@@ -10,7 +10,6 @@
 #include "json.hpp"
 #include "user.h"
 
-namespace env::form::constrains{
     enum class branches_ids : int
     {
         START = 0,
@@ -18,12 +17,13 @@ namespace env::form::constrains{
         END = -1,
         ERROR_JSON = -9999,
     };
-};
+// namespace form::constrains{
+// };
 
 using namespace std;
 using json = nlohmann::json;
 using enum_of_json_t = nlohmann::detail::value_t;
-using e_branches = env::form::constrains::branches_ids;
+using e_branches = branches_ids;
 
 
 class form_subsection_ADT{
@@ -63,7 +63,7 @@ private:
 public:
     static const int default_brach_error = static_cast<int>(e_branches::ERROR_JSON);
     answer_branches(const json & j, const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
-    inline int get_next_branch(){return next_branch_result.value_or(default_brach_error);}
+    int get_next_branch(){return next_branch_result.value_or(static_cast<int>(e_branches::ERROR_JSON));}
     void print_out();
 };
 
@@ -140,6 +140,9 @@ public:
     };
     const string get_name(){
         return subsections["form"]->section["form.name"].get<string>();
+    }
+    void test_form_run(){
+        form_pipeline();
     }
     void form_run(user user){
         //Good idea to thread pool this call 

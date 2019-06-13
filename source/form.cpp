@@ -48,6 +48,7 @@ void form::pipelined_json_data_setter(const string & json_path){
   json_reader = make_unique<form_reader>(json_path);
   json_parser = make_unique<form_parser>(json_reader->get_json());
   this->name = json_parser->get_name();
+  json_parser->test_form_run();
 }
 
 void test_type_container(){
