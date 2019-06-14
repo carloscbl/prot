@@ -96,25 +96,18 @@ private:
     const json & j;
     map<string,unique_ptr<form_subsection_ADT>> subsections;
     map<string,unique_ptr<form_subsection_ADT>> discover;
-    int current_id = 0;
-    int enroute_json_type(const json & v);
-    int get_next_id();
+    int current_id = static_cast<int>(e_branches::FIRST);
+    string current_answer;
+    int next_branch_id = static_cast<int>(e_branches::START);
+    int enroute_json_type(const json & question_obj, const string & answer);
+    void get_next(const string & answer);
 
     optional<json> find_questions_by_id(int id) noexcept;
     
-    void form_traverse(){
-        int id = get_next_id();
+    void form_traverse(const string & answer){
+        int id = current_id;
         cout << id << endl;
-        while( is_traversable_id(id) )
-        {
-            cout << id << endl;
-            const auto & question = find_questions_by_id(id);
-            if(question.has_value()){
-                cout << question.value()["question"].get<string>() << endl;
-            }
-            id = get_next_id();
-        }
-        //Done
+        get_next(answer);
     }
 
     inline bool is_traversable_id(int id){
@@ -128,9 +121,9 @@ private:
 
     void form_ready(){}
 
-    void form_pipeline(){
+    void form_pipeline(const string & answer){
         form_ready();
-        form_traverse();
+        form_traverse(answer);
         form_publisher_vars();
         form_command_tasks();
     }
@@ -144,12 +137,18 @@ public:
         return subsections["form"]->section["form.name"].get<string>();
     }
     void test_form_run(){
-        form_pipeline();
+        //Cicle different answers in order
+
+        form_pipeline("YES");
     }
     void form_run(user user){
         //Good idea to thread pool this call 
         //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
-        form_pipeline();
+        string answer = fetch_and_send_out_first_answer();
+        form_pipeline(answer);
+    }
+    string fetch_and_send_out_first_answer(){
+        return "";
     }
 };
 

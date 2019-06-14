@@ -1,5 +1,7 @@
+#include <typeindex>
+#include <typeinfo>
 #include "form_parser.h"
-
+#include "type_container.h"
 
 form_parser::form_parser(const json & j):j(j){
 
@@ -15,65 +17,45 @@ form_parser::form_parser(const json & j):j(j){
         }
         discover[k] = make_unique<form_subsection_ADT>(j,k);
     }
-    form_traverse();
+    //form_traverse();
     //answer_branches<string> branches(j,"Lemonade");
 }
 
-int form_parser::enroute_json_type(const json & v){
-    switch (v.type())
-    {
-        case json::value_t::string:
-            cout << "string" << endl;
-            return answer_branches(v,v.get<string>()).get_next_branch();
-            break;
-        case json::value_t::number_integer:
-            cout << "integer" << endl;
-            
-            return answer_branches(v,v.get<int>() ).get_next_branch();
-            break;
-        case json::value_t::number_unsigned:
-            cout << "unsigned" << endl;
-            break;
-        case json::value_t::number_float:
-            cout << "float" << endl;
-            break;
-        case json::value_t::null:
-            cout << "null" << endl;
-            break;
-        case json::value_t::object:
-            cout << "object" << endl;
-            break;
-        case json::value_t::array:
-            cout << "array" << endl;
-            break;
-        case json::value_t::boolean:
-            cout << "boolean" << endl;
-            break;
-        case json::value_t::discarded:
-            cout << "discarded" << endl;
-            break;
-        default:
-            cout << "number" << endl;
-            break;
+template <typename T>
+int make_get_next_branch(const json & question_obj, any arg ){
+    return answer_branches(question_obj, any_cast<T>( arg ) ).get_next_branch();
+}
+
+std::unordered_map<std::type_index, function<int(const json &,any)>> type_names{
+    {std::type_index(typeid(int)),make_get_next_branch<int>},
+    {std::type_index(typeid(string)), make_get_next_branch<string> },
+    {std::type_index(typeid(double)),make_get_next_branch<double>},
+    {std::type_index(typeid(float)),make_get_next_branch<float>},
+};
+
+int form_parser::enroute_json_type(const json & question_obj, const string & answer){
+
+    string expected_answer_type = question_obj["type_user_input"].get<string>();
+    std::any converted_answer;
+    auto conversor = conversors_map.find(expected_answer_type);
+    if(conversor != conversors_map.end()){
+        converted_answer = conversor->second(answer);
+        auto func = type_names[std::type_index(converted_answer.type())];
+        return func(question_obj,converted_answer);
     }
     return 0;
 }
 
-int form_parser::get_next_id(){
-    const auto & error_ = static_cast<int>(e_branches::ERROR_JSON);
-    int next = error_;
-    if(this->current_id == static_cast<int>(e_branches::START)){
-        next = static_cast<int>(e_branches::FIRST);
-        return next;
+void form_parser::get_next(const string & answer){
+    //const auto & error_ = static_cast<int>(e_branches::ERROR_JSON);
+    json question;
+    if(this->next_branch_id == static_cast<int>(e_branches::START)){
+        //Means is first time
+        question = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value();
+    }else{
+        question = find_questions_by_id(this->next_branch_id).value();
     }
-    for( auto [k,v] : subsections["questions"]->section ){
-        next = enroute_json_type(v);
-        if(next != error_){
-            //Means we got a valid routing, so lets move on
-            break;
-        }
-    }
-    return next;
+    enroute_json_type(question,answer);//v is question{} object
 }
 
 optional<json> form_parser::find_questions_by_id(int id) noexcept{
@@ -101,14 +83,12 @@ form_subsection_ADT::form_subsection_ADT(const json & j,string sec_name):section
     for(auto & [key, value]: section_json.items()){
         section[key] = value;
     }
-    //print_section();
 }
 
 void form_subsection_ADT::print_section(){
     cout << "Section: " << this->section_name << endl;
     for(const auto & [k, v]: section){
         cout << k << "--" << v << endl;
-        //section["form.name"].value.type
     }
 }
 
@@ -125,7 +105,7 @@ template <>void answer_branches<string>::enroute(const json & j){
     for(const auto & [k,v] : j.items()){
         //We test for every structure in order
         const auto & it = kind_branch_t_map.find(k);//matching json structure
-        const auto & opt = it->second.func(this->answer,it->second.answer_type);
+        const auto & opt = it->second.func(this->answer,it->second.answer_type);//CRASH
         if(opt.has_value()){
             next_branch_result = opt;
             break;

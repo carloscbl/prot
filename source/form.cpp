@@ -1,6 +1,5 @@
 #include "form.h"
 #include <iostream>
-#include "type_container.h"
 using namespace std;
 
 
@@ -50,12 +49,3 @@ void form::pipelined_json_data_setter(const string & json_path){
   this->name = json_parser->get_name();
   json_parser->test_form_run();
 }
-
-void test_type_container(){
-  type_container<int32_t> thre_two ("INTEGER","32");
-  cout << thre_two.value << endl;
-  type_container<string> str ("STRING","Lemons are my favourite");
-  cout << str.value << endl;
-}
-
-
