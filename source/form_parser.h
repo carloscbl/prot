@@ -50,19 +50,19 @@ private:
     optional<int> next_branch_result = std::nullopt;
     const T answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
-    static int plzhdr(T answer, string answer_type){return 0;}
+
 
     //C++17, with inline you can use header :O
-    inline const static map<string_view, kind_branch_t> kind_branch_t_map{
-        {"range",kind_branch_t{"INTEGER",plzhdr}},
-        {"predefined_boolean_yes_no_affirmative_yes", kind_branch_t{"BOOLEAN",plzhdr}},
-    };
+    // inline const static map<string_view, kind_branch_t> kind_branch_t_map{
+    //     {"range",kind_branch_t{"INTEGER",plzhdr}},
+    //     {"predefined_boolean_yes_no_affirmative_yes", kind_branch_t{"BOOLEAN",plzhdr}},
+    // };
 
     void enroute(const json & j);
 
 public:
     static const int default_brach_error = static_cast<int>(e_branches::ERROR_JSON);
-    answer_branches(const json & j, const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
+    answer_branches(const json & question_obj, const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
     int get_next_branch(){return next_branch_result.value_or(static_cast<int>(e_branches::ERROR_JSON));}
     void print_out();
 };
@@ -139,6 +139,7 @@ public:
     void test_form_run(){
         //Cicle different answers in order
 
+        form_pipeline("YES");
         form_pipeline("YES");
     }
     void form_run(user user){

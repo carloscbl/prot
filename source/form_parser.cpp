@@ -55,7 +55,7 @@ void form_parser::get_next(const string & answer){
     }else{
         question = find_questions_by_id(this->next_branch_id).value();
     }
-    enroute_json_type(question,answer);//v is question{} object
+    this->next_branch_id = enroute_json_type(question,answer);//v is question{} object
 }
 
 optional<json> form_parser::find_questions_by_id(int id) noexcept{
@@ -68,14 +68,14 @@ optional<json> form_parser::find_questions_by_id(int id) noexcept{
 }
         
 
-template<typename T>answer_branches<T>::answer_branches(const json & j, const T & answer, function<T(T)> answer_transformation_strategy_)
+template<typename T>answer_branches<T>::answer_branches(const json & question_obj, const T & answer, function<T(T)> answer_transformation_strategy_)
 :answer(answer)
 {
     if (answer_transformation_strategy_ != nullptr)
     {
         this->answer_transformation_strategy = answer_transformation_strategy_;
     }
-    enroute(j);
+    enroute(question_obj["answers_branches"]);
 }
 
 form_subsection_ADT::form_subsection_ADT(const json & j,string sec_name):section_name(sec_name){
@@ -105,12 +105,15 @@ template <>void answer_branches<string>::enroute(const json & j){
     for(const auto & [k,v] : j.items()){
         //We test for every structure in order
         const auto & it = kind_branch_t_map.find(k);//matching json structure
+        if(it == kind_branch_t_map.end()) return;
+        
         const auto & opt = it->second.func(this->answer,it->second.answer_type);//CRASH
         if(opt.has_value()){
             next_branch_result = opt;
-            break;
+            return;
         }
     }
+    
     const auto & modulated_answer = answer_transformation_strategy(answer);
     //Match custom selectors
     if(j.find(modulated_answer) != j.end()){
