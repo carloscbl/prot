@@ -44,38 +44,40 @@
         "if_error_repeat",
         "ignorecase"
       ],
-      "answers_branches": [
-        {
-          "range": {
-            "values": {
-              ">": 30,
-              "<": 1000
-            },
-            "if_branch": 3,
-            "id": 1
+      "answers_branches": {
+        "ranges":[
+          {
+            "range": {
+              "values": {
+                ">": 30,
+                "<": 1000
+              },
+              "if_branch": 3,
+              "id": 1
+            }
+          },
+          {
+            "range": {
+              "values": {
+                ">": 0,
+                "<": 30
+              },
+              "if_branch": 0,
+              "id": 2
+            }
+          },
+          {
+            "range": {
+              "values": {
+                "<": 0,
+                ">": 1000
+              },
+              "if_branch": -1,
+              "id": 3
+            }
           }
-        },
-        {
-          "range": {
-            "values": {
-              ">": 0,
-              "<": 30
-            },
-            "if_branch": 0,
-            "id": 2
-          }
-        },
-        {
-          "range": {
-            "values": {
-              "<": 0,
-              ">": 1000
-            },
-            "if_branch": -1,
-            "id": 3
-          }
-        }
-      ],
+        ]
+      },
       "taskstorys": [
         {
           "branch_id": 2,

@@ -135,7 +135,13 @@ template<typename T>void answer_branches<T>::enroute(const json & j){
     for(const auto & [k,v] : j.items()){
         //We test for every structure in order
         const auto & it = kind_branch_t_map.find(k);//matching json structure
-        const auto & opt = it->second(v,any(this->answer));
+        if(it == kind_branch_t_map.end()){
+            //HERE THE PROBLEM IS THAT THE JSON IS BADLY DEFINED, SO NOW CHANGED I NEED TO RETHINK THE WHOLE THING
+            cout << j.dump(4) << endl;
+            cout << "Not implemented or not finded implementation" << endl;
+            return;
+        }
+        const auto & opt = it->second(v,any(this->answer));//Crash :(
         if(opt.has_value()){
             next_branch_result = opt;
             break;
