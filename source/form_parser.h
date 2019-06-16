@@ -6,7 +6,9 @@
 #include <any>
 #include <array>
 #include <memory>
+#include <boost/algorithm/string.hpp>
 #include <optional>
+#include <unordered_set>
 #include "json.hpp"
 #include "user.h"
 
@@ -40,29 +42,52 @@ class answer_branches{
 private:
     using answer_t = T;
     using answer_type_t = string;
-    using function_signature_t = function<optional<int>(answer_t, answer_type_t)>;
 
-    struct kind_branch_t{
-        answer_type_t answer_type;
-        function_signature_t func;
-    };
+    // template 
+    // struct kind_branch_t{
+    //     answer_type_t answer_type;
+    //     function<optional<int>(any)> func;
+    // };
 
     optional<int> next_branch_result = std::nullopt;
-    const T answer;
+    const json & question_obj;
+    const any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
 
     //C++17, with inline you can use header :O
-    // inline const static map<string_view, kind_branch_t> kind_branch_t_map{
-    //     {"range",kind_branch_t{"INTEGER",plzhdr}},
-    //     {"predefined_boolean_yes_no_affirmative_yes", kind_branch_t{"BOOLEAN",plzhdr}},
-    // };
+    const map<string_view, function<optional<int>(const json & current_selector,any)>> kind_branch_t_map{
+        {"range",[&](const json & j,any s){ return range_st(j,any_cast<int>(s));}},
+        {"predefined_boolean_yes_no_affirmative_yes", 
+            [&](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
+    };
+
+    optional<int> range_st(const json & j,int arg){
+        cout << j.dump(4) << endl;
+        return 72;
+    }
+
+    optional<int> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
+        cout << j.dump(4) << endl;
+        const static unordered_set<string> possible_affirmative{
+            "yes","true", "good","fine","affirmative"
+        };
+        string lowered = arg;
+        boost::algorithm::to_lower(lowered);
+        if( possible_affirmative.find(lowered) != possible_affirmative.end()){
+            return j["true"].get<int>();
+        }else if(j.contains("else")){
+            return j["else"].get<int>();
+        }else{
+            return nullopt;
+        }
+    }
 
     void enroute(const json & j);
 
 public:
     static const int default_brach_error = static_cast<int>(e_branches::ERROR_JSON);
-    answer_branches(const json & question_obj, const T & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
+    answer_branches(const json & question_obj, const any & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
     int get_next_branch(){return next_branch_result.value_or(static_cast<int>(e_branches::ERROR_JSON));}
     void print_out();
 };
@@ -140,7 +165,7 @@ public:
         //Cicle different answers in order
 
         form_pipeline("YES");
-        form_pipeline("YES");
+        form_pipeline("35");
     }
     void form_run(user user){
         //Good idea to thread pool this call 

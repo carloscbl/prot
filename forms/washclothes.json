@@ -38,7 +38,7 @@
       "id": 72,
       "question": "How many Kilograms have your washer capacity?",
       "answer_tag": "kg_capacity",
-      "type": "INTEGER",
+      "type_user_input": "INTEGER",
       "mode": [
         "sequential",
         "if_error_repeat",
@@ -100,7 +100,7 @@
       "id": 3,
       "question": "Your washer is a industrial one?",
       "answer_tag": "industrial",
-      "type": "BOOL",
+      "type_user_input": "BOOL",
       "mode": [
         "sequential",
         "once"
