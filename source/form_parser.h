@@ -54,17 +54,19 @@ private:
     const any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
-
-    //C++17, with inline you can use header :O
-    const map<string_view, function<optional<int>(const json & current_selector,any)>> kind_branch_t_map{
-        {"range",[&](const json & j,any s){ return range_st(j,any_cast<int>(s));}},
-        {"predefined_boolean_yes_no_affirmative_yes", 
-            [&](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
-    };
-
-    optional<int> range_st(const json & j,int arg){
-        cout << j.dump(4) << endl;
-        return 72;
+    optional<int> ranges(const json & ranges_array,int arg){
+        //cout << ranges_array.dump(4) << endl;
+        for(const auto & [k,v] : ranges_array.items()){
+            cout << v["range"].dump(4) << endl;
+            //Match value to get the "if_branch"
+            const auto & range = v["range"];
+            const auto & values = range["values"];
+            if(arg < values["<"] && arg > values[">"]){
+                //Meet the range!
+                return range["if_branch"];
+            }
+        }
+        return nullopt;
     }
 
     optional<int> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
@@ -82,6 +84,14 @@ private:
             return nullopt;
         }
     }
+    //C++17, with inline you can use header :O
+    const map<string_view, function<optional<int>(const json & current_selector,any)>> kind_branch_t_map{
+        {"ranges",[this](const json & j,any s){ return ranges(j,any_cast<int>(s));}},
+        {"predefined_boolean_yes_no_affirmative_yes", 
+            [this](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
+    };
+
+
 
     void enroute(const json & j);
 
@@ -165,7 +175,7 @@ public:
         //Cicle different answers in order
 
         form_pipeline("YES");
-        form_pipeline("35");
+        form_pipeline("25");
     }
     void form_run(user user){
         //Good idea to thread pool this call 
