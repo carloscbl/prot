@@ -33,7 +33,6 @@ std::unordered_map<std::type_index, function<int(const json &,any)>> type_names{
 
 int form_parser::enroute_json_type(const json & question_obj, const string & answer){
     
-    //cout << question_obj.dump(4) << endl;
     string expected_answer_type = question_obj["type_user_input"].get<string>();
     std::any converted_answer;
     auto conversor = conversors_map.find(expected_answer_type);
@@ -45,8 +44,7 @@ int form_parser::enroute_json_type(const json & question_obj, const string & ans
     return 0;
 }
 
-void form_parser::get_next(const string & answer){
-    //const auto & error_ = static_cast<int>(e_branches::ERROR_JSON);
+string form_parser::get_next(const string & answer){
     json question;
     if(this->next_branch_id == static_cast<int>(e_branches::START)){
         //Means is first time
@@ -54,8 +52,14 @@ void form_parser::get_next(const string & answer){
     }else{
         question = find_questions_by_id(this->next_branch_id).value();
     }
-    //cout << question.dump(4) << endl;
     this->next_branch_id = enroute_json_type(question,answer);//v is question{} object
+
+    auto nextQ = find_questions_by_id(this->next_branch_id);
+    if(nextQ.has_value()){
+        return nextQ.value()["question"].get<string>();
+    }else{
+        return "END";
+    }
 }
 
 optional<json> form_parser::find_questions_by_id(int id) noexcept{
@@ -66,12 +70,10 @@ optional<json> form_parser::find_questions_by_id(int id) noexcept{
     }
     return std::nullopt;
 }
-        
 
 template<typename T>answer_branches<T>::answer_branches(const json & question_obj, const any & answer, function<T(T)> answer_transformation_strategy_)
 :question_obj(question_obj),
 answer(answer)
-
 {
     if (answer_transformation_strategy_ != nullptr)
     {
@@ -130,13 +132,14 @@ template <>void answer_branches<string>::enroute(const json & j){
         next_branch_result = std::nullopt;
     }
 }
+
 template<typename T>void answer_branches<T>::enroute(const json & j){
     //for mapped strategies
     for(const auto & [k,v] : j.items()){
         //We test for every structure in order
         const auto & it = kind_branch_t_map.find(k);//matching json structure
         if(it == kind_branch_t_map.end()){
-            cout << j.dump(4) << endl;
+            //cout << j.dump(4) << endl;
             cout << "Not implemented or not finded implementation" << endl;
             return;
         }

@@ -12,17 +12,15 @@
 #include "json.hpp"
 #include "user.h"
 
-    enum class branches_ids : int
-    {
-        START = 0,
-        FIRST = 1,
-        END = -1,
-        ERROR_JSON = -9999,
-    };
-// namespace form::constrains{
-// };
-
 using namespace std;
+
+enum class branches_ids : int
+{
+    START = 0,
+    FIRST = 1,
+    END = -1,
+    ERROR_JSON = -9999,
+};
 using json = nlohmann::json;
 using enum_of_json_t = nlohmann::detail::value_t;
 using e_branches = branches_ids;
@@ -43,21 +41,13 @@ private:
     using answer_t = T;
     using answer_type_t = string;
 
-    // template 
-    // struct kind_branch_t{
-    //     answer_type_t answer_type;
-    //     function<optional<int>(any)> func;
-    // };
-
     optional<int> next_branch_result = std::nullopt;
     const json & question_obj;
     const any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
     optional<int> ranges(const json & ranges_array,int arg){
-        //cout << ranges_array.dump(4) << endl;
         for(const auto & [k,v] : ranges_array.items()){
-            cout << v["range"].dump(4) << endl;
             //Match value to get the "if_branch"
             const auto & range = v["range"];
             const auto & values = range["values"];
@@ -70,7 +60,6 @@ private:
     }
 
     optional<int> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
-        cout << j.dump(4) << endl;
         const static unordered_set<string> possible_affirmative{
             "yes","true", "good","fine","affirmative"
         };
@@ -135,19 +124,23 @@ private:
     string current_answer;
     int next_branch_id = static_cast<int>(e_branches::START);
     int enroute_json_type(const json & question_obj, const string & answer);
-    void get_next(const string & answer);
+    string get_next(const string & answer);
 
     optional<json> find_questions_by_id(int id) noexcept;
     
-    void form_traverse(const string & answer){
-        int id = current_id;
-        cout << id << endl;
-        get_next(answer);
+    string form_traverse(const string & answer){
+        //int id = current_id;
+        cout << "A: " << answer << endl;
+        return get_next(answer);
     }
 
     inline bool is_traversable_id(int id){
         if(id != static_cast<int>(e_branches::ERROR_JSON) ) return true;
         else {return false;}
+    }
+
+    const string get_initial_ansewer()noexcept{
+        return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
     }
 
     void form_publisher_vars(){}
@@ -156,9 +149,9 @@ private:
 
     void form_ready(){}
 
-    void form_pipeline(const string & answer){
+    string form_pipeline(const string & answer){
         form_ready();
-        form_traverse(answer);
+        return form_traverse(answer);
         form_publisher_vars();
         form_command_tasks();
     }
@@ -173,9 +166,10 @@ public:
     }
     void test_form_run(){
         //Cicle different answers in order
-
-        form_pipeline("YES");
-        form_pipeline("25");
+        const string Q = "Q: ";
+        cout << Q << get_initial_ansewer() << endl;
+        cout << Q << form_pipeline("YES") << endl;
+        cout << Q << form_pipeline("25") << endl;
     }
     void form_run(user user){
         //Good idea to thread pool this call 

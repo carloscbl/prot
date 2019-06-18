@@ -30,7 +30,8 @@
       "answers_branches": {
         "predefined_boolean_yes_no_affirmative_yes": {
           "true": 72,
-          "else": -1
+          "else": -1,
+          "taskstory_id": "NONE"
         }
       }
     },
@@ -53,7 +54,7 @@
                 "<": 1000
               },
               "if_branch": 3,
-              "id": 1
+              "taskstory_id": "industrial_user"
             }
           },
           {
@@ -63,7 +64,7 @@
                 "<": 30
               },
               "if_branch": 0,
-              "id": 2
+              "taskstory_id": "normal_user"
             }
           },
           {
@@ -73,30 +74,28 @@
                 ">": 1000
               },
               "if_branch": -1,
-              "id": 3
+              "taskstory_id": 3
             }
           }
         ]
       },
-      "taskstorys": [
-        {
-          "branch_id": 2,
-          "taskstory": [
-            {
-              "command":"task add -ud {user.user} 'Gather Clothes'",
-              "name":""
-            },
-            {
-              "command":"task add -ud {user.user} 'Put them inside and start the machine'",
-              "name":"washer_start"
-            },
-            {
-              "command":"task add -ud {user.user} 'Collect the washed clothes' --stamp {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect}",
-              "name":"washer_end"
-            }
-          ]
-        }
-      ]
+      "taskstories": {
+        "normal_user":[
+          {
+            "command":"task add -ud {user.user} 'Gather Clothes'",
+            "name":""
+          },
+          {
+            "command":"task add -ud {user.user} 'Put them inside and start the machine'",
+            "name":"washer_start"
+          },
+          {
+            "command":"task add -ud {user.user} 'Collect the washed clothes' --stamp {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect}",
+            "name":"washer_end"
+          }
+        ],
+        "industrial_user":[]
+      }
     },
     {
       "id": 3,
