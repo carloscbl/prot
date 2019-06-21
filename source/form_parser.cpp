@@ -20,18 +20,18 @@ form_parser::form_parser(const json & j):j(j){
 }
 
 template <typename T>
-int make_get_next_branch(const json & question_obj, any arg ){
+strategy_return make_get_next_branch(const json & question_obj, any arg ){
     return answer_branches<T>(question_obj, arg ).get_next_branch();
 }
 
-std::unordered_map<std::type_index, function<int(const json &,any)>> type_names{
+std::unordered_map<std::type_index, function<strategy_return(const json &,any)>> type_names{
     {std::type_index(typeid(int)),make_get_next_branch<int>},
     {std::type_index(typeid(string)), make_get_next_branch<string> },
     {std::type_index(typeid(double)),make_get_next_branch<double>},
     {std::type_index(typeid(float)),make_get_next_branch<float>},
 };
 
-int form_parser::enroute_json_type(const json & question_obj, const string & answer){
+strategy_return form_parser::enroute_json_type(const json & question_obj, const string & answer){
     
     string expected_answer_type = question_obj["type_user_input"].get<string>();
     std::any converted_answer;
@@ -41,7 +41,7 @@ int form_parser::enroute_json_type(const json & question_obj, const string & ans
         auto func = type_names[std::type_index(converted_answer.type())];
         return func(question_obj,converted_answer);
     }
-    return 0;
+    return strategy_return{};
 }
 
 string form_parser::get_next(const string & answer){
@@ -52,7 +52,9 @@ string form_parser::get_next(const string & answer){
     }else{
         question = find_questions_by_id(this->next_branch_id).value();
     }
-    this->next_branch_id = enroute_json_type(question,answer);//v is question{} object
+    auto strategy_returned = enroute_json_type(question,answer);//v is question{} object
+    this->next_branch_id = strategy_returned.if_branch;
+    cout << "taskstory " << strategy_returned.taskstory_id << endl;
 
     auto nextQ = find_questions_by_id(this->next_branch_id);
     if(nextQ.has_value()){
@@ -115,7 +117,7 @@ template <>void answer_branches<string>::enroute(const json & j){
         }
         
         const auto & opt = it->second(v,any(this->answer));
-        cout << "the next is: " << opt.value_or(static_cast<int>(e_branches::ERROR_JSON)) << endl;
+        cout << "the next is: " << opt.value().taskstory_id << endl;
         if(opt.has_value()){
 
             next_branch_result = opt;
@@ -127,7 +129,10 @@ template <>void answer_branches<string>::enroute(const json & j){
     //Match custom selectors
     if(j.find(modulated_answer) != j.end()){
         //"Yes":2, "YEEEESSS":2 , "No":5
-        next_branch_result = j[modulated_answer];
+        next_branch_result = strategy_return{
+            .if_branch = j[modulated_answer],
+            .taskstory_id = j["taskstory_id"]
+        };
     }else{
         next_branch_result = std::nullopt;
     }
@@ -144,7 +149,7 @@ template<typename T>void answer_branches<T>::enroute(const json & j){
             return;
         }
         const auto & opt = it->second(v,any(this->answer));
-        cout << "the next is: " << opt.value_or(static_cast<int>(e_branches::ERROR_JSON)) << endl;
+        cout << "the next is: " << opt.value().if_branch << endl;
         if(opt.has_value()){
             next_branch_result = opt;
             break;
