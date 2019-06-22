@@ -124,6 +124,11 @@ class questions{
     questions(const json & j);
 };
 
+struct next_question_data
+{
+    string question_str;
+    string taskstory_id;
+};
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
 //Lets try to keep us from add more indirection, to find a more direct and concise solution
@@ -136,11 +141,11 @@ private:
     string current_answer;
     int next_branch_id = static_cast<int>(e_branches::START);
     strategy_return enroute_json_type(const json & question_obj, const string & answer);
-    string get_next(const string & answer);
+    next_question_data get_next(const string & answer);
 
     optional<json> find_questions_by_id(int id) noexcept;
     
-    string form_traverse(const string & answer){
+    next_question_data form_traverse(const string & answer){
         //int id = current_id;
         cout << "A: " << answer << endl;
         return get_next(answer);
@@ -163,9 +168,10 @@ private:
 
     string form_pipeline(const string & answer){
         form_ready();
-        return form_traverse(answer);
+        auto next_question = form_traverse(answer);
         form_publisher_vars();
         form_command_tasks();
+        return next_question.question_str;
     }
 
 public:

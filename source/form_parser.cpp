@@ -44,7 +44,7 @@ strategy_return form_parser::enroute_json_type(const json & question_obj, const 
     return strategy_return{};
 }
 
-string form_parser::get_next(const string & answer){
+next_question_data form_parser::get_next(const string & answer){
     json question;
     if(this->next_branch_id == static_cast<int>(e_branches::START)){
         //Means is first time
@@ -57,11 +57,18 @@ string form_parser::get_next(const string & answer){
     cout << "taskstory " << strategy_returned.taskstory_id << endl;
 
     auto nextQ = find_questions_by_id(this->next_branch_id);
+    string next_question;
     if(nextQ.has_value()){
-        return nextQ.value()["question"].get<string>();
+
+        next_question = nextQ.value()["question"].get<string>();
     }else{
-        return "END";
+        next_question = "END";
     }
+    next_question_data nqd{
+        next_question,
+        strategy_returned.taskstory_id
+    };
+    return nqd;
 }
 
 optional<json> form_parser::find_questions_by_id(int id) noexcept{
