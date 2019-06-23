@@ -9,6 +9,7 @@
 #include <boost/algorithm/string.hpp>
 #include <optional>
 #include <unordered_set>
+#include "command_expr_evaluator.h"
 #include "json.hpp"
 #include "user.h"
 
@@ -174,6 +175,7 @@ private:
     void form_ready(){}
 
     void perform_taskstory(const json & taskstory){
+        command_expr_evaluator cee (taskstory);
         cout << taskstory.dump(4) << endl;
     }
 
