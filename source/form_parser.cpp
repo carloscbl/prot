@@ -66,7 +66,7 @@ next_question_data form_parser::get_next(const string & answer){
     }
     next_question_data nqd{
         next_question,
-        strategy_returned.taskstory_id
+        question["taskstories"][strategy_returned.taskstory_id]
     };
     return nqd;
 }

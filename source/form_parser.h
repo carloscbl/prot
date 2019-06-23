@@ -127,7 +127,7 @@ class questions{
 struct next_question_data
 {
     string question_str;
-    string taskstory_id;
+    const json taskstory_json;
 };
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
@@ -160,17 +160,45 @@ private:
         return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
     }
 
-    void form_publisher_vars(){}
+    map<string,json> variables;
 
-    void form_command_tasks(){}
+    void form_publisher_vars(){
+        for(auto & section : {"variables","form"}){
+            for (auto [k,v]: subsections[section]->section){
+                variables[k] = v;
+                cout << k << v << endl;
+            }
+        }
+    }
 
     void form_ready(){}
 
+    void perform_taskstory(const json & taskstory){
+        cout << taskstory.dump(4) << endl;
+    }
+
+    void user_import_preferences(){
+        variables["user.user"] = "carloscbl";
+
+    }
+
     string form_pipeline(const string & answer){
+        //The follow order should be consider
+        //1-Ready to get the bare minimum to run
+        //2-Publish every preavailable variable
+        //3-Traverse once and Get the results, tasktories(commands)
+        //4-Execute the commands, via interpreter or direct
+        //5-Send back the next question
         form_ready();
         auto next_question = form_traverse(answer);
         form_publisher_vars();
-        form_command_tasks();
+
+        //user_import_preferences(); //This overrides default form vars, that are configurables
+        
+        if(next_question.taskstory_json != json::value_t::null){
+            perform_taskstory(next_question.taskstory_json);
+        }
+        
         return next_question.question_str;
     }
 
