@@ -1,14 +1,33 @@
 #include "command_expr_evaluator.h"
 
 void command::parse(const string & command_str){
-    std::regex self_regex(command_placement_regex, std::regex_constants::ECMAScript | std::regex_constants::icase);
-    std::smatch matches;
-     if (std::regex_search(command_str, matches, self_regex)) {
-         std::cout << "Match found\n";
+    regex rex ( command_placement_regex ,regex_constants::ECMAScript | regex_constants::icase);
+    smatch what;
 
-        for (size_t i = 0; i < matches.size(); ++i) {
-            std::cout << i << ": '" << matches[i].str() << "'\n";
+    if( regex_search(command_str, what, rex ) ){
+        std::cout << "Match found\n";
+        std::cout << "command: " << what[1].str() << endl;
+        std::cout << "positional: " << what[2].str() << endl;
+        std::cout << "parameters: " << what[3].str() << endl;
+        regex rex2 ( R"( ?(?:(--\S+?)|(-[a-z])) (?:[\"\'](.*?)[\"\']|(\{.+?\})|(\S+)+?))" );// ([\"\'](.*?)[\"\']|{(.+?)}|(\S+)+?))
+        smatch what2;
+        string s = "-u {user.user} --stumpo 'asasd asdasd' -d 'Gather Clothes' --stampao 5555";
+        
+        std::sregex_iterator next(s.begin(), s.end(), rex2);
+        std::sregex_iterator end;
+        while (next != end) {
+            std::smatch match = *next;
+            std::cout << match.str() << "\n";
+            for (auto &&i : match)
+            {
+                if (i.matched)
+                {
+                    std::cout << "\t" <<i.str() << "\n";
+                }
+            }
+            next++;
         }
+
     } else {
         std::cout << "Match not found\n";
     }

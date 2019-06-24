@@ -48,10 +48,9 @@ bool command_processor::params_sanity(vector<string> s, map<char, string> &corre
 
     if (len - 2)
     { //Means 0 sequential,
-      //p("batched");
       if (check_correspondance_bch())
       {
-        p("Not matching args, be sure your args match provided indicators");
+        cout <<"Not matching args, be sure your args match provided indicators" << endl;
         return true;
       }
       return false;
@@ -65,7 +64,7 @@ bool command_processor::params_sanity(vector<string> s, map<char, string> &corre
   }
   else
   {
-    p("Please provide arguments in batches: {-eAh eee 'AAAAParam' hhhh} or sequentially {-e eee -A 'AAA' -h hhh}  ");
+    cout << "Please provide arguments in batches: {-eAh eee 'AAAAParam' hhhh} or sequentially {-e eee -A 'AAA' -h hhh}  " << endl;
     return true;
   }
 }
@@ -98,12 +97,12 @@ void command_processor::route_positional_param(vector<string> args)
     }
     else
     {
-      p("Wrong Positional param, --help to se options");
+      cout << "Wrong Positional param, --help to se options" << endl;
     }
   }
   else
   {
-    p("Please provide a correct positional param, --help to se options");
+    cout << "Please provide a correct positional param, --help to se options" << endl;
   }
 }
 

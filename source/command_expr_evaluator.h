@@ -5,10 +5,14 @@
 #include <regex>
 #include <iostream>
 #include "json.hpp"
+//#include <boost/xpressive/xpressive.hpp>
+
 
 using namespace std;
+//using namespace boost::xpressive;
 
 using json = nlohmann::json;
+
 
 class command{
 protected:
@@ -16,8 +20,8 @@ protected:
     vector<string> placement;
     map<string,string> parameters;
 
-    const string command_placement_regex = R"(^(?<command>\S+) (?<positional>\S+)(?<params>.*))";
-    const string arguments_regex = R"( ?(--(.+?) |-(.) )["'](?<string>.+)["']|{(?<expr>.+?)}|(?<word>\S+))";
+    const string command_placement_regex = "^(\\S+) (\\S+)(.*)";
+    const string arguments_regex = " ?(--(.+?) |-(.) )[\"\'](?P<string>.+)[\"\']|{(?P<expr>.+?)}|(\\S+)";
 public:
     void parse(const string & command_str);
 };

@@ -71,7 +71,7 @@ next_question_data form_parser::get_next(const string & answer){
     return nqd;
 }
 
-optional<json> form_parser::find_questions_by_id(int id) noexcept{
+std::optional<json> form_parser::find_questions_by_id(int id) noexcept{
     for(const auto & [k,v] : this->subsections["questions"]->section ){
         if(v["id"] == id){
             return v;

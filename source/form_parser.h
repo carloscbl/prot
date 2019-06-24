@@ -46,12 +46,12 @@ private:
     using answer_t = T;
     using answer_type_t = string;
 
-    optional<strategy_return> next_branch_result = std::nullopt;
+    std::optional<strategy_return> next_branch_result = std::nullopt;
     const json & question_obj;
     const any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
-    optional<strategy_return> ranges(const json & ranges_array,int arg){
+    std::optional<strategy_return> ranges(const json & ranges_array,int arg){
         for(const auto & [k,v] : ranges_array.items()){
             //Match value to get the "if_branch"
             const auto & range = v["range"];
@@ -68,7 +68,7 @@ private:
         return nullopt;
     }
 
-    optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
+    std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
         const static unordered_set<string> possible_affirmative{
             "yes","true", "good","fine","affirmative"
         };
@@ -89,7 +89,7 @@ private:
         }
     }
     //C++17, with inline you can use header :O
-    const map<string_view, function<optional<strategy_return>(const json & current_selector,any)>> kind_branch_t_map{
+    const map<string_view, function<std::optional<strategy_return>(const json & current_selector,any)>> kind_branch_t_map{
         {"ranges",[this](const json & j,any s){ return ranges(j,any_cast<int>(s));}},
         {"predefined_boolean_yes_no_affirmative_yes", 
             [this](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
@@ -144,7 +144,7 @@ private:
     strategy_return enroute_json_type(const json & question_obj, const string & answer);
     next_question_data get_next(const string & answer);
 
-    optional<json> find_questions_by_id(int id) noexcept;
+    std::optional<json> find_questions_by_id(int id) noexcept;
     
     next_question_data form_traverse(const string & answer){
         //int id = current_id;
@@ -176,7 +176,7 @@ private:
 
     void perform_taskstory(const json & taskstory){
         command_expr_evaluator cee (taskstory);
-        cout << taskstory.dump(4) << endl;
+        //cout << taskstory.dump(4) << endl;
     }
 
     void user_import_preferences(){
