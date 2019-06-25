@@ -43,7 +43,23 @@ class dual_param{
     string type;
     string argument;
     dual_param(const std::smatch & match){
+        if(match[0].matched){
+            for (auto && [k,v] : type_position_in_regex)
+            {
+                if(match)
+            }
+            
+            
+            cout << "DOUBLE- " << match.str(1) ;
+            cout << "SINGLE- " << match.str(2) ;
+            cout << "''- " << match.str(3) ;
+            cout << "{}- " << match.str(4) ;
+            cout << "WORD- " << match.str(5) << endl;
+            //cout << i.str() << endl;
+
+        }
     }
+
     void expression(string parameter){
 
     }
@@ -53,12 +69,16 @@ class dual_param{
     void word(string paramater){
 
     }
-    
+    void ftype(string paramater){
+
+    }
+
     map<int,function<void(string parameter)>> type_position_in_regex{
-        {1,nullptr},
+        {1,[this](string s){ftype(s);}},
+        {2,[this](string s){ftype(s);}},
         {3,[this](string s){text(s);}},
         {4,[this](string s){expression(s);}},
-        {5,[this](string s){expression(s);}},
+        {5,[this](string s){word(s);}},
     };
 
 
