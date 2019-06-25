@@ -9,7 +9,7 @@ void command::parse(const string & command_str){
         std::cout << "command: " << what[1].str() << endl;
         std::cout << "positional: " << what[2].str() << endl;
         std::cout << "parameters: " << what[3].str() << endl;
-        regex rex2 ( R"( ?(?:(--\S+?)|(-[a-z])) (?:[\"\'](.*?)[\"\']|(\{.+?\})|(\S+)+?))" );// ([\"\'](.*?)[\"\']|{(.+?)}|(\S+)+?))
+        regex rex2 ( arguments_regex );// ([\"\'](.*?)[\"\']|{(.+?)}|(\S+)+?))
         smatch what2;
         string s = "-u {user.user} --stumpo 'asasd asdasd' -d 'Gather Clothes' --stampao 5555";
 
@@ -29,7 +29,8 @@ void command::parse(const string & command_str){
     }
 }
 
-command_expr_evaluator::command_expr_evaluator(const json & taskstory)
+command_expr_evaluator::command_expr_evaluator(const json & taskstory, map<string,json> & variables)
+:variables(variables)
 {
     command co;
     cout << taskstory.cbegin().value()["command"] << endl;

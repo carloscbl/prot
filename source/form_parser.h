@@ -175,7 +175,8 @@ private:
     void form_ready(){}
 
     void perform_taskstory(const json & taskstory){
-        command_expr_evaluator cee (taskstory);
+
+        command_expr_evaluator cee (taskstory, variables);
         //cout << taskstory.dump(4) << endl;
     }
 
