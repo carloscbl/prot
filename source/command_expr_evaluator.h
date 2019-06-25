@@ -3,6 +3,7 @@
 #include <string>
 #include <map>
 #include <regex>
+#include <functional>
 #include <iostream>
 #include "json.hpp"
 //#include <boost/xpressive/xpressive.hpp>
@@ -37,6 +38,31 @@ public:
 // :command("form"),
 // parameters(parameters)
 // {}
+
+class dual_param{
+    string type;
+    string argument;
+    dual_param(const std::smatch & match){
+    }
+    void expression(string parameter){
+
+    }
+    void text(string paramater){
+
+    }
+    void word(string paramater){
+
+    }
+    
+    map<int,function<void(string parameter)>> type_position_in_regex{
+        {1,nullptr},
+        {3,[this](string s){text(s);}},
+        {4,[this](string s){expression(s);}},
+        {5,[this](string s){expression(s);}},
+    };
+
+
+};
 
 class command_expr_evaluator
 {

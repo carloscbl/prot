@@ -12,19 +12,25 @@ void command::parse(const string & command_str){
         regex rex2 ( R"( ?(?:(--\S+?)|(-[a-z])) (?:[\"\'](.*?)[\"\']|(\{.+?\})|(\S+)+?))" );// ([\"\'](.*?)[\"\']|{(.+?)}|(\S+)+?))
         smatch what2;
         string s = "-u {user.user} --stumpo 'asasd asdasd' -d 'Gather Clothes' --stampao 5555";
-        
+
         std::sregex_iterator next(s.begin(), s.end(), rex2);
         std::sregex_iterator end;
         while (next != end) {
             std::smatch match = *next;
-            std::cout << match.str() << "\n";
             for (auto &&i : match)
             {
-                if (i.matched)
-                {
-                    std::cout << "\t" <<i.str() << "\n";
+                if(i.matched){
+                    cout << "DOUBLE- " << match.str(1) ;
+                    cout << "SINGLE- " << match.str(2) ;
+                    cout << "''- " << match.str(3) ;
+                    cout << "{}- " << match.str(4) ;
+                    cout << "WORD- " << match.str(5) << endl;
+                    //cout << i.str() << endl;
+
                 }
             }
+            cout << "-------" << endl;
+            
             next++;
         }
 
