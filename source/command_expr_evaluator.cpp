@@ -17,18 +17,8 @@ void command::parse(const string & command_str){
         std::sregex_iterator end;
         while (next != end) {
             std::smatch match = *next;
-            for (auto &&i : match)
-            {
-                if(i.matched){
-                    cout << "DOUBLE- " << match.str(1) ;
-                    cout << "SINGLE- " << match.str(2) ;
-                    cout << "''- " << match.str(3) ;
-                    cout << "{}- " << match.str(4) ;
-                    cout << "WORD- " << match.str(5) << endl;
-                    //cout << i.str() << endl;
+            dual_param dp(match);
 
-                }
-            }
             cout << "-------" << endl;
             
             next++;

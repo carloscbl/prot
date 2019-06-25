@@ -42,46 +42,51 @@ public:
 class dual_param{
     string type;
     string argument;
+    int matches = 0;
+public:
     dual_param(const std::smatch & match){
         if(match[0].matched){
             for (auto && [k,v] : type_position_in_regex)
             {
-                if(match)
+                if(!match.str(k).empty()){
+                    v(match.str(k));
+                    matches++;
+                    //cout << k << " " << match.str(k)<< " " ;
+                }
             }
-            
-            
-            cout << "DOUBLE- " << match.str(1) ;
-            cout << "SINGLE- " << match.str(2) ;
-            cout << "''- " << match.str(3) ;
-            cout << "{}- " << match.str(4) ;
-            cout << "WORD- " << match.str(5) << endl;
-            //cout << i.str() << endl;
-
+            //cout << endl;
         }
     }
 
-    void expression(string parameter){
+    void expression(const string & parameter) noexcept{
 
     }
-    void text(string paramater){
+
+    void text(const string & parameter) noexcept{
 
     }
-    void word(string paramater){
+
+    void word(const string & parameter) noexcept{
 
     }
-    void ftype(string paramater){
 
+    void ftypeOneMinus(const string & parameter) noexcept{
+        //Remove the - and save to type
+        this->type.assign(parameter.begin()+1 ,parameter.end());
+    }
+
+    void ftypeTwoMinus(const string & parameter) noexcept{
+        //Remove the -- and save to type
+        this->type.assign(parameter.begin()+2 ,parameter.end());
     }
 
     map<int,function<void(string parameter)>> type_position_in_regex{
-        {1,[this](string s){ftype(s);}},
-        {2,[this](string s){ftype(s);}},
-        {3,[this](string s){text(s);}},
-        {4,[this](string s){expression(s);}},
-        {5,[this](string s){word(s);}},
+        {1,[this](const string & s){ftypeTwoMinus(s);}},
+        {2,[this](const string & s){ftypeOneMinus(s);}},
+        {3,[this](const string & s){text(s);}},
+        {4,[this](const string & s){expression(s);}},
+        {5,[this](const string & s){word(s);}},
     };
-
-
 };
 
 class command_expr_evaluator
@@ -90,11 +95,5 @@ public:
     command_expr_evaluator(const json & taskstory);
 };
 
-
-//This one to get the command
-//^\S+ (?<positional>\S+)
-
-//This regex to get grouped the args by type
-//" ?(--(.+?) |-(.) )[\"\'](?<string>.+)[\"\']|{(?<expr>.+?)}|(?<word>\\S+)"
 
 #endif //COMMAND_EXPR_EVALUATOR_H
