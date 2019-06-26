@@ -10,9 +10,11 @@
 using namespace std;
 
 using json = nlohmann::json;
+class command_expr_evaluator;
 
 class dual_param{
 private:
+    friend command_expr_evaluator;
     int matches = 0;
     string type;
     string argument;
@@ -71,6 +73,11 @@ public:
         }
         cout << type << ":" << argument << endl;
     }
+
+    dual_param(const string type, const string argument)
+    :type(type),
+    argument(argument),
+    is_expression(false){}
 };
 
 class command{
@@ -78,32 +85,21 @@ protected:
     string command;
     vector<string> placement;
     vector<dual_param> parameters;
+    friend command_expr_evaluator;
 
     const string command_placement_regex = "^(\\S+) (\\S+)(.*)";
     const string arguments_regex = R"( ?(?:(--\S+?)|(-[a-z])) (?:[\"\'](.*?)[\"\']|\{(.+?)\}|(\S+)+?))";
 public:
     void parse(const string & command_str);
+    
 };
-
-// class task_command: public command{
-// public:
-//     task_command(const string command, const vector<string> placement,const map<string,string> parameters);
-// };
-
-// task_command::task_command(const map<string,string> parameters)
-// :command("form"),
-// parameters(parameters)
-// {}
-
-
 
 class command_expr_evaluator
 {
     map<string,json> & variables;
+    dual_param evaluate(dual_param & non_formated_param) const noexcept;
 public:
     command_expr_evaluator(const json & taskstory, map<string,json> & variables);
-
 };
-
 
 #endif //COMMAND_EXPR_EVALUATOR_H

@@ -17,7 +17,7 @@ void command::parse(const string & command_str){
         std::sregex_iterator end;
         while (next != end) {
             std::smatch match = *next;
-            dual_param dp(match);
+            parameters.push_back(dual_param(match));
 
             cout << "-------" << endl;
             
@@ -36,4 +36,20 @@ command_expr_evaluator::command_expr_evaluator(const json & taskstory, map<strin
     cout << taskstory.cbegin().value()["command"] << endl;
 
     co.parse(taskstory.cbegin().value()["command"].get<string>());
+    for (auto &&i : co.parameters)
+    {
+        if(i.is_expression){
+            evaluate(i);
+        }
+    }
+}
+
+dual_param command_expr_evaluator::evaluate(dual_param & non_formated_param) const noexcept{
+    const auto var = this->variables.find(non_formated_param.argument);
+    if(var != variables.end()){
+        cout << var->second << endl;
+
+    }
+
+    return non_formated_param;
 }

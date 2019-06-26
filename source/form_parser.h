@@ -9,9 +9,9 @@
 #include <boost/algorithm/string.hpp>
 #include <optional>
 #include <unordered_set>
-#include "command_expr_evaluator.h"
 #include "json.hpp"
 #include "user.h"
+#include "command_expr_evaluator.h"
 
 using namespace std;
 
@@ -196,7 +196,7 @@ private:
         auto next_question = form_traverse(answer);
         form_publisher_vars();
 
-        //user_import_preferences(); //This overrides default form vars, that are configurables
+        user_import_preferences(); //This overrides default form vars, that are configurables
         
         if(next_question.taskstory_json != json::value_t::null){
             perform_taskstory(next_question.taskstory_json);
