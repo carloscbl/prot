@@ -86,7 +86,9 @@ public:
     dual_param(const string type, const string argument)
     :type(type),
     argument(argument),
-    is_expression(false){}
+    is_expression(false),
+    arg_kind(kind::text)
+    {}
 };
 
 class command{

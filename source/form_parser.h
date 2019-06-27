@@ -162,9 +162,17 @@ private:
     }
 
     map<string,json> variables;
+    // void form_expressions(){
+    //     const auto & expr = subsections["expressions"]->section;
+    //     for (auto &&[k,v] : expr)
+    //     {
+    //         cout << k << endl;
+    //     }
+        
 
+    // }
     void form_publisher_vars(){
-        for(auto & section : {"variables","form"}){
+        for(auto & section : {"variables","form" ,"expressions"}){
             for (auto [k,v]: subsections[section]->section){
                 variables[k] = v;
                 cout << k << v << endl;

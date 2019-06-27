@@ -14,7 +14,7 @@ void command::parse(const string & command_str){
         this->placement.push_back(what[2].str());
         regex rex2 ( arguments_regex );// ([\"\'](.*?)[\"\']|{(.+?)}|(\S+)+?))
         smatch what2;
-        string s = "-u {user.user} --stumpo 'asasd asdasd' -d 'Gather Clothes' --stampao 5555";
+        string s = "-u {user.user} --lemons {author.name} --stumpo 'asasd asdasd' -d 'Gather Clothes' --stampao 5555";
 
         std::sregex_iterator next(s.begin(), s.end(), rex2);
         std::sregex_iterator end;
