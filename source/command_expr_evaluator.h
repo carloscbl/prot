@@ -11,14 +11,20 @@ using namespace std;
 
 using json = nlohmann::json;
 class command_expr_evaluator;
+class command;
 
 class dual_param{
 private:
     friend command_expr_evaluator;
+    friend command;
     int matches = 0;
     string type;
     string argument;
     bool is_expression = false;
+    enum class kind{
+        text, word ,expression
+    };
+    kind arg_kind;
 
     void ftypeTwoMinus(const string & parameter) noexcept{
         //Remove the -- and save to type
@@ -39,14 +45,17 @@ private:
         //Relative Var --> From Already processed tasks from taskstories (or scheduled task --> Future )
         //We need this Easy to debug so full trazability would be nice, but caution
         is_expression = true;
+        arg_kind = kind::expression;
         this->argument = parameter;
     }
 
     void text(const string & parameter) noexcept{
+        arg_kind = kind::text;
         this->argument = parameter;
     }
 
     void word(const string & parameter) noexcept{
+        arg_kind = kind::word;
         this->argument = parameter;
     }
 
@@ -82,22 +91,25 @@ public:
 
 class command{
 protected:
+    friend command_expr_evaluator;
     string command;
     vector<string> placement;
     vector<dual_param> parameters;
-    friend command_expr_evaluator;
+
+    bool is_well_evaluated_command = true;
 
     const string command_placement_regex = "^(\\S+) (\\S+)(.*)";
     const string arguments_regex = R"( ?(?:(--\S+?)|(-[a-z])) (?:[\"\'](.*?)[\"\']|\{(.+?)\}|(\S+)+?))";
 public:
     void parse(const string & command_str);
+    string render() const noexcept;
     
 };
 
 class command_expr_evaluator
 {
     map<string,json> & variables;
-    dual_param evaluate(dual_param & non_formated_param) const noexcept;
+    optional<dual_param> evaluate(dual_param & non_formated_param) const noexcept;
 public:
     command_expr_evaluator(const json & taskstory, map<string,json> & variables);
 };
