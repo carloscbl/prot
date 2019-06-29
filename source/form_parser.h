@@ -162,17 +162,9 @@ private:
     }
 
     map<string,json> variables;
-    // void form_expressions(){
-    //     const auto & expr = subsections["expressions"]->section;
-    //     for (auto &&[k,v] : expr)
-    //     {
-    //         cout << k << endl;
-    //     }
-        
 
-    // }
     void form_publisher_vars(){
-        for(auto & section : {"variables","form" ,"expressions"}){
+        for(auto & section : {"variables","form" ,"bindings"}){
             for (auto [k,v]: subsections[section]->section){
                 variables[k] = v;
                 cout << k << v << endl;
@@ -216,7 +208,7 @@ private:
 public:
     form_parser(const json & j);
     const array<string,5> subsection_names{
-        "form","expressions","variables", "configurables", "questions"
+        "form","bindings","variables", "configurables", "questions"
     };
     const string get_name(){
         return subsections["form"]->section["form.name"].get<string>();

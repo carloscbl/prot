@@ -4,12 +4,16 @@
     "form.name": "Washer easer",
     "author.name":"carlos bernal"
   },
-  "expressions":{
+  "bindings":{
     "next_add_task_story_stamp":{
-      "mapTo":"next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect",
-      "args":[
-        "washer_start.stamp","time.minutes.WaitToCollect"
-      ]
+      "mapTo":{
+        "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{
+          "args": {
+            "task_ref" :"washer_start.stamp",
+            "time":"time.minutes.WaitToCollect"
+          }
+        }
+      }
     }
   },
   "variables": {
