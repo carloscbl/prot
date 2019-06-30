@@ -117,13 +117,16 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param & non_formated_
     return nullopt;
 }
 
-using namespace std::placeholders;
+//This is used to handle the referenciation to a scheduled task from the same form via unique tag
+//To this purpose we should get access form here to:
+//1 the current user data
+//2 its scheduler
+//3 keep track of the tag in the scheduler to retrive the data
 string next_add_task_story_stamp(const json js){
     return "";
 }
+
 map<string,function<string(json)>> bindings_map{
     {"next_add_task_story_stamp",[](const json & j){return next_add_task_story_stamp(j);}},
     //{"next_add_task_story_stamp",[](const json & j){return next_add_task_story_stamp(j);}},
 };
-
-void evaluate
