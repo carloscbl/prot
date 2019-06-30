@@ -5,14 +5,18 @@
     "author.name":"carlos bernal"
   },
   "bindings":{
-    "next_add_task_story_stamp":{
-      "mapTo":{
-        "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{
-          "args": {
-            "task_ref" :"washer_start.stamp",
-            "time":"time.minutes.WaitToCollect"
-          }
-        }
+    "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{
+      "function":"next_add_task_story_stamp",
+      "args": {
+        "task_ref" :"washer_start.stamp",
+        "time":"time.minutes.WaitToCollect"
+      }
+    },
+    "AnHourLater":{
+      "function":"next_add_task_story_stamp",
+      "args": {
+        "task_ref" :"washer_start.stamp",
+        "time": 60
       }
     }
   },
