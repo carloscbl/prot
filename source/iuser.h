@@ -2,14 +2,19 @@
 #define IUSER_H
 
 #include "itasker.h"
+#include "ischeduler.h"
 
-class iuser : public itasker
+template<typename T_user,typename T_tasker,typename T_scheduler>
+class iuser 
 {
 private:
-    /* data */
+    // string unique_id; //For now to check existance and to bind task data to someone
+    // #string pass;
+    itasker<T_tasker> tasker;
+    ischeduler scheduler;
 public:
-    iuser(/* args */);
-    ~iuser();
+    inline const itasker & get_tasker() const noexcept { return tasker; }
+    inline const ischeduler & get_scheduler() const noexcept { return scheduler; }
 };
 
 #endif //IUSER_H
