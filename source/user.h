@@ -4,7 +4,7 @@
 
 #ifndef USER_H
 #define USER_H
-
+#include <memory>
 #include <string>
 #include <map>
 #include "iuser.h"
@@ -17,17 +17,23 @@ struct user_minimal_data{
     string username;
     string pass;
 };
-template<typename T_user,typename T_tasker,typename T_scheduler>
+
 class user : public iuser{//substitute by the final class
 private:
+    static map<string,weak_ptr<user>> users; 
+    
     // string unique_id; //For now to check existance and to bind task data to someone
     // #string pass;
-    itasker<T_tasker> tasker;
-    ischeduler<T_scheduler> scheduler;
+    itasker tasker;
+    ischeduler scheduler;
 public:
     user_minimal_data minimal_data;
     user(const user_minimal_data & m_data):minimal_data(m_data){};
-};
 
+    const itasker & get_tasker() const noexcept override{ return tasker; }
+    const ischeduler & get_scheduler() const noexcept override{ return scheduler; }
+
+    const string & get_name()const noexcept {return minimal_data.username;}
+};
 
 #endif //USER_H
