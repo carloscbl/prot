@@ -6,7 +6,7 @@
 class tasker : public itasker
 {
 private:
-    /* data */
+    static vector<weak_ptr<itasker>> taskers_global; //Global reference to all taskers to cicle them updates on caducity
 public:
     tasker(/* args */);
     virtual ~tasker();

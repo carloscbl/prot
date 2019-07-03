@@ -3,11 +3,8 @@
 
 class ischeduler
 {
-private:
-    /* data */
 public:
-    ischeduler(/* args */);
-    ~ischeduler();
+
 };
 
 #endif //ISCHEDULER_H
