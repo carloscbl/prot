@@ -33,7 +33,7 @@ public:
     const itasker & get_tasker() const noexcept override{ return tasker; }
     const ischeduler & get_scheduler() const noexcept override{ return scheduler; }
 
-    const string & get_name()const noexcept {return minimal_data.username;}
+    const string & get_name()const noexcept override{return minimal_data.username;}
 };
 
 #endif //USER_H

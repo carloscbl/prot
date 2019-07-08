@@ -111,6 +111,7 @@ public:
 class command_expr_evaluator
 {
     map<string,json> & variables;
+    //This "enroute" varaibles, functions or undefined by calling the correct mapping and retreving and setting the correct value or nullopt
     optional<dual_param> evaluate(dual_param & non_formated_param) const noexcept;
 public:
     command_expr_evaluator(const json & taskstory, map<string,json> & variables);

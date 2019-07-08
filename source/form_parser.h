@@ -10,7 +10,7 @@
 #include <optional>
 #include <unordered_set>
 #include "json.hpp"
-#include "user.h"
+#include "iuser.h"
 #include "command_expr_evaluator.h"
 
 using namespace std;
@@ -136,6 +136,7 @@ struct next_question_data
 class form_parser{
 private:
     const json & j;
+    //const iuser & user_;
     map<string,unique_ptr<form_subsection_ADT>> subsections;
     map<string,unique_ptr<form_subsection_ADT>> discover;
     int current_id = static_cast<int>(e_branches::FIRST);
@@ -220,7 +221,13 @@ public:
         cout << Q << form_pipeline("YES") << endl;
         cout << Q << form_pipeline("25") << endl;
     }
-    void form_run(user user){
+
+    //As this call should be threaded, and handle a life time singulary special each instance we need to seet a good set of rules
+    //A timer for maximum life time
+    //A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
+    //We also need a valid user that should be valid outside
+    //Good idea tu wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
+    void form_run(iuser user){
         //Good idea to thread pool this call 
         //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
         string answer = fetch_and_send_out_first_answer();
