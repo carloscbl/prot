@@ -222,11 +222,13 @@ public:
         cout << Q << form_pipeline("25") << endl;
     }
 
-    //As this call should be threaded, and handle a life time singulary special each instance we need to seet a good set of rules
+    //As this call should be threaded, and handle a life time singulary special each instance we need to set a good set of rules
     //A timer for maximum life time
     //A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
     //We also need a valid user that should be valid outside
-    //Good idea tu wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
+    //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
+    //
+    
     void form_run(iuser user){
         //Good idea to thread pool this call 
         //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
