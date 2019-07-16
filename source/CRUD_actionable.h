@@ -6,7 +6,6 @@
 #define CRUD_ACTIONABLE_H
 #include <iostream>
 #include "iactionable.h"
-#include <exception>
 
 using namespace std;
 

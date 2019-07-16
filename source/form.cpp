@@ -3,13 +3,14 @@
 using namespace std;
 
 
-form::form(const string & path):form(){
-  pipelined_json_data_setter(path);
-}
 
 form::form():CRUD_actionable(form_map,setters){
   static int acummulator = 0;
   id = "form" + to_string(acummulator++);
+
+}
+form::form(const string & path):form(){
+  pipelined_json_data_setter(path);
 }
 
 form::~form()

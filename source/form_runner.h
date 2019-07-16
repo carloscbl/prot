@@ -1,11 +1,12 @@
 #ifndef FORM_RUNNER_H
 #define FORM_RUNNER_H
 #include <chrono>
-#include "iuser.h"
+#include <thread>
 #include "form.h"
+#include "iuser.h"
 
-using namespace std::chrono_literals;
-
+//using namespace std::chrono_literals;
+using form_t = form;
 //So this class will handle the call form_run from form_parser
 //On construction it will check for the current form being evaluated prevoiously and unfinnised
 //So will find for a existing session and restore it and handle in a threaded way the life time of this session
@@ -18,19 +19,20 @@ private:
     /* data */
     const chrono::minutes life_time = 5min;
     iuser & user;
-    form & form_;
+    form_t & form_;
 public:
-    form_runner(iuser user, form form_);
+    form_runner(iuser user, form_t form_);
     ~form_runner();
 };
 
-form_runner::form_runner(iuser user, form form_):
+form_runner::form_runner(iuser user, form_t form_):
 user(user),
 form_(form_)
 {
     //Create thread
     //Check serialiced session or create a new one
     //Perform or traverse the questionary
+    thread th;
 
 }
 
