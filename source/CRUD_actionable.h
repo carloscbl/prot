@@ -6,6 +6,7 @@
 #define CRUD_ACTIONABLE_H
 #include <iostream>
 #include "iactionable.h"
+#include <exception>
 
 using namespace std;
 
@@ -33,7 +34,7 @@ public:
             }
         }
     };
-    virtual void remove(map<char,string>params, T & instance);//{ throw exception; };
+    virtual void remove(map<char,string>params, T & instance){ };
     virtual void update(map<char,string>params, T & instance){
         for(auto e : params){
             auto  et = setters.end();
