@@ -142,7 +142,10 @@ private:
     int current_id = static_cast<int>(e_branches::FIRST);
     string current_answer;
     int next_branch_id = static_cast<int>(e_branches::START);
+    map<string,json> variables;
+
     strategy_return enroute_json_type(const json & question_obj, const string & answer);
+
     next_question_data get_next(const string & answer);
 
     std::optional<json> find_questions_by_id(int id) noexcept;
@@ -161,8 +164,6 @@ private:
     const string get_initial_ansewer()noexcept{
         return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
     }
-
-    map<string,json> variables;
 
     void form_publisher_vars(){
         for(auto & section : {"variables","form" ,"bindings"}){
