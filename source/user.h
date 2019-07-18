@@ -34,6 +34,14 @@ public:
     const ischeduler & get_scheduler() const noexcept override{ return scheduler; }
 
     const string & get_name()const noexcept override{return minimal_data.username;}
+    static user test_user();
 };
+
+user user::test_user(){
+    user_minimal_data md{
+        "test_user", "123456"
+    };
+    return user(md);
+}
 
 #endif //USER_H

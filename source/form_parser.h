@@ -217,6 +217,9 @@ public:
     }
     void test_form_run(){
         //Cicle different answers in order
+
+        
+
         const string Q = "Q: ";
         cout << Q << get_initial_ansewer() << endl;
         cout << Q << form_pipeline("YES") << endl;

@@ -39,18 +39,18 @@ private:
     iuser & user;
     form_t & form_;
 public:
-    form_runner(iuser user, form_t form_);
+    form_runner(iuser & user, form_t & form_);
     ~form_runner();
 
     unique_ptr<form_state> get_session() noexcept;
     string get_unique_id_session() const noexcept;
 };
 
-form_runner::form_runner(iuser user, form_t form_):
+form_runner::form_runner(iuser & user, form_t & form_):
 user(user),
 form_(form_)
 {
-
+    auto state = get_session();
     //Create thread
     //Check serialiced session or create a new one
     //Perform or traverse the questionary
