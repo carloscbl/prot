@@ -1,6 +1,10 @@
 #ifndef REQUEST_H
 #define REQUEST_H
 #include "CRUD_actionable.h"
+#include "user.h"
+#include "iuser.h"
+#include "form.h"
+#include "form_runner.h"
 
 class request : public CRUD_actionable<request>
 {
@@ -34,7 +38,16 @@ request::~request()
 }
 
 void request::test(){
-    cout << "this is a test" << endl;
+    user_minimal_data md{
+        "Carlos","123456"
+    };
+    user user_(md);
+
+    auto aa = form::forms.cbegin();
+
+    //form_runner fr (user_,  );
+
+    cout << aa->second->name << endl;
 }
 
 void request::send_action(std::string action, std::map<char,std::string> params){

@@ -19,9 +19,7 @@ using namespace std;
 
 class form;
 
-namespace env {//Handles the result, executable of a form, and passes through to its components to auto compose
-  static map<string, unique_ptr<form>> forms;
-}
+
 
 
 
@@ -35,21 +33,25 @@ private:
   //This map, handles the posible actions to be performed from outside commands
   //Positional params
   CRUD_plus_actions_map form_map{
-    {"add",    [](map<char, string> s) {
+    {"add",    [this](map<char, string> s) {
       //Creates a new form and store it with index id and passing a states machine graph
       unique_ptr<form> form_ = make_unique<form>();
       form_->add(s);
-      env::forms[form_->id] = move(form_);
+      //aaa();
+      form::forms[form_->id] = move(form_);
     }},
     {"remove", [](map<char, string> s) {}},
     {"update", [](map<char, string> s) {}},
     {"compute", [](map<char, string> s) {}},
     {"list", [](map<char, string> s) {
-      for(const auto & form : env::forms){
+      for(const auto & form : form::forms){
         cout << form.second->name << endl;
       }
     }},
   };
+  void aaa(){
+    cout << form::forms.cbegin()->second->name << endl;
+  }
 
   //Modulator params like -h -n -P
   map_local_functions setters{ 
@@ -59,6 +61,7 @@ private:
   void set_path(const string & s);
   void pipelined_json_data_setter(const string & json_path);
 public:
+  inline static map<string, unique_ptr<form>> forms;
   bool ready_to_compute = false;
   string id;
   string name;//name of the form

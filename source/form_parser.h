@@ -233,7 +233,7 @@ public:
     //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
     //
     
-    void form_run(iuser user){
+    void form_run(iuser & user){
         //Good idea to thread pool this call 
         //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
         string answer = fetch_and_send_out_first_answer();

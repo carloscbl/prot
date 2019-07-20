@@ -29,6 +29,7 @@ private:
 public:
     user_minimal_data minimal_data;
     user(const user_minimal_data & m_data):minimal_data(m_data){};
+    virtual ~user(){}
 
     const itasker & get_tasker() const noexcept override{ return tasker; }
     const ischeduler & get_scheduler() const noexcept override{ return scheduler; }
