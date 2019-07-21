@@ -9,26 +9,20 @@
 #include <map>
 #include <functional>
 #include <memory>
+#include "form_reader.h"
+#include "json.hpp"
 
 #include "CRUD_actionable.h"
-#include "form_reader.h"
-#include "form_parser.h"
 
 using namespace std;
-
-
-class form;
-
-
-
-
 
 //the form class stores the form in raw internally and process it to be able to present it externally
 class form : public CRUD_actionable<form> {
 private:
+using form_register = map<string, unique_ptr<form>>;
+  inline static form_register forms;
   //Components
   unique_ptr<form_reader> json_reader;
-  unique_ptr<form_parser> json_parser;
 
   //This map, handles the posible actions to be performed from outside commands
   //Positional params
@@ -37,7 +31,6 @@ private:
       //Creates a new form and store it with index id and passing a states machine graph
       unique_ptr<form> form_ = make_unique<form>();
       form_->add(s);
-      //aaa();
       form::forms[form_->id] = move(form_);
     }},
     {"remove", [](map<char, string> s) {}},
@@ -49,10 +42,6 @@ private:
       }
     }},
   };
-  void aaa(){
-    cout << form::forms.cbegin()->second->name << endl;
-  }
-
   //Modulator params like -h -n -P
   map_local_functions setters{ 
     {'P', &form::set_path},
@@ -61,7 +50,6 @@ private:
   void set_path(const string & s);
   void pipelined_json_data_setter(const string & json_path);
 public:
-  inline static map<string, unique_ptr<form>> forms;
   bool ready_to_compute = false;
   string id;
   string name;//name of the form
@@ -74,6 +62,11 @@ public:
   //iactionable
   void send_action(std::string action, map<char, string> params) override;
 
+  const json & get_json() const noexcept { return json_reader->get_json();} 
+
+  static inline const form_register & get_register() noexcept{ return form::forms; }
+
+  static const string get_form_name(const json & j){ return j["form"]["form.name"].get<string>();}
 };
 
 #endif //FORM_H

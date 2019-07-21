@@ -42,10 +42,10 @@ void request::test(){
         "Carlos","123456"
     };
     user user_(md);
+    //if()
+    auto aa = form::get_register().cbegin();
 
-    auto aa = form::forms.cbegin();
-
-    //form_runner fr (user_,  );
+    form_runner fr (user_,  *aa->second);
 
     cout << aa->second->name << endl;
 }
