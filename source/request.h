@@ -13,7 +13,13 @@ private:
         {"add",    [](map<char, string> s) {}},
         {"remove", [](map<char, string> s) {}},
         {"update", [](map<char, string> s) {}},
-        {"test", [this](map<char, string> s) {test(s);}},
+        {"test", [this](map<char, string> s) {
+            json j ;
+            if(s.size() > 0){
+                j["answer"] = s;
+            }
+            test(j);
+        }},
         {"list", [](map<char, string> s) {}},
     };
 
@@ -42,7 +48,11 @@ void request::test(const json qa_request){//Wanted by value
         "Carlos","123456"
     };
     user user_(md);
-    //if()
+    
+    auto answer = qa_request.find("answer");
+    if(!qa_request.is_null() && answer != qa_request.end()){
+        cout << qa_request["answer"] << endl;
+    }
     auto aa = form::get_register().cbegin();
 
     form_runner fr (user_,  *aa->second);

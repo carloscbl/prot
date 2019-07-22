@@ -41,7 +41,7 @@ public:
 
     unique_ptr<form_state> get_session() noexcept;
     string get_unique_id_session() const noexcept;
-    const json run() const noexcept;
+    const json run(const json & j) const noexcept;
 };
 
 form_runner::form_runner(iuser & user, form_t & form_):
@@ -53,7 +53,7 @@ form_(form_)
     //Check serialiced session or create a new one
     //Perform or traverse the questionary
 
-    run();
+    //run();
     // thread th([this](){
     // });
 
@@ -65,11 +65,11 @@ string form_runner::get_unique_id_session() const noexcept{
     return user.get_name() + form_.name;
 }
 
-const json form_runner::run() const noexcept{
+const json form_runner::run(const json & j) const noexcept{
     form_parser fp (form_.get_json());
     string first_question = fp.get_initial_question();
-    json j;
-    j["next_question"] = first_question;
+    json response_j;
+    response_j["next_question"] = first_question;
     return j;
 }
 
