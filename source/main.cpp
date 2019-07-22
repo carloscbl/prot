@@ -40,7 +40,7 @@ int main(int argc, char const *argv[])
     M minute
     So -MhuDndmy 16 00 alberto "Not in home but..." "Call Assitant to walk with the dog" 22 12 2019
   */
-
+  form_collector fc;
   command_processor cp;
   task task_;
   form form_;

@@ -184,7 +184,9 @@ private:
 
     }
 
-    string form_pipeline(const string & answer){
+
+public:
+    string form_next_in_pipeline(const string & answer){
         //The follow order should be consider
         //1-Ready to get the bare minimum to run
         //2-Publish every preavailable variable
@@ -203,8 +205,6 @@ private:
         
         return next_question.question_str;
     }
-
-public:
     form_parser(const json & j);
     const array<string,5> subsection_names{
         "form","bindings","variables", "configurables", "questions"
@@ -221,20 +221,8 @@ public:
         //Cicle different answers in order
         const string Q = "Q: ";
         cout << Q << get_initial_question() << endl;
-        cout << Q << form_pipeline("YES") << endl;
-        cout << Q << form_pipeline("25") << endl;
-    }
-
-    //As this call should be threaded, and handle a life time singulary special each instance we need to set a good set of rules
-    //A timer for maximum life time
-    //A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
-    //We also need a valid user that should be valid outside
-    //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks    
-    void form_run(iuser & user){
-        //Good idea to thread pool this call 
-        //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
-        //form_pipeline(answer);
-
+        cout << Q << form_next_in_pipeline("YES") << endl;
+        cout << Q << form_next_in_pipeline("25") << endl;
     }
 };
 

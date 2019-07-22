@@ -65,12 +65,18 @@ string form_runner::get_unique_id_session() const noexcept{
     return user.get_name() + form_.name;
 }
 
-const json form_runner::run(const json & j) const noexcept{
+const json form_runner::run(const json & request_json) const noexcept{
     form_parser fp (form_.get_json());
-    string first_question = fp.get_initial_question();
+    string question;
+    if(request_json.is_null()){
+        question = fp.get_initial_question();
+    }else{
+        cout << request_json.dump(4) << endl;
+        question = fp.form_next_in_pipeline(request_json["answer"]);
+    }
     json response_j;
-    response_j["next_question"] = first_question;
-    return j;
+    response_j["next_question"] = question;
+    return response_j;
 }
 
 unique_ptr<form_state> form_runner::get_session() noexcept{

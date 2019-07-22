@@ -16,7 +16,7 @@ private:
         {"test", [this](map<char, string> s) {
             json j ;
             if(s.size() > 0){
-                j["answer"] = s;
+                j["answer"] = s.cbegin()->second;
             }
             test(j);
         }},
@@ -43,6 +43,11 @@ request::~request()
 {
 }
 
+//As this call should be threaded, and handle a life time singulary special each instance we need to set a good set of rules
+//A timer for maximum life time
+//A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
+//We also need a valid user that should be valid outside
+//Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
 void request::test(const json qa_request){//Wanted by value
     user_minimal_data md{
         "Carlos","123456"
@@ -57,7 +62,7 @@ void request::test(const json qa_request){//Wanted by value
 
     form_runner fr (user_,  *aa->second);
 
-    auto & js = fr.run();
+    auto & js = fr.run(qa_request);
 
     cout << js.dump(4) << endl;
 }
