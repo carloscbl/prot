@@ -5,6 +5,7 @@
 #include <queue>
 #include <map>
 #include <memory>
+#include "json.hpp"
 #include "iuser.h"
 #include "form_parser.h"
 #include "command_expr_evaluator.h"
@@ -15,7 +16,7 @@ using form_t = form;
 
 class form_state{
     string id;
-    int current_id;
+    int current_QA_id;
     queue<command> taskstory;
     map<string,string> answers_history;
 };
@@ -40,6 +41,7 @@ public:
 
     unique_ptr<form_state> get_session() noexcept;
     string get_unique_id_session() const noexcept;
+    const json run() const noexcept;
 };
 
 form_runner::form_runner(iuser & user, form_t & form_):
@@ -50,16 +52,25 @@ form_(form_)
     //Create thread
     //Check serialiced session or create a new one
     //Perform or traverse the questionary
-    form_parser fp (form_.get_json());
-    //thread th;
+
+    run();
+    // thread th([this](){
+    // });
 
 }
 
-form_runner::~form_runner()
-{
-}
+form_runner::~form_runner(){}
+
 string form_runner::get_unique_id_session() const noexcept{
     return user.get_name() + form_.name;
+}
+
+const json form_runner::run() const noexcept{
+    form_parser fp (form_.get_json());
+    string first_question = fp.get_initial_question();
+    json j;
+    j["next_question"] = first_question;
+    return j;
 }
 
 unique_ptr<form_state> form_runner::get_session() noexcept{

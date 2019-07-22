@@ -13,7 +13,7 @@ private:
         {"add",    [](map<char, string> s) {}},
         {"remove", [](map<char, string> s) {}},
         {"update", [](map<char, string> s) {}},
-        {"test", [this](map<char, string> s) {test();}},
+        {"test", [this](map<char, string> s) {test(s);}},
         {"list", [](map<char, string> s) {}},
     };
 
@@ -26,7 +26,7 @@ public:
     ~request();
 
     void send_action(std::string action, map<char, string> params) override;
-    void test();
+    void test(const json qa_request);
 };
 
 request::request():CRUD_actionable(this->request_map,setters)
@@ -37,7 +37,7 @@ request::~request()
 {
 }
 
-void request::test(){
+void request::test(const json qa_request){//Wanted by value
     user_minimal_data md{
         "Carlos","123456"
     };
@@ -47,7 +47,9 @@ void request::test(){
 
     form_runner fr (user_,  *aa->second);
 
-    cout << aa->second->name << endl;
+    auto & js = fr.run();
+
+    cout << js.dump(4) << endl;
 }
 
 void request::send_action(std::string action, std::map<char,std::string> params){

@@ -148,7 +148,7 @@ private:
 
     next_question_data get_next(const string & answer);
 
-    std::optional<json> find_questions_by_id(int id) noexcept;
+    std::optional<json> find_questions_by_id(int id) const noexcept;
     
     next_question_data form_traverse(const string & answer){
         //int id = current_id;
@@ -161,9 +161,6 @@ private:
         else {return false;}
     }
 
-    const string get_initial_ansewer()noexcept{
-        return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
-    }
 
     void form_publisher_vars(){
         for(auto & section : {"variables","form" ,"bindings"}){
@@ -216,11 +213,14 @@ public:
         return subsections["form"]->section["form.name"].get<string>();
     }
     
+    const string get_initial_question() const noexcept{
+        return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+    }
 
     void test_form_run(){
         //Cicle different answers in order
         const string Q = "Q: ";
-        cout << Q << get_initial_ansewer() << endl;
+        cout << Q << get_initial_question() << endl;
         cout << Q << form_pipeline("YES") << endl;
         cout << Q << form_pipeline("25") << endl;
     }
@@ -229,17 +229,12 @@ public:
     //A timer for maximum life time
     //A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
     //We also need a valid user that should be valid outside
-    //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
-    //
-    
+    //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks    
     void form_run(iuser & user){
         //Good idea to thread pool this call 
         //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
-        string answer = fetch_and_send_out_first_answer();
-        form_pipeline(answer);
-    }
-    string fetch_and_send_out_first_answer(){
-        return "";
+        //form_pipeline(answer);
+
     }
 };
 
