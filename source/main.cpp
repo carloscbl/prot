@@ -43,14 +43,24 @@ int main(int argc, char const *argv[])
   form_collector fc;
   command_processor cp;
   task task_;
+
+  std::vector<std::string> formsa;
+
+  formsa.push_back("");
+
+  formsa =  fc.get_forms_paths();
+
   form form_;
   request request_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
   cp.register_actionable("req", &request_);
-  //form_collector fc;
-  //form_reader fr("../source/design/washclothes.json");
-  //form_parser fp(fr.get_json());
+
+  //////////////////////////////////////////////////////
+
+  for_each(formsa.begin(), formsa.end(), [&cp](const string & s){
+    cp.perform_command("form add -P " + s);
+  });
 
   
 
