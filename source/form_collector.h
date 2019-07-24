@@ -36,7 +36,6 @@ public:
     vector<string> get_forms_paths(){
         vector<string> ret ;
         //for_each(candidate_jsons_paths.cbegin(), candidate_jsons_paths.cend() ,[]( string n) { std::cout << n << endl; });
-
         for(auto p :candidate_jsons_paths){
             ret.push_back(p.string());
         }

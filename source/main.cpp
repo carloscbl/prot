@@ -44,26 +44,24 @@ int main(int argc, char const *argv[])
   command_processor cp;
   task task_;
 
-  std::vector<std::string> formsa;
-
-  formsa.push_back("");
-
-  formsa =  fc.get_forms_paths();
+  std::vector<std::string> forms_paths;
+  forms_paths =  fc.get_forms_paths();
 
   form form_;
   request request_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
   cp.register_actionable("req", &request_);
+  
+//////////////////////////////////////////////////////
+//// COMMANDS ARE NOW PERFORMABLE
+//////////////////////////////////////////////////////
 
-  //////////////////////////////////////////////////////
-
-  for_each(formsa.begin(), formsa.end(), [&cp](const string & s){
+  for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string & s){
     cp.perform_command("form add -P " + s);
   });
 
-  
-
+//////////////////////////////////////////////////////
   vector<string> arg_i(argv + 1, argv + argc);
 
   p("Starting program \n\n");
