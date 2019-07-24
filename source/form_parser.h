@@ -133,6 +133,17 @@ struct next_question_data
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
 //Lets try to keep us from add more indirection, to find a more direct and concise solution
+
+struct form_state{
+    //string id;
+    //int current_QA_id;
+    //queue<command> taskstory;
+    //map<string,string> answers_history;
+    int current_id;
+    string current_answer;
+    int next_branch_id;
+};
+
 class form_parser{
 private:
     const json & j;
@@ -161,7 +172,6 @@ private:
         else {return false;}
     }
 
-
     void form_publisher_vars(){
         for(auto & section : {"variables","form" ,"bindings"}){
             for (auto [k,v]: subsections[section]->section){
@@ -174,16 +184,12 @@ private:
     void form_ready(){}
 
     void perform_taskstory(const json & taskstory){
-
         command_expr_evaluator cee (taskstory, variables);
-        //cout << taskstory.dump(4) << endl;
     }
 
     void user_import_preferences(){
         variables["user.user"] = "carloscbl";
-
     }
-
 
 public:
     string form_next_in_pipeline(const string & answer){
@@ -206,6 +212,7 @@ public:
         return next_question.question_str;
     }
     form_parser(const json & j);
+    form_parser(const json & j,const form_state & fs);
     const array<string,5> subsection_names{
         "form","bindings","variables", "configurables", "questions"
     };
@@ -216,7 +223,13 @@ public:
     const string get_initial_question() const noexcept{
         return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
     }
-
+    const form_state get_state() const noexcept{
+        return form_state{
+            .current_id = this->current_id,
+            .current_answer = this->current_answer,
+            .next_branch_id = this->next_branch_id
+        };
+    }
     void test_form_run(){
         //Cicle different answers in order
         const string Q = "Q: ";

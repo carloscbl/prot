@@ -14,12 +14,7 @@ using namespace std;
 using namespace chrono_literals;
 using form_t = form;
 
-class form_state{
-    string id;
-    int current_QA_id;
-    queue<command> taskstory;
-    map<string,string> answers_history;
-};
+
 
 //So this class will handle the call form_run from form_parser
 //On construction it will check for the current form being evaluated prevoiously and unfinnised

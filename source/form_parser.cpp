@@ -18,6 +18,12 @@ form_parser::form_parser(const json & j):j(j){
         discover[k] = make_unique<form_subsection_ADT>(j,k);
     }
 }
+form_parser::form_parser(const json & j,const form_state & fs):form_parser(j){
+    current_answer = fs.current_answer;
+    current_id = fs.current_id;
+    next_branch_id = fs.next_branch_id;
+}
+
 
 template <typename T>
 strategy_return make_get_next_branch(const json & question_obj, any arg ){
