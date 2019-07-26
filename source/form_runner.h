@@ -3,6 +3,7 @@
 #include <chrono>
 #include <thread>
 #include <queue>
+#include <string>
 #include <map>
 #include <memory>
 #include "json.hpp"
@@ -30,11 +31,12 @@ private:
     const chrono::minutes life_time = 5min;
     iuser & user;
     form_t & form_;
+    unique_ptr<form_parser> fp;
 public:
     form_runner(iuser & user, form_t & form_);
     ~form_runner();
 
-    unique_ptr<form_state> get_session() noexcept;
+    unique_ptr<form_state> get_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json & j) const noexcept;
 };
@@ -43,7 +45,8 @@ form_runner::form_runner(iuser & user, form_t & form_):
 user(user),
 form_(form_)
 {
-    auto state = get_session();
+    
+    //fp = make_unique<form_parser>(state);
     //Create thread
     //Check serialiced session or create a new one
     //Perform or traverse the questionary
@@ -61,7 +64,8 @@ string form_runner::get_unique_id_session() const noexcept{
 }
 
 const json form_runner::run(const json & request_json) const noexcept{
-    form_parser fp (form_.get_json());
+    const auto & state = get_session();
+    form_parser fp (form_.get_json());//,*state
     string question;
     if(request_json.is_null()){
         question = fp.get_initial_question();
@@ -69,12 +73,13 @@ const json form_runner::run(const json & request_json) const noexcept{
         cout << request_json.dump(4) << endl;
         question = fp.form_next_in_pipeline(request_json["answer"]);
     }
+    user_running_forms[get_unique_id_session()] = fp.get_state();
     json response_j;
     response_j["next_question"] = question;
     return response_j;
 }
 
-unique_ptr<form_state> form_runner::get_session() noexcept{
+unique_ptr<form_state> form_runner::get_session()const noexcept{
     auto session_id = get_unique_id_session();
     const auto && state = form_runner::user_running_forms.find(session_id);
     if(state != form_runner::user_running_forms.end()){

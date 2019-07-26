@@ -223,12 +223,16 @@ public:
     const string get_initial_question() const noexcept{
         return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
     }
-    const form_state get_state() const noexcept{
-        return form_state{
-            .current_id = this->current_id,
-            .current_answer = this->current_answer,
-            .next_branch_id = this->next_branch_id
-        };
+    unique_ptr<form_state> get_state() const noexcept{
+        const auto & ptr = make_unique<form_state>();{
+        //     .current_id = this->current_id,
+        //     .current_answer = this->current_answer,
+        //     .next_branch_id = this->next_branch_id
+        // });
+        ptr->current_id = this->current_id;
+        ptr->current_answer = this->current_answer;
+        ptr->next_branch_id = this->next_branch_id;
+        return ptr;
     }
     void test_form_run(){
         //Cicle different answers in order
