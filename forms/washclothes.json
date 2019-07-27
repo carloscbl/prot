@@ -110,7 +110,7 @@
       "id": 3,
       "question": "Your washer is a industrial one?",
       "answer_tag": "industrial",
-      "type_user_input": "BOOL",
+      "type_user_input": "STRING",
       "mode": [
         "sequential",
         "once"

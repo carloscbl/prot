@@ -23,7 +23,7 @@ using form_t = form;
 //Probably a thread pool is a good idea an a queue, but for now, we will start new threads for simplicity
 //This will requiere a iuser and a form name to find if the user have currently existing one
 //If not we will create a session and store it
-using sessions = map<string, unique_ptr<form_state>>; 
+using sessions = map<string, shared_ptr<form_state>>; 
 class form_runner
 {
 private:
@@ -36,7 +36,7 @@ public:
     form_runner(iuser & user, form_t & form_);
     ~form_runner();
 
-    unique_ptr<form_state> get_session() const noexcept;
+    shared_ptr<form_state> get_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json & j) const noexcept;
 };
@@ -65,7 +65,7 @@ string form_runner::get_unique_id_session() const noexcept{
 
 const json form_runner::run(const json & request_json) const noexcept{
     const auto & state = get_session();
-    form_parser fp (form_.get_json());//,*state
+    form_parser fp (form_.get_json(),*state);//,*state
     string question;
     if(request_json.is_null()){
         question = fp.get_initial_question();
@@ -79,14 +79,14 @@ const json form_runner::run(const json & request_json) const noexcept{
     return response_j;
 }
 
-unique_ptr<form_state> form_runner::get_session()const noexcept{
+shared_ptr<form_state> form_runner::get_session()const noexcept{
     auto session_id = get_unique_id_session();
     const auto && state = form_runner::user_running_forms.find(session_id);
     if(state != form_runner::user_running_forms.end()){
-        return move(state->second);
+        return state->second;
     }else{
-        auto new_state = make_unique<form_state>();
-        form_runner::user_running_forms[session_id] = move(new_state);
+        auto new_state = make_shared<form_state>();
+        form_runner::user_running_forms[session_id] = new_state;
         return new_state;
     }
 }
