@@ -1,4 +1,4 @@
-Prot is a C++ core of task scheduler, with support for users and auto-task setter based on user questionaries for requrrent tasks.
+Prot is a C++ core of task scheduler, with support for users and auto-task setter based on user questionaries for recurrent tasks.
 
 Powered by a engine parser of json forms, that provides the set up, pipeline and question/answer front end to custom the auto-task collection called "taskstories".
 
