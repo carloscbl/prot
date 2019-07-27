@@ -36,8 +36,9 @@ public:
 };
 
 struct strategy_return{
+public:
     int if_branch = static_cast<int>(e_branches::ERROR_JSON); //Id of the the next question
-    string taskstory_id;// Name of the taskstory to perform
+    optional<string> taskstory_id;// Name of the taskstory to perform
 };
 
 template <typename T>
@@ -51,45 +52,13 @@ private:
     const any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
-    std::optional<strategy_return> ranges(const json & ranges_array,int arg){
-        for(const auto & [k,v] : ranges_array.items()){
-            //Match value to get the "if_branch"
-            const auto & range = v["range"];
-            const auto & values = range["values"];
-            if(arg < values["<"] && arg > values[">"]){
-                //Meet the range!
-                strategy_return sr{
-                    .if_branch = range["if_branch"],
-                    .taskstory_id = range["taskstory_id"]
-                };
-                return sr;
-            }
-        }
-        return nullopt;
-    }
+    std::optional<strategy_return> ranges(const json & ranges_array,int arg) const noexcept;
+    std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg)const noexcept;
+    std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
 
-    std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
-        const static unordered_set<string> possible_affirmative{
-            "yes","true", "good","fine","affirmative"
-        };
-        string lowered = arg;
-        boost::algorithm::to_lower(lowered);
-        if( possible_affirmative.find(lowered) != possible_affirmative.end()){
-            return strategy_return{
-                j["true"].get<int>(),
-                j["taskstory_id"]
-            };
-        }else if(j.contains("else")){
-            return strategy_return{
-                j["else"].get<int>(),
-                j["taskstory_id"]
-            };
-        }else{
-            return nullopt;
-        }
-    }
     //C++17, with inline you can use header :O
     const map<string_view, function<std::optional<strategy_return>(const json & current_selector,any)>> kind_branch_t_map{
+        {"custom",[this](const json & j,any s){ return custom(j,any_cast<string>(s));}},
         {"ranges",[this](const json & j,any s){ return ranges(j,any_cast<int>(s));}},
         {"predefined_boolean_yes_no_affirmative_yes", 
             [this](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},

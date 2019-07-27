@@ -60,7 +60,7 @@ next_question_data form_parser::get_next(const string & answer){
     }
     auto strategy_returned = enroute_json_type(question,answer);//v is question{} object
     this->next_branch_id = strategy_returned.if_branch;
-    cout << "taskstory " << strategy_returned.taskstory_id << endl;
+    //cout << "taskstory " << strategy_returned.taskstory_id << endl;
 
     auto nextQ = find_questions_by_id(this->next_branch_id);
     string next_question;
@@ -70,9 +70,14 @@ next_question_data form_parser::get_next(const string & answer){
     }else{
         next_question = "END";
     }
+    json taskstory_ = json::value_t::null;
+    if(strategy_returned.taskstory_id.has_value()){
+        taskstory_ = question["taskstories"][strategy_returned.taskstory_id.value()];
+    }
+
     next_question_data nqd{
         next_question,
-        question["taskstories"][strategy_returned.taskstory_id]
+        taskstory_
     };
     return nqd;
 }
@@ -130,24 +135,12 @@ template <>void answer_branches<string>::enroute(const json & j){
         }
         
         const auto & opt = it->second(v,any(this->answer));
-        cout << "the next is: " << opt.value().taskstory_id << endl;
+        //cout << "the next is: " << opt.value().taskstory_id << endl;
         if(opt.has_value()){
 
             next_branch_result = opt;
             return;
         }
-    }
-    //////////#### CUSTOM SELECTORS ####/////////
-    const auto & modulated_answer = any_cast<string>(answer); // = answer_transformation_strategy(answer);
-    //Match custom selectors
-    if(j.find(modulated_answer) != j.end()){
-        //"Yes":2, "YEEEESSS":2 , "No":5
-        next_branch_result = strategy_return{
-            .if_branch = j[modulated_answer],
-            .taskstory_id = j["taskstory_id"]
-        };
-    }else{
-        next_branch_result = std::nullopt;
     }
 }
 
@@ -170,3 +163,93 @@ template<typename T>void answer_branches<T>::enroute(const json & j){
     }
 }
 
+optional<string> get_taskstory_id(const json & j){
+    const auto & task_id = j.find("taskstory_id");
+    if(task_id != j.end()){
+        return task_id.value();
+    }else{
+        return nullopt;
+    }
+}
+
+int get_if_branch(const json & j){
+    const auto & branch_id = j.find("if_branch");
+    if(branch_id != j.end()){
+        return branch_id.value();
+    }else{
+        return static_cast<int>(e_branches::ERROR_JSON);
+    }
+}
+
+template<typename T>
+std::optional<strategy_return> answer_branches<T>::predefined_boolean_yes_no_affirmative_yes
+(const json & j, string arg)
+const noexcept{
+    const static unordered_set<string> possible_affirmative{
+        "yes","true", "good","fine","affirmative"
+    };
+    string lowered = arg;
+    boost::algorithm::to_lower(lowered);
+    if( possible_affirmative.find(lowered) != possible_affirmative.end()){
+        return strategy_return{
+            j["true"].get<int>(),
+            j["taskstory_id"]
+        };
+    }else if(j.contains("else")){
+        return strategy_return{
+            j["else"].get<int>(),
+            j["taskstory_id"]
+        };
+    }else{
+        return nullopt;
+    }
+}
+
+template<typename T>
+std::optional<strategy_return> answer_branches<T>::ranges
+(const json & ranges_array,int arg)
+const noexcept{
+    for(const auto & [k,v] : ranges_array.items()){
+        //Match value to get the "if_branch"
+        const auto & range = v["range"];
+        const auto & values = range["values"];
+        if(arg < values["<"] && arg > values[">"]){
+            //Meet the range!
+            strategy_return sr{
+                .if_branch = range["if_branch"],
+                .taskstory_id = range["taskstory_id"]
+            };
+            return sr;
+        }
+    }
+    return nullopt;
+}
+
+template<typename T>
+std::optional<strategy_return> answer_branches<T>::custom
+(const json & j,string arg)
+const noexcept{
+    //////////#### CUSTOM SELECTORS ####/////////
+    //const auto & modulated_answer = any_cast<string>(this->answer); // = answer_transformation_strategy(answer);
+    const auto & modulated_answer = arg;
+    //Match custom selectors
+    const auto & match = j.find(modulated_answer);
+    if(match != j.end()){
+        //"Yes":2, "YEEEESSS":2 , "No":5
+        cout << j.dump(4) << endl;
+        cout << match.value() << endl;
+        strategy_return sr {
+            .if_branch = get_if_branch(match.value()),
+            .taskstory_id = get_taskstory_id(j)
+        };
+        return sr;
+    }
+    else if(j.find("else") != j.end()){
+        return strategy_return{
+            .if_branch = get_if_branch(j["else"]),
+            .taskstory_id = get_taskstory_id(j)
+        };
+    }else{
+        return std::nullopt;
+    }
+}
