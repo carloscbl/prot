@@ -1,20 +1,40 @@
 #ifndef TYPE_CONTAINER_H
 #define TYPE_CONTAINER_H
 #include <string>
+#include <optional>
 #include <functional>
-#include <cstdlib>
 #include <map>
 #include <any>
 
 
 using namespace std;
+template<typename T,typename Y,typename ... args>
+any get_value(string s,Y conversor, args ... extra){
+    char * p;
+    T ret;
+    ret = static_cast<T>(conversor(s.c_str(), &p, extra...));
+    if(p){
+        return ret;
+    }else{
+        return nullptr;
+    }
+}
 
-std::map<string,function<any(string,char *)>> conversors_map{
-    {"INTEGER", (function<int(string,char *)>)[](string s, char * p) -> int{ return stoi(s, &p, 10);}},
-    {"FLOAT", (function<float(string,char *)>)[](string s)->float{ return std::stof(s);}},
-    {"BOOL", (function<bool(string,char *)>)[](string s)->bool{ return (bool)std::stoi(s);}},
-    {"STRING", (function<string(string,char *)>)[](string s)->string{ return s;}},
+std::map<string,function<any(string)>> conversors_map{
+    {"INTEGER", (function<any(string)>)[](string s) -> any{ 
+        return get_value<int>(s,strtol,10) ;
+        // char * p;
+        // int ret;
+        // ret = strtol(s.c_str(), &p);
+        // if(p){
+        //     return ret;
+        // }else{
+        //     return nullopt;
+        // }
+    }},
+    {"DOUBLE", (function<any(string)>)[](string s)->any{ return get_value<long>(s,strtod);}},
+    // {"BOOL", (function<optional<bool>(string)>)[](string s) -> bool{ return static_cast<bool>(strtol(s.c_str(), &p, 10));}},
+    {"STRING", (function<any(string)>)[](string s)->any{ return s;}},
 };
-
 
 #endif //TYPE_CONTAINER_H

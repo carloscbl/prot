@@ -30,7 +30,7 @@ strategy_return make_get_next_branch(const json & question_obj, any arg ){
     return answer_branches<T>(question_obj, arg ).get_next_branch();
 }
 
-std::unordered_map<std::type_index, function<strategy_return(const json &,any)>> type_names{
+std::unordered_map<std::type_index, function<strategy_return(const json &,any )>> type_names{
     {std::type_index(typeid(int)),make_get_next_branch<int>},
     {std::type_index(typeid(string)), make_get_next_branch<string> },
     {std::type_index(typeid(double)),make_get_next_branch<double>},
@@ -44,8 +44,14 @@ strategy_return form_parser::enroute_json_type(const json & question_obj, const 
     auto conversor = conversors_map.find(expected_answer_type);
     if(conversor != conversors_map.end()){
         converted_answer = conversor->second(answer);
-        auto func = type_names[std::type_index(converted_answer.type())];
-        return func(question_obj,converted_answer);
+        if(converted_answer.has_value()){
+            std::type_index index(converted_answer.type());
+            auto func = type_names.find(index);
+            if(func != type_names.end()){
+                auto result = func->second(question_obj,converted_answer);
+                return result;
+            }
+        }
     }
     return strategy_return{};
 }

@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include <any>
+#include <functional>
 #include <array>
 #include <memory>
 #include <boost/algorithm/string.hpp>
