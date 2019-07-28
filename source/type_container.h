@@ -10,13 +10,13 @@
 using namespace std;
 template<typename T,typename Y,typename ... args>
 any get_value(string s,Y conversor, args ... extra){
-    char * p;
+    char * p = nullptr;
     T ret;
     ret = static_cast<T>(conversor(s.c_str(), &p, extra...));
-    if(p){
-        return ret;
+    if(*p != '\0'){
+        return any();
     }else{
-        return nullptr;
+        return ret;
     }
 }
 
