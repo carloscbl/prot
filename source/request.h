@@ -11,11 +11,9 @@ class request : public CRUD_actionable<request>
 private:
     CRUD_plus_actions_map request_map{
         {"add",    [](map<char, string> s) {}},
-        {"remove", [](map<char, string> s) {}},
-        {"update", [](map<char, string> s) {}},
         {"test", [this](map<char, string> s) {
             json j ;
-            if(s.size() > 0){
+            if(!s.empty()){
                 j["answer"] = s.cbegin()->second;
             }
             test(j);
@@ -25,10 +23,10 @@ private:
 
   //Modulator params like -h -n -P
   map_local_functions setters{ 
-    //{'t', &request::test},
+    { 't', &request::test },
   };
 public:
-    request(/* args */);
+    request();
     ~request();
 
     void send_action(std::string action, map<char, string> params) override;
