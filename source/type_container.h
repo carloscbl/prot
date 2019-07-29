@@ -32,7 +32,7 @@ std::map<string,function<any(string)>> conversors_map{
         //     return nullopt;
         // }
     }},
-    {"DOUBLE", (function<any(string)>)[](string s)->any{ return get_value<long>(s,strtod);}},
+    {"DOUBLE", (function<any(string)>)[](string s)->any{ return get_value<double>(s,strtod);}},
     // {"BOOL", (function<optional<bool>(string)>)[](string s) -> bool{ return static_cast<bool>(strtol(s.c_str(), &p, 10));}},
     {"STRING", (function<any(string)>)[](string s)->any{ return s;}},
 };
