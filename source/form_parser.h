@@ -4,6 +4,7 @@
 #include <map>
 #include <iostream>
 #include <any>
+#include <functional>
 #include <array>
 #include <memory>
 #include <boost/algorithm/string.hpp>
@@ -36,8 +37,9 @@ public:
 };
 
 struct strategy_return{
+public:
     int if_branch = static_cast<int>(e_branches::ERROR_JSON); //Id of the the next question
-    string taskstory_id;// Name of the taskstory to perform
+    optional<string> taskstory_id;// Name of the taskstory to perform
 };
 
 template <typename T>
@@ -51,45 +53,13 @@ private:
     const any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
-    std::optional<strategy_return> ranges(const json & ranges_array,int arg){
-        for(const auto & [k,v] : ranges_array.items()){
-            //Match value to get the "if_branch"
-            const auto & range = v["range"];
-            const auto & values = range["values"];
-            if(arg < values["<"] && arg > values[">"]){
-                //Meet the range!
-                strategy_return sr{
-                    .if_branch = range["if_branch"],
-                    .taskstory_id = range["taskstory_id"]
-                };
-                return sr;
-            }
-        }
-        return nullopt;
-    }
+    std::optional<strategy_return> ranges(const json & ranges_array,int arg) const noexcept;
+    std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg)const noexcept;
+    std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
 
-    std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg){
-        const static unordered_set<string> possible_affirmative{
-            "yes","true", "good","fine","affirmative"
-        };
-        string lowered = arg;
-        boost::algorithm::to_lower(lowered);
-        if( possible_affirmative.find(lowered) != possible_affirmative.end()){
-            return strategy_return{
-                j["true"].get<int>(),
-                j["taskstory_id"]
-            };
-        }else if(j.contains("else")){
-            return strategy_return{
-                j["else"].get<int>(),
-                j["taskstory_id"]
-            };
-        }else{
-            return nullopt;
-        }
-    }
     //C++17, with inline you can use header :O
     const map<string_view, function<std::optional<strategy_return>(const json & current_selector,any)>> kind_branch_t_map{
+        {"custom",[this](const json & j,any s){ return custom(j,any_cast<string>(s));}},
         {"ranges",[this](const json & j,any s){ return ranges(j,any_cast<int>(s));}},
         {"predefined_boolean_yes_no_affirmative_yes", 
             [this](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
@@ -133,6 +103,17 @@ struct next_question_data
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
 //Lets try to keep us from add more indirection, to find a more direct and concise solution
+
+struct form_state{
+    //string id;
+    //int current_QA_id;
+    //queue<command> taskstory;
+    //map<string,string> answers_history;
+    int current_id;
+    string current_answer;
+    int next_branch_id;
+};
+
 class form_parser{
 private:
     const json & j;
@@ -148,7 +129,7 @@ private:
 
     next_question_data get_next(const string & answer);
 
-    std::optional<json> find_questions_by_id(int id) noexcept;
+    std::optional<json> find_questions_by_id(int id) const noexcept;
     
     next_question_data form_traverse(const string & answer){
         //int id = current_id;
@@ -159,10 +140,6 @@ private:
     inline bool is_traversable_id(int id){
         if(id != static_cast<int>(e_branches::ERROR_JSON) ) return true;
         else {return false;}
-    }
-
-    const string get_initial_ansewer()noexcept{
-        return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
     }
 
     void form_publisher_vars(){
@@ -177,17 +154,15 @@ private:
     void form_ready(){}
 
     void perform_taskstory(const json & taskstory){
-
-        command_expr_evaluator cee (taskstory, variables);
-        //cout << taskstory.dump(4) << endl;
+        //command_expr_evaluator cee (taskstory, variables);
     }
 
     void user_import_preferences(){
         variables["user.user"] = "carloscbl";
-
     }
 
-    string form_pipeline(const string & answer){
+public:
+    string form_next_in_pipeline(const string & answer){
         //The follow order should be consider
         //1-Ready to get the bare minimum to run
         //2-Publish every preavailable variable
@@ -206,38 +181,35 @@ private:
         
         return next_question.question_str;
     }
-
-public:
     form_parser(const json & j);
+    form_parser(const json & j,const form_state & fs);
     const array<string,5> subsection_names{
         "form","bindings","variables", "configurables", "questions"
     };
     const string get_name(){
         return subsections["form"]->section["form.name"].get<string>();
     }
+    
+    const string get_initial_question() const noexcept{
+        return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+    }
+    unique_ptr<form_state> get_state() const noexcept{
+        auto ptr = make_unique<form_state>();
+        //     .current_id = this->current_id,
+        //     .current_answer = this->current_answer,
+        //     .next_branch_id = this->next_branch_id
+        // });
+        ptr->current_id = this->current_id;
+        ptr->current_answer = this->current_answer;
+        ptr->next_branch_id = this->next_branch_id;
+        return ptr;
+    }
     void test_form_run(){
         //Cicle different answers in order
         const string Q = "Q: ";
-        cout << Q << get_initial_ansewer() << endl;
-        cout << Q << form_pipeline("YES") << endl;
-        cout << Q << form_pipeline("25") << endl;
-    }
-
-    //As this call should be threaded, and handle a life time singulary special each instance we need to set a good set of rules
-    //A timer for maximum life time
-    //A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
-    //We also need a valid user that should be valid outside
-    //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
-    //
-    
-    void form_run(iuser user){
-        //Good idea to thread pool this call 
-        //Here is the point of concurrence, once a form is readed and loaded, and a user is responding questions
-        string answer = fetch_and_send_out_first_answer();
-        form_pipeline(answer);
-    }
-    string fetch_and_send_out_first_answer(){
-        return "";
+        cout << Q << get_initial_question() << endl;
+        cout << Q << form_next_in_pipeline("YES") << endl;
+        cout << Q << form_next_in_pipeline("25") << endl;
     }
 };
 

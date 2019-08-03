@@ -110,14 +110,23 @@
       "id": 3,
       "question": "Your washer is a industrial one?",
       "answer_tag": "industrial",
-      "type_user_input": "BOOL",
+      "type_user_input": "STRING",
       "mode": [
         "sequential",
         "once"
       ],
       "answers_branches": {
-        "yes": 0,
-        "no": 0
+        "custom": {
+          "yes": {
+            "if_branch" : -1
+          },
+          "no":{
+            "if_branch" : 0
+          },
+          "else":{
+            "if_branch" : -1
+          } 
+        }
       }
     }
   ],

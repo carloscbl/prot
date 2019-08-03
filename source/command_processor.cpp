@@ -89,6 +89,10 @@ void command_processor::route_positional_param(vector<string> args)
     else if (actioners.find(args[0]) != actioners.end())
     {
       map<char, string> correspondance;
+      if(args.size() < 2){
+        cout << "Provide complementary params" << endl;
+        return;
+      }
       if (!params_sanity(vector<string>(args.begin() + 2, args.end()), correspondance))
       {
         actioners[args[0]]->send_action(args[1], correspondance);

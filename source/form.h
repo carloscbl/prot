@@ -9,48 +9,39 @@
 #include <map>
 #include <functional>
 #include <memory>
+#include "form_reader.h"
+#include "json.hpp"
 
 #include "CRUD_actionable.h"
-#include "form_reader.h"
-#include "form_parser.h"
 
 using namespace std;
-
-
-class form;
-
-namespace env {//Handles the result, executable of a form, and passes through to its components to auto compose
-  static map<string, unique_ptr<form>> forms;
-}
-
-
 
 //the form class stores the form in raw internally and process it to be able to present it externally
 class form : public CRUD_actionable<form> {
 private:
+using form_register = map<string, unique_ptr<form>>;
+  inline static form_register forms;
   //Components
   unique_ptr<form_reader> json_reader;
-  unique_ptr<form_parser> json_parser;
 
   //This map, handles the posible actions to be performed from outside commands
   //Positional params
   CRUD_plus_actions_map form_map{
-    {"add",    [](map<char, string> s) {
+    {"add",    [this](map<char, string> s) {
       //Creates a new form and store it with index id and passing a states machine graph
       unique_ptr<form> form_ = make_unique<form>();
       form_->add(s);
-      env::forms[form_->id] = move(form_);
+      form::forms[form_->id] = move(form_);
     }},
     {"remove", [](map<char, string> s) {}},
     {"update", [](map<char, string> s) {}},
     {"compute", [](map<char, string> s) {}},
     {"list", [](map<char, string> s) {
-      for(const auto & form : env::forms){
+      for(const auto & form : form::forms){
         cout << form.second->name << endl;
       }
     }},
   };
-
   //Modulator params like -h -n -P
   map_local_functions setters{ 
     {'P', &form::set_path},
@@ -71,6 +62,11 @@ public:
   //iactionable
   void send_action(std::string action, map<char, string> params) override;
 
+  const json & get_json() const noexcept { return json_reader->get_json();} 
+
+  static inline const form_register & get_register() noexcept{ return form::forms; }
+
+  static const string get_form_name(const json & j){ return j["form"]["form.name"].get<string>();}
 };
 
 #endif //FORM_H

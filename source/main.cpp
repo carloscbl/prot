@@ -15,10 +15,13 @@
 #include "form_reader.h"
 #include "form_parser.h"
 #include "form_collector.h"
+#include "request.h"
 
 #define p(X) std::cout <<  X  <<std::endl;
 
 using namespace std;
+
+
 
 int main(int argc, char const *argv[])
 {
@@ -35,18 +38,30 @@ int main(int argc, char const *argv[])
     u username
     h hour
     M minute
-    So -MhuDndmy 16 00 albertRiv "Not in home but..." "Call Assitant to walk with the dog" 22 12 2019
+    So -MhuDndmy 16 00 alberto "Not in home but..." "Call Assitant to walk with the dog" 22 12 2019
   */
-
+  form_collector fc;
   command_processor cp;
   task task_;
+
+  std::vector<std::string> forms_paths;
+  forms_paths =  fc.get_forms_paths();
+
   form form_;
+  request request_;
   cp.register_actionable("task", &task_);
   cp.register_actionable("form", &form_);
-  //form_collector fc;
-  //form_reader fr("../source/design/washclothes.json");
-  //form_parser fp(fr.get_json());
+  cp.register_actionable("req", &request_);
+  
+//////////////////////////////////////////////////////
+//// COMMANDS ARE NOW PERFORMABLE
+//////////////////////////////////////////////////////
 
+  for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string & s){
+    cp.perform_command("form add -P " + s);
+  });
+
+//////////////////////////////////////////////////////
   vector<string> arg_i(argv + 1, argv + argc);
 
   p("Starting program \n\n");

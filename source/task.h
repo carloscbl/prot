@@ -14,11 +14,6 @@
 
 using namespace std;
 
-class task;
-
-namespace env{
-  static map<string,unique_ptr< task>> tasker;
-}
 
 class task : public CRUD_actionable<task>{
 private:
@@ -27,6 +22,7 @@ private:
   string stamp;
   string /*user*/ m_user;
   time_t dateUTC;
+  inline static map<string,unique_ptr< task>> tasker;
 
   map_local_functions setters{
       {'n',&task::set_name},
@@ -44,7 +40,7 @@ private:
     {"add",[](map<char,string>s){
         unique_ptr<task> task_ = make_unique<task>();
         task_->add(s);
-        env::tasker[task_->id] = move(task_);
+        task::tasker[task_->id] = move(task_);
     }
     },
     {"remove",[this](map<char,string>params){
@@ -52,7 +48,7 @@ private:
 
       it = params.find('i');
       if(it != params.end()){
-        env::tasker.erase(it->second);
+        task::tasker.erase(it->second);
       }else{
         cout << "please provide 'i' argument";
         return;
@@ -64,7 +60,7 @@ private:
 
       it = params.find('i');
       if(it != params.end()){
-        auto instance = env::tasker[it->second].get();
+        auto instance = task::tasker[it->second].get();
         this->update(params, *instance);
       }else{
         cout << "please provide 'i' argument";
@@ -72,8 +68,8 @@ private:
       }
     }},
     {"list",[&](map<char,string> s){
-        if(env::tasker.size()==0) cout << "Empty list, no task provided" << endl;
-        for(auto && e : env::tasker){
+        if(task::tasker.size()==0) cout << "Empty list, no task provided" << endl;
+        for(auto && e : task::tasker){
           //cout << e.first << "-:-" << e.second->id <<endl;
           e.second->print_();
         }

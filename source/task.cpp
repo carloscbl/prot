@@ -16,7 +16,7 @@ void task::remove(map<char,string>params, task & instance){
 
   it = params.find('i');
   if(it != params.end()){
-    env::tasker.erase(it->second);
+    task::tasker.erase(it->second);
   }else{
     cout << "please provide 'i' argument";
     return;
@@ -41,9 +41,9 @@ void task::remain(map<char,string>params){
   auto it = params.end();
   it = params.find('i');
   if(it != params.end()){
-    env::tasker[it->second]->print_remain();
+    task::tasker[it->second]->print_remain();
   }else{
-    for(auto & t : env::tasker){
+    for(auto & t : task::tasker){
       t.second->print_remain();
     }
   }

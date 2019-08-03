@@ -6,10 +6,6 @@ void command::parse(const string & command_str){
     smatch what;
 
     if( regex_search(command_str, what, rex ) ){
-        // std::cout << "Match found\n";
-        // std::cout << "command: " << what[1].str() << endl;
-        // std::cout << "positional: " << what[2].str() << endl;
-        // std::cout << "parameters: " << what[3].str() << endl;
         this->command = what[1].str();
         this->placement.push_back(what[2].str());
         regex rex2 ( arguments_regex );
@@ -22,7 +18,6 @@ void command::parse(const string & command_str){
         while (next != end) {
             std::smatch match = *next;
             parameters.push_back(dual_param(match));
-            cout << "-------" << endl;
             next++;
         }
 
