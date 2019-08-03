@@ -4,11 +4,14 @@
 #include "ischeduler.h"
 #include <map>
 #include <set>
+#include <queue>
 #include <climits>
 #include "itasker.h"
 
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
+
+using namespace std;
 
 // Set of IDs that cover a time interval
 // interval tree from intervals of timestamps to a set of ids
@@ -24,13 +27,21 @@ private:
     };
 public:
     bool is_valid(){ return validate(); }
-}
+};
 
+
+//In the future this would be templatized as is trivial the contained type
+//TODO:
+//Start from scrach the scheduler, empty
+//-Add a task
+//  -Check if there is available hours
 class scheduler : public ischeduler
 {
 private:
-    im_t m_interval_map;
+    im_t m_interval_map;//Here lie the real scheduled task
     bool add_task(itasker * task);
+    queue<itasker*> provisional;//Here the waiting to operate
+
 public:
     scheduler(/* args */);
     ~scheduler();
@@ -42,6 +53,7 @@ public:
 
 scheduler::scheduler(/* args */)
 {
+
 }
 
 scheduler::~scheduler()
