@@ -30,11 +30,34 @@ public:
 };
 
 
-//In the future this would be templatized as is trivial the contained type
-//TODO:
-//Start from scrach the scheduler, empty
-//-Add a task
-//  -Check if there is available hours
+/* In the future this would be templatized as is trivial the contained type
+TODO:
+Start from scrach the scheduler, empty
+Add a task single Task
+  -Check if there is available hours
+  -Introduce it into the interval map
+Add a Group of task interdependant
+    -Block mutex
+    -Iterate over the commands
+    -Evaluate and enqueue in the provisional queue
+    -Add the provisional queue to the expresions map, to resolve dependences created in situ
+    -...End iterations
+    -Add all the provisional to the interval map in order of queue
+    -Clean the provisional
+    -unlock mutex
+Get Range from interval
+    -Search for it in the interval map
+    -Return a vector with all of them
+Delete
+    -Search in the interval map
+    -Delete
+Delete Group
+    -Find the group and delete it
+Euristics to find gaps
+    -FindRange
+    -FindRelative
+    -...
+*/
 class scheduler : public ischeduler
 {
 private:
