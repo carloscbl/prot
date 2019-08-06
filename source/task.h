@@ -11,6 +11,7 @@
 #include <ctime>
 #include <cmath>
 #include "CRUD_actionable.h"
+#include "ischeduler.h"
 
 using namespace std;
 
@@ -20,9 +21,11 @@ private:
   string name = "";
   string description;
   string stamp;
-  string /*user*/ m_user;
+  string m_user;
   time_t dateUTC;
   inline static map<string,unique_ptr< task>> tasker;
+
+  unique_ptr<ischeduler> scheduler;
 
   map_local_functions setters{
       {'n',&task::set_name},
@@ -94,7 +97,6 @@ public:
     void set_user(string user_){m_user = user_;}
 
     void remove(map<char,string>params, task & instance);
-    //void update(map<char,string>params);
 
     void print_remain();
 

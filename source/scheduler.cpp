@@ -1,6 +1,6 @@
 #include "scheduler.h"
 
-scheduler::scheduler(/* args */)
+scheduler::scheduler()
 {
 
 }
