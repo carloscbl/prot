@@ -8,10 +8,10 @@
 #include <map>
 #include <string>
 
-class iactionable {
-  public:
-  virtual void send_action(std::string action ,std::map<char,std::string> params) = 0;
+class iactionable
+{
+public:
+    virtual void send_action(std::string action, std::map<char, std::string> params) = 0;
 };
-
 
 #endif //IACTIONABLE_H

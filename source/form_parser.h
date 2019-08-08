@@ -204,13 +204,6 @@ public:
         ptr->next_branch_id = this->next_branch_id;
         return ptr;
     }
-    void test_form_run(){
-        //Cicle different answers in order
-        const string Q = "Q: ";
-        cout << Q << get_initial_question() << endl;
-        cout << Q << form_next_in_pipeline("YES") << endl;
-        cout << Q << form_next_in_pipeline("25") << endl;
-    }
 };
 
 

@@ -14,9 +14,9 @@ class commander
 private:
     /* data */
 protected:
-    static commander * cm;
-public:
+    static commander *cm;
 
+public:
 };
 
 #endif //COMMANDER_H

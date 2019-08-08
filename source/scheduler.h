@@ -7,6 +7,7 @@
 #include <queue>
 #include <climits>
 #include "itasker.h"
+#include "task.h"
 
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
@@ -15,8 +16,9 @@ using namespace std;
 
 // Set of IDs that cover a time interval
 // interval tree from intervals of timestamps to a set of ids
-using task_t = itasker *;
 using time_interval = boost::icl::interval<time_t>;
+using task_t = ischeduler::task_t;
+
 typedef boost::icl::interval_map<time_t, task_t> im_t;
 // a time interval
 typedef boost::icl::interval<time_t> interval_t;
@@ -52,8 +54,8 @@ Euristics to find gaps
 class scheduler : public ischeduler
 {
 private:
-    im_t m_interval_map;//Here lie the real scheduled task
-    queue<task_t> provisional;//Here the waiting to operate
+    im_t m_interval_map;       //Here lie the real scheduled task
+    queue<task_t> provisional; //Here the waiting to operate
 
     bool add_task(task_t task);
 
@@ -61,9 +63,9 @@ public:
     scheduler(/* args */);
     virtual ~scheduler();
     vector<task_t> get_tasks_in(interval_t interval);
-    bool get_range(time_t start,time_t end) override {return true;};
-    bool find_range(time_t start,time_t end, time_t min_dur) override{return true;};
-    bool find_relative(scheduled item, time_with_negative after_before, time_t end, time_t min_dur) override;
+    bool get_range(time_t start, time_t end) override { return true; };
+    bool find_range(time_t start, time_t end, time_t min_dur) override { return true; };
+    bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) override;
 };
 
 #endif //SCHEDULER_H

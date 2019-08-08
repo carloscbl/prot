@@ -3,7 +3,8 @@
 #include <fstream>
 #include <iomanip>
 
-form_reader::form_reader(const std::string & file_path):original_file_path(file_path){
+form_reader::form_reader(const std::string &file_path) : original_file_path(file_path)
+{
     std::ifstream i(file_path);
     i >> j;
 
@@ -14,17 +15,20 @@ form_reader::form_reader(const std::string & file_path):original_file_path(file_
     //o << std::setw(4) << j << std::endl;
 }
 
-void form_reader::save_to_file(){
+void form_reader::save_to_file()
+{
     std::ofstream o(original_file_path);
     o << std::setw(4) << j << std::endl;
 }
 
-void form_reader::save_to_file(std::string new_path){
+void form_reader::save_to_file(std::string new_path)
+{
     std::ofstream o(new_path);
     o << std::setw(4) << j << std::endl;
 }
 
-void form_reader::reload(){
+void form_reader::reload()
+{
     std::ifstream i(original_file_path);
     i >> this->j;
 }

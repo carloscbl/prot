@@ -9,15 +9,16 @@ class form_reader
 private:
     mutable json j;
     std::string original_file_path;
+
 public:
-    const json & get_json() const{
+    const json &get_json() const
+    {
         return j;
     }
-    form_reader(const std::string & file_path);
+    form_reader(const std::string &file_path);
     void save_to_file();
     void save_to_file(std::string new_path);
     void reload();
 };
-
 
 #endif //FORM_READER_H

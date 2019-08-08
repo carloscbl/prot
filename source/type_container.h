@@ -21,17 +21,7 @@ any get_value(string s,Y conversor, args ... extra){
 }
 
 std::map<string,function<any(string)>> conversors_map{
-    {"INTEGER", (function<any(string)>)[](string s) -> any{ 
-        return get_value<int>(s,strtol,10) ;
-        // char * p;
-        // int ret;
-        // ret = strtol(s.c_str(), &p);
-        // if(p){
-        //     return ret;
-        // }else{
-        //     return nullopt;
-        // }
-    }},
+    {"INTEGER", (function<any(string)>)[](string s) -> any{ return get_value<int>(s,strtol,10) ; }},
     {"DOUBLE", (function<any(string)>)[](string s)->any{ return get_value<double>(s,strtod);}},
     // {"BOOL", (function<optional<bool>(string)>)[](string s) -> bool{ return static_cast<bool>(strtol(s.c_str(), &p, 10));}},
     {"STRING", (function<any(string)>)[](string s)->any{ return s;}},

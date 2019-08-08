@@ -17,18 +17,16 @@
 #include "form_collector.h"
 #include "request.h"
 
-#define p(X) std::cout <<  X  <<std::endl;
+#define p(X) std::cout << X << std::endl;
 
 using namespace std;
 
-
-
 int main(int argc, char const *argv[])
 {
-  /*Utilization
+    /*Utilization
   prot task <Name> <Description> <CreationDate>
   */
-  /*prototipe of utilization commands and inmediately the input so...  
+    /*prototipe of utilization commands and inmediately the input so...  
   task -> "Setting a task"  
     n name
     d day
@@ -40,43 +38,45 @@ int main(int argc, char const *argv[])
     M minute
     So -MhuDndmy 16 00 alberto "Not in home but..." "Call Assitant to walk with the dog" 22 12 2019
   */
-  form_collector fc;
-  command_processor cp;
-  task task_;
+    form_collector fc;
+    command_processor cp;
+    task task_;
 
-  std::vector<std::string> forms_paths;
-  forms_paths =  fc.get_forms_paths();
+    std::vector<std::string> forms_paths;
+    forms_paths = fc.get_forms_paths();
 
-  form form_;
-  request request_;
-  cp.register_actionable("task", &task_);
-  cp.register_actionable("form", &form_);
-  cp.register_actionable("req", &request_);
-  
-//////////////////////////////////////////////////////
-//// COMMANDS ARE NOW PERFORMABLE
-//////////////////////////////////////////////////////
+    form form_;
+    request request_;
+    cp.register_actionable("task", &task_);
+    cp.register_actionable("form", &form_);
+    cp.register_actionable("req", &request_);
 
-  for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string & s){
-    cp.perform_command("form add -P " + s);
-  });
+    //////////////////////////////////////////////////////
+    //// COMMANDS ARE NOW PERFORMABLE
+    //////////////////////////////////////////////////////
 
-//////////////////////////////////////////////////////
-  vector<string> arg_i(argv + 1, argv + argc);
+    for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string &s) {
+        cp.perform_command("form add -P " + s);
+    });
 
-  p("Starting program \n\n");
-  cp.perform_command(arg_i);
+    //////////////////////////////////////////////////////
+    vector<string> arg_i(argv + 1, argv + argc);
 
-  p("write \"exit\" to finish");
-  while (true){
+    p("Starting program \n\n");
+    cp.perform_command(arg_i);
 
-    string st;
-    getline(cin,st);
-    if(st == "exit"){
-      break;
+    p("write \"exit\" to finish");
+    while (true)
+    {
+
+        string st;
+        getline(cin, st);
+        if (st == "exit")
+        {
+            break;
+        }
+        cp.perform_command(st);
     }
-    cp.perform_command(st);
-  }
 
-  return 0;
+    return 0;
 }
