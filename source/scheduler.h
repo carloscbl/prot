@@ -57,11 +57,11 @@ private:
     im_t m_interval_map;       //Here lie the real scheduled task
     queue<task_t> provisional; //Here the waiting to operate
 
-    bool add_task(task_t task);
 
 public:
     scheduler(/* args */);
     virtual ~scheduler();
+    bool add_single(const task_t & task_) override;
     vector<task_t> get_tasks_in(interval_t interval);
     bool get_range(time_t start, time_t end) override { return true; };
     bool find_range(time_t start, time_t end, time_t min_dur) override { return true; };

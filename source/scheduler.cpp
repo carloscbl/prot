@@ -14,9 +14,9 @@ bool scheduler::find_relative(task_t item, chrono::seconds after_before, time_t 
 }
 
 //No check we assume checked
-bool scheduler::add_task(task_t task)
+bool scheduler::add_single(const task_t & task_)
 {
-    const auto &interval_ = task->get_interval();
-    this->m_interval_map.insert(make_pair(time_interval::closed(interval_.low, interval_.up), task));
+    const auto &interval_ = task_->get_interval();
+    this->m_interval_map.insert(make_pair(time_interval::closed(interval_.low, interval_.up), task_));
     return true;
 }

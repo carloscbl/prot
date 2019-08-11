@@ -38,6 +38,9 @@ int main(int argc, char const *argv[])
     M minute
     So -MhuDndmy 16 00 alberto "Not in home but..." "Call Assitant to walk with the dog" 22 12 2019
   */
+    //////////////////////////////////////////////////////
+    //// Single Instances
+    ////////////////////////////////////////////////////// 
     form_collector fc;
     command_processor cp;
     task task_;
@@ -47,19 +50,32 @@ int main(int argc, char const *argv[])
 
     form form_;
     request request_;
+    user user_;
     cp.register_actionable("task", &task_);
     cp.register_actionable("form", &form_);
     cp.register_actionable("req", &request_);
+    cp.register_actionable("user", &user_);
+
+    ////////////////////////////////////////////////////// 
+    ////////////////////////////////////////////////////// 
+
 
     //////////////////////////////////////////////////////
     //// COMMANDS ARE NOW PERFORMABLE
     //////////////////////////////////////////////////////
 
+    //// FORMS PATHS
     for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string &s) {
         cp.perform_command("form add -P " + s);
     });
+    
+    //// DEFAULT USER
+    cp.perform_command("user add -u carlos -p 123456 ");
 
     //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
+
+
     vector<string> arg_i(argv + 1, argv + argc);
 
     p("Starting program \n\n");
