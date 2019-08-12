@@ -49,8 +49,9 @@ private:
             
         }},
         {"sch", [](map<char, string> s) {
-            bool success = users["carlos"]->scheduler_->add_single(make_shared<task>());
-            cout << "scheduled task: " << success << endl;
+            auto & schedul = users["carlos"]->scheduler_;
+            schedul->add_single(make_shared<task>());
+            schedul->print_out();
         }}};
     map_local_functions setters{
         //{'P', &form::set_path},
