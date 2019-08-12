@@ -31,7 +31,6 @@ public:
     request();
     ~request();
 
-    void send_action(std::string action, map<char, string> params) override;
     void test(const json qa_request);
 };
 
@@ -68,16 +67,5 @@ void request::test(const json qa_request)
     cout << js.dump(4) << endl;
 }
 
-void request::send_action(std::string action, std::map<char, std::string> params)
-{
-    if (request_map.find(action) != request_map.end())
-    {
-        request_map[action](params);
-    }
-    else
-    {
-        cout << action << " :Does not match. Not provided correct arguments" << endl;
-    }
-}
 
 #endif //REQUEST_H

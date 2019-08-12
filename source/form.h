@@ -62,9 +62,6 @@ public:
     form(const std::string &path);
     virtual ~form();
 
-    //iactionable
-    void send_action(std::string action, map<char, string> params) override;
-
     const json &get_json() const noexcept { return json_reader->get_json(); }
 
     static inline const form_register &get_register() noexcept { return form::forms; }

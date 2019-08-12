@@ -2,7 +2,7 @@
 
 using namespace std;
 
-task::task() : CRUD_actionable(this->tasks_map, setters), dateUTC(time(nullptr))
+task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(time(nullptr))
 {
     static int acummulator = 0;
     id = "task" + to_string(acummulator++);
@@ -59,18 +59,6 @@ void task::remain(map<char, string> params)
         {
             t.second->print_remain();
         }
-    }
-}
-
-void task::send_action(std::string action, std::map<char, std::string> params)
-{
-    if (tasks_map.find(action) != tasks_map.end())
-    {
-        tasks_map[action](params);
-    }
-    else
-    {
-        cout << action << " :Does not match. Not provided correct arguments" << endl;
     }
 }
 

@@ -50,7 +50,9 @@ private:
         }},
         {"sch", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
-            schedul->add_single(make_shared<task>());
+            const auto && task_ = make_shared<task>();
+            task_->set_interval(10,15);
+            schedul->add_single(move(task_));
             schedul->print_out();
         }}};
     map_local_functions setters{
@@ -70,7 +72,6 @@ public:
     const string &get_name() const noexcept override { return minimal_data.username; }
     static user test_user();
 
-    void send_action(std::string action, std::map<char, std::string> params) override;
 };
 
 user::user(const user_minimal_data &m_data): CRUD_actionable(this->user_actions_map, setters),minimal_data(m_data){
@@ -83,18 +84,6 @@ user::user():CRUD_actionable(this->user_actions_map, setters){
 void user::init(){
     scheduler_ = make_unique<scheduler>();
     //tasker_ = make_shared<tasker>();
-}
-
-void user::send_action(std::string action, std::map<char, std::string> params)
-{
-    if (tasks_map.find(action) != tasks_map.end())
-    {
-        tasks_map[action](params);
-    }
-    else
-    {
-        cout << action << " :Does not match. Not provided correct arguments" << endl;
-    }
 }
 
 user user::test_user()

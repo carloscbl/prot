@@ -21,7 +21,7 @@ struct pair_interval
     time_t low;
 };
 
-class task : public CRUD_actionable<task>
+class task : public CRUD_actionable<task> 
 {
 private:
     string name = "";
@@ -96,6 +96,7 @@ private:
 
 public:
     string id;
+    string id2  = "taskorroko";
     task();
     virtual ~task();
     void set_day(string day);
@@ -108,6 +109,10 @@ public:
     void set_description(string description_) { description = description_; }
     void set_stamp(string stamp_) { stamp = stamp_; }
     void set_user(string user_) { m_user = user_; }
+    void set_interval(time_t start, time_t end){
+        this->interval.low = start;
+        this->interval.up = end;
+    }
 
     void remove(map<char, string> params, task &instance);
 
@@ -116,7 +121,6 @@ public:
     void remain(map<char, string> params);
     void print_() { cout << id << ":" << name << ":" << description << ":" << asctime(localtime(&dateUTC)) << endl; }
 
-    void send_action(std::string action, std::map<char, std::string> params) override;
     inline const pair_interval &get_interval() const noexcept { return this->interval; }
 };
 
