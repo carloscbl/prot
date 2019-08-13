@@ -25,9 +25,8 @@ If the whole set needs to be rescheduled and find where they fit, is a scheduler
 class itasker
 {
 public:
-    virtual pair_interval &get_interval() = 0;
     virtual void update_time() = 0;
-    virtual void create(string name) = 0;
+    //virtual void create(string name) = 0;
 };
 
 #endif //ITASKER_H

@@ -30,7 +30,7 @@ class user : public CRUD_actionable<user>, public iuser
 { //substitute by the final class
 private:
     static inline map<string, unique_ptr<user>> users;
-    shared_ptr<itasker> tasker_;
+    unique_ptr<tasker> tasker_;
     unique_ptr<ischeduler> scheduler_;
     CRUD_plus_actions_map user_actions_map{
         {"add", [](map<char, string> s) {
@@ -50,8 +50,19 @@ private:
         }},
         {"sch", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
-            const auto && task_ = make_shared<task>();
-            task_->set_interval(10,15);
+            auto & taske = users["carlos"]->tasker_;
+            auto t = taske->tasks.find("task1");
+
+            shared_ptr<task> task_;// = make_shared<task>();
+
+            if (t != taske->tasks.end())
+            {
+                task_ = t->second;
+            }else{
+
+            }
+            
+            task_->set_interval(stoi(s['s']) ,stoi(s['e']));
             schedul->add_single(move(task_));
             schedul->print_out();
         }}};
@@ -83,7 +94,7 @@ user::user():CRUD_actionable(this->user_actions_map, setters){
 }
 void user::init(){
     scheduler_ = make_unique<scheduler>();
-    //tasker_ = make_shared<tasker>();
+    tasker_ = make_unique<tasker>();
 }
 
 user user::test_user()
