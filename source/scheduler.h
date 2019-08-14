@@ -59,8 +59,22 @@ private:
 
 
 public:
+    enum class scheduler_policy{
+        deny,
+        priority,
+        find_gap
+    };
     scheduler(/* args */);
     virtual ~scheduler();
+    /*
+    On adding a new element
+    An scheduler, potentially can hold multiple task at the same time
+    But for us, this is not optimal, we will hold only one task at a time
+    This means we can't overlap
+    So if we find an intent of overlaping, we will deny the operation if the range is actually filled
+    This way we don't need to retroactively to reallocate the displaced ones, forward operations
+    In the future, we can do two stretegies, priority rank and find the gap.
+    */
     bool add_single(const task_t && task_) override;
     vector<task_t> get_tasks_in(interval_t interval);
     bool get_range(time_t start, time_t end) override { return true; };
