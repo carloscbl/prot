@@ -18,7 +18,9 @@ bool scheduler::add_single(const task_t && task_)
 {
     const auto &interval_ = task_->get_interval();
     //this->m_interval_map.insert(make_pair(time_interval::closed(interval_.start, interval_.end), task_));
-    this->m_interval_map.insert(make_pair(time_interval::closed(interval_.start, interval_.end), task_));
+
+    this->m_interval_map.set(make_pair(time_interval::closed(interval_.start, interval_.end), task_));
+    //this->m_interval_map.insert(make_pair(time_interval::closed(interval_.start, interval_.end), task_));
     //print_out();
     return true;
 }

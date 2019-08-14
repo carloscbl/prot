@@ -46,7 +46,6 @@ private:
             {
                 cout << "user: " << k << " pass:" << v->minimal_data.pass << endl;
             }
-            
         }},
         {"listsch", [](map<char, string> s) {
             users["carlos"]->scheduler_->print_out();
