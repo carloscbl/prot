@@ -64,7 +64,7 @@ public:
     bool add_single(const task_t && task_) override;
     vector<task_t> get_tasks_in(interval_t interval);
     bool get_range(time_t start, time_t end) override { return true; };
-    bool find_range(time_t start, time_t end, time_t min_dur) override { return true; };
+    bool find_range(time_t start, time_t end) override;
     bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) override;
     void print_out() const override;
 };

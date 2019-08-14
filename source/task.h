@@ -17,8 +17,8 @@ using namespace std;
 
 struct pair_interval
 {
-    time_t up;
-    time_t low;
+    time_t end;
+    time_t start;
 };
 
 class task : public CRUD_actionable<task> 
@@ -110,8 +110,8 @@ public:
     void set_stamp(string stamp_) { stamp = stamp_; }
     void set_user(string user_) { m_user = user_; }
     void set_interval(time_t start, time_t end){
-        this->interval.low = start;
-        this->interval.up = end;
+        this->interval.start = start;
+        this->interval.end = end;
     }
 
     void remove(map<char, string> params, task &instance);

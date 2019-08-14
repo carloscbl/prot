@@ -48,6 +48,13 @@ private:
             }
             
         }},
+        {"listsch", [](map<char, string> s) {
+            users["carlos"]->scheduler_->print_out();
+        }},
+        {"findrange", [](map<char, string> s) {
+            auto & schedul = users["carlos"]->scheduler_;
+            schedul->find_range(stoi(s['s']),stoi(s['e']));
+        }},
         {"sch", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
             auto & taske = users["carlos"]->tasker_;
