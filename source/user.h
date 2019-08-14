@@ -59,7 +59,8 @@ private:
             {
                 task_ = t->second;
             }else{
-
+                task_ = make_shared<task>();
+                //taske->tasks["task1"] = task_;
             }
             
             task_->set_interval(stoi(s['s']) ,stoi(s['e']));
@@ -77,7 +78,7 @@ public:
     user(); 
     virtual ~user() {}
 
-    const itasker &get_tasker() const noexcept override { return *tasker_; }
+    const tasker &get_tasker() const noexcept override { return *tasker_; }
     const ischeduler &get_scheduler() const noexcept override { return *scheduler_; }
 
     const string &get_name() const noexcept override { return minimal_data.username; }

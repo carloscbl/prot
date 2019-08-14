@@ -4,10 +4,9 @@
 #include <string>
 #include <vector>
 #include <memory>
-#include <boost/icl/interval.hpp>
-#include "task.h"
+//#include <boost/icl/interval.hpp>
 using namespace std;
-using time_interval = boost::icl::interval<time_t>;
+//using time_interval = boost::icl::interval<time_t>;
 
 /*
 This class should hold the management of the whole set of task for a given user
@@ -25,8 +24,8 @@ If the whole set needs to be rescheduled and find where they fit, is a scheduler
 class itasker
 {
 public:
-    virtual void update_time() = 0;
-    //virtual void create(string name) = 0;
+    
+    //virtual void update_time() = 0;
 };
 
 #endif //ITASKER_H

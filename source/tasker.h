@@ -14,9 +14,8 @@ class tasker : public itasker
 private:
 public:
     map<string,shared_ptr<task> > tasks; // TODO Setters and getters
-    tasker();
-    virtual ~tasker();
-    void update_time() override {};
+    //virtual ~tasker();
+    //void update_time() override {};
 };
 
 #endif //TASKER_H
