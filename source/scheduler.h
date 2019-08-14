@@ -63,7 +63,8 @@ public:
         deny,
         priority,
         find_gap
-    };
+    } policy = scheduler_policy::deny;
+
     scheduler(/* args */);
     virtual ~scheduler();
     /*
