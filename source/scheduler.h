@@ -18,6 +18,7 @@ using namespace std;
 // interval tree from intervals of timestamps to a set of ids
 using time_interval = boost::icl::interval<time_t>;
 using task_t = ischeduler::task_t;
+using priority_t = int;
 
 typedef boost::icl::interval_map<time_t, task_t> im_t;
 // a time interval
@@ -53,11 +54,6 @@ Euristics to find gaps
 */
 class scheduler : public ischeduler
 {
-private:
-    im_t m_interval_map;       //Here lie the real scheduled task
-    queue<task_t> provisional; //Here the waiting to operate
-
-
 public:
     enum class scheduler_policy{
         deny,
@@ -65,6 +61,35 @@ public:
         find_gap
     } policy = scheduler_policy::deny;
 
+    struct policy_relevant_data{
+        time_t & start, end;
+        priority_t prority;
+    };
+private:
+    im_t m_interval_map;       //Here lie the real scheduled task
+    queue<task_t> provisional; //Here the waiting to operate
+
+    function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;
+    
+    //This policy checks there is not other task actually in the required gap or returns false
+    bool deny_policy(policy_relevant_data && task_info_for_scheduler ) {
+        const auto & range = boost::make_iterator_range(
+            this->m_interval_map.equal_range(
+                time_interval::closed(
+                    task_info_for_scheduler.start, 
+                    task_info_for_scheduler.end)));
+        
+        if (!range.empty())
+        {
+            return false;
+        }
+        
+
+        return true;
+    }
+
+public:
+  
     scheduler(/* args */);
     virtual ~scheduler();
     /*

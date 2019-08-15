@@ -26,9 +26,14 @@ bool scheduler::add_single(const task_t && task_)
 }
 
 bool scheduler::find_range(time_t start, time_t end){
-    for(auto& p : boost::make_iterator_range(this->m_interval_map.equal_range(time_interval::closed(start, end)))){
-        cout << p.second->id << endl;
-    }
+    return policy_fun(this, policy_relevant_data{
+        .start = start,
+        .end = end
+    });
+    //Print_range
+    // for(auto& p : boost::make_iterator_range(this->m_interval_map.equal_range(time_interval::closed(start, end)))){
+    //     cout << p.second->id << endl;
+    // }
     return true;
 }
 
