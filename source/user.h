@@ -50,9 +50,18 @@ private:
         {"listsch", [](map<char, string> s) {
             users["carlos"]->scheduler_->print_out();
         }},
-        {"findrange", [](map<char, string> s) {
+        {"getrange", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
-            schedul->find_range(stoi(s['s']),stoi(s['e']));
+            auto vec_opt = schedul->get_range(stoi(s['s']),stoi(s['e']));
+            if (!vec_opt.has_value())
+            {
+                cout << "Empty range" << endl;
+                return;
+            }
+            for_each(vec_opt.value().cbegin(),vec_opt.value().cend(), [](const task_t & task_){
+                cout << task_->id << endl;
+            });
+            
         }},
         {"sch", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
@@ -88,8 +97,6 @@ public:
     const ischeduler &get_scheduler() const noexcept override { return *scheduler_; }
 
     const string &get_name() const noexcept override { return minimal_data.username; }
-    static user test_user();
-
 };
 
 user::user(const user_minimal_data &m_data): CRUD_actionable(this->user_actions_map, setters),minimal_data(m_data){
@@ -102,13 +109,6 @@ user::user():CRUD_actionable(this->user_actions_map, setters){
 void user::init(){
     scheduler_ = make_unique<scheduler>();
     tasker_ = make_unique<tasker>();
-}
-
-user user::test_user()
-{
-    user_minimal_data md{
-        "test_user", "123456"};
-    return user(md);
 }
 
 #endif //USER_H

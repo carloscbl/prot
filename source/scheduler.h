@@ -28,8 +28,8 @@ typedef boost::icl::interval<time_t> interval_t;
 TODO:
 Start from scrach the scheduler, empty
 Add a task single Task
-  -Check if there is available hours
-  -Introduce it into the interval map
+  -Check if there is available hours -
+  -Introduce it into the interval map -
 Add a Group of task interdependant
     -Block mutex
     -Iterate over the commands
@@ -66,32 +66,19 @@ public:
         priority_t prority;
     };
 private:
+    //This policy checks there is not other task actually in the required gap or returns false
+    bool deny_policy(policy_relevant_data && task_info_for_scheduler );
+
+
     im_t m_interval_map;       //Here lie the real scheduled task
     queue<task_t> provisional; //Here the waiting to operate
-
     function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;
-    
-    //This policy checks there is not other task actually in the required gap or returns false
-    bool deny_policy(policy_relevant_data && task_info_for_scheduler ) {
-        const auto & range = boost::make_iterator_range(
-            this->m_interval_map.equal_range(
-                time_interval::closed(
-                    task_info_for_scheduler.start, 
-                    task_info_for_scheduler.end)));
-        
-        if (!range.empty())
-        {
-            return false;
-        }
-        
-
-        return true;
-    }
 
 public:
   
-    scheduler(/* args */);
-    virtual ~scheduler();
+    scheduler() = default;
+    scheduler(scheduler_policy policy);
+    virtual ~scheduler() = default;
     /*
     On adding a new element
     An scheduler, potentially can hold multiple task at the same time
@@ -102,8 +89,9 @@ public:
     In the future, we can do two stretegies, priority rank and find the gap.
     */
     bool add_single(const task_t && task_) override;
+    bool add_group(const queue<task_t> && taskstory);
     vector<task_t> get_tasks_in(interval_t interval);
-    bool get_range(time_t start, time_t end) override { return true; };
+    optional<vector<task_t>> get_range(time_t start, time_t end) override ;
     bool find_range(time_t start, time_t end) override;
     bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) override;
     void print_out() const override;
