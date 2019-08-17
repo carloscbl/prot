@@ -9,15 +9,14 @@ To compile the project you need to have:
 
 sudo apt install gcc g++ make cmake
 
-To build:
+To build the application, from prot root directory execute the build.sh script:
 
-From prot root directory:
+./build.sh
 
-1- mkdir build
-2- cd build
-3- cmake ..
-4- make
+It will compile using 7 cores by default but you can pass the number of cores to use as parameter:
+
+./build.sh 4
 
 
 It is unlicensed, you can only use it to learn from the code. Reach me for commercial traits or secondary uses.
-Working in the future to provide a commercial solution.
+Working to provide a commercial solution in the future .
