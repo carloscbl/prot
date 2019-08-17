@@ -28,6 +28,7 @@ void test::perform_sequence_of(const string & file_path){
     std::string line;
     while (std::getline(i, line))
     {
+        if(line[0] == '#') continue;
         this->cp.perform_command(line);
     }
 }
