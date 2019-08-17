@@ -16,6 +16,8 @@
 #include "form_parser.h"
 #include "form_collector.h"
 #include "request.h"
+#include "test.h"
+
 
 #define p(X) std::cout << X << std::endl;
 
@@ -51,10 +53,12 @@ int main(int argc, char const *argv[])
     form form_;
     request request_;
     user user_;
+    test test_(cp);
     cp.register_actionable("task", &task_);
     cp.register_actionable("form", &form_);
     cp.register_actionable("req", &request_);
     cp.register_actionable("user", &user_);
+    cp.register_actionable("test", &test_);
 
     ////////////////////////////////////////////////////// 
     ////////////////////////////////////////////////////// 

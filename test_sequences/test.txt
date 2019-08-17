@@ -1,0 +1,4 @@
+task list
+task add -n pepe
+task add -n limon
+task list

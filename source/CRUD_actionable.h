@@ -22,7 +22,7 @@ protected:
 
 public:
     CRUD_actionable(CRUD_plus_actions_map &crud, map_local_functions &lf) : actions_map(crud), setters(lf) {}
-    //CRUD_actionable() = delete;
+    virtual ~CRUD_actionable() = default;
     void add(map<char, string> params)
     {
         if (params.size() == 0)
