@@ -20,6 +20,7 @@ using time_interval = boost::icl::interval<time_t>;
 using task_t = ischeduler::task_t;
 using priority_t = int;
 
+
 typedef boost::icl::interval_map<time_t, task_t> im_t;
 // a time interval
 typedef boost::icl::interval<time_t> interval_t;
@@ -71,7 +72,6 @@ private:
 
 
     im_t m_interval_map;       //Here lie the real scheduled task
-    queue<task_t> provisional; //Here the waiting to operate
     function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;
 
 public:
@@ -89,7 +89,21 @@ public:
     In the future, we can do two stretegies, priority rank and find the gap.
     */
     bool add_single(const task_t && task_) override;
-    bool add_group(const queue<task_t> && taskstory);
+
+    /*
+    Adding a group, is add an ordered group of task together,
+    They are all provisional and unresolved its expressions
+    This is a two step process, we need to ensure each have its relative free space
+    But we can not until we resolve them by its predecessor,
+    So we resolve the first, and add it to a provisional map which is a copy from the origin imap,
+    then we solve the second, with the available new info from its prev task info, and the origin copy,
+    and so on.
+    When finish, and all tasks got its allocation, then we swap the taskstory with the copy
+    if the policy heuristics fail, and dont find a gap for all of them, then we fail and do nothing
+    but return false;
+    */
+    bool add_group(queue<task_t> && provisional_taskstory);
+
     vector<task_t> get_tasks_in(interval_t interval);
     optional<vector<task_t>> get_range(time_t start, time_t end) override ;
     bool find_range(time_t start, time_t end) override;

@@ -62,15 +62,31 @@ void scheduler::print_out() const
 }
 
 bool scheduler::deny_policy(policy_relevant_data && task_info_for_scheduler ) {
-        const auto & range = boost::make_iterator_range(
-            this->m_interval_map.equal_range(
-                time_interval::closed(
-                    task_info_for_scheduler.start, 
-                    task_info_for_scheduler.end)));
+    const auto & range = boost::make_iterator_range(
+        this->m_interval_map.equal_range(
+            time_interval::closed(
+                task_info_for_scheduler.start, 
+                task_info_for_scheduler.end)));
 
-        if (!range.empty())
-        {
-            return false;
-        }
-        return true;
+    if (!range.empty())
+    {
+        return false;
     }
+    return true;
+}
+
+bool scheduler::add_group(queue<task_t> && provisional_taskstory){
+    im_t provisional( this->m_interval_map ); //Copy in
+
+    while (!provisional_taskstory.empty())
+    {
+    //    const auto & current_task = provisional_taskstory.front();
+        //We got the element... now we need to evaluate it
+        provisional_taskstory.pop();
+    }
+
+
+
+
+    return true;
+}

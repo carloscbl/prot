@@ -128,7 +128,6 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
             }
             else
             {
-
                 cout << "NON SUPPORTED: " << var->second << endl;
             }
         }

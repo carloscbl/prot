@@ -15,8 +15,9 @@ cd $BUILDDIR
 
 # Build the application
 
-if [ -n "$1" ]
+if [ -n "$1" ]; then
   CORES=$1
+fi
 
 cmake ..
 make -j $CORES

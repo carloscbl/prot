@@ -154,7 +154,7 @@ private:
     void form_ready(){}
 
     void perform_taskstory(const json & taskstory){
-        //command_expr_evaluator cee (taskstory, variables);
+        command_expr_evaluator cee (taskstory, variables);
     }
 
     void user_import_preferences(){
