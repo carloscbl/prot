@@ -1,0 +1,8 @@
+#Here we test the secuences of QA asociated to a specific form
+#We are testing washer form
+#test will give us the initial question
+req test
+#-a == answer our answer to the question "Do you have washer?"
+req test -a yes
+#How many kg have your washer capacity? -a 5 for normal branch
+req test -a 5

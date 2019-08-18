@@ -65,7 +65,7 @@ const json form_runner::run(const json &request_json) const noexcept
 {
     const auto &state = get_session();
     form_parser fp(form_.get_json(), *state); //,*state
-    string question;
+    unique_ptr<next_question_data> question;
     if (request_json.is_null())
     {
         question = fp.get_initial_question();
@@ -77,7 +77,10 @@ const json form_runner::run(const json &request_json) const noexcept
     }
     user_running_forms[get_unique_id_session()] = fp.get_state();
     json response_j;
-    response_j["next_question"] = question;
+    response_j["next_question"] = question->question_str;
+    //TODO: Add pass the taskstory and the parsed variables to the user scheduler
+    
+
     return response_j;
 }
 

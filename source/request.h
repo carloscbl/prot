@@ -29,16 +29,12 @@ private:
 
 public:
     request();
-    ~request();
+    ~request() = default;
 
     void test(const json qa_request);
 };
 
 request::request() : CRUD_actionable(this->request_map, setters)
-{
-}
-
-request::~request()
 {
 }
 
@@ -62,9 +58,9 @@ void request::test(const json qa_request)
 
     form_runner fr(user_, *aa->second);
 
-    auto &js = fr.run(qa_request);
+    auto &response = fr.run(qa_request);
 
-    cout << js.dump(4) << endl;
+    cout << response.dump(4) << endl;
 }
 
 

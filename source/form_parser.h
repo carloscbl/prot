@@ -98,7 +98,8 @@ class questions{
 struct next_question_data
 {
     string question_str;
-    const json taskstory_json;
+    json taskstory_json;
+    map<string,json> form_variables;
 };
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
@@ -127,11 +128,11 @@ private:
 
     strategy_return enroute_json_type(const json & question_obj, const string & answer);
 
-    next_question_data get_next(const string & answer);
+    unique_ptr <next_question_data> get_next(const string & answer);
 
     std::optional<json> find_questions_by_id(int id) const noexcept;
     
-    next_question_data form_traverse(const string & answer){
+    unique_ptr <next_question_data> form_traverse(const string & answer){
         //int id = current_id;
         cout << "A: " << answer << endl;
         return get_next(answer);
@@ -152,17 +153,19 @@ private:
     }
 
     void form_ready(){}
+    //Here we should send to our scheduler the whole set of commands
 
-    void perform_taskstory(const json & taskstory){
-        command_expr_evaluator cee (taskstory, variables);
-    }
+    // void schedule_tasktory(const json & taskstory){
+    //     command_expr_evaluator cee (taskstory, variables);
+    // }
 
     void user_import_preferences(){
         variables["user.user"] = "carloscbl";
     }
 
 public:
-    string form_next_in_pipeline(const string & answer){
+
+    unique_ptr <next_question_data> form_next_in_pipeline(const string & answer){
         //The follow order should be consider
         //1-Ready to get the bare minimum to run
         //2-Publish every preavailable variable
@@ -175,11 +178,11 @@ public:
 
         user_import_preferences(); //This overrides default form vars, that are configurables
         
-        if(next_question.taskstory_json != json::value_t::null){
-            perform_taskstory(next_question.taskstory_json);
-        }
-        
-        return next_question.question_str;
+        // if(next_question.taskstory_json != json::value_t::null){
+        //     schedule_tasktory(next_question.taskstory_json);
+        // }
+        next_question->form_variables = this->variables;
+        return next_question;
     }
     form_parser(const json & j);
     form_parser(const json & j,const form_state & fs);
@@ -190,8 +193,10 @@ public:
         return subsections["form"]->section["form.name"].get<string>();
     }
     
-    const string get_initial_question() const noexcept{
-        return find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+    unique_ptr <next_question_data> get_initial_question() const noexcept{
+        auto initial_question = make_unique<next_question_data> ();
+        initial_question->question_str = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+        return initial_question;
     }
     unique_ptr<form_state> get_state() const noexcept{
         auto ptr = make_unique<form_state>();

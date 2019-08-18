@@ -65,7 +65,7 @@ strategy_return form_parser::enroute_json_type(const json &question_obj, const s
     return strategy_return{};
 }
 
-next_question_data form_parser::get_next(const string &answer)
+unique_ptr <next_question_data> form_parser::get_next(const string &answer)
 {
     json question;
     if (this->next_branch_id == static_cast<int>(e_branches::START))
@@ -98,9 +98,9 @@ next_question_data form_parser::get_next(const string &answer)
         taskstory_ = question["taskstories"][strategy_returned.taskstory_id.value()];
     }
 
-    next_question_data nqd{
-        next_question,
-        taskstory_};
+    unique_ptr <next_question_data> nqd = make_unique<next_question_data>();
+    nqd->question_str = next_question;
+    nqd->taskstory_json = taskstory_;
     return nqd;
 }
 
