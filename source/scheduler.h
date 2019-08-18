@@ -1,13 +1,14 @@
 #ifndef SCHEDULER_H
 #define SCHEDULER_H
 
-#include "ischeduler.h"
 #include <map>
 #include <set>
 #include <queue>
 #include <climits>
+#include "ischeduler.h"
 #include "itasker.h"
 #include "task.h"
+#include <mutex>
 
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
@@ -19,6 +20,7 @@ using namespace std;
 using time_interval = boost::icl::interval<time_t>;
 using task_t = ischeduler::task_t;
 using priority_t = int;
+class provisional_scheduler_RAII;
 
 
 typedef boost::icl::interval_map<time_t, task_t> im_t;
@@ -56,6 +58,7 @@ Euristics to find gaps
 class scheduler : public ischeduler
 {
 public:
+    friend provisional_scheduler_RAII;
     enum class scheduler_policy{
         deny,
         priority,
@@ -70,9 +73,24 @@ private:
     //This policy checks there is not other task actually in the required gap or returns false
     bool deny_policy(policy_relevant_data && task_info_for_scheduler );
 
-
+    std::mutex scheduler_mutex;
     im_t m_interval_map;       //Here lie the real scheduled task
     function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;
+    /*
+    Adding a group, is add an ordered group of task together,
+    They are all provisional and unresolved its expressions
+    This is a two step process, we need to ensure each have its relative free space
+    But we can not until we resolve them by its predecessor,
+    So we resolve the first, and add it to a provisional map which is a copy from the origin imap,
+    then we solve the second, with the available new info from its prev task info, and the origin copy,
+    and so on.
+    When finish, and all tasks got its allocation, then we swap the taskstory with the copy
+    if the policy heuristics fail, and dont find a gap for all of them, then we fail and do nothing
+    but return false;
+    */
+    bool add_group(queue<task_t> && provisional_taskstory);
+    //This variant is for unresolved commands
+    bool add_group(queue<string> && provisional_taskstory);
 
 public:
   
@@ -90,25 +108,36 @@ public:
     */
     bool add_single(const task_t && task_) override;
 
-    /*
-    Adding a group, is add an ordered group of task together,
-    They are all provisional and unresolved its expressions
-    This is a two step process, we need to ensure each have its relative free space
-    But we can not until we resolve them by its predecessor,
-    So we resolve the first, and add it to a provisional map which is a copy from the origin imap,
-    then we solve the second, with the available new info from its prev task info, and the origin copy,
-    and so on.
-    When finish, and all tasks got its allocation, then we swap the taskstory with the copy
-    if the policy heuristics fail, and dont find a gap for all of them, then we fail and do nothing
-    but return false;
-    */
-    bool add_group(queue<task_t> && provisional_taskstory);
 
     vector<task_t> get_tasks_in(interval_t interval);
     optional<vector<task_t>> get_range(time_t start, time_t end) override ;
     bool find_range(time_t start, time_t end) override;
     bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) override;
+    //Ouput the "[start,end] task_id" of all scheduled tasks
     void print_out() const override;
+    //This is the correct way to provide groups in a safe manner
+    provisional_scheduler_RAII get_provisional();
 };
+
+
+class provisional_scheduler_RAII final : public scheduler
+{
+private:
+
+    friend scheduler;//Required in order to allow only to scheduler to construct us
+    scheduler & parent;
+    bool valid = true;
+    provisional_scheduler_RAII(scheduler & parent);
+public:
+    using scheduler::add_group;// This should expose the add_group method
+    provisional_scheduler_RAII() = delete;
+    
+    //If im not wrong, this should generate copy,assignment as delete, and move assignment not declared
+    provisional_scheduler_RAII( provisional_scheduler_RAII &&) = delete;
+    ~provisional_scheduler_RAII();
+    
+};
+
+
 
 #endif //SCHEDULER_H

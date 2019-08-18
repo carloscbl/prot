@@ -65,27 +65,35 @@ const json form_runner::run(const json &request_json) noexcept
 {
     const auto &state = get_session();
     form_parser fp(form_.get_json(), *state); //,*state
-    unique_ptr<next_question_data> question;
+    unique_ptr<next_question_data> response;
     if (request_json.is_null())
     {
-        question = fp.get_initial_question();
+        response = fp.get_initial_question();
     }
     else
     {
         cout << request_json.dump(4) << endl;
-        question = fp.form_next_in_pipeline(request_json["answer"]);
+        response = fp.form_next_in_pipeline(request_json["answer"]);
     }
     user_running_forms[get_unique_id_session()] = fp.get_state();
     json response_j;
-    response_j["next_question"] = question->question_str;
+    response_j["next_question"] = response->question_str;
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler
 
-    if(question->taskstory_json.empty()) return response_j;
+    if(response->taskstory_json.empty()) return response_j;
 
-    if(question->taskstory_json.size() == 1){
-        this->user.get_scheduler().add_single();
+
+
+    if(response->taskstory_json.size() == 1){
+        command_expr_evaluator command(response->taskstory_json.cbegin().value()["command"],response->form_variables);
+
+        //this->user.get_scheduler().add_single();
     }else{
-        this->user.get_scheduler().add_group();
+        //We asumme we have the correspondant taskstory
+        // for( const auto & tasktory_comm : response->taskstory_json.items()){
+        //     //tasktory_comm.value["command"].get<string>();
+        // }
+        //this->user.get_scheduler().add_group(,);
     }
 
     return response_j;

@@ -90,3 +90,40 @@ bool scheduler::add_group(queue<task_t> && provisional_taskstory){
 
     return true;
 }
+
+bool scheduler::add_group(queue<string> && provisional_taskstory){
+    im_t provisional( this->m_interval_map ); //Copy in
+
+    while (!provisional_taskstory.empty())
+    {
+    //    const auto & current_task = provisional_taskstory.front();
+        //We got the element... now we need to evaluate it
+        provisional_taskstory.pop();
+    }
+
+
+
+
+    return true;
+}
+
+provisional_scheduler_RAII scheduler::get_provisional(){
+    return provisional_scheduler_RAII(*this);
+}
+
+provisional_scheduler_RAII::provisional_scheduler_RAII(scheduler & parent)
+:parent(parent)
+{
+    scheduler_mutex.lock();
+    m_interval_map = im_t(parent.m_interval_map);
+}
+
+provisional_scheduler_RAII::~provisional_scheduler_RAII()
+{
+    if(valid){
+        parent.m_interval_map.swap(this->m_interval_map);
+    }
+
+    scheduler_mutex.unlock();
+    cout << "~provisional_scheduler_RAII " << endl;
+}

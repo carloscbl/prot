@@ -93,8 +93,8 @@ public:
     user(); 
     virtual ~user() {}
 
-    const tasker &get_tasker() const noexcept override { return *tasker_; }
-    const ischeduler &get_scheduler() const noexcept override { return *scheduler_; }
+    tasker &get_tasker() const noexcept override { return *tasker_; }
+    ischeduler &get_scheduler() const noexcept override { return *scheduler_; }
 
     const string &get_name() const noexcept override { return minimal_data.username; }
 };

@@ -14,6 +14,12 @@ using json = nlohmann::json;
 class command_expr_evaluator;
 class command;
 
+
+
+/*
+This class represents the duality between a command indicator and the param
+eg: prot positional [--stamp 1566137097] -> both and determines if it is a expression
+*/
 class dual_param
 {
 private:
@@ -107,6 +113,7 @@ public:
     }
 };
 
+//Represents the command over its evolution
 class command
 {
 protected:
@@ -125,14 +132,19 @@ public:
     string render() const noexcept;
 };
 
+//This class iterate over all the params
+//Enables the resolution of variables
 class command_expr_evaluator
 {
+private:
     map<string, json> &variables;
+    command co;
     //This "enroute" varaibles, functions or undefined by calling the correct mapping and retreving and setting the correct value or nullopt
     optional<dual_param> evaluate(dual_param &non_formated_param) const noexcept;
 
 public:
-    command_expr_evaluator(const json &taskstory, map<string, json> &variables);
+    command_expr_evaluator(const string &command_str, map<string, json> &variables);
+    command_expr_evaluator() = delete;
 };
 
 #endif //COMMAND_EXPR_EVALUATOR_H

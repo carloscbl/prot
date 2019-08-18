@@ -64,24 +64,19 @@ string command::render() const noexcept
     return ss.str();
 }
 
-command_expr_evaluator::command_expr_evaluator(const json &taskstory, map<string, json> &variables)
+command_expr_evaluator::command_expr_evaluator(const string &command_str, map<string, json> &variables)
     : variables(variables)
 {
-    command co;
-    cout << taskstory.cbegin().value()["command"] << endl;
-
-    co.parse(taskstory.cbegin().value()["command"].get<string>());
+    cout << command_str << endl;
+    co.parse(command_str);
     for (auto &&i : co.parameters)
     {
-        if (i.is_expression)
-        {
+        if (i.is_expression){
             auto dual_p = evaluate(i);
-            if (dual_p.has_value())
-            {
-                i = dual_p.value();
+            if (dual_p.has_value()){ 
+                i = dual_p.value(); 
             }
-            else
-            {
+            else{
                 //This is a not a valid command
                 co.is_well_evaluated_command = false;
                 cout << "this command can't be resolved, non mapped: " << i.argument << endl;
@@ -89,9 +84,7 @@ command_expr_evaluator::command_expr_evaluator(const json &taskstory, map<string
             }
         }
     }
-
-    if (co.is_well_evaluated_command)
-    {
+    if (co.is_well_evaluated_command){
         cout << co.render() << endl;
     }
 }
