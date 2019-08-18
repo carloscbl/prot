@@ -7,8 +7,8 @@
 class iuser
 {
 public:
-    virtual const itasker &get_tasker() const noexcept = 0;
-    virtual const ischeduler &get_scheduler() const noexcept = 0;
+    virtual itasker &get_tasker() const noexcept = 0;
+    virtual ischeduler &get_scheduler() const noexcept = 0;
     virtual const string &get_name() const noexcept = 0;
 };
 

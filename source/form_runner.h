@@ -37,7 +37,7 @@ public:
 
     shared_ptr<form_state> get_session() const noexcept;
     string get_unique_id_session() const noexcept;
-    const json run(const json &j) const noexcept;
+    const json run(const json &j) noexcept;
 };
 
 form_runner::form_runner(iuser &user, form_t &form_) : user(user),
@@ -61,7 +61,7 @@ string form_runner::get_unique_id_session() const noexcept
     return user.get_name() + form_.name;
 }
 
-const json form_runner::run(const json &request_json) const noexcept
+const json form_runner::run(const json &request_json) noexcept
 {
     const auto &state = get_session();
     form_parser fp(form_.get_json(), *state); //,*state
@@ -79,7 +79,14 @@ const json form_runner::run(const json &request_json) const noexcept
     json response_j;
     response_j["next_question"] = question->question_str;
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler
-    
+
+    if(question->taskstory_json.empty()) return response_j;
+
+    if(question->taskstory_json.size() == 1){
+        this->user.get_scheduler().add_single();
+    }else{
+        this->user.get_scheduler().add_group();
+    }
 
     return response_j;
 }
