@@ -40,6 +40,7 @@ public:
     shared_ptr<form_state> get_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
+    task_t command_to_task(command & co);
 };
 
 form_runner::form_runner(shared_ptr<user> user_, form_t &form_) : user_(user_),
@@ -97,9 +98,9 @@ const json form_runner::run(const json &request_json) noexcept
 
         sche.print_out();
 
-        shared_ptr<task> tt = make_shared<task>();
-        tt->set_interval(5,7);
-        provisional.add_single(move(tt));
+        // shared_ptr<task> tt = make_shared<task>();
+        // tt->set_interval(5,7);
+        // provisional.add_single(move(tt));
 
         provisional.print_out();
 
@@ -111,6 +112,9 @@ const json form_runner::run(const json &request_json) noexcept
     }
 
     return response_j;
+}
+task_t command_to_task(command & co){
+    //We need to be able to get a solved command with the variables, and then publish the new ones from
 }
 
 shared_ptr<form_state> form_runner::get_session() const noexcept
