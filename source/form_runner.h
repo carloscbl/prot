@@ -24,6 +24,8 @@ using form_t = form;
 //This will requiere a iuser and a form name to find if the user have currently existing one
 //If not we will create a session and store it
 using sessions = map<string, shared_ptr<form_state>>;
+using variables_t = map<string, json>;
+
 class form_runner
 {
 private:
@@ -40,7 +42,7 @@ public:
     shared_ptr<form_state> get_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
-    task_t command_to_task(command & co);
+    task_t command_to_task(string & taskstory_command, variables_t & variables );
 };
 
 form_runner::form_runner(shared_ptr<user> user_, form_t &form_) : user_(user_),
@@ -88,9 +90,18 @@ const json form_runner::run(const json &request_json) noexcept
 
     if(response->taskstory_json.size() == 1){
         command_expr_evaluator command(response->taskstory_json.cbegin().value()["command"],response->form_variables);
-        provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
-        provisional.print_out();
-        //this->user_.get_scheduler().add_single();
+
+        auto co = command.get_command();
+        string strcommand = co.render();
+
+        if(strcommand.empty()){
+            cout << "bad parse of command" << endl;
+        }else{
+            provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
+            provisional.print_out();
+            provisional.add_single();
+
+        }
     }else{
         //We asumme we have the correspondant taskstory
         auto & sche = this->user_->get_scheduler();
@@ -113,8 +124,18 @@ const json form_runner::run(const json &request_json) noexcept
 
     return response_j;
 }
-task_t command_to_task(command & co){
+task_t form_runner::command_to_task(string & taskstory_command, variables_t & variables ){
     //We need to be able to get a solved command with the variables, and then publish the new ones from
+    command_expr_evaluator command(taskstory_command, variables);
+
+        auto co = command.get_command();
+        string strcommand = co.render();
+
+        if(strcommand.empty()){
+            cout << "bad parse of command" << endl;
+        }else{
+            //Here we send the command string that returns our task, here we relay in the implementation for getting new task via command
+        }
 }
 
 shared_ptr<form_state> form_runner::get_session() const noexcept

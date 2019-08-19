@@ -145,6 +145,7 @@ private:
 public:
     command_expr_evaluator(const string &command_str, map<string, json> &variables);
     command_expr_evaluator() = delete;
+    const command & get_command () const { return co; }
 };
 
 #endif //COMMAND_EXPR_EVALUATOR_H

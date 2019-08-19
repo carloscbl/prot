@@ -33,7 +33,7 @@ void command::parse(const string &command_str)
 string command::render() const noexcept
 {
     if (!this->is_well_evaluated_command)
-        return "Not well evaluated";
+        return string();
     std::stringstream ss;
     ss << command << " ";
     for (auto &&i : placement)
@@ -127,6 +127,7 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
     }
     return nullopt;
 }
+
 
 //This is used to handle the referenciation to a scheduled task from the same form via unique tag
 //To this purpose we should get access form here to:
