@@ -45,9 +45,6 @@ request::request() : CRUD_actionable(this->request_map, setters)
 //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
 void request::test(const json qa_request)
 { //Wanted by value
-    user_minimal_data md{
-        "Carlos", "123456"};
-    user user_(md);
     const auto & carlos = user::users["carlos"];
 
     auto answer = qa_request.find("answer");

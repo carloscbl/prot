@@ -94,8 +94,15 @@ const json form_runner::run(const json &request_json) noexcept
         //We asumme we have the correspondant taskstory
         auto & sche = this->user_->get_scheduler();
         provisional_scheduler_RAII provisional = sche.get_provisional();
+
         sche.print_out();
+
+        shared_ptr<task> tt = make_shared<task>();
+        tt->set_interval(5,7);
+        provisional.add_single(move(tt));
+
         provisional.print_out();
+
         sche.print_out();
         // for( const auto & tasktory_comm : response->taskstory_json.items()){
         //     //tasktory_comm.value["command"].get<string>();

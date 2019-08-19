@@ -119,7 +119,15 @@ public:
     provisional_scheduler_RAII get_provisional();
 };
 
-
+/*
+This class provides a RAII, by locking our schduler during its life time
+Copy && Swap strategy with the interval map, if at the end is valid,
+it swaps with the parent interval_map
+And unlocks parent on destruction
+Exposes the add group method to the public, this is the safe way to still provide
+const read ops, with out interfere with the parent taking our time to process the
+whole group of task... because in the future this can reallocate almost all tasks
+*/
 class provisional_scheduler_RAII final : public scheduler
 {
 private:
