@@ -7,9 +7,11 @@
 #include <map>
 #include <memory>
 #include "json.hpp"
-#include "iuser.h"
+#include "user.h"
 #include "form_parser.h"
 #include "command_expr_evaluator.h"
+#include "ischeduler.h"
+#include "scheduler.h"
 
 using namespace std;
 using namespace chrono_literals;
@@ -27,12 +29,12 @@ class form_runner
 private:
     inline static sessions user_running_forms;
     const chrono::minutes life_time = 5min;
-    iuser &user;
+    shared_ptr<user> user_;
     form_t &form_;
     unique_ptr<form_parser> fp;
 
 public:
-    form_runner(iuser &user, form_t &form_);
+    form_runner(shared_ptr<user> user_, form_t &form_);
     ~form_runner();
 
     shared_ptr<form_state> get_session() const noexcept;
@@ -40,7 +42,7 @@ public:
     const json run(const json &j) noexcept;
 };
 
-form_runner::form_runner(iuser &user, form_t &form_) : user(user),
+form_runner::form_runner(shared_ptr<user> user_, form_t &form_) : user_(user_),
                                                        form_(form_)
 {
 
@@ -58,7 +60,7 @@ form_runner::~form_runner() {}
 
 string form_runner::get_unique_id_session() const noexcept
 {
-    return user.get_name() + form_.name;
+    return user_->get_name() + form_.name;
 }
 
 const json form_runner::run(const json &request_json) noexcept
@@ -83,17 +85,22 @@ const json form_runner::run(const json &request_json) noexcept
     if(response->taskstory_json.empty()) return response_j;
 
 
-
     if(response->taskstory_json.size() == 1){
         command_expr_evaluator command(response->taskstory_json.cbegin().value()["command"],response->form_variables);
-
-        //this->user.get_scheduler().add_single();
+        provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
+        provisional.print_out();
+        //this->user_.get_scheduler().add_single();
     }else{
         //We asumme we have the correspondant taskstory
+        auto & sche = this->user_->get_scheduler();
+        provisional_scheduler_RAII provisional = sche.get_provisional();
+        sche.print_out();
+        provisional.print_out();
+        sche.print_out();
         // for( const auto & tasktory_comm : response->taskstory_json.items()){
         //     //tasktory_comm.value["command"].get<string>();
         // }
-        //this->user.get_scheduler().add_group(,);
+        //this->user_.get_scheduler().add_group(,);
     }
 
     return response_j;

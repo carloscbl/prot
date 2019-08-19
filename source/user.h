@@ -28,10 +28,11 @@ struct user_minimal_data
  */
 class user : public CRUD_actionable<user>, public iuser
 { //substitute by the final class
+public://FIX: this should be wrapped
+    static inline map<string, shared_ptr<user>> users;
 private:
-    static inline map<string, unique_ptr<user>> users;
     unique_ptr<tasker> tasker_;
-    unique_ptr<ischeduler> scheduler_;
+    unique_ptr<scheduler> scheduler_;
     CRUD_plus_actions_map user_actions_map{
         {"add", [](map<char, string> s) {
             user_minimal_data md {
@@ -81,6 +82,8 @@ private:
             task_->set_interval(stoi(s['s']) ,stoi(s['e']));
             schedul->add_single(move(task_));
             schedul->print_out();
+            auto & schedul2 = users["carlos"]->scheduler_;
+            schedul2->print_out();
         }}};
     map_local_functions setters{
         //{'P', &form::set_path},
@@ -94,7 +97,7 @@ public:
     virtual ~user() {}
 
     tasker &get_tasker() const noexcept override { return *tasker_; }
-    ischeduler &get_scheduler() const noexcept override { return *scheduler_; }
+    scheduler &get_scheduler() const noexcept override { return *scheduler_; }
 
     const string &get_name() const noexcept override { return minimal_data.username; }
 };

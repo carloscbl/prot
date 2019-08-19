@@ -48,6 +48,7 @@ void request::test(const json qa_request)
     user_minimal_data md{
         "Carlos", "123456"};
     user user_(md);
+    const auto & carlos = user::users["carlos"];
 
     auto answer = qa_request.find("answer");
     if (!qa_request.is_null() && answer != qa_request.end())
@@ -56,7 +57,7 @@ void request::test(const json qa_request)
     }
     auto aa = form::get_register().cbegin();
 
-    form_runner fr(user_, *aa->second);
+    form_runner fr(carlos, *aa->second);
 
     auto &response = fr.run(qa_request);
 

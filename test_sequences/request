@@ -1,6 +1,11 @@
 #Here we test the secuences of QA asociated to a specific form
 #We are testing washer form
+
+user sch -s 50 -e 90
+user sch -s 30 -e 45
+
 #test will give us the initial question
+
 req test
 #-a == answer our answer to the question "Do you have washer?"
 req test -a yes

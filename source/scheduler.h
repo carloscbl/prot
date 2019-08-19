@@ -72,7 +72,7 @@ public:
 private:
     //This policy checks there is not other task actually in the required gap or returns false
     bool deny_policy(policy_relevant_data && task_info_for_scheduler );
-
+    bool mod = false;
     std::mutex scheduler_mutex;
     im_t m_interval_map;       //Here lie the real scheduled task
     function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;
@@ -137,7 +137,5 @@ public:
     ~provisional_scheduler_RAII();
     
 };
-
-
 
 #endif //SCHEDULER_H

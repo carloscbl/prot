@@ -38,6 +38,7 @@ optional<vector<task_t>> scheduler::get_range(time_t start, time_t end){
 //No check we assume checked
 bool scheduler::add_single(const task_t && task_)
 {
+    mod = true;
     const auto &interval_ = task_->get_interval();
     if(find_range(interval_.start, interval_.end)){
         this->m_interval_map.set(make_pair(time_interval::closed(interval_.start, interval_.end), task_));
@@ -114,7 +115,7 @@ provisional_scheduler_RAII scheduler::get_provisional(){
 provisional_scheduler_RAII::provisional_scheduler_RAII(scheduler & parent)
 :parent(parent)
 {
-    scheduler_mutex.lock();
+    parent.scheduler_mutex.lock();
     m_interval_map = im_t(parent.m_interval_map);
 }
 
@@ -124,6 +125,6 @@ provisional_scheduler_RAII::~provisional_scheduler_RAII()
         parent.m_interval_map.swap(this->m_interval_map);
     }
 
-    scheduler_mutex.unlock();
+    parent.scheduler_mutex.unlock();
     cout << "~provisional_scheduler_RAII " << endl;
 }
