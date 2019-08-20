@@ -13,9 +13,11 @@
 #include "ischeduler.h"
 #include "scheduler.h"
 
+
 using namespace std;
 using namespace chrono_literals;
 using form_t = form;
+
 
 //So this class will handle the call form_run from form_parser
 //On construction it will check for the current form being evaluated prevoiously and unfinnised
@@ -88,47 +90,47 @@ const json form_runner::run(const json &request_json) noexcept
     if(response->taskstory_json.empty()) return response_j;
 
 
-    if(response->taskstory_json.size() == 1){
-        command_expr_evaluator command(response->taskstory_json.cbegin().value()["command"],response->form_variables);
+    // if(response->taskstory_json.size() == 1){
+    //     command_expr_evaluator command(response->taskstory_json.cbegin().value()["command"],response->form_variables);
 
-        auto co = command.get_command();
-        string strcommand = co.render();
+    //     auto co = command.get_command();
+    //     string strcommand = co.render();
 
-        if(strcommand.empty()){
-            cout << "bad parse of command" << endl;
-        }else{
-            provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
-            provisional.print_out();
-            provisional.add_single();
+    //     if(strcommand.empty()){
+    //         cout << "bad parse of command" << endl;
+    //     }else{
+    //         provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
+    //         provisional.print_out();
+    //         provisional.add_single();
 
-        }
-    }else{
-        //We asumme we have the correspondant taskstory
-        auto & sche = this->user_->get_scheduler();
-        provisional_scheduler_RAII provisional = sche.get_provisional();
+    //     }
+    // }else{
+    //     //We asumme we have the correspondant taskstory
+    //     auto & sche = this->user_->get_scheduler();
+    //     provisional_scheduler_RAII provisional = sche.get_provisional();
 
-        sche.print_out();
+    //     sche.print_out();
 
-        // shared_ptr<task> tt = make_shared<task>();
-        // tt->set_interval(5,7);
-        // provisional.add_single(move(tt));
+    //     // shared_ptr<task> tt = make_shared<task>();
+    //     // tt->set_interval(5,7);
+    //     // provisional.add_single(move(tt));
 
-        provisional.print_out();
+    //     provisional.print_out();
 
-        sche.print_out();
-        // for( const auto & tasktory_comm : response->taskstory_json.items()){
-        //     //tasktory_comm.value["command"].get<string>();
-        // }
-        //this->user_.get_scheduler().add_group(,);
-    }
+    //     sche.print_out();
+    //     // for( const auto & tasktory_comm : response->taskstory_json.items()){
+    //     //     //tasktory_comm.value["command"].get<string>();
+    //     // }
+    //     //this->user_.get_scheduler().add_group(,);
+    // }
 
     return response_j;
 }
 task_t form_runner::command_to_task(string & taskstory_command, variables_t & variables ){
     //We need to be able to get a solved command with the variables, and then publish the new ones from
-    command_expr_evaluator command(taskstory_command, variables);
+    command_expr_evaluator expr(taskstory_command, variables);
 
-        auto co = command.get_command();
+        auto co = expr.get_command();
         string strcommand = co.render();
 
         if(strcommand.empty()){
@@ -136,6 +138,7 @@ task_t form_runner::command_to_task(string & taskstory_command, variables_t & va
         }else{
             //Here we send the command string that returns our task, here we relay in the implementation for getting new task via command
         }
+        return task_t();
 }
 
 shared_ptr<form_state> form_runner::get_session() const noexcept

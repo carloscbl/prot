@@ -5,6 +5,7 @@
 #include <functional>
 #include <vector>
 #include <map>
+#include <set>
 #include <iostream>
 #include <memory>
 #include <ctime>
@@ -12,13 +13,23 @@
 #include "CRUD_actionable.h"
 #include <boost/icl/interval.hpp>
 
+struct task_status;
+class task;
 using time_interval = boost::icl::interval<time_t>;
+using task_t = shared_ptr<task>;
 using namespace std;
 
 struct pair_interval
 {
     time_t end;
     time_t start;
+};
+
+struct task_status
+{
+    task_t task_;
+    set<string> tags;//This should be replaced by a (hash, radix, suffix) trie
+    bool commited;
 };
 
 class task : public CRUD_actionable<task> 
@@ -31,7 +42,11 @@ private:
     time_t dateUTC;
     pair_interval interval;
 
-    inline static map<string, unique_ptr<task>> tasker; //TODO: PlaceHolder of real interface tasker manager
+    inline static map<string, task_t> tasker_commited; //TODO: PlaceHolder of real interface tasker manager
+    //washerclothes#normal_user washer_start ->
+    //inline static trie_map tag_tasks; //TODO: PlaceHolder of real interface tasker manager
+
+    
 
     map_local_functions setters{
         {'n', &task::set_name},
@@ -47,9 +62,9 @@ private:
 
     CRUD_plus_actions_map tasks_map{
         {"add", [](map<char, string> s) {
-             unique_ptr<task> task_ = make_unique<task>();
+             shared_ptr<task> task_ = make_shared<task>();
              task_->add(s);
-             task::tasker[task_->id] = move(task_);
+             task::tasker_commited[task_->id] = move(task_);
          }},
         {"remove", [this](map<char, string> params) {
              auto it = params.end();
@@ -57,7 +72,7 @@ private:
              it = params.find('i');
              if (it != params.end())
              {
-                 task::tasker.erase(it->second);
+                 task::tasker_commited.erase(it->second);
              }
              else
              {
@@ -72,7 +87,7 @@ private:
              if (it != params.end())
              {
                  // auto instance =
-                 task::tasker[it->second].get()->update(params);
+                 task::tasker_commited[it->second].get()->update(params);
                  //this->update(params, *instance);
              }
              else
@@ -82,9 +97,9 @@ private:
              }
          }},
         {"list", [&](map<char, string> s) {
-             if (task::tasker.size() == 0)
+             if (task::tasker_commited.size() == 0)
                  cout << "Empty list, no task provided" << endl;
-             for (auto &&e : task::tasker)
+             for (auto &&e : task::tasker_commited)
              {
                  //cout << e.first << "-:-" << e.second->id <<endl;
                  e.second->print_();

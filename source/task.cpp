@@ -20,7 +20,7 @@ void task::remove(map<char, string> params, task &instance)
     it = params.find('i');
     if (it != params.end())
     {
-        task::tasker.erase(it->second);
+        task::tasker_commited.erase(it->second);
     }
     else
     {
@@ -51,11 +51,11 @@ void task::remain(map<char, string> params)
     it = params.find('i');
     if (it != params.end())
     {
-        task::tasker[it->second]->print_remain();
+        task::tasker_commited[it->second]->print_remain();
     }
     else
     {
-        for (auto &t : task::tasker)
+        for (auto &t : task::tasker_commited)
         {
             t.second->print_remain();
         }
