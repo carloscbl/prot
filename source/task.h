@@ -32,6 +32,7 @@ private:
     string description;
     string stamp;
     string m_user;
+    string task_group;
     time_t dateUTC;
     pair_interval interval;
     CRUD_plus_actions_map tasks_map{

@@ -9,7 +9,7 @@
             "type": "cppdbg",
             "request": "launch",
             "program": "${workspaceFolder}/build/prot",
-            "args": ["test","sequence", "-p", "../test_sequences/request"],
+            "args": ["test","sequence", "-p", "../sequences/task"],
             //"args": ["user","sch", "-s", "90", "-e" , "99"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
