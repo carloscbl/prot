@@ -67,18 +67,8 @@ private:
         {"sch", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
             auto & taske = users["carlos"]->tasker_;
-            auto t = taske->tasks.find("task1");
+            task_t task_ = taske->get_task("task1");
 
-            shared_ptr<task> task_;// = make_shared<task>();
-
-            if (t != taske->tasks.end())
-            {
-                task_ = t->second;
-            }else{
-                task_ = make_shared<task>();
-                //taske->tasks["task1"] = task_;
-            }
-            
             task_->set_interval(stoi(s['s']) ,stoi(s['e']));
             schedul->add_single(move(task_));
             schedul->print_out();

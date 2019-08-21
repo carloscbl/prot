@@ -13,21 +13,6 @@ task::~task()
     cout << "~destroying " << this->id << endl;
 }
 
-void task::remove(map<char, string> params, task &instance)
-{
-    auto it = params.end();
-
-    it = params.find('i');
-    if (it != params.end())
-    {
-        task::tasker_commited.erase(it->second);
-    }
-    else
-    {
-        cout << "please provide 'i' argument";
-        return;
-    }
-}
 
 void task::print_remain()
 {
@@ -43,23 +28,6 @@ void task::print_remain()
     cout << id << ":"
          << "remain"
          << ": " << minutes << " minutes :" << hours << " hours :" << (uint32_t)days << " days :" << (uint32_t)years << " years" << endl;
-}
-
-void task::remain(map<char, string> params)
-{
-    auto it = params.end();
-    it = params.find('i');
-    if (it != params.end())
-    {
-        task::tasker_commited[it->second]->print_remain();
-    }
-    else
-    {
-        for (auto &t : task::tasker_commited)
-        {
-            t.second->print_remain();
-        }
-    }
 }
 
 void task::set_day(string day)

@@ -25,14 +25,7 @@ struct pair_interval
     time_t start;
 };
 
-struct task_status
-{
-    task_t task_;
-    set<string> tags;//This should be replaced by a (hash, radix, suffix) trie
-    bool commited;
-};
-
-class task : public CRUD_actionable<task> 
+class task : public CRUD_actionable<task>
 {
 private:
     string name = "";
@@ -41,12 +34,9 @@ private:
     string m_user;
     time_t dateUTC;
     pair_interval interval;
+    CRUD_plus_actions_map tasks_map{
 
-    inline static map<string, task_t> tasker_commited; //TODO: PlaceHolder of real interface tasker manager
-    //washerclothes#normal_user washer_start ->
-    //inline static trie_map tag_tasks; //TODO: PlaceHolder of real interface tasker manager
-
-    
+    };
 
     map_local_functions setters{
         {'n', &task::set_name},
@@ -59,59 +49,8 @@ private:
         {'m', &task::set_minute}, //minute*/
         // {"T",&task::set_stamp},//unixTimeStamp
     };
-
-    CRUD_plus_actions_map tasks_map{
-        {"add", [](map<char, string> s) {
-             shared_ptr<task> task_ = make_shared<task>();
-             task_->add(s);
-             task::tasker_commited[task_->id] = move(task_);
-         }},
-        {"remove", [this](map<char, string> params) {
-             auto it = params.end();
-
-             it = params.find('i');
-             if (it != params.end())
-             {
-                 task::tasker_commited.erase(it->second);
-             }
-             else
-             {
-                 cout << "please provide 'i' argument";
-                 return;
-             }
-         }},
-        {"update", [this](map<char, string> params) {
-             auto it = params.end();
-
-             it = params.find('i');
-             if (it != params.end())
-             {
-                 // auto instance =
-                 task::tasker_commited[it->second].get()->update(params);
-                 //this->update(params, *instance);
-             }
-             else
-             {
-                 cout << "please provide 'i' argument";
-                 return;
-             }
-         }},
-        {"list", [&](map<char, string> s) {
-             if (task::tasker_commited.size() == 0)
-                 cout << "Empty list, no task provided" << endl;
-             for (auto &&e : task::tasker_commited)
-             {
-                 //cout << e.first << "-:-" << e.second->id <<endl;
-                 e.second->print_();
-             }
-         }},
-        {"remain", [this](map<char, string> s) {
-             this->remain(s);
-         }}};
-
 public:
     string id;
-    string id2  = "taskorroko";
     task();
     virtual ~task();
     void set_day(string day);
@@ -128,8 +67,6 @@ public:
         this->interval.start = start;
         this->interval.end = end;
     }
-
-    void remove(map<char, string> params, task &instance);
 
     void print_remain();
 
