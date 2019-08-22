@@ -6,10 +6,11 @@
 #include "task.h"
 
 class taskstory_commit_RAII;
+class tasker;
 using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
 //Vector because of the fast cache access as they need to be updated almost in real time, but CUD operations are comparatively rare
-inline map<string,weak_ptr<itasker>> taskers_global; //Global reference to all taskers to cycle them updates on caducity
+inline map<string,weak_ptr<tasker>> taskers_global; //Global reference to all taskers to cycle them updates on caducity
 struct task_status
 {
     task_t task_;
@@ -41,14 +42,15 @@ private:
     CRUD_plus_actions_map tasker_map{
         {"add", [&](params_map_t s) {
             task_t task_ = make_shared<task>();
+            auto tasker_ = taskers_global["carlos"].lock();
 
             auto match = s.find('g');
             task_->add(s);
             if (match != s.end()){
                 //Got groups, they aren't directly committed
-                this->add_group(move(task_),match->second);
+                ((tasker&)*tasker_).add_group(move(task_),match->second);
             }else{
-                this->tasks_active[task_->id] = move(task_);
+                ((tasker&)*tasker_).tasks_active[task_->id] = move(task_);
             }
         }},
         {"remove", [this](params_map_t params) {

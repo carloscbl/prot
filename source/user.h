@@ -8,7 +8,7 @@
 #include <string>
 #include <map>
 #include "iuser.h"
-#include "itasker.h"
+#include "tasker.h"
 #include "CRUD_actionable.h"
 #include "ischeduler.h"
 #include "scheduler.h"
@@ -30,7 +30,7 @@ class user : public CRUD_actionable<user>, public iuser
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;
 private:
-    shared_ptr<itasker> tasker_;
+    shared_ptr<tasker> tasker_;
     unique_ptr<scheduler> scheduler_;
     CRUD_plus_actions_map user_actions_map{
         {"add", [](map<char, string> s) {

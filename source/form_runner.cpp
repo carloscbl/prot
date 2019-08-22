@@ -88,7 +88,8 @@ const json form_runner::run(const json &request_json) noexcept
         
         for ( const auto & [k,v] : response->taskstory_json.items())
         {
-            command_expr_evaluator command(v["command"], response->form_variables);
+            cout << v.dump(4) << endl;
+            command_expr_evaluator command(v["command"].get<string>(), response->form_variables);
             auto co = command.get_command();
             string strcommand = co.render();
             
