@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <memory>
+#include "task.h"
 //#include <boost/icl/interval.hpp>
 using namespace std;
 //using time_interval = boost::icl::interval<time_t>;
@@ -26,6 +27,7 @@ class itasker
 public:
     
     //virtual void update_time() = 0;
+    virtual task_t get_task(const string & id ) const = 0;
 };
 
 #endif //ITASKER_H

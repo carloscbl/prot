@@ -9,7 +9,6 @@
 #include <map>
 #include "iuser.h"
 #include "itasker.h"
-#include "tasker.h"
 #include "CRUD_actionable.h"
 #include "ischeduler.h"
 #include "scheduler.h"
@@ -31,7 +30,7 @@ class user : public CRUD_actionable<user>, public iuser
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;
 private:
-    unique_ptr<tasker> tasker_;
+    shared_ptr<itasker> tasker_;
     unique_ptr<scheduler> scheduler_;
     CRUD_plus_actions_map user_actions_map{
         {"add", [](map<char, string> s) {
@@ -67,7 +66,7 @@ private:
         {"sch", [](map<char, string> s) {
             auto & schedul = users["carlos"]->scheduler_;
             auto & taske = users["carlos"]->tasker_;
-            task_t task_ = taske->get_task("task1");
+            task_t task_ = taske->get_task("task0");
 
             task_->set_interval(stoi(s['s']) ,stoi(s['e']));
             schedul->add_single(move(task_));
@@ -86,10 +85,11 @@ public:
     user(); 
     virtual ~user() {}
 
-    tasker &get_tasker() const noexcept override { return *tasker_; }
+    itasker &get_tasker() const noexcept override { return *tasker_; }
     scheduler &get_scheduler() const noexcept override { return *scheduler_; }
 
     const string &get_name() const noexcept override { return minimal_data.username; }
+    iuser & get_user(const string & user_) noexcept override { return static_cast<iuser&>(*users[user_]); }
 };
 
 #endif //USER_H

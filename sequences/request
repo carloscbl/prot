@@ -1,6 +1,6 @@
 #Here we test the secuences of QA asociated to a specific form
 #We are testing washer form
-
+task add -n pepo
 user sch -s 50 -e 90
 user sch -s 30 -e 45
 

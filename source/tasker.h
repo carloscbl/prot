@@ -4,11 +4,12 @@
 #include <set>
 #include "itasker.h"
 #include "task.h"
+
 class taskstory_commit_RAII;
 using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
 //Vector because of the fast cache access as they need to be updated almost in real time, but CUD operations are comparatively rare
-inline vector<weak_ptr<itasker>> taskers_global; //Global reference to all taskers to cycle them updates on caducity
+inline map<string,weak_ptr<itasker>> taskers_global; //Global reference to all taskers to cycle them updates on caducity
 struct task_status
 {
     task_t task_;
@@ -38,18 +39,16 @@ private:
     map<string, vector< task_t > > tasks_dispenser;
 
     CRUD_plus_actions_map tasker_map{
-        {"add", [this](params_map_t s) {
+        {"add", [&](params_map_t s) {
+            task_t task_ = make_shared<task>();
 
             auto match = s.find('g');
+            task_->add(s);
             if (match != s.end()){
                 //Got groups, they aren't directly committed
-                task_t task_ = make_unique<task>();
-                task_->add(s);
-                add_group(move(task_),match->second);
+                this->add_group(move(task_),match->second);
             }else{
-                shared_ptr<task> task_ = make_shared<task>();
-                task_->add(s);
-                tasks_active[task_->id] = move(task_);
+                this->tasks_active[task_->id] = move(task_);
             }
         }},
         {"remove", [this](params_map_t params) {
@@ -112,7 +111,7 @@ public:
     //void update_time() override {};
     void remove(params_map_t params, task &instance);
     void remain(params_map_t params);
-    task_t get_task(const string & id ) const;
+    task_t get_task(const string & id ) const override;
     tasker();
 };
 

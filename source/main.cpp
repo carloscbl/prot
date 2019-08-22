@@ -45,6 +45,7 @@ int main(int argc, char const *argv[])
     ////////////////////////////////////////////////////// 
     form_collector fc;
     command_processor cp;
+    user user_;
     tasker tasker_;
 
     std::vector<std::string> forms_paths;
@@ -52,7 +53,6 @@ int main(int argc, char const *argv[])
 
     form form_;
     request request_(cp);
-    user user_;
     test test_(cp);
     cp.register_actionable("task", &tasker_);
     cp.register_actionable("form", &form_);

@@ -63,9 +63,9 @@ const json form_runner::run(const json &request_json) noexcept
         {
             provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
             provisional.print_out();
-            auto &tasker = this->user_->get_tasker();
+            tasker & tasker_ = static_cast<tasker&>(this->user_->get_tasker());
             //Group composed
-            taskstory_commit_RAII commiter(response->taskstory_name, tasker);
+            taskstory_commit_RAII commiter(response->taskstory_name, static_cast<tasker&>(tasker_));
             task_t created_task_by_command;
             ///// Now start send commands
             cp.perform_command(strcommand);
@@ -81,29 +81,49 @@ const json form_runner::run(const json &request_json) noexcept
                 cout << created_task_by_command->id << endl;
             }
             /////
-            commiter.commit(); //Disolves group && activate the task
+            commiter.commit(); //Disolves group && activate the tasks
             provisional.add_single(move(created_task_by_command));
         }
-        // }else{
-        //     //We asumme we have the correspondant taskstory
-        //     auto & sche = this->user_->get_scheduler();
-        //     provisional_scheduler_RAII provisional = sche.get_provisional();
+    }else{
+        
+        for ( const auto & [k,v] : response->taskstory_json.items())
+        {
+            command_expr_evaluator command(v["command"], response->form_variables);
+            auto co = command.get_command();
+            string strcommand = co.render();
+            
+            if (strcommand.empty())
+            {
+                cout << "bad parse of command" << endl;
+            }
+            else
+            {
+                provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
+                provisional.print_out();
+                //Group composed
+                tasker & tasker_ = static_cast<tasker&>(this->user_->get_tasker());
+                taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
+                task_t created_task_by_command;
+                ///// Now start send commands
+                cp.perform_command(strcommand);
+                //Refresh variables
+                //TODO: Define, response->form_variables[response->taskstory_name] = 
+                //Loop
 
-        //     sche.print_out();
-
-        //     // shared_ptr<task> tt = make_shared<task>();
-        //     // tt->set_interval(5,7);
-        //     // provisional.add_single(move(tt));
-
-        //     provisional.print_out();
-
-        //     sche.print_out();
-        //     // for( const auto & tasktory_comm : response->taskstory_json.items()){
-        //     //     //tasktory_comm.value["command"].get<string>();
-        //     // }
-        //     //this->user_.get_scheduler().add_group(,);
-        // }
+                ///// End send commands
+                /////Last chance to gather all grouped
+                auto group = commiter.get_group();
+                if(group){
+                    created_task_by_command = group->front();
+                    cout << created_task_by_command->id << endl;
+                }
+                /////
+                provisional.add_group(queue<task_t>());
+                commiter.commit(); //Disolves group && activate the tasks
+            }
+        }
     }
+
     return response_j;
 }
 

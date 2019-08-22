@@ -11,6 +11,7 @@
 #include "user.h"
 #include "form_parser.h"
 #include "form.h"
+#include "tasker.h"
 #include "command_expr_evaluator.h"
 #include "ischeduler.h"
 #include "scheduler.h"
