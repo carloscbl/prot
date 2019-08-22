@@ -51,7 +51,7 @@ int main(int argc, char const *argv[])
     forms_paths = fc.get_forms_paths();
 
     form form_;
-    request request_;
+    request request_(cp);
     user user_;
     test test_(cp);
     cp.register_actionable("task", &tasker_);

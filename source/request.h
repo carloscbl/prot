@@ -5,6 +5,7 @@
 #include "iuser.h"
 #include "form.h"
 #include "form_runner.h"
+#include "command_processor.h"
 
 class request : public CRUD_actionable<request>
 {
@@ -26,15 +27,16 @@ private:
     map_local_functions setters{
         {'t', &request::test},
     };
+    command_processor & cp;
 
 public:
-    request();
+    request(command_processor & cp);
     ~request() = default;
 
     void test(const json qa_request);
 };
 
-request::request() : CRUD_actionable(this->request_map, setters)
+request::request(command_processor & cp) : CRUD_actionable(this->request_map, setters),cp(cp)
 {
 }
 
@@ -54,7 +56,7 @@ void request::test(const json qa_request)
     }
     auto aa = form::get_register().cbegin();
 
-    form_runner fr(carlos, *aa->second);
+    form_runner fr(carlos, *aa->second, cp);
 
     auto &response = fr.run(qa_request);
 

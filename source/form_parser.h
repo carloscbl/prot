@@ -99,6 +99,7 @@ struct next_question_data
 {
     string question_str;
     json taskstory_json;
+    string taskstory_name;
     map<string,json> form_variables;
 };
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish

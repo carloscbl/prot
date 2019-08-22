@@ -93,6 +93,7 @@ unique_ptr <next_question_data> form_parser::get_next(const string &answer)
         next_question = "END";
     }
     json taskstory_ = json::value_t::null;
+
     if (strategy_returned.taskstory_id.has_value())
     {
         taskstory_ = question["taskstories"][strategy_returned.taskstory_id.value()];
@@ -100,6 +101,7 @@ unique_ptr <next_question_data> form_parser::get_next(const string &answer)
 
     unique_ptr <next_question_data> nqd = make_unique<next_question_data>();
     nqd->question_str = next_question;
+    nqd->taskstory_name = strategy_returned.taskstory_id.value_or("");
     nqd->taskstory_json = taskstory_;
     return nqd;
 }
