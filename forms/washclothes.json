@@ -92,7 +92,7 @@
         "normal_user":[
           {
             "command":"task add -u {user.user} -d 'Gather Clothes'",
-            "name":""
+            "name":"base_task"
           },
           {
             "command":"task add -u {user.user} -d 'Put them inside and start the machine'",

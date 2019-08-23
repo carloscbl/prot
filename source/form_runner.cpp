@@ -77,7 +77,7 @@ const json form_runner::run(const json &request_json) noexcept
             /////Last chance to gather all grouped
             auto group = commiter.get_group();
             if(group){
-                created_task_by_command = group->front();
+                created_task_by_command = group->at(0);
                 cout << created_task_by_command->id << endl;
             }
             /////
@@ -106,19 +106,19 @@ const json form_runner::run(const json &request_json) noexcept
                 taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
                 task_t created_task_by_command;
                 ///// Now start send commands
-                cp.perform_command(strcommand);
-                //Refresh variables
+                cp.perform_command(strcommand + " -g " + response->taskstory_name + " -t " + v["name"].get<string>());
+                //Refresh variablesperform_commandperform_command
                 //TODO: Define, response->form_variables[response->taskstory_name] = 
-                //Loop
+                //Loop publish the previous task
 
                 ///// End send commands
                 /////Last chance to gather all grouped
-                auto group = commiter.get_group();
-                if(group){
-                    created_task_by_command = group->front();
+                auto group_vector = commiter.get_group();
+                if(group_vector){
+                    created_task_by_command = group_vector->at(0);
                     cout << created_task_by_command->id << endl;
                 }
-                /////
+                /////Add all at the same time
                 provisional.add_group(queue<task_t>());
                 commiter.commit(); //Disolves group && activate the tasks
             }

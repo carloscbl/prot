@@ -37,7 +37,8 @@ private:
     but a long standing request... could dangle this groups
     */ 
     //FIX: TrackLife time of groups and expirate sync with form runner life time
-    map<string, vector< task_t > > tasks_dispenser;
+    //Taskstory : Name -> each task have a tag
+    map<string, map< string, task_t > > tasks_dispenser;
 
     CRUD_plus_actions_map tasker_map{
         {"add", [&](params_map_t s) {
@@ -48,7 +49,7 @@ private:
             task_->add(s);
             if (match != s.end()){
                 //Got groups, they aren't directly committed
-                ((tasker&)*tasker_).add_group(move(task_),match->second);
+                ((tasker&)*tasker_).add_group(s['t'],move(task_),match->second);
             }else{
                 ((tasker&)*tasker_).tasks_active[task_->id] = move(task_);
             }
@@ -98,15 +99,15 @@ private:
         {"listdispatcher", [this](params_map_t s) {
             for(auto & [k,v] : this->tasks_dispenser){
                 cout << k << ":" << endl;
-                for(auto & task : v){
-                    task->print_();
+                for(auto & [k2,v2] : v){
+                    v2->print_();
                 }
             }
         }},
         };
 
     map_local_functions setters;
-    void add_group(task_t && params, const string & group);
+    void add_group(const string & task_tag, task_t && params, const string & group);
     void commit_group_then_delete(const string & group);
 
 public:
@@ -140,12 +141,12 @@ public:
         commited = true;
     }
 
-    shared_ptr<vector<task_t>> get_group(){
+    shared_ptr<map<string,task_t>> get_group(){
         const auto & match = tasker_.tasks_dispenser.find(group);
         if(match != tasker_.tasks_dispenser.end()){
-            return make_shared<vector<task_t>>(match->second);
+            return make_shared<map<string,task_t>>(match->second);
         }else{
-            return shared_ptr<vector<task_t>>();
+            return shared_ptr<map<string,task_t>>();
         }
     }
 

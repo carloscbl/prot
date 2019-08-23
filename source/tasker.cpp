@@ -4,8 +4,8 @@
 
 tasker::tasker():CRUD_actionable(tasker_map,setters){}
 
-void tasker::add_group(task_t && params, const string & group){
-    tasks_dispenser[group].push_back(move(params));
+void tasker::add_group(const string & task_tag,task_t && params, const string & group){
+    tasks_dispenser[group][task_tag] = (move(params));
 }
 
 task_t tasker::get_task(const string & id ) const{ 
@@ -22,7 +22,7 @@ void tasker::commit_group_then_delete(const string & group){
     if(match != tasks_dispenser.end()){
         //Filling the active tasker
         for(auto & task_ : match->second){
-            task_t task_active = move(task_);
+            task_t task_active = move(task_.second);
             tasks_active[task_active->id] = task_active;
         }
         //And delete
