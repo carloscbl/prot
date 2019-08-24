@@ -1,6 +1,25 @@
 #include "task.h"
 
 using namespace std;
+using namespace task_space;
+
+void task_space::to_json(json& j, const pair_interval& p) {
+    j = json{
+        {"end", p.end},
+        {"start", p.start},
+    };
+}
+
+void to_json(json& j, const task& p) {
+    j = json{
+        {"name", p.get_name()},
+        {"description", p.get_description()},
+        {"stamp", p.get_stamp()},
+        {"m_user", p.get_m_user()},
+        {"task_group", p.get_task_group()},
+        {"interval", p.get_interval()},
+    };
+}
 
 task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(time(nullptr))
 {

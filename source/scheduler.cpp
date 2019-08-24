@@ -1,6 +1,6 @@
 #include "scheduler.h"
 #include <algorithm>
-
+using task = task_space::task;
 scheduler::scheduler(scheduler_policy policy)
 :policy(policy)
 {

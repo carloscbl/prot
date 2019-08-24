@@ -8,7 +8,7 @@
 //#include <boost/icl/interval.hpp>
 using namespace std;
 //using time_interval = boost::icl::interval<time_t>;
-
+using task = task_space::task;
 /*
 This class should hold the management of the whole set of task for a given user
 The relation with a scheduler is that the scheduler gets the injection of this

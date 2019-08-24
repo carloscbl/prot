@@ -85,6 +85,9 @@ const json form_runner::run(const json &request_json) noexcept
             provisional.add_single(move(created_task_by_command));
         }
     }else{
+        provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
+        tasker & tasker_ = static_cast<tasker&>(this->user_->get_tasker());
+        taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
         
         for ( const auto & [k,v] : response->taskstory_json.items())
         {
@@ -95,34 +98,24 @@ const json form_runner::run(const json &request_json) noexcept
             
             if (strcommand.empty())
             {
-                cout << "bad parse of command" << endl;
+                cout << "bad parse of command" << endl; //We should stop all
             }
             else
             {
-                provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
                 provisional.print_out();
-                //Group composed
-                tasker & tasker_ = static_cast<tasker&>(this->user_->get_tasker());
-                taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
-                task_t created_task_by_command;
-                ///// Now start send commands
+                //Got the task in the tasker_dispatcher
                 cp.perform_command(strcommand + " -g " + response->taskstory_name + " -t " + v["name"].get<string>());
-                //Refresh variablesperform_commandperform_command
-                //TODO: Define, response->form_variables[response->taskstory_name] = 
-                //Loop publish the previous task
-
-                ///// End send commands
-                /////Last chance to gather all grouped
-                auto group_vector = commiter.get_group();
-                if(group_vector){
-                    created_task_by_command = group_vector->at(0);
-                    cout << created_task_by_command->id << endl;
-                }
-                /////Add all at the same time
-                provisional.add_group(queue<task_t>());
-                commiter.commit(); //Disolves group && activate the tasks
             }
         }
+        task_t created_task_by_command;
+        auto group_vector = commiter.get_group();
+        if(group_vector){
+            created_task_by_command = group_vector->at(0);
+            cout << created_task_by_command->id << endl;
+        }
+        /////Add all at the same time
+        //provisional.add_group();//Convert the map in a queue queue<task_t>());
+        commiter.commit(); //Disolves group && activate the tasks
     }
 
     return response_j;

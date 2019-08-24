@@ -11,19 +11,25 @@
 #include <ctime>
 #include <cmath>
 #include "CRUD_actionable.h"
+#include "json.hpp"
 #include <boost/icl/interval.hpp>
 
+
+namespace task_space{
 struct task_status;
 class task;
-using time_interval = boost::icl::interval<time_t>;
-using task_t = shared_ptr<task>;
-using namespace std;
+using json = nlohmann::json;
+using std::vector;
+using std::string;
+
 
 struct pair_interval
 {
     time_t end;
     time_t start;
 };
+void to_json(json& j, const pair_interval& p);
+
 
 class task : public CRUD_actionable<task>
 {
@@ -68,13 +74,29 @@ public:
         this->interval.start = start;
         this->interval.end = end;
     }
+    const string        & get_name()        const noexcept { return name;        }
+    const string        & get_description() const noexcept { return description; }
+    const string        & get_stamp()       const noexcept { return stamp;       }
+    const string        & get_m_user()      const noexcept { return m_user;      }
+    const string        & get_task_group()  const noexcept { return task_group;  }
+    const time_t        & get_dateUTC()     const noexcept { return dateUTC;     }
+    const pair_interval & get_interval()    const noexcept { return interval; }
 
     void print_remain();
 
     void remain(map<char, string> params);
     void print_() { cout << id << ":" << name << ":" << description << ":" << asctime(localtime(&dateUTC)) << endl; }
 
-    inline const pair_interval &get_interval() const noexcept { return this->interval; }
+    // void from_json(const json& j, task& p) {
+    //     j.at("name").get_to(p.name);
+    //     j.at("address").get_to(p.address);
+    //     j.at("age").get_to(p.age);
+    // }
 };
+void to_json(json& j, const task& p);
+
+}
+using task_t = shared_ptr<task_space::task>;
+using time_interval = boost::icl::interval<time_t>;
 
 #endif //TASK_H

@@ -17,6 +17,7 @@ using namespace std;
 
 // Set of IDs that cover a time interval
 // interval tree from intervals of timestamps to a set of ids
+using task = task_space::task;
 using time_interval = boost::icl::interval<time_t>;
 using task_t = ischeduler::task_t;
 using priority_t = int;

@@ -7,6 +7,7 @@
 
 class taskstory_commit_RAII;
 class tasker;
+using task = task_space::task;
 using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
 //Vector because of the fast cache access as they need to be updated almost in real time, but CUD operations are comparatively rare
