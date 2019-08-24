@@ -17,8 +17,6 @@
 
 namespace task_space{
 struct task_status;
-class task;
-using json = nlohmann::json;
 using std::vector;
 using std::string;
 
@@ -28,7 +26,7 @@ struct pair_interval
     time_t end;
     time_t start;
 };
-void to_json(json& j, const pair_interval& p);
+void to_json(nlohmann::json& j, const pair_interval& p);
 
 
 class task : public CRUD_actionable<task>
@@ -60,16 +58,16 @@ public:
     string id;
     task();
     virtual ~task();
-    void set_day(string day);
-    void set_month(string mon);
-    void set_year(string year);
-    void set_hour(string hour);
+    void set_day(string    day);
+    void set_month(string  mon);
+    void set_year(string   year);
+    void set_hour(string   hour);
     void set_minute(string minute);
 
-    void set_name(string name_) { name = name_; }
-    void set_description(string description_) { description = description_; }
-    void set_stamp(string stamp_) { stamp = stamp_; }
-    void set_user(string user_) { m_user = user_; }
+    void set_name        (string name_) { name = name_; }
+    void set_description (string description_) { description = description_; }
+    void set_stamp       (string stamp_) { stamp = stamp_;}
+    void set_user        (string user_) { m_user = user_; }
     void set_interval(time_t start, time_t end){
         this->interval.start = start;
         this->interval.end = end;
@@ -87,15 +85,10 @@ public:
     void remain(map<char, string> params);
     void print_() { cout << id << ":" << name << ":" << description << ":" << asctime(localtime(&dateUTC)) << endl; }
 
-    // void from_json(const json& j, task& p) {
-    //     j.at("name").get_to(p.name);
-    //     j.at("address").get_to(p.address);
-    //     j.at("age").get_to(p.age);
-    // }
 };
-void to_json(json& j, const task& p);
-
+void to_json(nlohmann::json& j, const task_space::task& p);
 }
+
 using task_t = shared_ptr<task_space::task>;
 using time_interval = boost::icl::interval<time_t>;
 

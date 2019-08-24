@@ -1,17 +1,15 @@
 #include "task.h"
 
-using namespace std;
-using namespace task_space;
 
-void task_space::to_json(json& j, const pair_interval& p) {
-    j = json{
+void task_space::to_json(nlohmann::json& j, const pair_interval& p) {
+    j = nlohmann::json{
         {"end", p.end},
         {"start", p.start},
     };
 }
 
-void to_json(json& j, const task& p) {
-    j = json{
+void task_space::to_json(nlohmann::json& j, const task_space::task& p) {
+    j = nlohmann::json{
         {"name", p.get_name()},
         {"description", p.get_description()},
         {"stamp", p.get_stamp()},
@@ -20,20 +18,21 @@ void to_json(json& j, const task& p) {
         {"interval", p.get_interval()},
     };
 }
+//using namespace std;
 
-task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(time(nullptr))
+task_space::task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(time(nullptr))
 {
     static int acummulator = 0;
     id = "task" + to_string(acummulator++);
 }
 
-task::~task()
+task_space::task::~task()
 {
     cout << "~destroying " << this->id << endl;
 }
 
 
-void task::print_remain()
+void task_space::task::print_remain()
 {
     double remain_sec = difftime(this->dateUTC, time(nullptr));
     //cout << remain_sec << endl;
@@ -49,35 +48,35 @@ void task::print_remain()
          << ": " << minutes << " minutes :" << hours << " hours :" << (uint32_t)days << " days :" << (uint32_t)years << " years" << endl;
 }
 
-void task::set_day(string day)
+void task_space::task::set_day(string day)
 {
     tm *tm_localtime = localtime(&dateUTC);
     tm_localtime->tm_mday = stoi(day);
     dateUTC = mktime(tm_localtime);
 }
 
-void task::set_month(string mon)
+void task_space::task::set_month(string mon)
 {
     tm *tm_localtime = localtime(&dateUTC);
     tm_localtime->tm_mon = stoi(mon) - 1;
     dateUTC = mktime(tm_localtime);
 }
 
-void task::set_year(string year)
+void task_space::task::set_year(string year)
 {
     tm *tm_localtime = localtime(&dateUTC);
     tm_localtime->tm_year = stoi(year) - 1900;
     dateUTC = mktime(tm_localtime);
 }
 
-void task::set_hour(string hour)
+void task_space::task::set_hour(string hour)
 {
     tm *tm_localtime = localtime(&dateUTC);
     tm_localtime->tm_hour = stoi(hour);
     dateUTC = mktime(tm_localtime);
 }
 
-void task::set_minute(string minute)
+void task_space::task::set_minute(string minute)
 {
     tm *tm_localtime = localtime(&dateUTC);
     tm_localtime->tm_min = stoi(minute);

@@ -103,8 +103,15 @@ const json form_runner::run(const json &request_json) noexcept
             else
             {
                 provisional.print_out();
+                string tag_name = v["name"].get<string>();
                 //Got the task in the tasker_dispatcher
-                cp.perform_command(strcommand + " -g " + response->taskstory_name + " -t " + v["name"].get<string>());
+                cp.perform_command(strcommand + " -g " + response->taskstory_name + " -t " + tag_name);
+                //Done
+                //Now get the json
+                task_t last_command_made = commiter.get_group()->at(tag_name);
+                json publish = *last_command_made;
+                cout << publish.dump(4) << endl;
+
             }
         }
         task_t created_task_by_command;
