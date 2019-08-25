@@ -104,11 +104,18 @@ public:
         cout << type << ":" << argument << endl;
     }
 
-    dual_param(const string type, const string argument)
+    explicit dual_param(const string type, const string argument)
         : type(type),
           argument(argument),
           is_expression(false),
           arg_kind(kind::text)
+    {
+    }
+    explicit dual_param(const string type, const time_t argument)
+        : type(type),
+          argument(to_string(argument)),
+          is_expression(false),
+          arg_kind(kind::word)
     {
     }
 };
@@ -142,10 +149,28 @@ private:
     //This "enroute" varaibles, functions or undefined by calling the correct mapping and retreving and setting the correct value or nullopt
     optional<dual_param> evaluate(dual_param &non_formated_param) const noexcept;
 
+    optional<time_t> get_real_time(const json & time_ref);
+
+    optional<dual_param> next_add_task_story_stamp(const json & args);
+
+    /*
+    Eg:
+    "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{ ---> variant
+        "function":"next_add_task_story_stamp", -----> Key of the map
+        "args": { -----------------------------------> This is passed to the function
+            "task_ref" :"washer_start.stamp",
+            "time":"time.minutes.WaitToCollect"
+        }
+        },
+    */
+    inline static map<string, function<optional<dual_param>(command_expr_evaluator &, const json &)>> bindings_map{
+        {"next_add_task_story_stamp", &command_expr_evaluator::next_add_task_story_stamp},
+    };
 public:
     command_expr_evaluator(const string &command_str, map<string, json> &variables);
     command_expr_evaluator() = delete;
     const command & get_command () const { return co; }
+
 };
 
 #endif //COMMAND_EXPR_EVALUATOR_H

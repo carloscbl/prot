@@ -8,14 +8,14 @@
     "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{
       "function":"next_add_task_story_stamp",
       "args": {
-        "task_ref" :"washer_start.stamp",
+        "prev_task_tag" :"washer_start",
         "time":"time.minutes.WaitToCollect"
       }
     },
     "AnHourLater":{
       "function":"next_add_task_story_stamp",
       "args": {
-        "task_ref" :"washer_start.stamp",
+        "prev_task_tag" :"washer_start",
         "time": 60
       }
     }
@@ -92,15 +92,15 @@
         "normal_user":[
           {
             "command":"task add -u {user.user} -d 'Gather Clothes'",
-            "name":"base_task"
+            "task_tag":"base_task"
           },
           {
             "command":"task add -u {user.user} -d 'Put them inside and start the machine'",
-            "name":"washer_start"
+            "task_tag":"washer_start"
           },
           {
             "command":"task add -u {user.user} -d 'Collect the washed clothes' --stamp {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect}",
-            "name":"washer_end"
+            "task_tag":"washer_end"
           }
         ],
         "industrial_user":[]

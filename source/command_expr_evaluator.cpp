@@ -97,7 +97,7 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
         if (var->second.type() == json::value_t::string) //Plain variable
         {
             cout << var->second << endl;
-            return dual_param(non_formated_param.type, var->second);
+            return dual_param(non_formated_param.type, var->second.get<string>());
         }
         else
         {
@@ -111,6 +111,14 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
                 {
                     cout << "Found a binding to: " << non_formated_param.argument
                          << " : " << match.value() << endl;
+                    
+                    const auto & function = bindings_map.find(match.value());
+                    if(function != bindings_map.end()){
+                        auto opt = function->second(const_cast<command_expr_evaluator&>(*this), js["args"]);
+                        return opt;
+                    }else{
+                        cout << "NOT IMPLEMENTATION MATCH" << match.value() << endl;
+                    }
                     //Now is the real moment to evaluate
                     //Time to continue from here to parse expressions now that we have our relative funcs
                 }
@@ -129,17 +137,39 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
 }
 
 
-//This is used to handle the referenciation to a scheduled task from the same form via unique tag
-//To this purpose we should get access form here to:
-//1 the current user data
-//2 its scheduler
-//3 keep track of the tag in the scheduler to retrive the data
-string next_add_task_story_stamp(const json js)
+optional<dual_param> command_expr_evaluator::next_add_task_story_stamp(const json & args)
 {
-    return "";
+    cout << "Evaluation via: "<< __func__ <<  endl;
+    cout << "args: " << args.dump(4) << endl;
+    string ref_ = args["prev_task_tag"].get<string>();
+
+    auto task_tag_ref = this->variables.find(ref_);
+    if(task_tag_ref != variables.end()){
+        time_t ref_task_end = task_tag_ref->second["interval"]["end"].get<time_t>();
+        cout << ref_task_end << endl;
+        auto time = get_real_time(args["time"]);
+        if(!time.has_value()){
+            cout << "the 'time' reference is invalid" << endl;
+            return nullopt;
+        }
+
+        return dual_param("s", ref_task_end  + time.value() ) ;
+    }
+
+    return nullopt;
 }
 
-map<string, function<string(json)>> bindings_map{
-    {"next_add_task_story_stamp", [](const json &j) { return next_add_task_story_stamp(j); }},
-    //{"next_add_task_story_stamp",[](const json & j){return next_add_task_story_stamp(j);}},
-};
+optional<time_t> command_expr_evaluator::get_real_time(const json & time_ref){
+    if(time_ref.type() == json::value_t::string){
+        auto match = variables.find(time_ref.get<string>());
+        if(match != variables.end()){
+            return match->second.get<time_t>();
+        }else{
+            return nullopt;
+        }
+    }else if(time_ref.type() == json::value_t::number_integer){
+        return time_ref.get<time_t>();
+    }else{
+        return nullopt;
+    }
+}

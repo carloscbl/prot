@@ -103,7 +103,7 @@ const json form_runner::run(const json &request_json) noexcept
             else
             {
                 provisional.print_out();
-                string tag_name = v["name"].get<string>();
+                string tag_name = v["task_tag"].get<string>();
                 //Got the task in the tasker_dispatcher
                 cp.perform_command(strcommand + " -g " + response->taskstory_name + " -t " + tag_name);
                 //Done

@@ -66,9 +66,6 @@ public:
         }
     }
 
-    void set_field(string name_field, any & set) {
-
-    }
 };
 
 #endif //CRUD_ACTIONABLE_H
