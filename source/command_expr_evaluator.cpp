@@ -102,7 +102,7 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
         else
         {
             //Probably it is an object if not it is a straight value
-            //We expect for now an binding like structure
+            //We expect for now a binding like structure
             if (var->second.type() == json::value_t::object)
             {
                 const json &js = var->second;
@@ -112,7 +112,7 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
                     cout << "Found a binding to: " << non_formated_param.argument
                          << " : " << match.value() << endl;
                     //Now is the real moment to evaluate
-                    //
+                    //Time to continue from here to parse expressions now that we have our relative funcs
                 }
                 else
                 {

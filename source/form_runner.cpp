@@ -111,7 +111,7 @@ const json form_runner::run(const json &request_json) noexcept
                 task_t last_command_made = commiter.get_group()->at(tag_name);
                 json publish = *last_command_made;
                 cout << publish.dump(4) << endl;
-
+                response->form_variables[tag_name] = publish;
             }
         }
         task_t created_task_by_command;
