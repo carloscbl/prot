@@ -30,6 +30,10 @@ void tasker::commit_group_then_delete(const string & group){
     }
 }
 
+void tasker::print_out(){
+    
+}
+
 void tasker::remove(params_map_t params, task &instance)
 {
     auto it = params.end();

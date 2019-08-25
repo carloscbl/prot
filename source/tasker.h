@@ -110,6 +110,7 @@ private:
     map_local_functions setters;
     void add_group(const string & task_tag, task_t && params, const string & group);
     void commit_group_then_delete(const string & group);
+    void print_out();
 
 public:
     //void update_time() override {};
