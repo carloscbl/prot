@@ -91,15 +91,15 @@
       "taskstories": {
         "normal_user":[
           {
-            "command":"task add -u {user.user} -d 'Gather Clothes'",
+            "command":"task add -u {user.user} -d 'Gather Clothes' -s 55 -e 70",
             "task_tag":"base_task"
           },
           {
-            "command":"task add -u {user.user} -d 'Put them inside and start the machine'",
+            "command":"task add -u {user.user} -d 'Put them inside and start the machine' -s 80 -e {now}",
             "task_tag":"washer_start"
           },
           {
-            "command":"task add -u {user.user} -d 'Collect the washed clothes' --stamp {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect}",
+            "command":"task add -u {user.user} -d 'Collect the washed clothes' -s {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect} -e {{after_start}:30min}",
             "task_tag":"washer_end"
           }
         ],

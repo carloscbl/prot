@@ -1,0 +1,40 @@
+{
+    "task": {
+        "name":[
+            "n","name"
+        ],
+        "description":[
+            "d","description"
+        ],
+        "user":[
+            "u","user"
+        ],
+        "day":[
+            "D","day"
+        ],
+        "month":[
+            "M","month"
+        ],
+        "year":[
+            "Y","year"
+        ],
+        "hour":[
+            "h","hour"
+        ],
+        "minute":[
+            "m","minute"
+        ],
+        "group":[
+            "g","group"
+        ],
+        "start":[
+            "s","start"
+        ],
+        "end":[
+            "e","end"
+        ],
+        "task_tag":[
+            "t","task_tag"
+        ]
+    }
+}

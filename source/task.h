@@ -37,6 +37,7 @@ private:
     string stamp;
     string m_user;
     string task_group;
+    string associated_command;
     time_t dateUTC;
     pair_interval interval;
     CRUD_plus_actions_map tasks_map{
@@ -46,7 +47,7 @@ private:
     map_local_functions setters{
         {'n', &task::set_name},
         {'d', &task::set_description},
-        {'e', &task::set_user},
+        {'u', &task::set_user},
         {'D', &task::set_day},    //day
         {'M', &task::set_month},  //month
         {'Y', &task::set_year},   //year

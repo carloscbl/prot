@@ -76,29 +76,31 @@ bool scheduler::deny_policy(policy_relevant_data && task_info_for_scheduler ) {
     return true;
 }
 
+//If the whole group got allocation then true;
 bool scheduler::add_group(queue<task_t> && provisional_taskstory){
-    im_t provisional( this->m_interval_map ); //Copy in
-
+    bool all_correct = true;
     while (!provisional_taskstory.empty())
     {
     //    const auto & current_task = provisional_taskstory.front();
         //We got the element... now we need to evaluate it
+        if(!add_single( move(provisional_taskstory.front()) )){
+            break;
+            all_correct = false;
+        }
         provisional_taskstory.pop();
     }
 
-
-
-
-    return true;
+    return all_correct;
 }
 
 bool scheduler::add_group(queue<string> && provisional_taskstory){
-    im_t provisional( this->m_interval_map ); //Copy in
+     //Copy in
 
     while (!provisional_taskstory.empty())
     {
     //    const auto & current_task = provisional_taskstory.front();
         //We got the element... now we need to evaluate it
+        
         provisional_taskstory.pop();
     }
 

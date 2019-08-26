@@ -141,6 +141,7 @@ public:
 
 //This class iterate over all the params
 //Enables the resolution of variables
+using binding_return_t = optional<dual_param>;
 class command_expr_evaluator
 {
 private:
@@ -151,7 +152,8 @@ private:
 
     optional<time_t> get_real_time(const json & time_ref);
 
-    optional<dual_param> next_add_task_story_stamp(const json & args);
+    binding_return_t next_add_task_story_stamp(const json & args);
+    binding_return_t now(const json & args);
 
     /*
     Eg:
@@ -163,8 +165,9 @@ private:
         }
         },
     */
-    inline static map<string, function<optional<dual_param>(command_expr_evaluator &, const json &)>> bindings_map{
+    inline static map<string, function<binding_return_t(command_expr_evaluator &, const json &)>> bindings_map{
         {"next_add_task_story_stamp", &command_expr_evaluator::next_add_task_story_stamp},
+        {"now", &command_expr_evaluator::now},
     };
 public:
     command_expr_evaluator(const string &command_str, map<string, json> &variables);

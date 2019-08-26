@@ -74,7 +74,7 @@ command_expr_evaluator::command_expr_evaluator(const string &command_str, map<st
         if (i.is_expression){
             auto dual_p = evaluate(i);
             if (dual_p.has_value()){ 
-                i = dual_p.value(); 
+                i = dual_p.value(); //we need to be able to track previous params, to set relative expresions, like end 30 min after start param
             }
             else{
                 //This is a not a valid command
@@ -137,7 +137,7 @@ optional<dual_param> command_expr_evaluator::evaluate(dual_param &non_formated_p
 }
 
 
-optional<dual_param> command_expr_evaluator::next_add_task_story_stamp(const json & args)
+binding_return_t command_expr_evaluator::next_add_task_story_stamp(const json & args)
 {
     cout << "Evaluation via: "<< __func__ <<  endl;
     cout << "args: " << args.dump(4) << endl;
@@ -172,4 +172,8 @@ optional<time_t> command_expr_evaluator::get_real_time(const json & time_ref){
     }else{
         return nullopt;
     }
+}
+
+binding_return_t now(const json & args){
+    return dual_param("")
 }

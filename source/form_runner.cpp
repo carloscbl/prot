@@ -93,6 +93,10 @@ const json form_runner::run(const json &request_json) noexcept
         for ( const auto & [k,v] : response->taskstory_json.items())
         {
             cout << v.dump(4) << endl;
+            /*
+            As we need to be able to reload the task, we need to provide to the task its own parsed command, but we will make it via render from the task
+            but we need to transform dual param from command expr evaluator, to string as the params ar given bi
+            */
             command_expr_evaluator command(v["command"].get<string>(), response->form_variables);
             auto co = command.get_command();
             string strcommand = co.render();
@@ -125,8 +129,9 @@ const json form_runner::run(const json &request_json) noexcept
             }
 
             /////Add all at the same time
-            provisional.add_group(move(taskstory));//Convert the map in a queue queue<task_t>());
-            commiter.commit(); //Disolves group && activate the tasks
+            if(provisional.add_group(move(taskstory))){
+                commiter.commit(); //Disolves group && activate the tasks
+            }
         }
     }
 
