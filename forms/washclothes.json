@@ -21,7 +21,8 @@
     }
   },
   "variables": {
-    "time.minutes.WaitToCollect": 75
+    "time.minutes.WaitToCollect": 75,
+    "minus" : "15s"
   },
   "configurables":[
     "time.minutes.WaitToCollect"
@@ -95,11 +96,11 @@
             "task_tag":"base_task"
           },
           {
-            "command":"task add -u {user.user} -d 'Put them inside and start the machine' -s 80 -e {now}",
+            "command":"task add -u {user.user} -d 'Put them inside and start the machine' -s {now} -e {now(|plus|90s|minus|}",
             "task_tag":"washer_start"
           },
           {
-            "command":"task add -u {user.user} -d 'Collect the washed clothes' -s {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect} -e {{after_start}:30min}",
+            "command":"task add -u {user.user} -d 'Collect the washed clothes' -s {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect} -e {after_start|30min}",
             "task_tag":"washer_end"
           }
         ],
