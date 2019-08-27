@@ -5,12 +5,12 @@ Powered by a engine parser of json forms, that provides the set up, pipeline and
 
 ## Quick - Setup
 
-I provide a script for dependencess installation for debian like systems
+To install dependencies for debian like systems
 
 ```bash
 ./configure_and_dependencies.sh
 ```
-## Installation
+## Manual Installation
 
 To compile the project you need to have:
 - Installed boost 1.69 libs and includes in your machine as CMake will look for it in the local machine
@@ -20,6 +20,9 @@ To compile the project you need to have:
 ```bash
 sudo apt install gcc g++ make cmake
 ```
+Then you need to install boost as like [Here](https://onethinglab.com/2019/01/30/how-to-install-latest-boost-library-on-ubuntu/).
+Or follow dependencies.sh and custom your params
+
 ## Build
 
 To build the application, from prot root directory execute the build.sh script:

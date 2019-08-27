@@ -1,4 +1,5 @@
 #!/bin/bash
+sudo apt install gcc g++ make cmake
 cd thirdparty
 wget https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.gz
 tar -xvf boost_1_69_0.tar.gz

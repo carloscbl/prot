@@ -17,7 +17,7 @@
 #include "form_collector.h"
 #include "request.h"
 #include "test.h"
-
+#include "lexer.h"
 
 #define p(X) std::cout << X << std::endl;
 
@@ -43,6 +43,8 @@ int main(int argc, char const *argv[])
     //////////////////////////////////////////////////////
     //// Single Instances
     ////////////////////////////////////////////////////// 
+    task_lex task_l;
+    task_l.print_out();
     form_collector fc;
     command_processor cp;
     user user_;
