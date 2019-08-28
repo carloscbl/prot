@@ -90,31 +90,41 @@
         ]
       },
       "taskstories": {
-        "normal_user":[
-          {
-            "task":{
-              "comment":"The user is implicit",
-              "description": "Gather Clothes around home",
-              "task_tag":"base_task",
-              "restrictions":[
-                "Night","Job"
-              ],
-              "duration": {
-                "min": 5
-              }
-
+        "normal_user":
+        {
+          "base_task":{
+            "comment":"The user is implicit",
+            "description": "Gather Clothes around home",
+            "priority":"some-days",
+            "duration": {
+              "min": 5
+            }
+          },
+          "washer_start":{
+            "description": "Put them inside and start the machine",
+            "restrictions":[
+              "night"
+            ],
+            "priority":"some-days",
+            "duration": {
+              "min": 2
+            }
+          },
+          "washer_end":{
+            "description": "Collect and hang out the washing",
+            "priority":"some-days",
+            "duration": {
+              "min": 15
             },
-          },
-          {
-            "command":"task add -u {user.user} -d 'Put them inside and start the machine' -s {now} -e {now(|plus|90s|minus|}",
-            "task_tag":"washer_start"
-          },
-          {
-            "command":"task add -u {user.user} -d 'Collect the washed clothes' -s {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect} -e {after_start|30min}",
-            "task_tag":"washer_end"
+            "when":{
+              "after":"washer_start",
+              "delay":{
+                "min": 75
+              }
+            }
           }
-        ],
-        "industrial_user":[]
+        },
+        "industrial_user":{}
       }
     },
     {
