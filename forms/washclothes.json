@@ -92,8 +92,18 @@
       "taskstories": {
         "normal_user":[
           {
-            "command":"task add -u {user.user} -d 'Gather Clothes' -s 55 -e 70",
-            "task_tag":"base_task"
+            "task":{
+              "comment":"The user is implicit",
+              "description": "Gather Clothes around home",
+              "task_tag":"base_task",
+              "restrictions":[
+                "Night","Job"
+              ],
+              "duration": {
+                "min": 5
+              }
+
+            },
           },
           {
             "command":"task add -u {user.user} -d 'Put them inside and start the machine' -s {now} -e {now(|plus|90s|minus|}",
