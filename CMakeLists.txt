@@ -10,6 +10,9 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/source)
 find_package(Threads REQUIRED)
 
+add_subdirectory(test)
+
+
 include_directories("thirdparty/nlohmann_json")
 
 file(GLOB SOURCES
