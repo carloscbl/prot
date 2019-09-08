@@ -1,32 +1,9 @@
 ﻿{
   "form":{
-    "version": 1,
+    "version": 0,
     "form.name": "Washer easer",
     "author.name":"carlos bernal"
   },
-  "bindings":{
-    "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{
-      "function":"next_add_task_story_stamp",
-      "args": {
-        "prev_task_tag" :"washer_start",
-        "time":"time.minutes.WaitToCollect"
-      }
-    },
-    "AnHourLater":{
-      "function":"next_add_task_story_stamp",
-      "args": {
-        "prev_task_tag" :"washer_start",
-        "time": 60
-      }
-    }
-  },
-  "variables": {
-    "time.minutes.WaitToCollect": 75,
-    "minus" : "15s"
-  },
-  "configurables":[
-    "time.minutes.WaitToCollect"
-  ],
   "questions": [
     {
       "id": 1,

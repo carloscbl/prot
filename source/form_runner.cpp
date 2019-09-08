@@ -123,7 +123,7 @@ const json form_runner::run(const json &request_json) noexcept
         auto group_vector = commiter.get_group();
         if(group_vector && !any_wrong){
             queue<task_t> taskstory;
-            for(auto & [k,v]: response->taskstory_json.items()){
+            for(auto & [k,v]: response->taskstory_json.items() ){
                 string tag = v["task_tag"].get<string>();
                 taskstory.push(group_vector->at(tag));
             }
@@ -136,25 +136,6 @@ const json form_runner::run(const json &request_json) noexcept
     }
 
     return response_j;
-}
-
-task_t form_runner::command_to_task(string & taskstory_command, variables_t & variables)
-{
-    //We need to be able to get a solved command with the variables, and then publish the new ones from
-    command_expr_evaluator expr(taskstory_command, variables);
-
-    auto co = expr.get_command();
-    string strcommand = co.render();
-
-    if (strcommand.empty())
-    {
-        cout << "bad parse of command" << endl;
-    }
-    else
-    {
-        //Here we send the command string that returns our task, here we relay in the implementation for getting new task via command
-    }
-    return task_t();
 }
 
 shared_ptr<form_state> form_runner::get_session() const noexcept

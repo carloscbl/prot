@@ -179,9 +179,6 @@ public:
 
         user_import_preferences(); //This overrides default form vars, that are configurables
         
-        // if(next_question.taskstory_json != json::value_t::null){
-        //     schedule_tasktory(next_question.taskstory_json);
-        // }
         next_question->form_variables = this->variables;
         return next_question;
     }
@@ -190,6 +187,7 @@ public:
     const array<string,5> subsection_names{
         "form","bindings","variables", "configurables", "questions"
     };
+
     const string get_name(){
         return subsections["form"]->section["form.name"].get<string>();
     }
@@ -212,5 +210,6 @@ public:
     }
 };
 
-
+#ifndef FORM_PARSER_H
+#define FORM_PARSER_H
 #endif //FORM_PARSER_H

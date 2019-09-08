@@ -9,6 +9,7 @@
 #include <iostream>
 #include <memory>
 #include <ctime>
+#include <chrono>
 #include <cmath>
 #include "CRUD_actionable.h"
 #include "json.hpp"
@@ -27,6 +28,8 @@ struct pair_interval
     time_t start;
 };
 void to_json(nlohmann::json& j, const pair_interval& p);
+void to_json(nlohmann::json& j, const task_space::task& p);
+void from_json(const nlohmann::json& j, task_space::task& p);
 
 
 class task : public CRUD_actionable<task>
@@ -39,6 +42,7 @@ private:
     string task_group;
     string associated_command;
     time_t dateUTC;
+    duration duration;
     pair_interval interval;
     CRUD_plus_actions_map tasks_map{
 
@@ -55,6 +59,7 @@ private:
         {'m', &task::set_minute}, //minute*/
         // {"T",&task::set_stamp},//unixTimeStamp
     };
+    friend void task_space::from_json(const nlohmann::json& j, task_space::task& p);
 public:
     string id;
     task();
@@ -87,7 +92,30 @@ public:
     void print_() { cout << id << ":" << name << ":" << description << ":" << asctime(localtime(&dateUTC)) << endl; }
 
 };
-void to_json(nlohmann::json& j, const task_space::task& p);
+class duration{
+    duration();
+    std::chrono::seconds m_duration;
+    void seconds(unsigned long long secs ){
+        m_duration = std::chrono::seconds(secs);
+    }
+    void minutes(unsigned long long mins ){
+        m_duration = std::chrono::minutes(mins);
+    }
+    void hours(unsigned long long hours){
+        m_duration = std::chrono::hours(hours);
+    }
+};
+void task_space::from_json(const nlohmann::json& j, task_space::duration& p){
+
+}
+void task_space::from_json(const nlohmann::json& j, task_space::task& p){
+        j.at("name").get_to(p.name);
+        j.at("priority").get_to(p.priority);
+        j.at("description").get_to(p.description);
+        j.at("duration").get_to(p.duration);
+        j.at("restrictions").get_to(p.restrictions);
+        j.at("when").get_to(p.when);
+}
 }
 
 using task_t = shared_ptr<task_space::task>;
