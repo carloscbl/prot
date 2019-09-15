@@ -74,7 +74,9 @@
             "description": "Gather Clothes around home",
             "priority":"some-days",
             "duration": {
-              "min": 5
+              "min": 5,
+              "hours":2,
+              "sec": 3
             }
           },
           "washer_start":{

@@ -1,5 +1,6 @@
 #ifndef FORM_PARSER_H
 #define FORM_PARSER_H
+
 #include <string>
 #include <map>
 #include <iostream>
@@ -209,7 +210,4 @@ public:
         return ptr;
     }
 };
-
-#ifndef FORM_PARSER_H
-#define FORM_PARSER_H
 #endif //FORM_PARSER_H
