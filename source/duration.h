@@ -1,3 +1,5 @@
+#ifndef DURATION_H
+#define DURATION_H
 
 #include <map>
 #include <string>
@@ -25,3 +27,4 @@ public:
     }
 };
 void from_json(const nlohmann::json& j, duration& p);
+#endif //DURATION_H

@@ -42,6 +42,9 @@ namespace task_space{
         string associated_command;
         time_t dateUTC;
         duration m_duration;
+        int priority;
+        set<string> restrictions;
+        when m_when;
         pair_interval interval;
         CRUD_plus_actions_map tasks_map;
 
