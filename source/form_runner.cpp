@@ -97,6 +97,7 @@ const json form_runner::run(const json &request_json) noexcept
             As we need to be able to reload the task, we need to provide to the task its own parsed command, but we will make it via render from the task
             but we need to transform dual param from command expr evaluator, to string as the params ar given bi
             */
+            task_t task_test = make_shared<task>(v.get<task>());
             command_expr_evaluator command(v["command"].get<string>(), response->form_variables);
             auto co = command.get_command();
             string strcommand = co.render();

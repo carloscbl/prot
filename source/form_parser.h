@@ -146,7 +146,7 @@ private:
     }
 
     void form_publisher_vars(){
-        for(auto & section : {"variables","form" ,"bindings"}){
+        for(auto & section : {"form"}){
             for (auto [k,v]: subsections[section]->section){
                 variables[k] = v;
                 cout << k << v << endl;
@@ -185,8 +185,8 @@ public:
     }
     form_parser(const json & j);
     form_parser(const json & j,const form_state & fs);
-    const array<string,5> subsection_names{
-        "form","bindings","variables", "configurables", "questions"
+    const vector<string> subsection_names{
+        "form", "questions"
     };
 
     const string get_name(){

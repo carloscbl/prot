@@ -12,8 +12,8 @@ public:
     duration() = default;
     std::chrono::seconds m_duration;
     std::map<std::string,std::function<void(duration & ,unsigned long long)>> conversors{
-        {"min", &duration::minutes},
-        {"sec", &duration::seconds},
+        {"minutes", &duration::minutes},
+        {"seconds", &duration::seconds},
         {"hours", &duration::hours},
     };
     void seconds(unsigned long long secs ){

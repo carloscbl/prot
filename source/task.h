@@ -4,7 +4,6 @@
 #include <string>
 #include <functional>
 #include <vector>
-#include <cassert>
 #include <map>
 #include <set>
 #include <iostream>
@@ -13,6 +12,7 @@
 #include <cmath>
 #include "CRUD_actionable.h"
 #include "duration.h"
+#include "when.h"
 #include "json.hpp"
 #include <boost/icl/interval.hpp>
 
