@@ -1,6 +1,8 @@
 #include "scheduler.h"
 #include <algorithm>
+
 using task = task_space::task;
+
 scheduler::scheduler(scheduler_policy policy)
 :policy(policy)
 {
@@ -91,23 +93,6 @@ bool scheduler::add_group(queue<task_t> && provisional_taskstory){
     }
 
     return all_correct;
-}
-
-bool scheduler::add_group(queue<string> && provisional_taskstory){
-     //Copy in
-
-    while (!provisional_taskstory.empty())
-    {
-    //    const auto & current_task = provisional_taskstory.front();
-        //We got the element... now we need to evaluate it
-        
-        provisional_taskstory.pop();
-    }
-
-
-
-
-    return true;
 }
 
 provisional_scheduler_RAII scheduler::get_provisional(){
