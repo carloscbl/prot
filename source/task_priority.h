@@ -10,7 +10,6 @@
 using std::string;
 using std::cout;
 using std::endl;
-using nlohmann::json;
 
 class task_priority : public api_validated
 {
@@ -22,7 +21,6 @@ public:
 
 class priority{
 private:
-    friend void from_json(const nlohmann::json& j, priority& p);
     string m_priority;
 public:
     priority():m_priority("day-regular-basics"){ };

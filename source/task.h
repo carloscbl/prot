@@ -16,6 +16,7 @@
 #include "json.hpp"
 #include <boost/icl/interval.hpp>
 #include "task_priority.h"
+#include "task_restrictions.h"
 
 
 using std::vector;
@@ -44,7 +45,7 @@ namespace task_space{
         time_t dateUTC;
         duration m_duration;
         priority m_priority;
-        set<string> restrictions;
+        restrictions m_restrictions;
         when m_when;
         pair_interval interval;
         CRUD_plus_actions_map tasks_map;
