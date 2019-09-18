@@ -1,23 +1,22 @@
 #ifndef TASK_PRIORITY_H
 #define TASK_PRIORITY_H
+
 #include <string>
 #include <fstream>
 #include <iostream>
 #include "json.hpp"
+#include "api_validated.h"
 
 using std::string;
 using std::cout;
 using std::endl;
 using nlohmann::json;
-class task_priority
+
+class task_priority : public api_validated
 {
 private:
-    const string priority_definitions_file = "../forms/api/priority.json";
-    json priorities;
 public:
-    task_priority(/* args */);
-    ~task_priority();
-    bool check_priority(const string & mapping_str) const;
+    task_priority():api_validated("../forms/api/priority.json"){};
     static task_priority & get_priority_lazy_unique_instance();
 };
 
