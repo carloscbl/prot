@@ -89,7 +89,7 @@ public:
     scheduler &get_scheduler() const noexcept override { return *scheduler_; }
 
     const string &get_name() const noexcept override { return minimal_data.username; }
-    iuser & get_user(const string & user_) noexcept override { return static_cast<iuser&>(*users[user_]); }
+    user & get_user(const string & user_) noexcept override { return static_cast<user&>(*users[user_]); }
 };
 
 #endif //USER_H

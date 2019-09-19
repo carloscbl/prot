@@ -90,8 +90,6 @@ private:
     but return false;
     */
     bool add_group(queue<task_t> && provisional_taskstory);
-    //This variant is for unresolved commands
-    bool add_group(queue<string> && provisional_taskstory);
 
 public:
   

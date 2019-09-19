@@ -1,4 +1,5 @@
 #include "task.h"
+#include <set>
 
 
 void task_space::to_json(nlohmann::json& j, const pair_interval& p) {
@@ -18,7 +19,20 @@ void task_space::to_json(nlohmann::json& j, const task_space::task& p) {
         {"interval", p.get_interval()},
     };
 }
-//using namespace std;
+
+
+
+void task_space::from_json(const nlohmann::json& j, task_space::task& p){
+        //j.at("name").get_to(p.name);
+        p.m_priority.set_priority( j.at("priority").get<std::string>() );
+        j.at("description").get_to(p.description);
+        j.at("duration").get_to(p.m_duration);
+        j.at("when").get_to(p.m_when);
+        //Optional
+        if(j.find("restrictions") != j.end()){
+            p.m_restrictions.set_restrictions( j.at("restrictions") .get<std::set<std::string>>() );
+        }
+}
 
 task_space::task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(time(nullptr))
 {

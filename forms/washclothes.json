@@ -1,32 +1,9 @@
 ﻿{
   "form":{
-    "version": 1,
+    "version": 0,
     "form.name": "Washer easer",
     "author.name":"carlos bernal"
   },
-  "bindings":{
-    "next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect":{
-      "function":"next_add_task_story_stamp",
-      "args": {
-        "prev_task_tag" :"washer_start",
-        "time":"time.minutes.WaitToCollect"
-      }
-    },
-    "AnHourLater":{
-      "function":"next_add_task_story_stamp",
-      "args": {
-        "prev_task_tag" :"washer_start",
-        "time": 60
-      }
-    }
-  },
-  "variables": {
-    "time.minutes.WaitToCollect": 75,
-    "minus" : "15s"
-  },
-  "configurables":[
-    "time.minutes.WaitToCollect"
-  ],
   "questions": [
     {
       "id": 1,
@@ -90,21 +67,43 @@
         ]
       },
       "taskstories": {
-        "normal_user":[
-          {
-            "command":"task add -u {user.user} -d 'Gather Clothes' -s 55 -e 70",
-            "task_tag":"base_task"
+        "normal_user":
+        {
+          "base_task":{
+            "comment":"The user is implicit",
+            "description": "Gather Clothes around home",
+            "priority":"some-days",
+            "duration": {
+              "minutes": 5,
+              "hours":2,
+              "seconds": 3
+            }
           },
-          {
-            "command":"task add -u {user.user} -d 'Put them inside and start the machine' -s {now} -e {now(|plus|90s|minus|}",
-            "task_tag":"washer_start"
+          "washer_start":{
+            "description": "Put them inside and start the machine",
+            "restrictions":[
+              "night"
+            ],
+            "priority":"some-days",
+            "duration": {
+              "minutes": 2
+            }
           },
-          {
-            "command":"task add -u {user.user} -d 'Collect the washed clothes' -s {next_add_task_story_stamp__washer_start__time.minutes.WaitToCollect} -e {after_start|30min}",
-            "task_tag":"washer_end"
+          "washer_end":{
+            "description": "Collect and hang out the washing",
+            "priority":"some-days",
+            "duration": {
+              "minutes": 15
+            },
+            "when":{
+              "after":"washer_start",
+              "delay":{
+                "minutes": 75
+              }
+            }
           }
-        ],
-        "industrial_user":[]
+        },
+        "industrial_user":{}
       }
     },
     {

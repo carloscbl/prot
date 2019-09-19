@@ -43,8 +43,8 @@ int main(int argc, char const *argv[])
     //////////////////////////////////////////////////////
     //// Single Instances
     ////////////////////////////////////////////////////// 
-    task_lex task_l;
-    task_l.print_out();
+    // task_lex task_l;
+    // task_l.print_out();
     form_collector fc;
     command_processor cp;
     user user_;
