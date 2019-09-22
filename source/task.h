@@ -48,6 +48,7 @@ namespace task_space{
         restrictions m_restrictions;
         when m_when;
         pair_interval interval;
+        
         CRUD_plus_actions_map tasks_map;
 
         map_local_functions setters{

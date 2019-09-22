@@ -98,27 +98,8 @@ const json form_runner::run(const json &request_json) noexcept
             but we need to transform dual param from command expr evaluator, to string as the params ar given bi
             */
             task_t task_test = make_shared<task>(v.get<task>());
-            command_expr_evaluator command(v["command"].get<string>(), response->form_variables);
-            auto co = command.get_command();
-            string strcommand = co.render();
-            
-            if (strcommand.empty())
-            {
-                cout << "bad parse of command" << endl; //We should stop all
-                any_wrong = true;
-                break;
-            }
-            else
-            {
-                provisional.print_out();
-                string tag_name = v["task_tag"].get<string>();
-
-                cp.perform_command(strcommand + " -g " + response->taskstory_name + " -t " + tag_name);
-
-                task_t last_command_made = commiter.get_group()->at(tag_name);
-                json publish = *last_command_made;
-                response->form_variables[tag_name] = publish;
-            }
+            //TODO get the tags
+            //task_t last_command_made = commiter.get_group()->at(tag_name);
         }
         task_t created_task_by_command;
         auto group_vector = commiter.get_group();
