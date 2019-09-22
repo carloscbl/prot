@@ -26,6 +26,7 @@ void task_space::from_json(const nlohmann::json& j, task_space::task& p){
     //j.at("name").get_to(p.name);
     p.m_priority.set_priority( j.at("priority").get<std::string>() );
     j.at("description").get_to(p.description);
+    j.at("tag").get_to(p.tag);
     j.at("duration").get_to(p.m_duration);
     //Optional
     if(j.find("restrictions") != j.end()){

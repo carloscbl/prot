@@ -1,10 +1,10 @@
 
 #include "form_runner.h"
 
-form_runner::form_runner(shared_ptr<user> user_, form_t &form_, command_processor & cp)
-:user_(user_),
-form_(form_),
-cp(cp)
+form_runner::form_runner(shared_ptr<user> user_, form_t &form_, command_processor &cp)
+    : user_(user_),
+      form_(form_),
+      cp(cp)
 {
 
     //fp = make_unique<form_parser>(state);
@@ -44,7 +44,8 @@ const json form_runner::run(const json &request_json) noexcept
     response_j["next_question"] = response->question_str;
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler
 
-    if (response->taskstory_json.empty()){
+    if (response->taskstory_json.empty())
+    {
         return response_j;
     }
 
@@ -63,20 +64,21 @@ const json form_runner::run(const json &request_json) noexcept
         {
             provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
             provisional.print_out();
-            tasker & tasker_ = static_cast<tasker&>(this->user_->get_tasker());
+            tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
             //Group composed
-            taskstory_commit_RAII commiter(response->taskstory_name, static_cast<tasker&>(tasker_));
+            taskstory_commit_RAII commiter(response->taskstory_name, static_cast<tasker &>(tasker_));
             task_t created_task_by_command;
             ///// Now start send commands
             cp.perform_command(strcommand);
             //Refresh variables
-            //TODO: Define, response->form_variables[response->taskstory_name] = 
+            //TODO: Define, response->form_variables[response->taskstory_name] =
             //Loop
 
             ///// End send commands
             /////Last chance to gather all grouped
             auto group = commiter.get_group();
-            if(group){
+            if (group)
+            {
                 created_task_by_command = group->at(0);
                 cout << created_task_by_command->id << endl;
             }
@@ -84,34 +86,32 @@ const json form_runner::run(const json &request_json) noexcept
             commiter.commit(); //Disolves group && activate the tasks
             provisional.add_single(move(created_task_by_command));
         }
-    }else{
-        provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
-        tasker & tasker_ = static_cast<tasker&>(this->user_->get_tasker());
+    }
+    else
+    {
+        provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
+        tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
         taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
-        bool any_wrong = false;
-        
-        for ( const auto & [k,v] : response->taskstory_json.items())
+
+        for (const auto &[k, v] : response->taskstory_json.items())
         {
             cout << v.dump(4) << endl;
-            /*
-            As we need to be able to reload the task, we need to provide to the task its own parsed command, but we will make it via render from the task
-            but we need to transform dual param from command expr evaluator, to string as the params ar given bi
-            */
             task_t task_test = make_shared<task>(v.get<task>());
-            //TODO get the tags
-            //task_t last_command_made = commiter.get_group()->at(tag_name);
+            tasker_.add_to_group(move(task_test), response->taskstory_name);
         }
-        task_t created_task_by_command;
         auto group_vector = commiter.get_group();
-        if(group_vector && !any_wrong){
+
+        if (group_vector)
+        {
             queue<task_t> taskstory;
-            for(auto & [k,v]: response->taskstory_json.items() ){
-                string tag = v["task_tag"].get<string>();
-                taskstory.push(group_vector->at(tag));
-            }
+            // for (auto &[k, v] : response->taskstory_json.items())
+            // {
+            //     taskstory.push(group_vector->at(""));
+            // }
 
             /////Add all at the same time
-            if(provisional.add_group(move(taskstory))){
+            if (provisional_scheduler.add_group(move(taskstory)))
+            {
                 commiter.commit(); //Disolves group && activate the tasks
             }
         }

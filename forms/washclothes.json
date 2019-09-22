@@ -68,8 +68,9 @@
       },
       "taskstories": {
         "normal_user":
-        {
-          "base_task":{
+        [
+          {
+            "tag": "base_task",
             "comment":"The user is implicit",
             "description": "Gather Clothes around home",
             "priority":"some-days",
@@ -79,7 +80,8 @@
               "seconds": 3
             }
           },
-          "washer_start":{
+          {
+            "tag": "washer_start",
             "description": "Put them inside and start the machine",
             "restrictions":[
               "night"
@@ -89,7 +91,8 @@
               "minutes": 2
             }
           },
-          "washer_end":{
+          {
+            "tag":"washer_end",
             "description": "Collect and hang out the washing",
             "priority":"some-days",
             "duration": {
@@ -102,7 +105,7 @@
               }
             }
           }
-        },
+        ],
         "industrial_user":{}
       }
     },

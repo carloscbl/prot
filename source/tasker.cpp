@@ -4,8 +4,13 @@
 
 tasker::tasker():CRUD_actionable(tasker_map,setters){}
 
-void tasker::add_group(const string & task_tag,task_t && params, const string & group){
+void tasker::add_to_group(const string & task_tag,task_t && params, const string & group){
+    params->set_task_group(group);
     tasks_dispenser[group][task_tag] = (move(params));
+}
+
+void tasker::add_to_group( task_t && params, const string & group){
+    this->add_to_group( params->get_tag(), move(params), group);
 }
 
 task_t tasker::get_task(const string & id ) const{ 

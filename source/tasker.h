@@ -50,7 +50,7 @@ private:
             task_->add(s);
             if (match != s.end()){
                 //Got groups, they aren't directly committed
-                ((tasker&)*tasker_).add_group(s['t'],move(task_),match->second);
+                ((tasker&)*tasker_).add_to_group(s['t'],move(task_),match->second);
             }else{
                 ((tasker&)*tasker_).tasks_active[task_->id] = move(task_);
             }
@@ -108,11 +108,12 @@ private:
         };
 
     map_local_functions setters;
-    void add_group(const string & task_tag, task_t && params, const string & group);
     void commit_group_then_delete(const string & group);
+    void add_to_group(const string & task_tag, task_t && params, const string & group);
     void print_out();
 
 public:
+    void add_to_group( task_t && params, const string & group);
     //void update_time() override {};
     void remove(params_map_t params, task &instance);
     void remain(params_map_t params);
