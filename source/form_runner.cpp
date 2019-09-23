@@ -104,10 +104,11 @@ const json form_runner::run(const json &request_json) noexcept
         if (group_vector)
         {
             queue<task_t> taskstory;
-            // for (auto &[k, v] : response->taskstory_json.items())
-            // {
-            //     taskstory.push(group_vector->at(""));
-            // }
+            for (auto &[k, v] : response->taskstory_json.items())
+            {
+                //This is required to hold the order
+                taskstory.push(group_vector->at(v["tag"].get<string>()));
+            }
 
             /////Add all at the same time
             if (provisional_scheduler.add_group(move(taskstory)))
