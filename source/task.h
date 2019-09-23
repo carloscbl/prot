@@ -73,12 +73,12 @@ namespace task_space{
         void set_hour(string   hour);
         void set_minute(string minute);
 
-        void set_name        (string name_)         { name = name_; }
-        void set_task_group  (string task_group_)   { task_group = task_group_; }
-        void set_tag         (string tag_)          { tag_ = tag_; }
-        void set_description (string description_)  { description = description_; }
-        void set_stamp       (string stamp_)        { stamp = stamp_;}
-        void set_user        (string user_)         { m_user = user_; }
+        void set_name        (string name_)         { this->name = name_; }
+        void set_task_group  (string task_group_)   { this->task_group = task_group_; }
+        void set_tag         (string tag_)          { this->tag = tag_; }
+        void set_description (string description_)  { this->description = description_; }
+        void set_stamp       (string stamp_)        { this->stamp = stamp_;}
+        void set_user        (string user_)         { this->m_user = user_; }
         void set_interval(time_t start, time_t end) {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
