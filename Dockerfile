@@ -1,4 +1,4 @@
-FROM phusion/baseimage:latest
+FROM ubuntu:19.04
 
 
 RUN apt update && apt install -y \
@@ -7,12 +7,12 @@ RUN apt update && apt install -y \
     g++ \
     coreutils \
     make \
-    cmake
-    #libboost1.65-dev
+    wget \
+    cmake 
     #Still looking fo the correct package
 
 ADD ./ /opt/prot
 WORKDIR /opt/prot
-
+RUN ./dependencies.sh
 RUN ./build.sh
 

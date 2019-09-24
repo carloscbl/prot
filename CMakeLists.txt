@@ -1,11 +1,11 @@
-cmake_minimum_required(VERSION 3.5.0)
+cmake_minimum_required(VERSION 3.10.0)
 
 project(prot)
 
 SET(CMAKE_CXX_FLAGS "-g -Wall -Werror -std=c++17")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
-FIND_PACKAGE( Boost 1.65 COMPONENTS program_options filesystem system REQUIRED )
+FIND_PACKAGE( Boost 1.69 COMPONENTS program_options filesystem system REQUIRED )
 INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/source)
 find_package(Threads REQUIRED)

@@ -17,7 +17,6 @@
 #include "form_collector.h"
 #include "request.h"
 #include "test.h"
-#include "lexer.h"
 
 #define p(X) std::cout << X << std::endl;
 
