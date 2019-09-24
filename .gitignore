@@ -1,9 +1,10 @@
 
 build/*
 cmake-build-debug/*
-#.*/
+.*/
 thirdparty/boost*
 
+Testing/*
 .vscode/*
 !.vscode/tasks.json
 !.vscode/launch.json
