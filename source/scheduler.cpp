@@ -17,6 +17,11 @@ scheduler::scheduler(scheduler_policy policy)
     }
 }
 
+im_t scheduler::clone_interval_map() const {
+    std::scoped_lock<mutex> lock (this->scheduler_mutex);
+    return this->m_interval_map;
+}
+
 bool scheduler::find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur)
 {
     return false;
@@ -37,7 +42,7 @@ optional<vector<task_t>> scheduler::get_range(time_t start, time_t end){
     return range_vec.empty() ? nullopt : make_optional(range_vec);
 }
 
-//No check we assume checked
+//No check, we assume checked
 bool scheduler::add_single(const task_t && task_)
 {
     mod = true;

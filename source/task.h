@@ -63,6 +63,7 @@ namespace task_space{
             // {"T",&task::set_stamp},//unixTimeStamp
         };
         friend void task_space::from_json(const nlohmann::json& j, task_space::task& p);
+
     public:
         string id;
         task();

@@ -25,6 +25,7 @@ public:
 class restrictions{
 private:
     set<string> m_restrictions;
+    
 public:
     void set_restrictions(const set<string> & restrictions_);
 };
