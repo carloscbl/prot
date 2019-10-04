@@ -37,7 +37,7 @@ private:
 public:
     void set_restrictions(const set<string> & restrictions_);
     //From, to
-    vector<json_interval> get_all_from_to();
+    vector<json_interval> get_all_from_to() const;
 };
 
 

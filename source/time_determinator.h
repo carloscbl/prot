@@ -31,11 +31,15 @@ bool time_determinator::build_restrictions(const scheduler & sche_){
     im_t interval_map = sche_.clone_interval_map();
 
     const auto & rest = task_->get_restrictions();
-    rest.
-    for each restriction add a range
-    interval_map.set(make_pair(time_interval::closed(interval_.start, interval_.end)
+    vector<json_interval> restrictions_interval = rest.get_all_from_to();
+    //for each restriction add a range
+    task_t dummy_task = std::make_shared<task>();
+    for (auto &i : restrictions_interval)
+    {
+        interval_map.add(make_pair(time_interval::closed(i.from, i.to), dummy_task));
+    }
 
-    return false;
+    return true;
 }
 
 time_determinator::~time_determinator()

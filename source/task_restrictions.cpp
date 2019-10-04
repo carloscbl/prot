@@ -16,7 +16,7 @@ task_restrictions & task_restrictions::get_restrictions_lazy_unique_instance(){
     return restr;
 }
 
-vector<json_interval> restrictions::get_all_from_to(){
+vector<json_interval> restrictions::get_all_from_to() const{
     const json & j = task_restrictions::get_restrictions_lazy_unique_instance().api_json;
     vector<json_interval> intervals;
     for (const auto & restriction : m_restrictions){
