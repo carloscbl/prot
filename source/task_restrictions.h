@@ -28,6 +28,8 @@ private:
     
 public:
     void set_restrictions(const set<string> & restrictions_);
+    //From, to
+    std::pair<int,int> get_all_from_to();
 };
 
 

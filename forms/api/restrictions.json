@@ -1,4 +1,14 @@
 {
-    "night": "",
-    "day": ""
+    "night": {
+        "from": 22,
+        "to": 8
+    },
+    "day": {
+        "from": 7,
+        "to": 19
+    },
+    "laboral-hours":{
+        "from": 8,
+        "to": 16
+    }
 }

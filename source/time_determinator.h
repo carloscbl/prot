@@ -12,14 +12,14 @@
 class time_determinator
 {
 private:
-    /* data */
+    task_t task_;
 public:
     bool build_restrictions(const scheduler & sche_);
     time_determinator(task_t task_);
     ~time_determinator();
 };
 
-time_determinator::time_determinator(task_t task_)
+time_determinator::time_determinator(task_t task_):task_(task_)
 {
 }
 
@@ -28,7 +28,12 @@ time_determinator::time_determinator(task_t task_)
 //Restrictions apply json-land and then user-land configs
 //Then we get the first free interval as start point
 bool time_determinator::build_restrictions(const scheduler & sche_){
-    im_t base_sche = sche_.clone_interval_map();
+    im_t interval_map = sche_.clone_interval_map();
+
+    const auto & rest = task_->get_restrictions();
+    rest.
+    for each restriction add a range
+    interval_map.set(make_pair(time_interval::closed(interval_.start, interval_.end)
 
     return false;
 }

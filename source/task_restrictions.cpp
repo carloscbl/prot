@@ -15,3 +15,7 @@ task_restrictions & task_restrictions::get_restrictions_lazy_unique_instance(){
     static task_restrictions restr;
     return restr;
 }
+
+std::pair<int,int> restrictions::get_all_from_to(){
+
+}
