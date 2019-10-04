@@ -7,6 +7,9 @@
 #include <set>
 #include "json.hpp"
 #include "api_validated.h"
+#include <vector>
+
+using std::vector;
 
 using std::set;
 using std::cout;
@@ -22,6 +25,11 @@ public:
     static task_restrictions & get_restrictions_lazy_unique_instance();
 };
 
+struct json_interval {
+    int from;
+    int to;
+};
+
 class restrictions{
 private:
     set<string> m_restrictions;
@@ -29,7 +37,7 @@ private:
 public:
     void set_restrictions(const set<string> & restrictions_);
     //From, to
-    std::pair<int,int> get_all_from_to();
+    vector<json_interval> get_all_from_to();
 };
 
 

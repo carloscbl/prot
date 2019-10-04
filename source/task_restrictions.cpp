@@ -16,6 +16,18 @@ task_restrictions & task_restrictions::get_restrictions_lazy_unique_instance(){
     return restr;
 }
 
-std::pair<int,int> restrictions::get_all_from_to(){
+vector<json_interval> restrictions::get_all_from_to(){
+    const json & j = task_restrictions::get_restrictions_lazy_unique_instance().api_json;
+    vector<json_interval> intervals;
+    for (const auto & restriction : m_restrictions){
+        auto match = j.find(restriction);
+        if(match != j.end()){
+            intervals.push_back(json_interval{
+                .from = match.value()["from"].get<int>(),
+                .to = match.value()["to"].get<int>(),
+            });
+        }
+    }
 
+    return intervals;
 }
