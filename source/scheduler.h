@@ -107,7 +107,7 @@ public:
     */
     bool add_single(const task_t && task_) override;
 
-    inline im_t clone_interval_map() const;
+    im_t clone_interval_map() const;
 
     vector<task_t> get_tasks_in(interval_t interval);
     optional<vector<task_t>> get_range(time_t start, time_t end) override ;

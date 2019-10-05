@@ -73,6 +73,9 @@
             "tag": "base_task",
             "comment":"The user is implicit",
             "description": "Gather Clothes around home",
+            "restrictions":[
+              "day"
+            ],
             "priority":"some-days",
             "duration": {
               "minutes": 5,

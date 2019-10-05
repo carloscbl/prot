@@ -1,5 +1,6 @@
 
 #include "form_runner.h"
+#include "time_determinator.h"
 
 form_runner::form_runner(shared_ptr<user> user_, form_t &form_, command_processor &cp)
     : user_(user_),
@@ -97,6 +98,8 @@ const json form_runner::run(const json &request_json) noexcept
         {
             cout << v.dump(4) << endl;
             task_t task_test = make_shared<task>(v.get<task>());
+            time_determinator time_dt(task_test);
+            time_dt.build_restrictions(provisional_scheduler);
             tasker_.add_to_group(move(task_test), response->taskstory_name);
         }
         auto group_vector = commiter.get_group();

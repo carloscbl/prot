@@ -8,12 +8,14 @@
 #include "json.hpp"
 #include "api_validated.h"
 #include <vector>
+#include <chrono>
 
 using std::vector;
 
 using std::set;
 using std::cout;
 using std::endl;
+
 
 
 class task_restrictions : public api_validated
@@ -24,10 +26,10 @@ public:
     task_restrictions() : api_validated("../forms/api/restrictions.json"){};
     static task_restrictions & get_restrictions_lazy_unique_instance();
 };
-
+using std::chrono::hours;
 struct json_interval {
-    int from;
-    int to;
+    hours from;
+    hours to;
 };
 
 class restrictions{

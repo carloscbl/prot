@@ -105,7 +105,7 @@ private:
                 }
             }
         }},
-        };
+    };
 
     map_local_functions setters;
     void commit_group_then_delete(const string & group);
