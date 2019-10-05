@@ -38,7 +38,7 @@ time_determinator::time_determinator(task_t task_):task_(task_)
 
 bool time_determinator::build_restrictions(const scheduler & sche_){
     im_t interval_map = sche_.clone_interval_map();
-
+    //interval_map->equal_range... Get the sub_interval_map for the given days... maybe is wise to do it after determine restrictions
     const auto & rest = task_->get_restrictions();
     vector<json_interval> restrictions_interval = rest.get_all_from_to();
     //for each restriction add a range
