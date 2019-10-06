@@ -15,3 +15,7 @@ void frequency::set_frequency(const string frequency_){
         assert(false);
     }
 }
+
+void frequency::get_json(){
+    
+}

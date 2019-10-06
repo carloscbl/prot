@@ -4,8 +4,11 @@
 #include <string>
 #include <fstream>
 #include <iostream>
+#include <map>
+#include <functional>
 #include "json.hpp"
 #include "api_validated.hpp"
+#include "time_utils.hpp"
 
 using std::string;
 using std::cout;
@@ -21,7 +24,18 @@ public:
 
 class frequency{
 private:
+    std::map<std::string,std::function<seconds(int64_t)>> conversors{
+        {"seconds", [](int64_t m){ return duration_cast<seconds>(seconds(m));   }},
+        {"minutes", [](int64_t m){ return duration_cast<seconds>(minutes(m));   }},
+        {"hours",   [](int64_t m){ return duration_cast<seconds>(hours(m));     }},
+        {"days",    [](int64_t m){ return duration_cast<seconds>(days(m));      }},
+        {"weeks",   [](int64_t m){ return duration_cast<seconds>(weeks(m));     }},
+        {"months",  [](int64_t m){ return duration_cast<seconds>(months(m));    }},
+        {"years",   [](int64_t m){ return duration_cast<seconds>(years(m));     }},
+    };
     string m_frequency;
+    seconds period;
+    void get_json();
 public:
     frequency():m_frequency("day-regular-basics"){ };
     void set_frequency(const string frequency_);

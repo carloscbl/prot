@@ -78,7 +78,7 @@
             "shopping","charge-car", "fill-car-tank"
         ],
         "period":{
-            "week": 1
+            "weeks": 1
         },
         "is":[
             "mandatory"
@@ -89,7 +89,7 @@
             "bills","transpor-card"
         ],
         "period":{
-            "month": 1
+            "months": 1
         },
         "is":[
             "mandatory"
@@ -100,7 +100,7 @@
             "car-revision"
         ],
         "period":{
-            "year": 1
+            "years": 1
         },
         "is":[
             "mandatory"

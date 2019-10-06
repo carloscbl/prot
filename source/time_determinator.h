@@ -27,6 +27,19 @@ time_determinator::time_determinator(task_t task_):task_(task_)
 {
 }
 
+bool time_determinator::build_frequency_frequency(){
+    // const frequency & prior_freq =  this->task_->get_frequency();
+    // given a task, and its frequency, find in a range within and get the first slot
+    // But if the priority doesnt match with our range, then we need to rescheduler something else
+
+
+
+
+
+    return false;
+
+}
+
 //We need to get the current user scheduler,
 //Then we add the restrictions on top
 //Restrictions apply json-land and then user-land configs
@@ -57,18 +70,6 @@ bool time_determinator::build_restrictions(const scheduler & sche_){
     return true;
 }
 
-bool time_determinator::build_frequency_frequency(){
-    // const frequency & prior_freq =  this->task_->get_frequency();
-    // given a task, and its frequency, find in a range within and get the first slot
-    // But if the priority doesnt match with our range, then we need to rescheduler something else
-
-    // Create a class that handle a task candidate and a scheduler, and then returns the new scheduler
-    // with our new task included or return error if it is not possible
-    //
-
-    return false;
-
-}
 
 time_determinator::~time_determinator()
 {
