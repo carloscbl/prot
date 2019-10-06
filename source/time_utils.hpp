@@ -1,3 +1,5 @@
+#ifndef TIME_UTILS_H
+#define TIME_UTILS_H
 #include <chrono>
 #include "task_restrictions.h"
 
@@ -10,7 +12,7 @@ struct time_point_interval{
     time_point to;
 };
 
-time_point_interval _24_hour_interval_to_time_point (json_interval interval, time_point start_day){
+inline time_point_interval _24_hour_interval_to_time_point (json_interval interval, time_point start_day){
     time_point to = start_day + interval.to;
     if(interval.to > interval.from){
         to += std::chrono::hours(24);
@@ -20,3 +22,5 @@ time_point_interval _24_hour_interval_to_time_point (json_interval interval, tim
         .to = to
     };
 }
+
+#endif //TIME_UTILS_H

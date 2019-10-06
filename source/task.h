@@ -15,7 +15,7 @@
 #include "when.h"
 #include "json.hpp"
 #include <boost/icl/interval.hpp>
-#include "task_priority.h"
+#include "task_frequency.h"
 #include "task_restrictions.h"
 
 
@@ -44,7 +44,7 @@ namespace task_space{
         string tag;
         time_t dateUTC;
         duration m_duration;
-        priority m_priority;
+        frequency m_frequency;
         restrictions m_restrictions;
         when m_when;
         pair_interval interval;
@@ -93,7 +93,8 @@ namespace task_space{
         const string        & get_task_group()  const noexcept { return task_group;  }
         const time_t        & get_dateUTC()     const noexcept { return dateUTC;     }
         const pair_interval & get_interval()    const noexcept { return interval; }
-        const restrictions  & get_restrictions()    const noexcept { return m_restrictions; }
+        const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
+        const frequency      & get_frequency()    const noexcept { return m_frequency; }
 
         void print_remain();
 

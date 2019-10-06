@@ -24,7 +24,7 @@ void task_space::to_json(nlohmann::json& j, const task_space::task& p) {
 
 void task_space::from_json(const nlohmann::json& j, task_space::task& p){
 
-    p.m_priority.set_priority( j.at("priority").get<std::string>() );
+    p.m_frequency.set_frequency( j.at("frequency").get<std::string>() );
     j.at("description").get_to(p.description);
     j.at("tag").get_to(p.tag);
     //

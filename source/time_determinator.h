@@ -4,6 +4,8 @@
 #include "task.h"
 #include "scheduler.h"
 #include "time_determinator.h"
+#include "task_frequency.h"
+#include "time_utils.hpp"
 
 /*
   This class is intended to extract from the info of a task, the correct start time of a task
@@ -16,6 +18,7 @@ private:
     task_t task_;
 public:
     bool build_restrictions(const scheduler & sche_);
+    bool build_frequency_frequency();
     time_determinator(task_t task_);
     ~time_determinator();
 };
@@ -41,15 +44,30 @@ bool time_determinator::build_restrictions(const scheduler & sche_){
     //interval_map->equal_range... Get the sub_interval_map for the given days... maybe is wise to do it after determine restrictions
     const auto & rest = task_->get_restrictions();
     vector<json_interval> restrictions_interval = rest.get_all_from_to();
-    //for each restriction add a range
+
+    //We need to determine TODAY which is today plus the frequency and the scheduler giving us slot
+    //Based on the frequency and priorities
     task_t dummy_task = std::make_shared<task>();
     for (auto &i : restrictions_interval)
     {
-        auto time_p_interval = _24_hour_interval_to_time_point(i, // Today);
-        interval_map.set(make_pair(time_interval::closed(i.from, i.to), move(dummy_task)));
+        //TODO auto time_p_interval = _24_hour_interval_to_time_point(i, )// Today);
+        interval_map.set(make_pair(time_interval::closed(i.from.count(), i.to.count()), move(dummy_task)));
     }
     //auto it = interval_map.lower_bound(18)
     return true;
+}
+
+bool time_determinator::build_frequency_frequency(){
+    // const frequency & prior_freq =  this->task_->get_frequency();
+    // given a task, and its frequency, find in a range within and get the first slot
+    // But if the priority doesnt match with our range, then we need to rescheduler something else
+
+    // Create a class that handle a task candidate and a scheduler, and then returns the new scheduler
+    // with our new task included or return error if it is not possible
+    //
+
+    return false;
+
 }
 
 time_determinator::~time_determinator()

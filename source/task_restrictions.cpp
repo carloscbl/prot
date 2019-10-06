@@ -23,8 +23,8 @@ vector<json_interval> restrictions::get_all_from_to() const{
         auto match = j.find(restriction);
         if(match != j.end()){
             intervals.push_back(json_interval{
-                .from = match.value()["from"].get<int>(),
-                .to = match.value()["to"].get<int>(),
+                .from = hours(match.value()["from"].get<int>()),
+                .to = hours(match.value()["to"].get<int>()),
             });
         }
     }

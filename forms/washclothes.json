@@ -76,7 +76,7 @@
             "restrictions":[
               "day"
             ],
-            "priority":"some-days",
+            "frequency":"some-days",
             "duration": {
               "minutes": 5,
               "hours":2,
@@ -89,7 +89,7 @@
             "restrictions":[
               "night"
             ],
-            "priority":"some-days",
+            "frequency":"some-days",
             "duration": {
               "minutes": 2
             }
@@ -97,7 +97,7 @@
           {
             "tag":"washer_end",
             "description": "Collect and hang out the washing",
-            "priority":"some-days",
+            "frequency":"some-days",
             "duration": {
               "minutes": 15
             },

@@ -1,0 +1,3 @@
+#ifndef TASK_AGGREGATOR_H
+#define TASK_AGGREGATOR_H
+#endif //TASK_AGGREGATOR_H

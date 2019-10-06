@@ -1,0 +1,109 @@
+{
+    "vital-emergency":{
+        "tags":[
+            "fire","earthquake","hearh-attack","accident"
+        ],
+        "is":[
+            "emergency"
+        ]
+    },
+    "critical":{
+        "tags":[
+            "breath","drink","wc"
+        ],
+        "period":{
+            "hours": 1
+        },
+        "is":[
+            "critical"
+        ]
+    },
+    "vital":{
+        "tags":[
+            "breath","drink","wc"
+        ],
+        "period":{
+            "hours": 3
+        },
+        "is":[
+            "critical"
+        ]
+    },
+    "important":{
+        "tags":[
+            "eat","job","kids","current-location"
+        ],
+        "period":{
+            "days": 1
+        },
+        "is":[
+            "obligation"
+        ]
+    },
+    "not-so-important":{
+        "tags":[
+            "how-to-transport","debs","gifts","vacations"
+        ],
+        "period":{
+            "days": 3
+        },
+        "is":[
+            "mandatory"
+        ]
+    },
+    "day-regular-basics":{
+        "tags":[
+            "iron-clothes","shower","cooking","clean","charge-phone"
+        ],
+        "period":{
+            "days": 1
+        },
+        "is":[
+            "skipable"
+        ]
+    },
+    "some-days":{
+        "tags":[
+            "meet","sports","exercise","movies"
+        ],
+        "period":{
+            "days ": 1
+        },
+        "is":[
+            "skipable"
+        ]
+    },
+    "weekly":{
+        "tags":[
+            "shopping","charge-car", "fill-car-tank"
+        ],
+        "period":{
+            "week": 1
+        },
+        "is":[
+            "mandatory"
+        ]
+    },
+    "monthly":{
+        "tags":[
+            "bills","transpor-card"
+        ],
+        "period":{
+            "month": 1
+        },
+        "is":[
+            "mandatory"
+        ]
+    },
+    "yearly":{
+        "tags":[
+            "car-revision"
+        ],
+        "period":{
+            "year": 1
+        },
+        "is":[
+            "mandatory"
+        ]
+    }
+}

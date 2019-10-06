@@ -9,6 +9,7 @@
 #include "itasker.h"
 #include "task.h"
 #include <mutex>
+#include "time_utils.hpp"
 
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
@@ -68,7 +69,7 @@ public:
 
     struct policy_relevant_data{
         time_t & start, end;
-        priority_t prority;
+        priority_t priority;
     };
 private:
     //This policy checks there is not other task actually in the required gap or returns false
@@ -103,7 +104,7 @@ public:
     This means we can't overlap
     So if we find an intent of overlaping, we will deny the operation if the range is actually filled
     This way we don't need to retroactively to reallocate the displaced ones, forward operations
-    In the future, we can do two stretegies, priority rank and find the gap.
+    In the future, we can do two stretegies, frequency rank and find the gap.
     */
     bool add_single(const task_t && task_) override;
 

@@ -13,12 +13,12 @@ using nlohmann::json;
 class api_validated
 {
 private:
-    const string priority_definitions_file;
+    const string definitions_file;
 public:
     json api_json;
 
-    api_validated(const string & api_file):priority_definitions_file(api_file){
-        std::ifstream file(priority_definitions_file, std::fstream::in);
+    api_validated(const string & api_file):definitions_file(api_file){
+        std::ifstream file(definitions_file, std::fstream::in);
         file >> api_json;
     };
     
