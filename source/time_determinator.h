@@ -18,7 +18,7 @@ private:
     task_t task_;
 public:
     bool build_restrictions(const scheduler & sche_);
-    bool build_frequency_frequency();
+    bool build_frequency();
     time_determinator(task_t task_);
     ~time_determinator();
 };
@@ -27,14 +27,11 @@ time_determinator::time_determinator(task_t task_):task_(task_)
 {
 }
 
-bool time_determinator::build_frequency_frequency(){
+bool time_determinator::build_frequency(){
     // const frequency & prior_freq =  this->task_->get_frequency();
     // given a task, and its frequency, find in a range within and get the first slot
     // But if the priority doesnt match with our range, then we need to rescheduler something else
-
-
-
-
+    //task_->m_frequency.get_json();
 
     return false;
 

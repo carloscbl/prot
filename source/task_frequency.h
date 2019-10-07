@@ -35,7 +35,10 @@ private:
     };
     string m_frequency;
     seconds period;
-    void get_json();
+
+    //this determines the hierarchy and how the heuristic of overrie should work
+    string is;
+    bool get_json();
 public:
     frequency():m_frequency("day-regular-basics"){ };
     void set_frequency(const string frequency_);
