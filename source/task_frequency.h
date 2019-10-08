@@ -42,6 +42,7 @@ private:
 public:
     frequency():m_frequency("day-regular-basics"){ };
     void set_frequency(const string frequency_);
+    seconds get_period() const noexcept { return period; }
 };
 
 

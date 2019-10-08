@@ -89,7 +89,7 @@
             "restrictions":[
               "night"
             ],
-            "frequency":"some-days",
+            "frequency":"weekly",
             "duration": {
               "minutes": 2
             }

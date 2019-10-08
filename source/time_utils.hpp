@@ -13,6 +13,9 @@ using weeks = std::chrono::duration<int64_t,std::ratio<604800>>;
 using months = std::chrono::duration<int64_t,std::ratio<2629746>>;
 using years = std::chrono::duration<int64_t,std::ratio<31556952>>;
 using std::chrono::duration_cast;
+using std::chrono::ceil;
+using std::chrono::round;
+using std::chrono::floor;
 
 struct time_point_interval{
     time_point from ;
