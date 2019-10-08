@@ -16,14 +16,15 @@ class time_determinator
 {
 private:
     task_t task_;
+    scheduler & sche_;
 public:
-    bool build_restrictions(const scheduler & sche_);
-    bool build_frequency();
-    time_determinator(task_t task_);
+    bool build_restrictions();
+    bool build();
+    time_determinator(task_t task_, scheduler & sche_);
     ~time_determinator();
 };
 
-time_determinator::time_determinator(task_t task_):task_(task_)
+time_determinator::time_determinator(task_t task_,scheduler & sche_):task_(task_),sche_(sche_)
 {
 }
 
@@ -35,6 +36,15 @@ bool time_determinator::build(){
     true set()
     false reallocate_and_set(is, RP, task)
     */
+   //1º Apply restrictions to a period range
+    //1.1 Get range
+    const time_point end = this->task_->get_frequency().period + system_clock::now();
+    const time_point start = system_clock::now();
+
+    auto tasks_range = sche_.get_range(start,end);
+    //For each day Apply restrictions
+    
+
     return false;
 
 }
@@ -51,7 +61,7 @@ bool time_determinator::build(){
 // If the interval is nightly then we need to check if the "to" less than "from"
 // We need to add it for the next day
 
-bool time_determinator::build_restrictions(const scheduler & sche_){
+bool time_determinator::build_restrictions(){
     im_t interval_map = sche_.clone_interval_map();
     //interval_map->equal_range... Get the sub_interval_map for the given days... maybe is wise to do it after determine restrictions
     const auto & rest = task_->get_restrictions();

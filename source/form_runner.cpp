@@ -98,8 +98,8 @@ const json form_runner::run(const json &request_json) noexcept
         {
             cout << v.dump(4) << endl;
             task_t task_test = make_shared<task>(v.get<task>());
-            time_determinator time_dt(task_test);
-            time_dt.build_restrictions(provisional_scheduler);
+            time_determinator time_dt(task_test,provisional_scheduler);
+            time_dt.build_restrictions();
             tasker_.add_to_group(move(task_test), response->taskstory_name);
         }
         auto group_vector = commiter.get_group();
