@@ -19,7 +19,7 @@ private:
     scheduler &sche_;
 
 public:
-    bool build_restrictions();
+    bool build_restrictions( time_point from, time_point to);
     bool build();
     time_determinator(task_t task_, scheduler &sche_);
     ~time_determinator();
@@ -41,8 +41,9 @@ bool time_determinator::build()
     //1º Apply restrictions to a period range
     //1.1 Get range
     const time_point end = this->task_->get_frequency().get_period() + system_clock::now();
-    const time_point start = system_clock::now();
+    const time_point start = floor<days>(system_clock::now());
     //For each day Apply restrictions
+    build_restrictions(start, end);
 
     return false;
 }
@@ -62,22 +63,35 @@ bool time_determinator::build()
 bool time_determinator::build_restrictions( time_point from, time_point to)
 {
 
-    days d = ceil<days>(end - start);
-
     im_t interval_map = sche_.clone_interval_map();
-    auto tasks_range = sche_.get_range(system_clock::to_time_t( start ), system_clock::to_time_t( end ));
-    //interval_map->equal_range... Get the sub_interval_map for the given days... maybe is wise to do it after determine restrictions
+    days d = ceil<days>(to - from);
+    //auto tasks_range = sche_.get_range(system_clock::to_time_t( start ), system_clock::to_time_t( end ));
+    //apply restrictions for each day... day1 = now() + day_iteration
+    //day_restrictions_interval = day1.start + restriction.start , day1.end + restriction.end
     const auto &rest = task_->get_restrictions();
     vector<json_interval> restrictions_interval = rest.get_all_from_to();
-
-    //We need to determine TODAY which is today plus the frequency and the scheduler giving us slot
-    //Based on the frequency and priorities
+    time_t today = system_clock::to_time_t(from);
+    cout << std::ctime(&today) << endl;
     task_t dummy_task = std::make_shared<task>();
-    for (auto &i : restrictions_interval)
+    for (days::rep day = 0; day < d.count(); day++)
     {
-        //TODO auto time_p_interval = _24_hour_interval_to_time_point(i, )// Today);
-        interval_map.set(make_pair(time_interval::closed(i.from.count(), i.to.count()), move(dummy_task)));
+        for (auto &_24_restriction_interval : restrictions_interval)
+        {
+            time_point day_from = (day * days(1)) + from;
+            time_point start =  day_from + _24_restriction_interval.from ;
+            time_t start_ = system_clock::to_time_t(start);
+            cout << std::ctime(&start_) << endl;
+            
+            time_point end   = day_from + _24_restriction_interval.to ;
+            time_t end_ = system_clock::to_time_t(end);
+            cout << std::ctime(&end_) << endl;
+            //TODO auto time_p_interval = _24_hour_interval_to_time_point(i, )// Today);
+            interval_map.set(make_pair(time_interval::closed(system_clock::to_time_t(start), system_clock::to_time_t(end)), move(dummy_task)));
+        }
+
+        //now that restrictions are apply, time to check if there is slot
     }
+    
     //auto it = interval_map.lower_bound(18)
     return true;
 }

@@ -2,6 +2,7 @@
 #define TIME_UTILS_H
 #include <chrono>
 #include "task_restrictions.h"
+#include <ctime>
 
 using std::chrono::seconds;
 using std::chrono::minutes;

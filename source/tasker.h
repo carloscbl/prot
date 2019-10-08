@@ -129,7 +129,7 @@ When you start to send commands of a taskstory to tasker, you should know your g
 So before start to send commands, you create this object in you scope for security
 Then you send all the commands,
 Then you COMMIT if you are happy with the result
-Then you abandon the scope and everything will be in its site in active_tasks
+Then you abandon the scope and everything will be untouched in active_tasks
 */
 class taskstory_commit_RAII {
 private:
