@@ -102,13 +102,14 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
     return true;
 }
 
-optional<time_point> check_slot(im_t & interval_map, time_point day_to_search_in){
+optional<time_point> time_determinator::check_slot(im_t & interval_map, time_point day_to_search_in){
     //time_t end_of_day = system_clock::to_time_t( day_to_search_in + days(1) );
-    //time_t day_start = system_clock::to_time_t( day_to_search_in );
+    time_t day_start = system_clock::to_time_t( day_to_search_in );
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
-    //seconds duration = task_->get_duration().m_duration;
-    //interval_map.upper_bound(interval_t::closed(day_start, day_start));
+    seconds duration = task_->get_duration().m_duration;
+    auto a = interval_map.upper_bound(interval_t::closed(day_start, day_start));
+    a->first.
     return nullopt;
 }
 
