@@ -94,7 +94,8 @@ namespace task_space{
         const time_t        & get_dateUTC()     const noexcept { return dateUTC;     }
         const pair_interval & get_interval()    const noexcept { return interval; }
         const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
-        const frequency      & get_frequency()    const noexcept { return m_frequency; }
+        const frequency     & get_frequency()   const noexcept { return m_frequency; }
+        const duration      & get_duration()    const noexcept { return m_duration; }
 
         void print_remain();
 
