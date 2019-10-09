@@ -74,12 +74,14 @@
             "comment":"The user is implicit",
             "description": "Gather Clothes around home",
             "restrictions":[
-              "day"
+              "early",
+              "soon",
+              "launch"
             ],
             "frequency":"some-days",
             "duration": {
               "minutes": 5,
-              "hours":2,
+              "hours":1,
               "seconds": 3
             }
           },

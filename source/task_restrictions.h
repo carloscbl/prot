@@ -30,6 +30,7 @@ using std::chrono::hours;
 struct json_interval {
     hours from;
     hours to;
+    string restriction_name;
 };
 
 class restrictions{

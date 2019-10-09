@@ -74,19 +74,20 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
     const auto &rest = task_->get_restrictions();
     vector<json_interval> restrictions_interval = rest.get_all_from_to();
 
-    task_t dummy_task = std::make_shared<task>();
     for (days::rep day = 0; day < d.count(); day++)
     {
         time_point day_from = (day * days(1)) + from;
 
         for (auto &_24_restriction_interval : restrictions_interval)
         {
+            task_t dummy_task = std::make_shared<task>();
+            dummy_task->id = "dummy_day_" + to_string(day) + "_" + _24_restriction_interval.restriction_name;
             time_point start =  day_from + _24_restriction_interval.from ;
             time_t start_ = system_clock::to_time_t(start);
             
             time_point end   = day_from + _24_restriction_interval.to ;
             time_t end_ = system_clock::to_time_t(end);
-
+            dummy_task->set_interval(start_, end_);
             interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
         }
 
@@ -108,8 +109,14 @@ optional<time_point> time_determinator::check_slot(im_t & interval_map, time_poi
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
     seconds duration = task_->get_duration().m_duration;
+
+    //This returns the first iterator after the time of search
     auto a = interval_map.upper_bound(interval_t::closed(day_start, day_start));
-    a->first.
+
+    task_t match = a->second;
+    auto it = a->first;
+    //From here we have to iterate to sum gap between iterations and get the size of the gap
+    //Until find gap or fail if bigger that the day
     return nullopt;
 }
 

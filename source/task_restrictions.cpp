@@ -25,6 +25,7 @@ vector<json_interval> restrictions::get_all_from_to() const{
             intervals.push_back(json_interval{
                 .from = hours(match.value()["from"].get<int>()),
                 .to = hours(match.value()["to"].get<int>()),
+                .restriction_name = restriction,
             });
         }
     }
