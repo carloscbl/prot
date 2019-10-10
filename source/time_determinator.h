@@ -103,22 +103,43 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
     return true;
 }
 
+bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
+    time_t gap = current_lower - prev_upper;
+    return duration_.count() < gap;
+}
+
 optional<time_point> time_determinator::check_slot(im_t & interval_map, time_point day_to_search_in){
-    //time_t end_of_day = system_clock::to_time_t( day_to_search_in + days(1) );
+    time_t end_of_day = system_clock::to_time_t( day_to_search_in + days(1) );
     time_t day_start = system_clock::to_time_t( day_to_search_in );
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
     seconds duration = task_->get_duration().m_duration;
 
     //This returns the first iterator after the time of search
-    auto a = interval_map.upper_bound(interval_t::closed(day_start, day_start));
-
-    task_t match = a->second;
-    auto it = a->first;
+    auto it_ = interval_map.lower_bound(interval_t::closed(day_start, day_start));
+    time_t prev_time_upper = day_start;
+    for (auto it = it_; it != interval_map.end(); ++it )
+    {
+        task_t match = it->second;
+        auto it_interval = it->first;
+        
+        if(find_gap(prev_time_upper, it_interval.lower(), duration)){
+            return system_clock::from_time_t(prev_time_upper);
+            break;
+        }
+        prev_time_upper = it_interval.upper();
+    }
+    if(find_gap(prev_time_upper, end_of_day, duration)){
+        return system_clock::from_time_t(prev_time_upper);
+    }
+    
+    
     //From here we have to iterate to sum gap between iterations and get the size of the gap
     //Until find gap or fail if bigger that the day
     return nullopt;
 }
+
+
 
 time_determinator::~time_determinator()
 {
