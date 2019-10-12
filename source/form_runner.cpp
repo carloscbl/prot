@@ -98,29 +98,29 @@ const json form_runner::run(const json &request_json) noexcept
         {
             cout << v.dump(4) << endl;
             task_t task_test = make_shared<task>(v.get<task>());
-            time_determinator time_dt(task_test,provisional_scheduler);
+            time_determinator time_dt(task_test, provisional_scheduler);
             time_dt.build();
             //We are colliding with our own group task as they are not in the scheduler we test unitil we finish
             //So we need to feedback the test_scheduler
             tasker_.add_to_group(move(task_test), response->taskstory_name);
         }
-        auto group_vector = commiter.get_group();
+        // auto group_vector = commiter.get_group();
 
-        if (group_vector)
-        {
-            queue<task_t> taskstory;
-            for (auto &[k, v] : response->taskstory_json.items())
-            {
-                //This is required to hold the order
-                taskstory.push(group_vector->at(v["tag"].get<string>()));
-            }
+        // if (group_vector)
+        // {
+        //     queue<task_t> taskstory;
+        //     for (auto &[k, v] : response->taskstory_json.items())
+        //     {
+        //         //This is required to hold the order
+        //         taskstory.push(group_vector->at(v["tag"].get<string>()));
+        //     }
 
-            /////Add all at the same time
-            if (provisional_scheduler.add_group(move(taskstory)))
-            {
-                commiter.commit(); //Disolves group && activate the tasks
-            }
-        }
+        //     /////Add all at the same time
+        //     if (provisional_scheduler.add_group(move(taskstory)))
+        //     {
+        //     }
+        // }
+        commiter.commit(); //Disolves group && activate the tasks
     }
 
     return response_j;

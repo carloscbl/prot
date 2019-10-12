@@ -18,7 +18,7 @@ class time_determinator
 {
 private:
     task_t task_;
-    scheduler &sche_;
+    scheduler & sche_;
 
 public:
     bool build_restrictions( time_point from, time_point to);
@@ -93,6 +93,8 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
         }
 
         //now that restrictions are apply, time to check if there is slot
+        // TODO check when!!!
+        // TODO pack and order group tasks
         auto slot = check_slot(interval_map , day_from);
         if( slot.has_value() ){
             apply_slot(slot.value());
@@ -109,6 +111,7 @@ void time_determinator::apply_slot(time_point start){
     time_point end = start + duration;
     task_->set_interval( system_clock::to_time_t(start),
                             system_clock::to_time_t(end));
+    sche_.add_single(move(this->task_));
 }
 
 bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
