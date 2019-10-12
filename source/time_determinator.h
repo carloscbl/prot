@@ -24,6 +24,7 @@ public:
     bool build_restrictions( time_point from, time_point to);
     bool build();
     optional<time_point> check_slot(im_t & interval_map, time_point day_to_search_in);
+    void apply_slot(time_point start);
     time_determinator(task_t task_, scheduler &sche_);
     ~time_determinator();
 };
@@ -92,15 +93,22 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
         }
 
         //now that restrictions are apply, time to check if there is slot
-        check_slot(interval_map , day_from);
-        if(true){
-            //apply_slot();
+        auto slot = check_slot(interval_map , day_from);
+        if( slot.has_value() ){
+            apply_slot(slot.value());
             break;
         }
     }
-    
-    //auto it = interval_map.lower_bound(18)
+
     return true;
+}
+
+void time_determinator::apply_slot(time_point start){
+    //Just need to set it in the own task, the rest is handled outside
+    seconds duration = task_->get_duration().m_duration;
+    time_point end = start + duration;
+    task_->set_interval( system_clock::to_time_t(start),
+                            system_clock::to_time_t(end));
 }
 
 bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
