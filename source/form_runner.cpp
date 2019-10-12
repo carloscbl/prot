@@ -100,6 +100,8 @@ const json form_runner::run(const json &request_json) noexcept
             task_t task_test = make_shared<task>(v.get<task>());
             time_determinator time_dt(task_test,provisional_scheduler);
             time_dt.build();
+            //We are colliding with our own group task as they are not in the scheduler we test unitil we finish
+            //So we need to feedback the test_scheduler
             tasker_.add_to_group(move(task_test), response->taskstory_name);
         }
         auto group_vector = commiter.get_group();
