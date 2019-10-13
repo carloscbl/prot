@@ -52,15 +52,15 @@ void request::test(const json qa_request)
     auto answer = qa_request.find("answer");
     if (!qa_request.is_null() && answer != qa_request.end())
     {
-        cout << qa_request["answer"] << endl;
+        //cout << qa_request["answer"] << endl;
     }
     auto aa = form::get_register().cbegin();
 
-    form_runner fr(carlos, *aa->second, cp);
+    form_runner fr(carlos, *aa->second);
 
     auto &response = fr.run(qa_request);
 
-    cout << response.dump(4) << endl;
+    //cout << response.dump(4) << endl;
 }
 
 

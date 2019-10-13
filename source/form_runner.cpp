@@ -2,10 +2,9 @@
 #include "form_runner.h"
 #include "time_determinator.h"
 
-form_runner::form_runner(shared_ptr<user> user_, form_t &form_, command_processor &cp)
+form_runner::form_runner(shared_ptr<user> user_, form_t &form_)
     : user_(user_),
-      form_(form_),
-      cp(cp)
+      form_(form_)
 {
 
     //fp = make_unique<form_parser>(state);
@@ -37,7 +36,7 @@ const json form_runner::run(const json &request_json) noexcept
     }
     else
     {
-        cout << request_json.dump(4) << endl;
+        //cout << request_json.dump(4) << endl;
         response = fp.form_next_in_pipeline(request_json["answer"]);
     }
     user_running_forms[get_unique_id_session()] = fp.get_state();
@@ -50,78 +49,39 @@ const json form_runner::run(const json &request_json) noexcept
         return response_j;
     }
 
-    if (response->taskstory_json.size() == 1)
+    provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
+    tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
+    taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
+
+    for (const auto &[k, v] : response->taskstory_json.items())
     {
-        command_expr_evaluator command(response->taskstory_json.cbegin().value()["command"], response->form_variables);
-
-        auto co = command.get_command();
-        string strcommand = co.render();
-
-        if (strcommand.empty())
-        {
-            cout << "bad parse of command" << endl;
-        }
-        else
-        {
-            provisional_scheduler_RAII provisional = this->user_->get_scheduler().get_provisional();
-            provisional.print_out();
-            tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
-            //Group composed
-            taskstory_commit_RAII commiter(response->taskstory_name, static_cast<tasker &>(tasker_));
-            task_t created_task_by_command;
-            ///// Now start send commands
-            cp.perform_command(strcommand);
-            //Refresh variables
-            //TODO: Define, response->form_variables[response->taskstory_name] =
-            //Loop
-
-            ///// End send commands
-            /////Last chance to gather all grouped
-            auto group = commiter.get_group();
-            if (group)
-            {
-                created_task_by_command = group->at(0);
-                cout << created_task_by_command->id << endl;
-            }
-            /////
-            commiter.commit(); //Disolves group && activate the tasks
-            provisional.add_single(move(created_task_by_command));
-        }
+        //cout << v.dump(4) << endl;
+        task_t task_test = make_shared<task>(v.get<task>());
+        time_determinator time_dt(task_test, provisional_scheduler);
+        cout << "checking task: " << task_test->get_tag() << endl;
+        time_dt.build();
+        //We are colliding with our own group task as they are not in the scheduler we test unitil we finish
+        //So we need to feedback the test_scheduler
+        tasker_.add_to_group(move(task_test), response->taskstory_name);
     }
-    else
-    {
-        provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
-        tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
-        taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
+    // auto group_vector = commiter.get_group();
 
-        for (const auto &[k, v] : response->taskstory_json.items())
-        {
-            cout << v.dump(4) << endl;
-            task_t task_test = make_shared<task>(v.get<task>());
-            time_determinator time_dt(task_test, provisional_scheduler);
-            time_dt.build();
-            //We are colliding with our own group task as they are not in the scheduler we test unitil we finish
-            //So we need to feedback the test_scheduler
-            tasker_.add_to_group(move(task_test), response->taskstory_name);
-        }
-        // auto group_vector = commiter.get_group();
+    // if (group_vector)
+    // {
+    //     queue<task_t> taskstory;
+    //     for (auto &[k, v] : response->taskstory_json.items())
+    //     {
+    //         //This is required to hold the order
+    //         taskstory.push(group_vector->at(v["tag"].get<string>()));
+    //     }
 
-        // if (group_vector)
-        // {
-        //     queue<task_t> taskstory;
-        //     for (auto &[k, v] : response->taskstory_json.items())
-        //     {
-        //         //This is required to hold the order
-        //         taskstory.push(group_vector->at(v["tag"].get<string>()));
-        //     }
+    //     /////Add all at the same time
+    //     if (provisional_scheduler.add_group(move(taskstory)))
+    //     {
+    //     }
+    // }
+    commiter.commit(); //Disolves group && activate the tasks
 
-        //     /////Add all at the same time
-        //     if (provisional_scheduler.add_group(move(taskstory)))
-        //     {
-        //     }
-        // }
-        commiter.commit(); //Disolves group && activate the tasks
-    }
 
     return response_j;
 }

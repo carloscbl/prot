@@ -174,6 +174,3 @@ optional<time_t> command_expr_evaluator::get_real_time(const json & time_ref){
     }
 }
 
-binding_return_t command_expr_evaluator::now(const json & args){
-    return dual_param("","");
-}

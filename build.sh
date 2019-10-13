@@ -4,13 +4,17 @@
 CORES=7
 # Directory where the application will be built
 BUILDDIR=build
+# clean
+CLEAN=
 
-# Recreate the build directory
-
-if [ -d "$BUILDDIR" ]; then
-  rm -rf $BUILDDIR
+# create the build directory for first time
+if [ ! -d  "$BUILDDIR" ]; then
+  mkdir $BUILDDIR
 fi
-mkdir $BUILDDIR
+
+if [[ "$2" == "clean" ]]; then
+  CLEAN=$2
+fi
 cd $BUILDDIR
 
 # Build the application
@@ -19,5 +23,9 @@ if [ -n "$1" ]; then
   CORES=$1
 fi
 
+
 cmake ..
+if [[ -n "$CLEAN" ]]; then
+  make clean
+fi
 make -j $CORES

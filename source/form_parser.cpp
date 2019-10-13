@@ -192,7 +192,7 @@ void answer_branches<T>::enroute(const json &j)
         const auto &it = kind_branch_t_map.find(k); //matching json structure
         if (it == kind_branch_t_map.end())
         {
-            //cout << j.dump(4) << endl;
+            cout << j.dump(4) << endl;
             cout << "Not implemented or not finded implementation" << endl;
             return;
         }

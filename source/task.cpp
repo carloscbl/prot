@@ -49,7 +49,7 @@ task_space::task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(tim
 
 task_space::task::~task()
 {
-    cout << "~destroying " << this->id << endl;
+    //cout << "~destroying " << this->id << endl;
 }
 
 

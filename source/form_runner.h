@@ -12,10 +12,8 @@
 #include "form_parser.h"
 #include "form.h"
 #include "tasker.h"
-#include "command_expr_evaluator.h"
 #include "ischeduler.h"
 #include "scheduler.h"
-#include "command_processor.h"
 
 using namespace std;
 using namespace chrono_literals;
@@ -38,10 +36,9 @@ private:
     shared_ptr<user> user_;
     form_t & form_;
     unique_ptr<form_parser> fp;
-    command_processor & cp;
 
 public:
-    form_runner(shared_ptr<user> user_, form_t &form_, command_processor & cp);
+    form_runner(shared_ptr<user> user_, form_t &form_);
     ~form_runner();
 
     shared_ptr<form_state> get_session() const noexcept;

@@ -109,14 +109,24 @@ void time_determinator::apply_slot(time_point start){
     //Just need to set it in the own task, the rest is handled outside
     seconds duration = task_->get_duration().m_duration;
     time_point end = start + duration;
-    task_->set_interval( system_clock::to_time_t(start),
-                            system_clock::to_time_t(end));
+    time_t start_ = system_clock::to_time_t(start);
+    time_t end_ = system_clock::to_time_t(end);
+    cout << "Alocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
+    task_->set_interval( start_, end_);
     sche_.add_single(move(this->task_));
 }
 
 bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
     time_t gap = current_lower - prev_upper;
-    return duration_.count() < gap;
+    //return duration_.count() < gap;
+    if(duration_.count() < gap){
+        cout << "Success in:" << endl;
+        cout << ctime(&prev_upper ) << ctime(&current_lower ) << endl;
+        return true;
+    }else{
+
+        return false;
+    }
 }
 
 optional<time_point> time_determinator::check_slot(im_t & interval_map, time_point day_to_search_in){
@@ -140,6 +150,7 @@ optional<time_point> time_determinator::check_slot(im_t & interval_map, time_poi
         }
         prev_time_upper = it_interval.upper();
     }
+    //Check until end of day not only current task
     if(find_gap(prev_time_upper, end_of_day, duration)){
         return system_clock::from_time_t(prev_time_upper);
     }

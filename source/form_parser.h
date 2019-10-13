@@ -136,7 +136,7 @@ private:
     
     unique_ptr <next_question_data> form_traverse(const string & answer){
         //int id = current_id;
-        cout << "A: " << answer << endl;
+        //cout << "A: " << answer << endl;
         return get_next(answer);
     }
 
@@ -149,7 +149,7 @@ private:
         for(auto & section : {"form"}){
             for (auto [k,v]: subsections[section]->section){
                 variables[k] = v;
-                cout << k << v << endl;
+                //cout << k << v << endl;
             }
         }
     }
