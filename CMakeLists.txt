@@ -22,6 +22,9 @@ file(GLOB SOURCES
 )
 message(${SOURCES})
 
+
+
+add_library (lprot ${PROJECT_SOURCE_DIR}/source/main.cpp ${SOURCES} )
 add_executable (prot ${PROJECT_SOURCE_DIR}/source/main.cpp ${SOURCES} )
 TARGET_LINK_LIBRARIES( prot LINK_PUBLIC ${Boost_LIBRARIES})
 

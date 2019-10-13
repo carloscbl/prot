@@ -165,9 +165,10 @@ private:
         }
         },
     */
-    inline static map<string, function<binding_return_t(command_expr_evaluator &, const json &)>> bindings_map{
+    map<string, function<binding_return_t(command_expr_evaluator &, const json &)>> bindings_map{
         {"next_add_task_story_stamp", &command_expr_evaluator::next_add_task_story_stamp},
     };
+    
 public:
     command_expr_evaluator(const string &command_str, map<string, json> &variables);
     command_expr_evaluator() = delete;
