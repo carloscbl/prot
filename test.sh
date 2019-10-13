@@ -3,4 +3,5 @@ PARAMS=$1
 ./build.sh
 
 echo $PARAMS
-build/test/test_prot $PARAMS
+cd build
+./test_prot $PARAMS
