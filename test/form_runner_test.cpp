@@ -28,6 +28,8 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     form_runner fr(carlos, *aa->second);
 
     auto &response = fr.run(qa_request1);
+    auto &response1 = fr.run(qa_request2);
+    auto &response2 = fr.run(qa_request3);
 
     //cout << response.dump(4) << endl;
     REQUIRE( 1 == 1 );
