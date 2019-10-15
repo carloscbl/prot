@@ -86,12 +86,17 @@ private:
             }
         }},
         {"list", [&](params_map_t s) {
-            if (tasks_active.size() == 0)
-                cout << "Empty list, no task provided" << endl;
-            for (auto &&e : tasks_active)
-            {
-                //cout << e.first << "-:-" << e.second->id <<endl;
-                e.second->print_();
+            // TODO General or associate a user
+            for( auto & [user, tasker] : taskers_global){
+                auto tskr = tasker.lock();
+                cout << user << ": "<< endl;
+                if (tskr->tasks_active.size() == 0)
+                    cout << "\tEmpty list, no task provided" << endl;
+                for (auto &&e : tskr->tasks_active)
+                {
+                    //cout << e.first << "-:-" << e.second->id <<endl;
+                    cout << "\t" ; e.second->print_();
+                }
             }
         }},
         {"remain", [this](params_map_t s) {
