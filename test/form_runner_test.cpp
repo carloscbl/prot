@@ -28,9 +28,16 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     form_runner fr(carlos, *aa->second);
 
     auto &response = fr.run(qa_request1);
-    auto &response1 = fr.run(qa_request2);
-    auto &response2 = fr.run(qa_request3);
+    // cout << response.dump() <<endl;
+    REQUIRE(response["next_question"] == "Do you have washer?");
 
-    //cout << response.dump(4) << endl;
+    auto &response1 = fr.run(qa_request2);
+    // cout << response1.dump() <<endl;
+    REQUIRE(response1["next_question"] == "How many Kilograms have your washer capacity?");
+
+    auto &response2 = fr.run(qa_request3);
+    //cout << response2.dump() <<endl;
+    REQUIRE(response2["next_question"] == "END");
+
     REQUIRE( 1 == 1 );
 }

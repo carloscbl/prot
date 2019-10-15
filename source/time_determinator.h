@@ -49,6 +49,8 @@ bool time_determinator::build()
     //For each day Apply restrictions
     build_restrictions(start, end);
 
+    
+
     return false;
 }
 

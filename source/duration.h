@@ -9,7 +9,7 @@
 
 class duration{
 public:
-    duration() = default;
+    duration():m_duration(0){}
     std::chrono::seconds m_duration;
     std::map<std::string,std::function<void(duration & ,unsigned long long)>> conversors{
         {"minutes", &duration::minutes},
