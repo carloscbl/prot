@@ -49,7 +49,7 @@ bool time_determinator::build()
     //For each day Apply restrictions
     build_restrictions(start, end);
 
-    
+
 
     return false;
 }
@@ -122,7 +122,7 @@ bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
     time_t gap = current_lower - prev_upper;
     //return duration_.count() < gap;
     if(duration_.count() < gap){
-        cout << "Success in:" << endl;
+        cout << "Gap between :" << endl;
         cout << ctime(&prev_upper ) << ctime(&current_lower ) << endl;
         return true;
     }else{
