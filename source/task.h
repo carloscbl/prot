@@ -83,6 +83,7 @@ namespace task_space{
         void set_interval(time_t start, time_t end) {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
+                                                     print_();
         }
         
         const string        & get_name()        const noexcept { return name;        }
@@ -100,7 +101,7 @@ namespace task_space{
         void print_remain();
 
         void remain(map<char, string> params);
-        void print_() { cout << id << ":" << name << ":" << description << ":" << asctime(localtime(&dateUTC)) << endl; }
+        void print_() { cout << id << ":" << name << ":" << description << ":" << endl <<asctime(localtime(&interval.start)) << asctime(localtime(&interval.end)) << endl; }
 
     };
 

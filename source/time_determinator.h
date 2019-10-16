@@ -83,12 +83,13 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
 
         for (auto &_24_restriction_interval : restrictions_interval)
         {
+            auto normalized_interval = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
             task_t dummy_task = std::make_shared<task>();
             dummy_task->id = "dummy_day_" + to_string(day) + "_" + _24_restriction_interval.restriction_name;
-            time_point start =  day_from + _24_restriction_interval.from ;
+            time_point start = normalized_interval.from ;
             time_t start_ = system_clock::to_time_t(start);
             
-            time_point end   = day_from + _24_restriction_interval.to ;
+            time_point end   = normalized_interval.to ;
             time_t end_ = system_clock::to_time_t(end);
             dummy_task->set_interval(start_, end_);
             interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
@@ -111,8 +112,8 @@ void time_determinator::apply_slot(time_point start){
     //Just need to set it in the own task, the rest is handled outside
     seconds duration = task_->get_duration().m_duration;
     time_point end = start + duration;
-    time_t start_ = system_clock::to_time_t(start);
-    time_t end_ = system_clock::to_time_t(end);
+    time_t start_ = system_clock::to_time_t(start)+1;
+    time_t end_ = system_clock::to_time_t(end)+1;
     cout << "Alocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
     task_->set_interval( start_, end_);
     sche_.add_single(move(this->task_));

@@ -1,5 +1,8 @@
 #include "scheduler.h"
 #include <algorithm>
+#include <chrono>
+#include <iomanip>
+#include <ctime>
 
 using task = task_space::task;
 
@@ -66,8 +69,11 @@ bool scheduler::find_range(time_t start, time_t end){
 
 void scheduler::print_out() const
 {
+    auto put_time_ = [&](const time_t& t)-> auto { 
+        return std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
+    };
     for ( const auto & [k,v] : m_interval_map){
-        cout << k << " interval : Task " << v->id << endl;
+        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->id << endl;
     }
 }
 
