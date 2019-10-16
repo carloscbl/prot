@@ -18,14 +18,22 @@ private:
              {
                  j["answer"] = s.cbegin()->second;
              }
-             test(j);
+             evaluate_form(j);
+         }},
+         {"test_movement", [this](map<char, string> s) {
+             json j;
+             if (!s.empty())
+             {
+                 j["answer"] = s.cbegin()->second;
+             }
+             evaluate_test_movement(j);
          }},
         {"list", [](map<char, string> s) {}},
     };
 
     //Modulator params like -h -n -P
     map_local_functions setters{
-        {'t', &request::test},
+        {'t', &request::evaluate_form},
     };
     command_processor & cp;
 
@@ -33,7 +41,8 @@ public:
     request(command_processor & cp);
     ~request() = default;
 
-    void test(const json qa_request);
+    void evaluate_form(const json qa_request);
+    void evaluate_test_movement(const json qa_request);
 };
 
 request::request(command_processor & cp) : CRUD_actionable(this->request_map, setters),cp(cp)
@@ -45,7 +54,7 @@ request::request(command_processor & cp) : CRUD_actionable(this->request_map, se
 //A saved session with a id and persistence, to refer on callbacks and to recover session if it is no longer in memory or in another instance
 //We also need a valid user that should be valid outside
 //Good idea to wrap this call with a restrictor, to obligate to instanciate a user or send a valid user from outside to avoid repeat same checks
-void request::test(const json qa_request)
+void request::evaluate_form(const json qa_request)
 { //Wanted by value
     const auto & carlos = user::users["carlos"];
 
@@ -54,13 +63,17 @@ void request::test(const json qa_request)
     {
         //cout << qa_request["answer"] << endl;
     }
-    auto aa = form::get_register().cbegin();
+    const auto & form = form::get_register().at("Washer easer");
 
-    form_runner fr(carlos, *aa->second);
+    form_runner fr(carlos, *form);
 
     auto &response = fr.run(qa_request);
 
     //cout << response.dump(4) << endl;
+}
+
+void request::evaluate_test_movement(const json qa_request){
+
 }
 
 

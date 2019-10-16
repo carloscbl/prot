@@ -1,5 +1,8 @@
 #Here we test the secuences of QA asociated to a specific form
 #We are testing washer form
+#task add -n pepo
+#user sch -s 50 -e 90
+#user sch -s 30 -e 45
 
 #test will give us the initial question
 
@@ -8,3 +11,7 @@ req test
 req test -a yes
 #How many kg have your washer capacity? -a 5 for normal branch
 req test -a 5
+
+#task are now setted
+#We need to move then
+task list

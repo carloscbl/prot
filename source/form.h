@@ -32,11 +32,10 @@ private:
              //Creates a new form and store it with index id and passing a states machine graph
              unique_ptr<form> form_ = make_unique<form>();
              form_->add(s);
-             form::forms[form_->id] = move(form_);
+             form::forms[form_->name] = move(form_);
          }},
         {"remove", [](map<char, string> s) {}},
         {"update", [](map<char, string> s) {}},
-        {"compute", [](map<char, string> s) {}},
         {"list", [](map<char, string> s) {
              for (const auto &form : form::forms)
              {

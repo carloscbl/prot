@@ -21,11 +21,12 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     // // {
     // //     //cout << qa_request["answer"] << endl;
     // // }
-    auto aa = form::get_register().cbegin();
+    const auto & form = form::get_register().at("Washer easer");
 
-    REQUIRE( aa->first == "form1" );
 
-    form_runner fr(carlos, *aa->second);
+    REQUIRE( form->name == "Washer easer" );
+
+    form_runner fr(carlos, *form);
 
     auto &response = fr.run(qa_request1);
     // cout << response.dump() <<endl;
