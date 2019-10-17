@@ -49,6 +49,8 @@ bool time_determinator::build()
     
     auto when_ = this->task_->get_when();
 
+    //when_
+
     //For each day Apply restrictions
     build_restrictions(start, end);
 

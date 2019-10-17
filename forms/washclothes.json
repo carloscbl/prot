@@ -108,8 +108,12 @@
             },
             "when":{
               "after":"washer_start",
-              "delay":{
-                "minutes": 75
+              "minimum_delay":{
+                "minutes": 15,
+                "hours": 1
+              },
+              "maximum_delay":{
+                "hours":2
               }
             }
           }

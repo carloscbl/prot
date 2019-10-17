@@ -5,17 +5,7 @@
 form_runner::form_runner(shared_ptr<user> user_, form_t &form_)
     : user_(user_),
       form_(form_)
-{
-
-    //fp = make_unique<form_parser>(state);
-    //Create thread
-    //Check serialiced session or create a new one
-    //Perform or traverse the questionary
-
-    //run();
-    // thread th([this](){
-    // });
-}
+{}
 
 string form_runner::get_unique_id_session() const noexcept
 {
@@ -34,7 +24,6 @@ const json form_runner::run(const json &request_json) noexcept
     }
     else
     {
-        //cout << request_json.dump(4) << endl;
         response = fp.form_next_in_pipeline(request_json["answer"]);
     }
     user_running_forms[get_unique_id_session()] = fp.get_state();
@@ -62,24 +51,8 @@ const json form_runner::run(const json &request_json) noexcept
         //So we need to feedback the test_scheduler
         tasker_.add_to_group(move(task_test), response->taskstory_name);
     }
-    // auto group_vector = commiter.get_group();
 
-    // if (group_vector)
-    // {
-    //     queue<task_t> taskstory;
-    //     for (auto &[k, v] : response->taskstory_json.items())
-    //     {
-    //         //This is required to hold the order
-    //         taskstory.push(group_vector->at(v["tag"].get<string>()));
-    //     }
-
-    //     /////Add all at the same time
-    //     if (provisional_scheduler.add_group(move(taskstory)))
-    //     {
-    //     }
-    // }
     commiter.commit(); //Disolves group && activate the tasks
-
 
     return response_j;
 }
