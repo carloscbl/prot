@@ -46,6 +46,9 @@ bool time_determinator::build()
     //1.1 Get range
     const time_point end = this->task_->get_frequency().get_period() + system_clock::now();
     const time_point start = floor<days>(system_clock::now());
+    
+    auto when_ = this->task_->get_when();
+
     //For each day Apply restrictions
     build_restrictions(start, end);
 
@@ -98,7 +101,7 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
                 time_t end_ = system_clock::to_time_t(end);
                 dummy_task->set_interval(start_, end_);
                 interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
-                print_hour(normalized_interval);
+                //print_hour(normalized_interval);
             } );
         }
 
@@ -130,8 +133,8 @@ bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
     time_t gap = current_lower - prev_upper;
     //return duration_.count() < gap;
     if(duration_.count() < gap){
-        cout << "Gap between :" << endl;
-        cout << ctime(&prev_upper ) << ctime(&current_lower ) << endl;
+        // cout << "Gap between :" << endl;
+        // cout << ctime(&prev_upper ) << ctime(&current_lower ) << endl;
         return true;
     }else{
 

@@ -21,6 +21,7 @@
 
 using std::vector;
 using std::string;
+using prot::duration;
 namespace task_space{
 
 
@@ -43,7 +44,7 @@ namespace task_space{
         string task_group;
         string tag;
         time_t dateUTC;
-        duration m_duration;
+        prot::duration m_duration;
         frequency m_frequency;
         restrictions m_restrictions;
         when m_when;
@@ -83,9 +84,9 @@ namespace task_space{
         void set_interval(time_t start, time_t end) {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
-                                                     print_();
+                                                     //print_();
         }
-        
+
         const string        & get_name()        const noexcept { return name;        }
         const string        & get_tag()         const noexcept { return tag;        }
         const string        & get_description() const noexcept { return description; }
@@ -96,7 +97,8 @@ namespace task_space{
         const pair_interval & get_interval()    const noexcept { return interval; }
         const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
         const frequency     & get_frequency()   const noexcept { return m_frequency; }
-        const duration      & get_duration()    const noexcept { return m_duration; }
+        const prot::duration & get_duration()    const noexcept { return m_duration; }
+        const when          & get_when()        const noexcept { return m_when; }
 
         void print_remain();
 

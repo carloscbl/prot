@@ -1,7 +1,7 @@
 #include "duration.h"
 #include <cassert>
 
-void from_json(const nlohmann::json& j, duration& p){
+void prot::from_json(const nlohmann::json& j, prot::duration& p){
     //Iterates over all the timers and picks the one found
     for (auto &[k,conversor] : p.conversors)
     {

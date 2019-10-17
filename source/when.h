@@ -7,6 +7,7 @@ class when
 private:
 public:
     std::string after;
+    //Generalize
     //delay Similar to duration, better generalice
 };
 
