@@ -101,7 +101,7 @@ namespace task_space{
         void print_remain();
 
         void remain(map<char, string> params);
-        void print_() { cout << id << ":" << name << ":" << description << ":" << endl <<asctime(localtime(&interval.start)) << asctime(localtime(&interval.end)) << endl; }
+        void print_() { cout << id << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
 
     };
 

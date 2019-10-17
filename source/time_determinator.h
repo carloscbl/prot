@@ -49,8 +49,6 @@ bool time_determinator::build()
     //For each day Apply restrictions
     build_restrictions(start, end);
 
-
-
     return false;
 }
 
@@ -66,9 +64,10 @@ bool time_determinator::build()
 // If the interval is nightly then we need to check if the "to" less than "from"
 // We need to add it for the next day
 
+
+
 bool time_determinator::build_restrictions( time_point from, time_point to)
 {
-
     im_t interval_map = sche_.clone_interval_map();
     days d = ceil<days>(to - from);
     //auto tasks_range = sche_.get_range(system_clock::to_time_t( start ), system_clock::to_time_t( end ));
@@ -76,23 +75,31 @@ bool time_determinator::build_restrictions( time_point from, time_point to)
     //day_restrictions_interval = day1.start + restriction.start , day1.end + restriction.end
     const auto &rest = task_->get_restrictions();
     vector<json_interval> restrictions_interval = rest.get_all_from_to();
-
     for (days::rep day = 0; day < d.count(); day++)
     {
         time_point day_from = (day * days(1)) + from;
 
         for (auto &_24_restriction_interval : restrictions_interval)
         {
-            auto normalized_interval = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
-            task_t dummy_task = std::make_shared<task>();
-            dummy_task->id = "dummy_day_" + to_string(day) + "_" + _24_restriction_interval.restriction_name;
-            time_point start = normalized_interval.from ;
-            time_t start_ = system_clock::to_time_t(start);
-            
-            time_point end   = normalized_interval.to ;
-            time_t end_ = system_clock::to_time_t(end);
-            dummy_task->set_interval(start_, end_);
-            interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
+            auto normalized_intervals = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
+
+            for_each(normalized_intervals.begin(), normalized_intervals.end(), [&]( time_point_interval & normalized_interval ){
+
+                task_t dummy_task = std::make_shared<task>();
+                dummy_task->id = "dummy_day_" + to_string(day) 
+                    + "_" 
+                    + _24_restriction_interval.restriction_name
+                    + "_" 
+                    + normalized_interval.tag;
+                time_point start = normalized_interval.from ;
+                time_t start_ = system_clock::to_time_t(start);
+                
+                time_point end   = normalized_interval.to ;
+                time_t end_ = system_clock::to_time_t(end);
+                dummy_task->set_interval(start_, end_);
+                interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
+                print_hour(normalized_interval);
+            } );
         }
 
         //now that restrictions are apply, time to check if there is slot

@@ -99,6 +99,9 @@
           {
             "tag":"washer_end",
             "description": "Collect and hang out the washing",
+            "restrictions":[
+              "night"
+            ],
             "frequency":"some-days",
             "duration": {
               "minutes": 15
