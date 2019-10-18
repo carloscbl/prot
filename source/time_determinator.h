@@ -21,12 +21,19 @@ private:
     scheduler & sche_;
 
 public:
-    bool build_restrictions( time_point from, time_point to);
     bool build();
-    optional<time_point> check_slot(im_t & interval_map, time_point day_to_search_in);
-    void apply_slot(time_point start);
+    bool build_daily_restrictions( const time_point from, const time_point to, im_t & interval_map, int64_t iteration_day)const noexcept;
+
+    bool forward_pipeline(const im_t & interval_map, time_point current_day_begin) noexcept;
+    bool when_pipeline(const im_t & interval_map,const when & when_, time_point current_day_begin) noexcept;
+
+    optional<time_point> check_slot(const im_t & interval_map, time_point day_to_search_in) const noexcept ;
+    void apply_slot(time_point start) noexcept;
+    bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ) const noexcept;
+    time_point get_current_day_begin(int64_t iteration_day, const time_point & from) const noexcept;
+
     time_determinator(task_t task_, scheduler &sche_);
-    ~time_determinator();
+    ~time_determinator() = default;
 };
 
 time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(task_), sche_(sche_)
@@ -52,7 +59,13 @@ bool time_determinator::build()
     //when_
 
     //For each day Apply restrictions
-    build_restrictions(start, end);
+    im_t interval_map = sche_.clone_interval_map();
+    days d = ceil<days>(end - start);
+    for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
+    {
+        build_daily_restrictions(start, end, interval_map, iteration_day );
+        if(forward_pipeline( interval_map, get_current_day_begin(iteration_day, start) )) { break ;}
+    }
 
     return false;
 }
@@ -69,58 +82,64 @@ bool time_determinator::build()
 // If the interval is nightly then we need to check if the "to" less than "from"
 // We need to add it for the next day
 
+time_point time_determinator::get_current_day_begin(int64_t iteration_day, const time_point & from) const noexcept{
+    return (iteration_day * days(1)) + from;
+}
 
-
-bool time_determinator::build_restrictions( time_point from, time_point to)
+bool time_determinator::build_daily_restrictions( 
+    const time_point from,
+    const time_point to,
+    im_t & interval_map,
+    int64_t iteration_day)
+    const noexcept
 {
-    im_t interval_map = sche_.clone_interval_map();
-    days d = ceil<days>(to - from);
-    //auto tasks_range = sche_.get_range(system_clock::to_time_t( start ), system_clock::to_time_t( end ));
-    //apply restrictions for each day... day1 = now() + day_iteration
-    //day_restrictions_interval = day1.start + restriction.start , day1.end + restriction.end
     const auto &rest = task_->get_restrictions();
     vector<json_interval> restrictions_interval = rest.get_all_from_to();
-    for (days::rep day = 0; day < d.count(); day++)
+    
+    time_point day_from = get_current_day_begin(iteration_day, from);
+
+    for (auto &_24_restriction_interval : restrictions_interval)
     {
-        time_point day_from = (day * days(1)) + from;
+        auto normalized_intervals = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
 
-        for (auto &_24_restriction_interval : restrictions_interval)
-        {
-            auto normalized_intervals = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
+        for_each(normalized_intervals.begin(), normalized_intervals.end(), [&]( time_point_interval & normalized_interval ){
 
-            for_each(normalized_intervals.begin(), normalized_intervals.end(), [&]( time_point_interval & normalized_interval ){
+            task_t dummy_task = std::make_shared<task>();
+            dummy_task->id = "dummy_day_" + to_string(iteration_day) 
+                + "_" 
+                + _24_restriction_interval.restriction_name
+                + "_" 
+                + normalized_interval.tag;
+            time_point start = normalized_interval.from ;
+            time_t start_ = system_clock::to_time_t(start);
 
-                task_t dummy_task = std::make_shared<task>();
-                dummy_task->id = "dummy_day_" + to_string(day) 
-                    + "_" 
-                    + _24_restriction_interval.restriction_name
-                    + "_" 
-                    + normalized_interval.tag;
-                time_point start = normalized_interval.from ;
-                time_t start_ = system_clock::to_time_t(start);
-                
-                time_point end   = normalized_interval.to ;
-                time_t end_ = system_clock::to_time_t(end);
-                dummy_task->set_interval(start_, end_);
-                interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
-                //print_hour(normalized_interval);
-            } );
-        }
-
-        //now that restrictions are apply, time to check if there is slot
-        // TODO check when!!!
-        // TODO pack and order group tasks
-        auto slot = check_slot(interval_map , day_from);
-        if( slot.has_value() ){
-            apply_slot(slot.value());
-            break;
-        }
+            time_point end   = normalized_interval.to ;
+            time_t end_ = system_clock::to_time_t(end);
+            dummy_task->set_interval(start_, end_);
+            interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
+        } );
     }
 
     return true;
 }
 
-void time_determinator::apply_slot(time_point start){
+bool time_determinator::forward_pipeline(const im_t & interval_map, time_point current_day_begin) noexcept{
+//Restrictions apply before the pipeline 
+//now that restrictions are apply, time to check if there is slot
+    // TODO check when!!!
+    // TODO pack and order group tasks
+    auto slot = check_slot(interval_map ,current_day_begin);
+    if( slot.has_value() ){
+        apply_slot(slot.value());
+        return true;
+    }
+    return false;
+}
+
+bool time_determinator::when_pipeline( const im_t & interval_map,const when & when_, time_point current_day_begin) noexcept{
+    return false;
+}
+void time_determinator::apply_slot(time_point start) noexcept{
     //Just need to set it in the own task, the rest is handled outside
     seconds duration = task_->get_duration().m_duration;
     time_point end = start + duration;
@@ -131,7 +150,7 @@ void time_determinator::apply_slot(time_point start){
     sche_.add_single(move(this->task_));
 }
 
-bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
+bool time_determinator::find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ) const noexcept{
     time_t gap = current_lower - prev_upper;
     //return duration_.count() < gap;
     if(duration_.count() < gap){
@@ -144,7 +163,7 @@ bool find_gap(time_t prev_upper, time_t current_lower, seconds duration_ ){
     }
 }
 
-optional<time_point> time_determinator::check_slot(im_t & interval_map, time_point day_to_search_in){
+optional<time_point> time_determinator::check_slot(const im_t & interval_map, time_point day_to_search_in) const noexcept{
     time_t end_of_day = system_clock::to_time_t( day_to_search_in + days(1) );
     time_t day_start = system_clock::to_time_t( day_to_search_in );
     //First check for upper bound of the beggin of the day... with this we find if exists place
@@ -169,17 +188,11 @@ optional<time_point> time_determinator::check_slot(im_t & interval_map, time_poi
     if(find_gap(prev_time_upper, end_of_day, duration)){
         return system_clock::from_time_t(prev_time_upper);
     }
-    
-    
+
     //From here we have to iterate to sum gap between iterations and get the size of the gap
     //Until find gap or fail if bigger that the day
     return nullopt;
 }
 
-
-
-time_determinator::~time_determinator()
-{
-}
 
 #endif //TIME_DETERMINATOR_H
