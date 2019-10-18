@@ -40,5 +40,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     //cout << response2.dump() <<endl;
     REQUIRE(response2["next_question"] == "END");
 
+    REQUIRE(carlos->get_tasker().get_task()->);
+
     REQUIRE( 1 == 1 );
 }
