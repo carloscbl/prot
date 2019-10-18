@@ -3,6 +3,7 @@
 #include "json.hpp"
 #include "user.h"
 #include "form.h"
+#include "task_restrictions.h"
 
 TEST_CASE( "test form_runner", "[runner]" ) {
   
@@ -40,7 +41,25 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     //cout << response2.dump() <<endl;
     REQUIRE(response2["next_question"] == "END");
 
-    REQUIRE(carlos->get_tasker().get_task()->);
+    REQUIRE(carlos->get_tasker().find_task("base_task") != nullptr);
+    
+    time_point now = system_clock::now();
+    const time_point day_start = floor<days>(now);
+
+    time_point expected_base_task_start = day_start + find_restriction("launch").value().to  + seconds(1); 
+    time_point expected_washer_start_start = day_start + find_restriction("night").value().to  + seconds(1); 
+    time_t expected_washer_end_start = carlos->get_tasker().find_task("washer_start")->get_interval().end + seconds(1).count(); 
+
+    time_t base_task_start = carlos->get_tasker().find_task("base_task")->get_interval().start;
+    time_t washer_start_start = carlos->get_tasker().find_task("washer_start")->get_interval().start;
+    time_t washer_end_start = carlos->get_tasker().find_task("washer_end")->get_interval().start;
+
+    time_t expected = system_clock::to_time_t(expected_base_task_start);
+    time_t expected_2 = system_clock::to_time_t(expected_washer_start_start);
+    cout << "Test:" << endl <<ctime(&base_task_start) << ctime(&expected);
+    REQUIRE( base_task_start == expected );
+    REQUIRE( washer_start_start == expected_2 );
+    REQUIRE( washer_end_start == expected_washer_end_start );
 
     REQUIRE( 1 == 1 );
 }

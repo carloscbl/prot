@@ -123,6 +123,7 @@ public:
     void remove(params_map_t params, task &instance);
     void remain(params_map_t params);
     task_t get_task(const string & id ) const override;
+    task_t find_task(const string & tag)  const override;
     tasker();
 };
 

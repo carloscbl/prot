@@ -16,6 +16,19 @@ task_restrictions & task_restrictions::get_restrictions_lazy_unique_instance(){
     return restr;
 }
 
+optional<json_interval> find_restriction(const string & restriction_name) noexcept{
+    const json & j = task_restrictions::get_restrictions_lazy_unique_instance().api_json;
+    auto match = j.find(restriction_name);
+    if(match != j.end()){
+        return json_interval{
+            .from = hours(match.value()["from"].get<int>()),
+            .to = hours(match.value()["to"].get<int>()),
+            .restriction_name = restriction_name,
+        };
+    }
+    return std::nullopt;
+}
+
 vector<json_interval> restrictions::get_all_from_to() const{
     const json & j = task_restrictions::get_restrictions_lazy_unique_instance().api_json;
     vector<json_interval> intervals;

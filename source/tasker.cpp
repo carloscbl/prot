@@ -13,6 +13,16 @@ void tasker::add_to_group( task_t && params, const string & group){
     this->add_to_group( params->get_tag(), move(params), group);
 }
 
+task_t tasker::find_task(const string & tag) const {
+    for (auto &&[k,v] : tasks_active)
+    {
+        if(v->get_tag() == tag){
+            return v;
+        }
+    }
+    return nullptr;
+}
+
 task_t tasker::get_task(const string & id ) const{ 
     auto match = tasks_active.find(id);
     if(match != tasks_active.end()){

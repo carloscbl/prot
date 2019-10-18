@@ -5,6 +5,7 @@
 #include <fstream>
 #include <iostream>
 #include <set>
+#include <optional>
 #include "json.hpp"
 #include "api_validated.hpp"
 #include <vector>
@@ -15,6 +16,7 @@ using std::vector;
 using std::set;
 using std::cout;
 using std::endl;
+using std::optional;
 
 
 
@@ -33,6 +35,7 @@ struct json_interval {
     string restriction_name;
 };
 
+optional<json_interval> find_restriction(const string & restriction_name) noexcept;
 class restrictions{
 private:
     set<string> m_restrictions;
@@ -41,6 +44,7 @@ public:
     void set_restrictions(const set<string> & restrictions_);
     //From, to
     vector<json_interval> get_all_from_to() const;
+
 };
 
 
