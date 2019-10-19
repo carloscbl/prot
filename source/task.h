@@ -97,7 +97,7 @@ namespace task_space{
         const pair_interval & get_interval()    const noexcept { return interval; }
         const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
         const frequency     & get_frequency()   const noexcept { return m_frequency; }
-        const prot::duration & get_duration()    const noexcept { return m_duration; }
+        const prot::duration& get_duration()    const noexcept { return m_duration; }
         const when          & get_when()        const noexcept { return m_when; }
 
         void print_remain();

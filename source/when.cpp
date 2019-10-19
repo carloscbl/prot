@@ -1,4 +1,5 @@
 #include "when.h"
+#include <cassert>
 
 void from_json(const nlohmann::json& j, when& p){
     j.at("after").get_to(p.after);
@@ -10,5 +11,6 @@ void from_json(const nlohmann::json& j, when& p){
     auto max_delay = j.find("maximum_delay");
     if( max_delay != j.end() ){
         max_delay.value().get_to(p.maximum_delay);
+        assert(p.maximum_delay.m_duration > p.minimum_delay.m_duration);
     }
 }

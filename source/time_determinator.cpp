@@ -193,6 +193,9 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
 optional<time_point> time_determinator::check_within_day_slot_after_task(const current_after_t & after, const im_t & interval_map, time_point day_to_search_in) const noexcept{
     time_t computed_end = after.prev_task->get_interval().end + after.offset_max.count();
     time_t end_of_day = system_clock::to_time_t( day_to_search_in + days(1) );
+    if( after.offset_max.count() == 0 ){
+        computed_end = end_of_day;
+    }
     time_t computed_start = after.prev_task->get_interval().end + after.offset_min.count();
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
