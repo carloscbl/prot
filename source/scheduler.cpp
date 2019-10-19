@@ -27,6 +27,7 @@ im_t scheduler::clone_interval_map() const {
 
 bool scheduler::find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur)
 {
+    throw;
     return false;
 }
 

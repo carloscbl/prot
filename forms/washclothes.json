@@ -97,6 +97,19 @@
             }
           },
           {
+            "tag": "washer_intermediate",
+            "description": "Put them inside and start the machine",
+            "restrictions":[
+              "night"
+            ],
+            "frequency":"weekly",
+            "duration": {
+              "hours": 1,
+              "minutes": 59,
+              "seconds":59
+            }
+          },
+          {
             "tag":"washer_end",
             "description": "Collect and hang out the washing",
             "restrictions":[

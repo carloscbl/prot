@@ -17,11 +17,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     json qa_request1, qa_request2, qa_request3 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
-    // // auto answer = qa_request1.find("answer");
-    // // if (!qa_request1.is_null() && answer != qa_request.end())
-    // // {
-    // //     //cout << qa_request["answer"] << endl;
-    // // }
+    
     const auto & form = form::get_register().at("Washer easer");
 
 
@@ -48,7 +44,11 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     time_point expected_base_task_start = day_start + find_restriction("launch").value().to  + seconds(1); 
     time_point expected_washer_start_start = day_start + find_restriction("night").value().to  + seconds(1); 
-    time_t expected_washer_end_start = carlos->get_tasker().find_task("washer_start")->get_interval().end + seconds(1).count(); 
+    auto washer_start_task = carlos->get_tasker().find_task("washer_start");
+    auto washer_end_task = carlos->get_tasker().find_task("washer_end");
+    time_t expected_washer_end_start_min = washer_start_task->get_interval().end + seconds(1).count() + washer_start_task->get_when().minimum_delay.m_duration.count() + washer_end_task->get_when().minimum_delay.m_duration.count(); 
+
+    time_t expected_washer_end_start_max = washer_start_task->get_interval().end + seconds(1).count() + washer_start_task->get_when().minimum_delay.m_duration.count() + washer_end_task->get_when().maximum_delay.m_duration.count(); 
 
     time_t base_task_start = carlos->get_tasker().find_task("base_task")->get_interval().start;
     time_t washer_start_start = carlos->get_tasker().find_task("washer_start")->get_interval().start;
@@ -56,10 +56,12 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     time_t expected = system_clock::to_time_t(expected_base_task_start);
     time_t expected_2 = system_clock::to_time_t(expected_washer_start_start);
-    cout << "Test:" << endl <<ctime(&base_task_start) << ctime(&expected);
+    //cout << "Test:" << endl <<ctime(&base_task_start) << ctime(&expected);
+
     REQUIRE( base_task_start == expected );
     REQUIRE( washer_start_start == expected_2 );
-    REQUIRE( washer_end_start == expected_washer_end_start );
+    REQUIRE( washer_end_start >= expected_washer_end_start_min );
+    REQUIRE( washer_end_start <= expected_washer_end_start_max );
 
     REQUIRE( 1 == 1 );
 }
