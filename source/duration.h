@@ -6,6 +6,7 @@
 #include <chrono>
 #include <functional>
 #include "json.hpp"
+#include "time_utils.hpp"
 
 namespace prot{
     class duration{
@@ -13,18 +14,17 @@ namespace prot{
         duration():m_duration(0){}
         std::chrono::seconds m_duration;
         std::map<std::string,std::function<void(duration & ,unsigned long long)>> conversors{
-            {"minutes", &duration::minutes},
-            {"seconds", &duration::seconds},
-            {"hours", &duration::hours},
+            {"seconds", &duration::convert<std::chrono::seconds>},
+            {"minutes", &duration::convert<std::chrono::minutes>},
+            {"hours", &duration::convert<std::chrono::hours>},
+            {"days", &duration::convert<days>},
+            {"weeks", &duration::convert<weeks>},
+            {"months", &duration::convert<months>},
+            {"years", &duration::convert<years>},
         };
-        void seconds(unsigned long long secs ){
-            m_duration += std::chrono::seconds(secs);
-        }
-        void minutes(unsigned long long mins ){
-            m_duration += std::chrono::duration_cast<std::chrono::seconds>(std::chrono::minutes(mins));
-        }
-        void hours(unsigned long long hours){
-            m_duration += std::chrono::duration_cast<std::chrono::seconds>(std::chrono::hours(hours));
+        template <typename T_unit>
+        void convert(unsigned long long time){
+            m_duration += std::chrono::duration_cast<std::chrono::seconds>(T_unit(time));
         }
     };
     void from_json(const nlohmann::json& j, duration& p);
