@@ -129,6 +129,28 @@
                 "hours":2
               }
             }
+          },
+          {
+            "tag":"washer_clean_up",
+            "description": "Collect and hang out the washing",
+            "restrictions":[
+              "night"
+            ],
+            "frequency":"some-days",
+            "duration": {
+              "minutes": 32
+            },
+            "when":{
+              "after":"washer_end",
+              "minimum_delay":{
+                "minutes": 15,
+                "hours": 1,
+                "days": 1
+              },
+              "maximum_delay":{
+                "days":2
+              }
+            }
           }
         ],
         "industrial_user":[]

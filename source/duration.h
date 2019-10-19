@@ -16,11 +16,11 @@ namespace prot{
         std::map<std::string,std::function<void(duration & ,unsigned long long)>> conversors{
             {"seconds", &duration::convert<std::chrono::seconds>},
             {"minutes", &duration::convert<std::chrono::minutes>},
-            {"hours", &duration::convert<std::chrono::hours>},
-            {"days", &duration::convert<days>},
-            {"weeks", &duration::convert<weeks>},
-            {"months", &duration::convert<months>},
-            {"years", &duration::convert<years>},
+            {"hours",   &duration::convert<std::chrono::hours>},
+            {"days",    &duration::convert<days>},
+            {"weeks",   &duration::convert<weeks>},
+            {"months",  &duration::convert<months>},
+            {"years",   &duration::convert<years>},
         };
         template <typename T_unit>
         void convert(unsigned long long time){
