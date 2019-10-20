@@ -43,7 +43,6 @@ namespace task_space{
         string m_user;
         string task_group;
         string tag;
-        time_t dateUTC;
         prot::duration m_duration;
         frequency m_frequency;
         restrictions m_restrictions;
@@ -56,12 +55,6 @@ namespace task_space{
             {'n', &task::set_name},
             {'d', &task::set_description},
             {'u', &task::set_user},
-            {'D', &task::set_day},    //day
-            {'M', &task::set_month},  //month
-            {'Y', &task::set_year},   //year
-            {'h', &task::set_hour},   //hour
-            {'m', &task::set_minute}, //minute*/
-            // {"T",&task::set_stamp},//unixTimeStamp
         };
         friend void task_space::from_json(const nlohmann::json& j, task_space::task& p);
 
@@ -69,11 +62,6 @@ namespace task_space{
         string id;
         task();
         virtual ~task();
-        void set_day(string    day);
-        void set_month(string  mon);
-        void set_year(string   year);
-        void set_hour(string   hour);
-        void set_minute(string minute);
 
         void set_name        (string name_)         { this->name = name_; }
         void set_task_group  (string task_group_)   { this->task_group = task_group_; }
@@ -93,16 +81,15 @@ namespace task_space{
         const string        & get_stamp()       const noexcept { return stamp;       }
         const string        & get_m_user()      const noexcept { return m_user;      }
         const string        & get_task_group()  const noexcept { return task_group;  }
-        const time_t        & get_dateUTC()     const noexcept { return dateUTC;     }
         const pair_interval & get_interval()    const noexcept { return interval; }
         const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
         const frequency     & get_frequency()   const noexcept { return m_frequency; }
         const prot::duration& get_duration()    const noexcept { return m_duration; }
         const when          & get_when()        const noexcept { return m_when; }
 
-        void print_remain();
+        void print_remain() const;
 
-        void remain(map<char, string> params);
+        void remain(map<char, string> params) const;
         void print_() { cout << id << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
 
     };

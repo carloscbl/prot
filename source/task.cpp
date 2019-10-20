@@ -41,7 +41,7 @@ void task_space::from_json(const nlohmann::json& j, task_space::task& p){
     }
 }
 
-task_space::task::task() : CRUD_actionable(this->tasks_map, setters),dateUTC(time(nullptr))
+task_space::task::task() : CRUD_actionable(this->tasks_map, setters)
 {
     static int acummulator = 0;
     id = "task" + to_string(acummulator++);
@@ -53,9 +53,9 @@ task_space::task::~task()
 }
 
 
-void task_space::task::print_remain()
+void task_space::task::print_remain() const
 {
-    double remain_sec = difftime(this->dateUTC, time(nullptr));
+    double remain_sec = difftime(this->interval.start, time(nullptr));
     //cout << remain_sec << endl;
 
     double years = remain_sec / (60 * 60 * 24 * 365);
@@ -67,39 +67,4 @@ void task_space::task::print_remain()
     cout << id << ":"
          << "remain"
          << ": " << minutes << " minutes :" << hours << " hours :" << (uint32_t)days << " days :" << (uint32_t)years << " years" << endl;
-}
-
-void task_space::task::set_day(string day)
-{
-    tm *tm_localtime = localtime(&dateUTC);
-    tm_localtime->tm_mday = stoi(day);
-    dateUTC = mktime(tm_localtime);
-}
-
-void task_space::task::set_month(string mon)
-{
-    tm *tm_localtime = localtime(&dateUTC);
-    tm_localtime->tm_mon = stoi(mon) - 1;
-    dateUTC = mktime(tm_localtime);
-}
-
-void task_space::task::set_year(string year)
-{
-    tm *tm_localtime = localtime(&dateUTC);
-    tm_localtime->tm_year = stoi(year) - 1900;
-    dateUTC = mktime(tm_localtime);
-}
-
-void task_space::task::set_hour(string hour)
-{
-    tm *tm_localtime = localtime(&dateUTC);
-    tm_localtime->tm_hour = stoi(hour);
-    dateUTC = mktime(tm_localtime);
-}
-
-void task_space::task::set_minute(string minute)
-{
-    tm *tm_localtime = localtime(&dateUTC);
-    tm_localtime->tm_min = stoi(minute);
-    dateUTC = mktime(tm_localtime);
 }
