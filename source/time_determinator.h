@@ -31,8 +31,7 @@ public:
     bool forward_pipeline(const im_t & interval_map, time_point current_day_begin) ;
     bool when_pipeline(const im_t & interval_map, time_point current_day_begin) ;
     //Ops
-    optional<time_point> check_within_day_slot(const im_t & interval_map, time_point day_to_search_in) const noexcept ;
-    optional<time_point> check_within_day_slot_after_task(const current_after_t & after, const im_t & interval_map, time_point day_to_search_in) const noexcept;
+    optional<time_point> check_within_day_slot(const im_t & interval_map, time_point day_to_search_in, const current_after_t * after = nullptr) const noexcept;
     void apply_slot(time_point start) noexcept;
     bool find_time_gap(time_t prev_upper, time_t current_lower, seconds duration_ ) const noexcept;
     time_point get_current_day_begin(int64_t iteration_day, const time_point & from) const noexcept;
