@@ -33,6 +33,9 @@ bool time_determinator::build()
     //when_
     //For each day Apply restrictions
     im_t interval_map = sche_.clone_interval_map();
+    //We need to traverse days within the first interval, but we need a policy to know
+    // TODO: Policy when we pass the max frequiency range
+    // TODO: How to move tasks that are not compatible with the current scheduler
     days d = ceil<days>(end - start);
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
@@ -135,6 +138,7 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
     }
     return false;
 }
+
 void time_determinator::apply_slot(time_point start) noexcept{
     //Just need to set it in the own task, the rest is handled outside
     seconds duration = task_->get_duration().m_duration;

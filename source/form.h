@@ -67,5 +67,5 @@ public:
 
     static const string get_form_name(const json &j) { return j["form"]["form.name"].get<string>(); }
 };
-
+using form_t = std::shared_ptr<form>;
 #endif //FORM_H

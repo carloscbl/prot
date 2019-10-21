@@ -12,6 +12,7 @@
 #include "CRUD_actionable.h"
 #include "ischeduler.h"
 #include "scheduler.h"
+#include "form.h"
 
 using namespace std;
 
@@ -80,6 +81,7 @@ private:
     void init();
 
 public:
+    map<string,form_t> instaled_forms; // List all the forms for a user
     user_minimal_data minimal_data;
     user(const user_minimal_data &m_data);
     user(); 

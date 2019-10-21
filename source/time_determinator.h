@@ -25,16 +25,27 @@ private:
 public:
 
     //Setup
+    // TODO
+    // We should do 4 passes
+    // 1º Try to do within the especified json margins OK
+    // 2º if not We should check if we have more priority that the current tasks in our preferred range
+    // 3º if a lower priority loses the possibility to be allocated then we should allocate the soones as posible within a {max_range}
+    // 4º if the max_range is exced then we should inform that with the current scheduler this set of tasks wont be possible, and got excluded
+
     bool build();
     bool build_daily_restrictions( const time_point from, const time_point to, im_t & interval_map, int64_t iteration_day)const noexcept;
+
     //Diferent pipelines, they cannot be noexcept signature
     bool forward_pipeline(const im_t & interval_map, time_point current_day_begin) ;
     bool when_pipeline(const im_t & interval_map, time_point current_day_begin) ;
+
     //Ops
     optional<time_point> check_within_day_slot(const im_t & interval_map, time_point day_to_search_in, const current_after_t * after = nullptr) const noexcept;
     void apply_slot(time_point start) noexcept;
     bool find_time_gap(time_t prev_upper, time_t current_lower, seconds duration_ ) const noexcept;
     time_point get_current_day_begin(int64_t iteration_day, const time_point & from) const noexcept;
+
+
 
     time_determinator(task_t task_, scheduler &sche_);
     ~time_determinator() = default;
