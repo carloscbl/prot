@@ -27,7 +27,7 @@ bool time_determinator::build()
 
     auto when_ = this->task_->get_when();
     if(!when_.after.empty()){
-        pipeline = &time_determinator::when_pipeline ;
+        pipeline = &time_determinator::when_pipeline;
     }
 
     //when_
@@ -40,7 +40,11 @@ bool time_determinator::build()
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
         build_daily_restrictions(start, end, interval_map, iteration_day );
-        if(pipeline(this, interval_map, get_current_day_begin(iteration_day, start) )) { break ;}
+        if(pipeline(this, interval_map, get_current_day_begin(iteration_day, start) )) 
+        {
+            return true;
+            break ;
+        }
     }
 
     return false;

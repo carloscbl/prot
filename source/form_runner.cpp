@@ -1,6 +1,7 @@
 
 #include "form_runner.h"
 #include "time_determinator.h"
+#include "relocation_group.h"
 
 form_runner::form_runner(shared_ptr<user> user_, form_t &form_)
     : user_(user_),
@@ -40,16 +41,21 @@ const json form_runner::run(const json &request_json) noexcept
     tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
     taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
 
+    relocation_group fail_to_alocate (response->taskstory_name,provisional_scheduler);
     for (const auto &[k, v] : response->taskstory_json.items())
     {
         //cout << v.dump(4) << endl;
         task_t task_test = make_shared<task>(v.get<task>());
         time_determinator time_dt(task_test, provisional_scheduler);
         cout << "checking task: " << task_test->get_tag() << endl;
-        time_dt.build();
-        //We are colliding with our own group task as they are not in the scheduler we test unitil we finish
-        //So we need to feedback the test_scheduler
-        tasker_.add_to_group(move(task_test), response->taskstory_name);
+        if(time_dt.build()){
+            tasker_.add_to_group(move(task_test), response->taskstory_name);
+        }else{
+            // TODO
+            //We need to finish iteration to agregate te whole group after failure
+            fail_to_alocate.add();
+            break;
+        }
     }
 
     commiter.commit(); //Disolves group && activate the tasks
