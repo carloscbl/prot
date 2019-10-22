@@ -17,7 +17,6 @@
 
 using namespace std;
 using namespace chrono_literals;
-using form_t = form;
 
 //So this class will handle the call form_run from form_parser
 //On construction it will check for the current form being evaluated prevoiously and unfinnised

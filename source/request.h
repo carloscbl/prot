@@ -65,7 +65,7 @@ void request::evaluate_form(const json qa_request)
     }
     const auto & form = form::get_register().at("Washer easer");
 
-    form_runner fr(carlos, *form);
+    form_runner fr(carlos, &*form);
 
     auto &response = fr.run(qa_request);
 
