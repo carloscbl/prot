@@ -81,7 +81,7 @@ private:
     void init();
 
 public:
-    //map<string,form*> instaled_forms; // List all the forms for a user
+    map<string,form*> instaled_forms; // List all the forms for a user
     user_minimal_data minimal_data;
     user(const user_minimal_data &m_data);
     user(); 
