@@ -13,6 +13,11 @@ void tasker::add_to_group( task_t && params, const string & group){
     this->add_to_group( params->get_tag(), move(params), group);
 }
 
+void tasker::clear(){
+    this->tasks_active.clear();
+    this->tasks_dispenser.clear();
+}
+
 task_t tasker::find_task(const string & tag) const {
     for (auto &&[k,v] : tasks_active)
     {

@@ -89,6 +89,10 @@ public:
 
     itasker &get_tasker() const noexcept override { return *tasker_; }
     scheduler &get_scheduler() const noexcept override { return *scheduler_; }
+    void clear(){
+        this->get_scheduler().clear();
+        this->get_tasker().clear();
+    }
 
     const string &get_name() const noexcept override { return minimal_data.username; }
     user & get_user(const string & user_) noexcept override { return static_cast<user&>(*users[user_]); }

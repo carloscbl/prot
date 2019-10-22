@@ -36,25 +36,30 @@ const json form_runner::run(const json &request_json) noexcept
     {
         return response_j;
     }
-
+    
+    ////////////////////////////////////////////////////////
+    //Build schedulers and taskers for the given taskstory
+    ////////////////////////////////////////////////////////
     provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
     taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
-
     relocation_group fail_to_alocate (response->taskstory_name,provisional_scheduler);
+    bool fail = false;
+
     for (const auto &[k, v] : response->taskstory_json.items())
     {
-        //cout << v.dump(4) << endl;
         task_t task_test = make_shared<task>(v.get<task>());
         time_determinator time_dt(task_test, provisional_scheduler);
         cout << "checking task: " << task_test->get_tag() << endl;
-        if(time_dt.build()){
+
+        if(!fail){
+            //asuring not build after a fail, but keep iterating
+            fail = !time_dt.build();
+        }
+        if(!fail){
             tasker_.add_to_group(move(task_test), response->taskstory_name);
         }else{
-            // TODO
-            //We need to finish iteration to agregate te whole group after failure
             fail_to_alocate.add(task_test);
-            break;
         }
     }
 

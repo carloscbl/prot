@@ -91,7 +91,10 @@ bool scheduler::deny_policy(policy_relevant_data && task_info_for_scheduler ) {
     }
     return true;
 }
-
+void scheduler::clear(){
+    std::scoped_lock<mutex> lock (this->scheduler_mutex);
+    this->m_interval_map.clear();
+}
 //If the whole group got allocation then true;
 bool scheduler::add_group(queue<task_t> && provisional_taskstory){
     bool all_correct = true;

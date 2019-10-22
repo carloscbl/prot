@@ -29,6 +29,7 @@ public:
     //virtual void update_time() = 0;
     virtual task_t get_task(const string & id ) const = 0;
     virtual task_t find_task(const string & tag)  const = 0;
+    virtual void clear() = 0;
 };
 
 #endif //ITASKER_H

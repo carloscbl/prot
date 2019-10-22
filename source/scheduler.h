@@ -115,6 +115,7 @@ public:
     bool find_range(time_t start, time_t end) override;
     bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) override;
     //Ouput the "[start,end] task_id" of all scheduled tasks
+    void clear();
     void print_out() const override;
     //This is the correct way to provide groups in a safe manner
     provisional_scheduler_RAII get_provisional();

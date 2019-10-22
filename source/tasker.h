@@ -120,6 +120,7 @@ private:
 public:
     void add_to_group( task_t && params, const string & group);
     //void update_time() override {};
+    void clear() override;
     void remove(params_map_t params, task &instance);
     void remain(params_map_t params);
     task_t get_task(const string & id ) const override;
