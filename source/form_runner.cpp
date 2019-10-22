@@ -3,21 +3,21 @@
 #include "time_determinator.h"
 #include "relocation_group.h"
 
-form_runner::form_runner(shared_ptr<user> user_, form_t &form_)
+form_runner::form_runner(shared_ptr<user> user_, form &form_)
     : user_(user_),
       form_(form_)
 {}
 
 string form_runner::get_unique_id_session() const noexcept
 {
-    return user_->get_name() + form_->name;
+    return user_->get_name() + form_.name;
 }
 
 //FIX: this is a mess composing responses...
 const json form_runner::run(const json &request_json) noexcept
 {
     const auto &state = get_session();
-    form_parser fp(form_->get_json(), *state); //,*state
+    form_parser fp(form_.get_json(), *state); //,*state
     unique_ptr<next_question_data> response;
     if (request_json.is_null())
     {

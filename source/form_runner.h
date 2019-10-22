@@ -33,11 +33,11 @@ private:
     inline static sessions user_running_forms;
     const chrono::minutes life_time = 5min;
     shared_ptr<user> user_;
-    form_t & form_;
+    form & form_;
     unique_ptr<form_parser> fp;
 
 public:
-    form_runner(shared_ptr<user> user_, form_t &form_);
+    form_runner(shared_ptr<user> user_, form &form_);
 
     shared_ptr<form_state> get_session() const noexcept;
     string get_unique_id_session() const noexcept;
