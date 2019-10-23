@@ -172,7 +172,8 @@
             ],
             "frequency": "some-days",
             "duration": {
-              "minutes": 32
+              "minutes": 32,
+              "hours": 16
             }
           }
         ]

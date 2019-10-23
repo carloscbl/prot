@@ -10,7 +10,8 @@ req test
 #-a == answer our answer to the question "Do you have washer?"
 req test -a yes
 #How many kg have your washer capacity? -a 5 for normal branch
-req test -a 5
+req test -a 50
+req test -a yes
 
 #task are now setted
 #We need to move then

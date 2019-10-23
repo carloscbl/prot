@@ -291,8 +291,8 @@ std::optional<strategy_return> answer_branches<T>::custom(const json &j, string 
     if (match != j.end())
     {
         //"Yes":2, "YEEEESSS":2 , "No":5
-        cout << j.dump(4) << endl;
-        cout << match.value() << endl;
+        //cout << j.dump(4) << endl;
+        //cout << match.value() << endl;
         strategy_return sr{
             .if_branch = get_if_branch(match.value()),
             .taskstory_id = get_taskstory_id(j)};
