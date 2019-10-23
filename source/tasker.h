@@ -115,9 +115,10 @@ private:
     map_local_functions setters;
     void commit_group_then_delete(const string & group);
     void add_to_group(const string & task_tag, task_t && params, const string & group);
-    void print_out();
 
 public:
+    void print_out();
+    bool empty() const noexcept override;
     void add_to_group( task_t && params, const string & group);
     //void update_time() override {};
     void clear() override;

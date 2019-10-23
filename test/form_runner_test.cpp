@@ -14,6 +14,10 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     REQUIRE( carlos_->get_name() == "carlos" );
 
     const auto & carlos = user::users["carlos"];
+    carlos->get_tasker().print_out();
+    REQUIRE( carlos->get_tasker().empty() == true );
+
+    cout << "----" << endl;
     json qa_request1, qa_request2, qa_request3 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
@@ -74,7 +78,9 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     REQUIRE( washer_cleanup_start >= expected_washer_cleanup_start_min );
     REQUIRE( washer_cleanup_start <= expected_washer_cleanup_start_max );
 
+    REQUIRE( carlos->get_tasker().empty() != true );
     REQUIRE( 1 == 1 );
+    carlos->clear();
 }
 
 
@@ -87,6 +93,8 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     REQUIRE( carlos_->get_name() == "carlos" );
 
     const auto & carlos = user::users["carlos"];
+    REQUIRE( carlos->get_tasker().empty() == true );
+
     json qa_request1, qa_request2, qa_request3 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
@@ -148,4 +156,6 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     REQUIRE( washer_cleanup_start <= expected_washer_cleanup_start_max );
 
     REQUIRE( 1 == 1 );
+    REQUIRE( carlos->get_tasker().empty() != true );
+    carlos->clear();
 }

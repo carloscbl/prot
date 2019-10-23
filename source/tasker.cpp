@@ -51,8 +51,16 @@ void tasker::commit_group_then_delete(const string & group){
 }
 
 void tasker::print_out(){
-    
+    for (auto [k,v] : this->tasks_active)
+    {
+        cout << k << " : "; 
+        v->print_();
+    }
 }
+
+bool tasker::empty() const noexcept{
+    return tasks_active.empty();
+};
 
 void tasker::remove(params_map_t params, task &instance)
 {

@@ -30,6 +30,8 @@ public:
     virtual task_t get_task(const string & id ) const = 0;
     virtual task_t find_task(const string & tag)  const = 0;
     virtual void clear() = 0;
+    virtual bool empty() const noexcept = 0;
+    virtual void print_out() = 0;
 };
 
 #endif //ITASKER_H
