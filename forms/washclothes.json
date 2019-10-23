@@ -165,7 +165,7 @@
             }
           },
           {
-            "tag": "industrial_start",
+            "tag": "industrial_middle",
             "description": "start the machinery",
             "restrictions": [
               "night"
