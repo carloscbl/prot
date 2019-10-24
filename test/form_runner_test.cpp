@@ -79,7 +79,6 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     REQUIRE( washer_cleanup_start <= expected_washer_cleanup_start_max );
 
     REQUIRE( carlos->get_tasker().empty() != true );
-    REQUIRE( 1 == 1 );
     carlos->clear();
 }
 
@@ -135,7 +134,6 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     REQUIRE(start_start == industrial_start->get_interval().start);
 
 
-    REQUIRE( 1 == 1 );
     REQUIRE( carlos->get_tasker().empty() != true );
     carlos->clear();
 }

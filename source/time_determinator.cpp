@@ -43,7 +43,6 @@ bool time_determinator::build()
         if(pipeline(this, interval_map, get_current_day_begin(iteration_day, start) )) 
         {
             return true;
-            break ;
         }
     }
 
@@ -193,7 +192,6 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         auto it_interval = it->first;
         if(it_interval.lower() > end_of_day){
             return nullopt;
-            break;
         }
         if(it_interval.upper() <= computed_start){
             //This means it was the last
@@ -205,7 +203,6 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         
         if(find_time_gap(prev_time_upper, it_interval.lower(), duration)){
             return system_clock::from_time_t(prev_time_upper);
-            break;
         }
         prev_time_upper = it_interval.upper();
     }
