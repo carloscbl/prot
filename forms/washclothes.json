@@ -168,12 +168,12 @@
             "tag": "industrial_middle",
             "description": "start the machinery",
             "restrictions": [
-              "night"
+              "soon","early","launch","day"
             ],
             "frequency": "some-days",
             "duration": {
               "minutes": 32,
-              "hours": 16
+              "hours": 5
             }
           }
         ]

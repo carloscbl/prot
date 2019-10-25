@@ -126,12 +126,19 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     const time_point day_start = floor<days>(now);
 
     time_point expected_industrial_start = day_start + find_restriction("night").value().to  + seconds(1); 
-    time_point expected_base_task_start = day_start + find_restriction("launch").value().to  + seconds(1); 
+    time_point expected_industrial_middles = day_start + find_restriction("day").value().to  + seconds(1); 
+
     auto industrial_start = carlos->get_tasker().find_task("industrial_start");
     auto industrial_middle = carlos->get_tasker().find_task("industrial_middle");
+    time_point expected_industrial_middlee = day_start + find_restriction("day").value().to  + seconds(1) + industrial_middle->get_duration().m_duration; 
+
     time_t start_start = system_clock::to_time_t(expected_industrial_start);
+    time_t middle_start = system_clock::to_time_t(expected_industrial_middles);
+    time_t middle_end = system_clock::to_time_t(expected_industrial_middlee);
 
     REQUIRE(start_start == industrial_start->get_interval().start);
+    REQUIRE(middle_start == industrial_middle->get_interval().start);
+    REQUIRE(middle_end == industrial_middle->get_interval().end);
 
 
     REQUIRE( carlos->get_tasker().empty() != true );
