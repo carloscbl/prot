@@ -36,7 +36,7 @@ bool time_determinator::build()
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
-    days d = ceil<days>(end - start);
+    days d = ceil<days>(end - start); //Getting 2 days on industrial_middle and returning fail
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
         build_daily_restrictions(start, end, interval_map, iteration_day );
