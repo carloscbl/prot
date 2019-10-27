@@ -28,7 +28,7 @@ class provisional_scheduler_RAII;
 typedef boost::icl::interval_map<time_t, task_t> im_t;
 // a time interval
 typedef boost::icl::interval<time_t> interval_t;
-
+void print_time(const im_t &  interval_map);
 /* In the future this would be templatized as is trivial the contained type
 TODO:
 Start from scrach the scheduler, empty

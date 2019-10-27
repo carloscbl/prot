@@ -6,6 +6,16 @@
 
 using task = task_space::task;
 
+void print_time(const im_t &  interval_map) 
+{
+    auto put_time_ = [&](const time_t& t)-> auto { 
+        return std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
+    };
+    for ( const auto & [k,v] : interval_map){
+        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->id << endl;
+    }
+}
+
 scheduler::scheduler(scheduler_policy policy)
 :policy(policy)
 {

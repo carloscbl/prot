@@ -36,7 +36,9 @@ bool time_determinator::build()
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
-    days d = ceil<days>(end - start); //Getting 2 days on industrial_middle and returning fail
+
+
+    days d = ceil<days>(end - start); 
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
         build_daily_restrictions(start, end, interval_map, iteration_day );
@@ -178,7 +180,11 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
             computed_end = after->prev_task->get_interval().end + after->offset_max.count();
         }
     }
-    
+
+    if(this->task_->get_tag() == "industrial_middle")
+    {
+        print_time(interval_map);
+    }
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
     seconds duration = task_->get_duration().m_duration;
