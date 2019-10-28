@@ -94,6 +94,12 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     const auto & carlos = user::users["carlos"];
     REQUIRE( carlos->get_tasker().empty() == true );
 
+    task_t test_probe = make_shared<task>();
+    time_t next_day_collider_start = system_clock::to_time_t( system_clock::now() +days(1) + hours(5));
+    time_t next_day_collider_end = next_day_collider_start + duration_cast<seconds>(hours(1)).count() ;
+    test_probe->set_interval( next_day_collider_start, next_day_collider_end);
+    carlos->get_scheduler().add_single(move(test_probe));
+
     json qa_request1, qa_request2, qa_request3 ,qa_request4 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "50";

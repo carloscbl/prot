@@ -36,11 +36,6 @@ bool time_determinator::build()
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
-    if(this->task_->get_tag() == "washer_clean_up")
-    {
-        print_time(interval_map);
-    }
-
 
     days d = ceil<days>(end - start); 
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
@@ -185,10 +180,6 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
-    if(this->task_->get_tag() == "washer_clean_up")
-    {
-        print_time(interval_map);
-    }
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
     seconds duration = task_->get_duration().m_duration;
@@ -227,6 +218,9 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //prev_time_upper is garanteed to be within the same day
 
     //Find gap between today last and end of the day or die
+
+    //using when you can define not in the same day...
+    //But if some of the ones that should start in the same day jump
     if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
         return system_clock::from_time_t(prev_time_upper);
     }else if(find_time_gap(prev_time_upper, computed_end, duration)){
