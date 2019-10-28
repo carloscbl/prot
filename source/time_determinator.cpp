@@ -36,6 +36,10 @@ bool time_determinator::build()
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
+    if(this->task_->get_tag() == "washer_clean_up")
+    {
+        print_time(interval_map);
+    }
 
 
     days d = ceil<days>(end - start); 
@@ -181,7 +185,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
-    if(this->task_->get_tag() == "industrial_middle")
+    if(this->task_->get_tag() == "washer_clean_up")
     {
         print_time(interval_map);
     }
@@ -192,14 +196,19 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //This returns the first iterator after the time of search
     auto it_ = interval_map.lower_bound(interval_t::closed(computed_start , computed_start));
     time_t prev_time_upper = computed_start;
+    // 00:00|-------------|23:59
+    // 
     for (auto it = it_; it != interval_map.end(); ++it )//Shouln't be interval_map end, should be get range iterator and only iterate over the same day
     {
         task_t match = it->second;
-        auto it_interval = it->first;
-        if(it_interval.lower() > end_of_day){
+        auto current_it_interval = it->first;
+
+        //Order matters!!
+        if(current_it_interval.lower() > end_of_day){// Free space today? No? Skip to next day
             return nullopt;
         }
-        if(it_interval.upper() <= computed_start){
+        
+        if(current_it_interval.upper() <= computed_start){//Means today should be free, just 1 check or die
             //This means it was the last
             if(find_time_gap(prev_time_upper, computed_end, duration)){
                 return system_clock::from_time_t(prev_time_upper);
@@ -207,17 +216,46 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
             return nullopt;
         }
         
-        if(find_time_gap(prev_time_upper, it_interval.lower(), duration)){
+        if(find_time_gap(prev_time_upper, current_it_interval.lower(), duration)){ // iterate by every gap between tasks
             return system_clock::from_time_t(prev_time_upper);
         }
-        prev_time_upper = it_interval.upper();
+
+        prev_time_upper = current_it_interval.upper();//The current upper is the next lower
     }
     //Check until end of day not only current task
-    if(find_time_gap(prev_time_upper, computed_end, duration)){
-        return system_clock::from_time_t(prev_time_upper);
-    }
+    //So here we are limiting to start and end within the same day, but we can start in and end in the next
+    //prev_time_upper is garanteed to be within the same day
 
-    //From here we have to iterate to sum gap between iterations and get the size of the gap
-    //Until find gap or fail if bigger that the day
-    return nullopt;
+    //Find gap between today last and end of the day or die
+    if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
+        return system_clock::from_time_t(prev_time_upper);
+    }else if(find_time_gap(prev_time_upper, computed_end, duration)){
+        return system_clock::from_time_t(prev_time_upper);
+    }else{
+        //From here we have to iterate to sum gap between iterations and get the size of the gap
+        //Until find gap or fail if bigger that the day
+        return nullopt;
+    }
 }
+
+//policy allow edge or not
+bool time_determinator::find_time_gap_edge(time_t prev_upper, const im_t & interval_map, seconds duration_, time_point today ) const{
+    //1º check starts within same day
+    if (!within_same_day(time_point(seconds(prev_upper)),today)){
+        return false;
+    }
+    //2º get next task
+    auto it_ = interval_map.upper_bound(interval_t::closed(prev_upper , prev_upper));
+    if(it_ == interval_map.end()){
+        return true;
+    }
+    task_t match = it_->second;
+    auto current_it_interval = it_->first;
+    //Is getting the last lowest but we dont know if is the last... we need to check last o end
+    if(find_time_gap(prev_upper, current_it_interval.lower(),duration_)){
+        return true;
+    }
+    return false;
+}
+
+

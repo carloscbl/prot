@@ -90,7 +90,7 @@ namespace task_space{
         void print_remain() const;
 
         void remain(map<char, string> params) const;
-        void print_() { cout << id << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
+        void print_() { cout << id << ":" << tag << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
 
     };
 

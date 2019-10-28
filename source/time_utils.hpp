@@ -68,5 +68,10 @@ inline void print_hour(time_point_interval interval){
     cout << ctime(&to_) << endl;
 }
 
+inline bool within_same_day(time_point content, time_point container){
+    const time_point max = container + days(1);
+    const time_point & min = container;
+    return content > min && content < max;
+}
 
 #endif //TIME_UTILS_H
