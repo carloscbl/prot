@@ -17,7 +17,7 @@
       "answers_branches": {
         "predefined_boolean_yes_no_affirmative_yes": {
           "true": 72,
-          "else": -1,
+          "else": -5,
           "taskstory_id": "NONE"
         }
       }
@@ -50,7 +50,7 @@
                 ">": 0,
                 "<": 30
               },
-              "if_branch": 0,
+              "if_branch": -1,
               "taskstory_id": "normal_user"
             }
           },
@@ -60,7 +60,7 @@
                 "<": 0,
                 ">": 1000
               },
-              "if_branch": -1,
+              "if_branch": -4,
               "taskstory_id": 3
             }
           }
@@ -191,7 +191,7 @@
       "answers_branches": {
         "custom": {
           "yes": {
-            "if_branch": -1
+            "if_branch": -3
           },
           "no": {
             "if_branch": 0

@@ -68,7 +68,7 @@ strategy_return form_parser::enroute_json_type(const json &question_obj, const s
 unique_ptr <next_question_data> form_parser::get_next(const string &answer)
 {
     json question;
-    if (this->next_branch_id == static_cast<int>(e_branches::START))
+    if (this->next_branch_id == static_cast<int>(e_branches::RESTART))
     {
         //Means is first time
         question = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value();
@@ -80,17 +80,20 @@ unique_ptr <next_question_data> form_parser::get_next(const string &answer)
     auto strategy_returned = enroute_json_type(question, answer); //v is question{} object
     this->next_branch_id = strategy_returned.if_branch;
     //cout << "taskstory " << strategy_returned.taskstory_id << endl;
-
-    auto nextQ = find_questions_by_id(this->next_branch_id);
     string next_question;
-    if (nextQ.has_value())
-    {
+    if(this->next_branch_id < 0){
+        next_question = "END"; //TODO get why END
+    }else{
+        auto nextQ = find_questions_by_id(this->next_branch_id);
+        if (nextQ.has_value())
+        {
 
-        next_question = nextQ.value()["question"].get<string>();
-    }
-    else
-    {
-        next_question = "END";
+            next_question = nextQ.value()["question"].get<string>();
+        }
+        else
+        {
+            next_question = "END"; // UNIMPLEMENTED
+        }
     }
     json taskstory_ = json::value_t::null;
 

@@ -16,7 +16,7 @@ string form_runner::get_unique_id_session() const noexcept
 //FIX: this is a mess composing responses...
 const json form_runner::run(const json &request_json) noexcept
 {
-    const auto &state = get_session();
+    const auto &state = fetch_next_session();
     form_parser fp(form_.get_json(), *state); //,*state
     unique_ptr<next_question_data> response;
     if (request_json.is_null())
@@ -26,6 +26,9 @@ const json form_runner::run(const json &request_json) noexcept
     else
     {
         response = fp.form_next_in_pipeline(request_json["answer"]);
+    }
+    if(response->question_str == "END"){
+        this->user_running_forms.erase(this->get_unique_id_session());
     }
     user_running_forms[get_unique_id_session()] = fp.get_state();
     json response_j;
@@ -78,8 +81,30 @@ shared_ptr<form_state> form_runner::get_session() const noexcept
     }
     else
     {
+        return new_session(session_id);
+    }
+}
+
+shared_ptr<form_state> form_runner::fetch_next_session() const noexcept
+{
+    auto session = get_session();
+    if(session->next_branch_id < 0){
+        return new_session();
+    }
+    return session;
+}
+
+shared_ptr<form_state> form_runner::new_session() const noexcept
+{
+    auto session_id = get_unique_id_session();
+    auto new_state = make_shared<form_state>();
+    form_runner::user_running_forms[session_id] = new_state;
+    return new_state;
+}
+
+shared_ptr<form_state> form_runner::new_session(const string & session_id) const noexcept
+{
         auto new_state = make_shared<form_state>();
         form_runner::user_running_forms[session_id] = new_state;
         return new_state;
-    }
 }

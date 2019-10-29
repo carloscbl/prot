@@ -182,7 +182,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
     REQUIRE( form->name == "Washer easer" );
 
     form_runner fr(carlos, *form);
-    fr.clear_sessions();
+    //fr.clear_sessions();
 
     auto &response = fr.run(qa_request1);
     // cout << response.dump() <<endl;

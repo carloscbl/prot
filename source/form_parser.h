@@ -19,9 +19,13 @@ using namespace std;
 
 enum class branches_ids : int
 {
-    START = 0,
+    RESTART = 0,
     FIRST = 1,
     END = -1,
+    EARLY_END = -2,
+    UNIMPLEMENTED = -3,
+    USER_INPUT_ERROR = -4,
+    NOT_SUPPORTED = -5,
     ERROR_JSON = -9999,
 };
 using json = nlohmann::json;
@@ -125,7 +129,7 @@ private:
     map<string,unique_ptr<form_subsection_ADT>> discover;
     int current_id = static_cast<int>(e_branches::FIRST);
     string current_answer;
-    int next_branch_id = static_cast<int>(e_branches::START);
+    int next_branch_id = static_cast<int>(e_branches::RESTART);
     map<string,json> variables;
 
     strategy_return enroute_json_type(const json & question_obj, const string & answer);

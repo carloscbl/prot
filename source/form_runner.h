@@ -40,6 +40,9 @@ public:
     form_runner(shared_ptr<user> user_, form &form_);
 
     shared_ptr<form_state> get_session() const noexcept;
+    shared_ptr<form_state> fetch_next_session() const noexcept;
+    shared_ptr<form_state> new_session(const string & session_id) const noexcept;
+    shared_ptr<form_state> new_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
     task_t command_to_task(string &taskstory_command, variables_t &variables);
