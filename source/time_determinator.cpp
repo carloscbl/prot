@@ -180,6 +180,9 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
+    if(task_->get_tag() == "industrial_middle"){
+        print_time(interval_map);
+    }
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
     seconds duration = task_->get_duration().m_duration;
@@ -188,7 +191,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     auto it_ = interval_map.lower_bound(interval_t::closed(computed_start , computed_start));
     time_t prev_time_upper = computed_start;
     // 00:00|-------------|23:59
-    // 
+    // TODO equal range instead of lower_bound unitl end_of_day
     for (auto it = it_; it != interval_map.end(); ++it )//Shouln't be interval_map end, should be get range iterator and only iterate over the same day
     {
         task_t match = it->second;
@@ -196,7 +199,8 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
 
         //Order matters!!
         if(current_it_interval.lower() > end_of_day){// Free space today? No? Skip to next day
-            return nullopt;
+            //return nullopt;
+            break;
         }
         
         if(current_it_interval.upper() <= computed_start){//Means today should be free, just 1 check or die
@@ -217,19 +221,18 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //So here we are limiting to start and end within the same day, but we can start in and end in the next
     //prev_time_upper is garanteed to be within the same day
 
-    //Find gap between today last and end of the day or die
-
-    //using when you can define not in the same day...
-    //But if some of the ones that should start in the same day jump
-    if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
-        return system_clock::from_time_t(prev_time_upper);
-    }else if(find_time_gap(prev_time_upper, computed_end, duration)){
-        return system_clock::from_time_t(prev_time_upper);
+    if(after){//If we got a when structure we skip other restrictions
+        if(find_time_gap(prev_time_upper, computed_end, duration)){
+            return system_clock::from_time_t(prev_time_upper);
+        }
     }else{
+        if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
+            return system_clock::from_time_t(prev_time_upper);
+        }
+    }
         //From here we have to iterate to sum gap between iterations and get the size of the gap
         //Until find gap or fail if bigger that the day
-        return nullopt;
-    }
+    return nullopt;
 }
 
 //policy allow edge or not

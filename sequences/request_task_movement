@@ -16,3 +16,4 @@ req test -a yes
 #task are now setted
 #We need to move then
 task list
+req test -a yes
