@@ -43,6 +43,9 @@ public:
     string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
     task_t command_to_task(string &taskstory_command, variables_t &variables);
+    inline void clear_sessions(){
+        user_running_forms.clear();
+    }
 };
 
 #endif //FORM_RUNNER_H
