@@ -61,7 +61,7 @@ const json form_runner::run(const json &request_json) noexcept
         }
         if(!fail){
             tasker_.add_to_group(move(task_test), response->taskstory_name);
-        }else{
+        }else{//Now time to make it fail and control the failure
             fail_to_alocate.add(task_test);
         }
     }
