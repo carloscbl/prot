@@ -20,14 +20,16 @@ bool time_determinator::build()
     */
     //1º Apply restrictions to a period range
     //1.1 Get range
-    const time_point end = this->task_->get_frequency().get_period() + system_clock::now();
-    const time_point start = floor<days>(system_clock::now());
+    time_point end = this->task_->get_frequency().get_period() + system_clock::now();
+    time_point start = floor<days>(system_clock::now());
     using pipeline_t = function<bool(time_determinator *,const im_t &, time_point) >;
     pipeline_t pipeline = &time_determinator::forward_pipeline;
 
     auto when_ = this->task_->get_when();
     if(!when_.after.empty()){
         pipeline = &time_determinator::when_pipeline;
+        start += when_.minimum_delay.m_duration;
+        end += when_.maximum_delay.m_duration;
     }
 
     //when_
@@ -223,9 +225,10 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //prev_time_upper is garanteed to be within the same day
 
     if(after){//If we got a when structure we skip other restrictions
-        if(find_time_gap(prev_time_upper, computed_end, duration)){
-            return system_clock::from_time_t(prev_time_upper);
-        }
+        // if(find_time_gap(prev_time_upper, computed_end, duration)){
+        //     return system_clock::from_time_t(prev_time_upper);
+        // }
+        return nullopt;
     }else{
         if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
             return system_clock::from_time_t(prev_time_upper);
