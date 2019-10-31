@@ -110,8 +110,7 @@ bool time_determinator::forward_pipeline(const im_t & interval_map, time_point c
     // TODO pack and order group tasks
     auto slot = check_within_day_slot(interval_map ,current_day_begin);
     if( slot.has_value() ){
-        apply_slot(slot.value());
-        return true;
+        return apply_slot(slot.value());
     }
     return false;
 }
@@ -137,8 +136,7 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
     
     auto slot = check_within_day_slot( interval_map ,current_day_begin , &after );
     if( slot.has_value() ){
-        apply_slot(slot.value());
-        return true;
+        return apply_slot(slot.value());
     }
     return false;
 }
