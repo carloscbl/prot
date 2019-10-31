@@ -12,8 +12,17 @@ void print_time(const im_t &  interval_map)
         return std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
     };
     for ( const auto & [k,v] : interval_map){
-        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->id << endl;
+        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->id << " " << v->get_tag() << endl;
     }
+}
+task_t scheduler::get_task(string tag){
+    for (auto &&[k,v] : m_interval_map)
+    {
+        if(v->get_tag() == tag){
+            return v;
+        }
+    }
+    return nullptr;
 }
 
 scheduler::scheduler(scheduler_policy policy)
@@ -84,7 +93,7 @@ void scheduler::print_out() const
         return std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
     };
     for ( const auto & [k,v] : m_interval_map){
-        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->id << endl;
+        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->id << " " << v->get_tag() << endl;
     }
 }
 

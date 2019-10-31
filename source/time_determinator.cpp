@@ -143,15 +143,18 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
     return false;
 }
 
-void time_determinator::apply_slot(time_point start) noexcept{
+bool time_determinator::apply_slot(time_point start) noexcept{
     //Just need to set it in the own task, the rest is handled outside
     seconds duration = task_->get_duration().m_duration;
     time_point end = start + duration;
     time_t start_ = system_clock::to_time_t(start)+1;
     time_t end_ = system_clock::to_time_t(end)+1;
-    cout << "Alocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
+    cout << "Allocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
     task_->set_interval( start_, end_);
-    sche_.add_single(move(this->task_));
+    if(!sche_.add_single(move(this->task_))){
+        return false;
+    }
+    return true;
 }
 
 bool time_determinator::find_time_gap(time_t prev_upper, time_t current_lower, seconds duration_ ) const noexcept{
@@ -180,7 +183,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
-    if(task_->get_tag() == "industrial_middle"){
+    if(task_->get_tag() == "washer_clean_up"){
         print_time(interval_map);
     }
     //First check for upper bound of the beggin of the day... with this we find if exists place
