@@ -142,7 +142,7 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     REQUIRE(response3["next_question"] == "END");
 
     REQUIRE(carlos->get_tasker().find_task("industrial_start") != nullptr);
-    REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") != nullptr);
+    REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") == nullptr);
     
     time_point now = system_clock::now();
     const time_point day_start = floor<days>(now);
@@ -208,7 +208,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
     REQUIRE(response3["next_question"] == "END");
 
     REQUIRE(carlos->get_tasker().find_task("industrial_start") != nullptr);
-    REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") != nullptr);
+    REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") == nullptr);
     
     time_point now = system_clock::now();
     const time_point day_start = floor<days>(now);

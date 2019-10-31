@@ -38,7 +38,9 @@ bool time_determinator::build()
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
-
+    if(task_->get_tag() == "washer_clean_up"){
+        print_time(interval_map);
+    }
     days d = ceil<days>(end - start); 
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
@@ -119,15 +121,12 @@ bool time_determinator::forward_pipeline(const im_t & interval_map, time_point c
 
 bool time_determinator::when_pipeline( const im_t & interval_map, time_point current_day_begin) {
     const auto & when_ = task_->get_when();
-    auto range = sche_.get_range(system_clock::to_time_t(current_day_begin), system_clock::to_time_t(current_day_begin + days(1)));
-    if (!range.has_value())
+    auto prev_task_ = sche_.get_task(when_.after);
+    if (!prev_task_)
     {
         return false;
     }
     
-    auto prev_task = std::find_if(range.value().begin(),range.value().end(),[&when_](task_t t)-> bool{ return when_.after == t->get_tag() ? true : false; }); 
-    if( prev_task == std::end(range.value())){ return false;}
-    task_t prev_task_ = (*prev_task);
     time_point should_start = system_clock::from_time_t(prev_task_->get_interval().end) + seconds(1);
     
     current_after_t after{
