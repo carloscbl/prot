@@ -223,18 +223,13 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //So here we are limiting to start and end within the same day, but we can start in and end in the next
     //prev_time_upper is garanteed to be within the same day
 
-    if(after){//If we got a when structure we skip other restrictions
-        // if(find_time_gap(prev_time_upper, computed_end, duration)){
-        //     return system_clock::from_time_t(prev_time_upper);
-        // }
-        return nullopt;
-    }else{
+    if(!after){//If we got a when structure we skip other restrictions
         if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
             return system_clock::from_time_t(prev_time_upper);
         }
     }
-        //From here we have to iterate to sum gap between iterations and get the size of the gap
-        //Until find gap or fail if bigger that the day
+    //From here we have to iterate to sum gap between iterations and get the size of the gap
+    //Until find gap or fail if bigger that the day
     return nullopt;
 }
 

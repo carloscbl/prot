@@ -147,7 +147,8 @@
                 "days": 1
               },
               "maximum_delay": {
-                "days": 2
+                "days": 1,
+                "hours":22
               }
             }
           }

@@ -252,7 +252,7 @@ TEST_CASE( "test form_runner task failure invalidation and movement", "[runner]"
     
     const auto & form = form::get_register().at("Washer easer");
 
-    carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(19)));
+    carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(23)));
     carlos->get_scheduler().print_out();
 
     REQUIRE( form->name == "Washer easer" );
