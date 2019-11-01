@@ -252,7 +252,7 @@ TEST_CASE( "test form_runner task failure invalidation and movement", "[runner]"
     
     const auto & form = form::get_register().at("Washer easer");
 
-    carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(23)));
+    carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(22)));
     carlos->get_scheduler().print_out();
 
     REQUIRE( form->name == "Washer easer" );
@@ -272,7 +272,9 @@ TEST_CASE( "test form_runner task failure invalidation and movement", "[runner]"
     REQUIRE(response2["next_question"] == "END");
 
     REQUIRE(carlos->get_tasker().find_task("base_task") != nullptr);
-    REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") != nullptr);
+    carlos->get_tasker().print_out();
+    carlos->get_scheduler().print_out();
+    //REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") == nullptr);
     
     time_point now = system_clock::now();
     const time_point day_start = floor<days>(now);
@@ -281,8 +283,11 @@ TEST_CASE( "test form_runner task failure invalidation and movement", "[runner]"
     time_point expected_washer_start_start = day_start + find_restriction("night").value().to  + seconds(1); 
     auto washer_start_task = carlos->get_tasker().find_task("washer_start");
     auto washer_end_task = carlos->get_tasker().find_task("washer_end");
+
     auto washer_cleanup_task = carlos->get_tasker().find_task("washer_clean_up");
 
+    REQUIRE(washer_cleanup_task != nullptr);
+    
     time_t expected_washer_end_start_min = washer_start_task->get_interval().end + seconds(1).count() + washer_end_task->get_when().minimum_delay.m_duration.count(); 
 
     time_t expected_washer_end_start_max = washer_start_task->get_interval().end + seconds(1).count()  + washer_end_task->get_when().maximum_delay.m_duration.count(); 
