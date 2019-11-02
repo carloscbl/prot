@@ -43,32 +43,44 @@ const json form_runner::run(const json &request_json) noexcept
     ////////////////////////////////////////////////////////
     //Build schedulers and taskers for the given taskstory
     ////////////////////////////////////////////////////////
+
+
+    return response_j;
+}
+
+bool form_runner::perform_taskstory(unique_ptr<next_question_data> response){
+
     provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
     taskstory_commit_RAII commiter(response->taskstory_name, tasker_);
     relocation_group fail_to_alocate (response->taskstory_name,provisional_scheduler);
-    bool fail = false;
+    
+    auto perform_day = [&](int day) -> bool{
+        bool fail = false;  
+        for (const auto &[k, v] : response->taskstory_json.items())
+        {
+            task_t task_test = make_shared<task>(v.get<task>());
+            time_determinator time_dt(task_test, provisional_scheduler);
+            cout << "checking task: " << task_test->get_tag() << endl;
 
-    for (const auto &[k, v] : response->taskstory_json.items())
+            if(!fail){
+                //asuring not build after a fail, but keep iterating
+                fail = !time_dt.build();
+            }
+            if(!fail){
+                tasker_.add_to_group(move(task_test), response->taskstory_name);
+            }else{//Now time to make it fail and control the failure
+                //We need to invalidate every thing
+                fail_to_alocate.add(task_test);
+            }
+        }
+    };
+    for (size_t day = 0; day < 365; day++)
     {
-        task_t task_test = make_shared<task>(v.get<task>());
-        time_determinator time_dt(task_test, provisional_scheduler);
-        cout << "checking task: " << task_test->get_tag() << endl;
-
-        if(!fail){
-            //asuring not build after a fail, but keep iterating
-            fail = !time_dt.build();
-        }
-        if(!fail){
-            tasker_.add_to_group(move(task_test), response->taskstory_name);
-        }else{//Now time to make it fail and control the failure
-            fail_to_alocate.add(task_test);
-        }
+        perform_day(day);
     }
 
     commiter.commit(); //Disolves group && activate the tasks
-
-    return response_j;
 }
 
 shared_ptr<form_state> form_runner::get_session() const noexcept
