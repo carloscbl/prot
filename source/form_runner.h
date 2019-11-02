@@ -38,7 +38,7 @@ private:
 
 public:
     form_runner(shared_ptr<user> user_, form &form_);
-    bool perform_taskstory(unique_ptr<next_question_data> response);
+    bool perform_taskstory(next_question_data & response);
     shared_ptr<form_state> get_session() const noexcept;
     shared_ptr<form_state> fetch_next_session() const noexcept;
     shared_ptr<form_state> new_session(const string & session_id) const noexcept;

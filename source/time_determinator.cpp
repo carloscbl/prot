@@ -9,7 +9,7 @@ time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(tas
 {
 }
 
-bool time_determinator::build()
+optional<bool> time_determinator::build(days start_offset)
 {
     //Formula:
     /*
@@ -21,7 +21,7 @@ bool time_determinator::build()
     //1º Apply restrictions to a period range
     //1.1 Get range
     time_point end = this->task_->get_frequency().get_period() + system_clock::now();
-    time_point start = floor<days>(system_clock::now());
+    time_point start = floor<days>(system_clock::now() + start_offset);
     using pipeline_t = function<bool(time_determinator *,const im_t &, time_point) >;
     pipeline_t pipeline = &time_determinator::forward_pipeline;
 
@@ -41,7 +41,12 @@ bool time_determinator::build()
     if(task_->get_tag() == "washer_clean_up"){
         print_time(interval_map);
     }
-    days d = ceil<days>(end - start); 
+    days d = ceil<days>(end - start);
+
+    if(d.count() >= 0){
+        return nullopt;
+    }
+
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
         build_daily_restrictions(start, end, interval_map, iteration_day );
