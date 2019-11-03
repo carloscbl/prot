@@ -137,10 +137,12 @@ private:
 
     friend scheduler;//Required in order to allow only to scheduler to construct us
     scheduler & parent;
-    bool valid = true;
+    bool valid = false;
     provisional_scheduler_RAII(scheduler & parent);
-public:
     using scheduler::add_group;// This should expose the add_group method
+public:
+    bool add_group(queue<task_t> && provisional_taskstory);
+    void commit();
     provisional_scheduler_RAII() = delete;
     
     //If im not wrong, this should generate copy,assignment as delete, and move assignment not declared

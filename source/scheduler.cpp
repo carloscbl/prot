@@ -131,6 +131,12 @@ bool scheduler::add_group(queue<task_t> && provisional_taskstory){
     return all_correct;
 }
 
+bool provisional_scheduler_RAII::add_group(queue<task_t> && provisional_taskstory){
+    bool result = scheduler::add_group(move(provisional_taskstory));
+    this->valid = result;
+    return result;
+}
+
 provisional_scheduler_RAII scheduler::get_provisional(){
     return provisional_scheduler_RAII(*this);
 }
@@ -140,6 +146,10 @@ provisional_scheduler_RAII::provisional_scheduler_RAII(scheduler & parent)
 {
     parent.scheduler_mutex.lock();
     m_interval_map = im_t(parent.m_interval_map);
+}
+
+void provisional_scheduler_RAII::commit(){
+    parent.m_interval_map.swap(this->m_interval_map);
 }
 
 provisional_scheduler_RAII::~provisional_scheduler_RAII()

@@ -43,10 +43,13 @@ optional<bool> time_determinator::build(days start_offset)
     }
     days d = ceil<days>(end - start);
 
-    if(d.count() >= 0){
+    if(d.count() <= 0){
         return nullopt;
     }
-
+    if(start_offset != days(0)){
+        int a = 0;
+        a = 7;
+    }
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
         build_daily_restrictions(start, end, interval_map, iteration_day );
@@ -55,7 +58,7 @@ optional<bool> time_determinator::build(days start_offset)
             return true;
         }
     }
-
+    print_time(interval_map);
     return false;
 }
 
@@ -230,6 +233,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
 
     if(!after){//If we got a when structure we skip other restrictions
         if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
+            cout << "edge" << endl;
             return system_clock::from_time_t(prev_time_upper);
         }
     }
