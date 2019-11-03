@@ -77,7 +77,7 @@
               "soon",
               "launch"
             ],
-            "frequency": "some-days",
+            "frequency": "weekly",
             "duration": {
               "minutes": 5,
               "hours": 1,
@@ -90,7 +90,7 @@
             "restrictions": [
               "night"
             ],
-            "frequency": "some-days",
+            "frequency": "weekly",
             "duration": {
               "minutes": 2
             }
@@ -101,7 +101,7 @@
             "restrictions": [
               "night"
             ],
-            "frequency": "some-days",
+            "frequency": "weekly",
             "duration": {
               "hours": 1,
               "minutes": 59,
@@ -114,7 +114,7 @@
             "restrictions": [
               "night"
             ],
-            "frequency": "some-days",
+            "frequency": "weekly",
             "duration": {
               "minutes": 15
             },
