@@ -49,9 +49,14 @@ const json form_runner::run(const json &request_json) noexcept
     return response_j;
 }
 
+struct failure_report_t{
+    vector<task_t> failures_report;
+    task_t no_margin_invalidation;
+};
+
 bool form_runner::perform_taskstory(next_question_data & response){
 
-    
+    failure_report_t report;
     for (size_t day = 0; day < 365; day++)
     {
         provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
@@ -70,9 +75,11 @@ bool form_runner::perform_taskstory(next_question_data & response){
                 if(result.value()){
                     tasker_.add_to_group(move(task_test), response.taskstory_name);
                 }else{
+                    report.failures_report.push_back(task_test);
                     complete = false;
                 }
             }else{//Now time to make it fail and control the failure
+                report.no_margin_invalidation = task_test;
                 return false;
             }
         }
