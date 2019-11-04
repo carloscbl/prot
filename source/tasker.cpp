@@ -62,6 +62,10 @@ bool tasker::empty() const noexcept{
     return tasks_active.empty();
 };
 
+size_t tasker::size() const noexcept {
+    return this->tasks_active.size();
+}
+
 void tasker::remove(params_map_t params, task &instance)
 {
     auto it = params.end();

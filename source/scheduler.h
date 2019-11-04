@@ -117,6 +117,7 @@ public:
     task_t get_task(string tag);
     //Ouput the "[start,end] task_id" of all scheduled tasks
     void clear();
+    inline size_t size() const { return this->m_interval_map.iterative_size(); }
     void print_out() const override;
     //This is the correct way to provide groups in a safe manner
     provisional_scheduler_RAII get_provisional();

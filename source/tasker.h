@@ -119,6 +119,7 @@ private:
 public:
     void print_out();
     bool empty() const noexcept override;
+    size_t size() const noexcept override;
     void add_to_group( task_t && params, const string & group);
     //void update_time() override {};
     void clear() override;
