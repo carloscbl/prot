@@ -46,10 +46,7 @@ optional<bool> time_determinator::build(days start_offset)
     if(d.count() <= 0){
         return nullopt;
     }
-    if(start_offset != days(0)){
-        int a = 0;
-        a = 7;
-    }
+
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
         build_daily_restrictions(start, end, interval_map, iteration_day );

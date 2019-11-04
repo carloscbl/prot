@@ -132,9 +132,8 @@ bool scheduler::add_group(queue<task_t> && provisional_taskstory){
 }
 
 bool provisional_scheduler_RAII::add_group(queue<task_t> && provisional_taskstory){
-    bool result = scheduler::add_group(move(provisional_taskstory));
-    this->valid = result;
-    return result;
+    this->valid = scheduler::add_group(move(provisional_taskstory));
+    return this->valid;
 }
 
 provisional_scheduler_RAII scheduler::get_provisional(){
