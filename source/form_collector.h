@@ -24,7 +24,7 @@ public:
         path forms = path(path("..") / "forms");
         if (is_directory(forms))
         {
-            for (auto &entry : boost::make_iterator_range(directory_iterator(forms), {}))
+            for (auto &entry : boost::make_iterator_range(directory_iterator(forms), {})){
                 if (is_regular(entry))
                 {
                     path file_json(entry);
@@ -33,6 +33,7 @@ public:
                         candidate_jsons_paths.push_back(canonical(file_json));
                     }
                 }
+            }
         }
     }
     virtual ~form_collector() {}
