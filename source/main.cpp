@@ -17,6 +17,8 @@
 #include "form_collector.h"
 #include "request.h"
 #include "test.h"
+#include "persistor.h"
+
 
 #define p(X) std::cout << X << std::endl;
 
@@ -44,6 +46,8 @@ int main(int argc, char const *argv[])
     ////////////////////////////////////////////////////// 
     // task_lex task_l;
     // task_l.print_out();
+    persistor::set_persistor(make_unique<disk_storage>());
+    
     form_collector fc;
     command_processor cp;
     user user_;
@@ -55,6 +59,7 @@ int main(int argc, char const *argv[])
     form form_;
     request request_(cp);
     test test_(cp);
+
     cp.register_actionable("task", &tasker_);
     cp.register_actionable("form", &form_);
     cp.register_actionable("req", &request_);
