@@ -17,6 +17,7 @@
 #include <boost/icl/interval.hpp>
 #include "task_frequency.h"
 #include "task_restrictions.h"
+#include "persistor.h"
 
 
 using std::vector;
@@ -34,7 +35,7 @@ namespace task_space{
 
     class task;
     void from_json(const nlohmann::json& j, task_space::task& p);
-    class task : public CRUD_actionable<task>
+    class task : public CRUD_actionable<task> , public persistor
     {
     private:
         string name;

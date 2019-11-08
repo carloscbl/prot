@@ -40,7 +40,7 @@ public:
 
 class disk_storage : public persistor{
     disk_storage():persistor("../persistence/"){};
-    virtual void save ( const string & index_name, const json & content_file) const noexcept  override {
+    virtual void save ( const string & index_name, const json & content_file) const noexcept override {
         fs::path full_path(fs::current_path());
         path folder = path(path("..") / "persistence");
 
@@ -50,6 +50,13 @@ class disk_storage : public persistor{
             std::ofstream o(file_);
             o << std::setw(4) << content_file << std::endl;
         }
+    }
+};
+
+class mongo_db : public persistor{
+    mongo_db():persistor(""){};
+    virtual void save ( const string & index_name, const json & content_file) const noexcept override {
+        throw std::runtime_error("not implemented");
     }
 };
 
