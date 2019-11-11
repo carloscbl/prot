@@ -1,0 +1,39 @@
+{
+  "title": "task",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "duration": {
+      "$ref": "./duration.v1.json"
+    },
+    "frequency": {
+      "$ref": "./frequency.v1.json"
+    },
+    "when": {
+      "$ref": "./when.v1.json"
+    },
+    "interval": {
+      "$ref": "./interval.v1.json"
+    },
+    "task_group": {
+      "type": "string"
+    },
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "user": {
+      "type": "string"
+    }
+  }
+}

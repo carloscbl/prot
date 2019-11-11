@@ -1,0 +1,12 @@
+{
+  "title": "frequency",
+  "type": "object",
+  "properties": {
+    "frequency": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "frequency"
+  ]
+}

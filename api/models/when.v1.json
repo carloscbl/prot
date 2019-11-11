@@ -1,0 +1,20 @@
+{
+  "title": "when",
+  "type": "object",
+  "properties": {
+    "after": {
+      "type": "string",
+      "description": "Tag of the task, that this should be after"
+    },
+    "minumum_delay": {
+      "$ref": "./duration.v1.json"
+    },
+    "maximum_delay": {
+      "$ref": "./duration.v1.json"
+    }
+  },
+  "required": [
+    "after",
+    "minumum_delay"
+  ]
+}

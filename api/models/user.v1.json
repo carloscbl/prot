@@ -1,0 +1,21 @@
+{
+  "title": "user",
+  "type": "object",
+  "properties": {
+    "username": {
+      "type": "string"
+    },
+    "params": {
+      "$ref": "./user_params.v1.json"
+    },
+    "tasker": {
+      "$ref": "./tasker.v1.json"
+    },
+    "scheduler": {
+      "$ref": "./scheduler.v1.json"
+    }
+  },
+  "required": [
+    "username"
+  ]
+}

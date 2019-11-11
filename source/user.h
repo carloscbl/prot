@@ -19,7 +19,6 @@ using namespace std;
 struct user_minimal_data
 {
     string username;
-    string pass;
 };
 /*
     User class have one ischeduler and one itasker

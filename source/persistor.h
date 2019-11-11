@@ -51,6 +51,7 @@ public:
     virtual void save ( const string & index_name, const json & content_file) const noexcept override ;
     virtual void load (const string & index_name, json & content_file) const noexcept;
 };
+
 // class mongo_db : public persistor{
 //     mongo_db():persistor(""){};
 //     virtual void save ( const string & index_name, const json & content_file) const noexcept override {

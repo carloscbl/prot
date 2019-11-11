@@ -1,0 +1,42 @@
+{
+  "title": "duration",
+  "oneOf": [
+    {
+      "properties": {
+        "seconds": {
+          "type": "integer",
+          "default": 0
+        }
+      },
+      "required": [
+        "seconds"
+      ]
+    },
+    {
+      "properties": {
+        "seconds": {
+          "type": "integer"
+        },
+        "minutes": {
+          "type": "integer"
+        },
+        "hours": {
+          "type": "integer"
+        },
+        "days": {
+          "type": "integer"
+        },
+        "weeks": {
+          "type": "integer"
+        },
+        "months": {
+          "type": "integer"
+        },
+        "years": {
+          "type": "integer"
+        }
+      }
+    }
+  ],
+  "type": "object"
+}

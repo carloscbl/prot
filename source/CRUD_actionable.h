@@ -70,11 +70,11 @@ public:
 };
 
 template<typename T>
-class serializable
+class json_serializable
 {
 public:
-    serializable() = default;
-    ~serializable()= default;
+    json_serializable() = default;
+    ~json_serializable()= default;
     virtual const string & get_name() const noexcept = 0;
     void save(){
         auto & current_persistor = persistor::get_persistor_instance();

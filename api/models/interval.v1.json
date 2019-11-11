@@ -1,0 +1,16 @@
+{
+  "title": "interval",
+  "type": "object",
+  "properties": {
+    "start": {
+      "type": "integer"
+    },
+    "end": {
+      "type": "integer"
+    }
+  },
+  "required": [
+    "start",
+    "end"
+  ]
+}

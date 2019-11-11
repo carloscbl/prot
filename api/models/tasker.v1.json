@@ -1,0 +1,16 @@
+{
+  "title": "tasker",
+  "type": "object",
+  "properties": {
+    "tasks": {
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "$ref": "./task.v1.json"
+          }
+        ]
+      }
+    }
+  }
+}

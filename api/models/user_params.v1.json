@@ -1,0 +1,9 @@
+{
+  "title": "user_params",
+  "type": "object",
+  "properties": {
+    "time_zone": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,21 @@
+{
+  "title": "scheduler",
+  "type": "object",
+  "properties": {
+    "policy": {
+      "type": "string",
+      "enum": [
+        "deny"
+      ]
+    },
+    "interval_map": {
+      "type": "array",
+      "items": {
+        "$ref": "./task.v1.json"
+      }
+    },
+    "user": {
+      "type": "string"
+    }
+  }
+}
