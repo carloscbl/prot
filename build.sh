@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Default number of cores to use if not specified via comnad line
-CORES=7
+CORES=$(nproc --all)
 # Directory where the application will be built
 BUILDDIR=build
 # clean

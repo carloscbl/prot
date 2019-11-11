@@ -1,0 +1,21 @@
+{
+    "tag": "washer_end",
+    "description": "Collect and hang out the washing",
+    "restrictions": [
+        "night"
+    ],
+    "frequency": "weekly",
+    "duration": {
+        "minutes": 15
+    },
+    "when": {
+        "after": "washer_start",
+        "minimum_delay": {
+            "minutes": 15,
+            "hours": 1
+        },
+        "maximum_delay": {
+            "hours": 2
+        }
+    }
+}

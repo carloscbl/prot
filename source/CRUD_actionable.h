@@ -72,8 +72,6 @@ public:
 template<typename T>
 class serializable
 {
-private:
-    
 public:
     serializable() = default;
     ~serializable()= default;
@@ -87,6 +85,17 @@ public:
             return;
         }
         current_persistor.save(name +".json" , json(*tis) );
+    }
+    void load(const string & file_name){
+        auto & current_persistor = persistor::get_persistor_instance();
+        T * tis = static_cast<T*>(this);
+        if(file_name.empty()){
+            cout << "Cannot store a file with no name" << endl;
+            return;
+        }
+        json j;
+        current_persistor.load(file_name+".json" , j );
+        from_json(j,*tis);
     }
 };
 

@@ -36,6 +36,7 @@ public:
     ~persistor(){};
     static persistor & get_persistor_instance();
     virtual void save (const string & index_name, const json & content_file) const noexcept = 0;
+    virtual void load (const string & index_name, json & content_file) const noexcept = 0;
     persistor & set_path(string route_table_or_folder);
     static void set_persistor(unique_ptr<persistor> && storage){
         persistor::persistor_instance = move(storage);
@@ -43,23 +44,13 @@ public:
 };
 
 class disk_storage : public persistor{
+private:
+    const path folder = path(path("..") / "persistence");
 public:
-    disk_storage():persistor("../persistence/"){};
-    virtual void save ( const string & index_name, const json & content_file) const noexcept override {
-        fs::path full_path(fs::current_path());
-        path folder = path(path("..") / "persistence");
-        
-        if (!is_directory(folder))
-        {
-            boost::filesystem::create_directory(folder);
-        }
-        cout << content_file.dump(4) << endl;
-        string file_ = folder.string() + "/" + index_name;
-        std::ofstream o(file_);
-        o << std::setw(4) << content_file << std::endl;
-    }
+    disk_storage():persistor(folder.string()){};
+    virtual void save ( const string & index_name, const json & content_file) const noexcept override ;
+    virtual void load (const string & index_name, json & content_file) const noexcept;
 };
-
 // class mongo_db : public persistor{
 //     mongo_db():persistor(""){};
 //     virtual void save ( const string & index_name, const json & content_file) const noexcept override {

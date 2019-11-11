@@ -1,0 +1,27 @@
+{
+    "description": "Collect and hang out the washing",
+    "duration": {
+        "seconds": 900
+    },
+    "frequency": "weekly",
+    "interval": {
+        "end": 140720802551112,
+        "start": 140720802551280
+    },
+    "name": "test",
+    "restrictions": [
+        "night"
+    ],
+    "tag": "tagg",
+    "task_group": "",
+    "user": "useeer",
+    "when": {
+        "after": "washer_start",
+        "maximum_delay": {
+            "seconds": 7200
+        },
+        "minimum_delay": {
+            "seconds": 4500
+        }
+    }
+}
