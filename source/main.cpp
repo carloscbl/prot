@@ -51,7 +51,7 @@ int main(int argc, char const *argv[])
     form_collector fc;
     command_processor cp;
     user user_;
-    tasker tasker_;
+    tasker tasker_("std");
 
     std::vector<std::string> forms_paths;
     forms_paths = fc.get_forms_paths();

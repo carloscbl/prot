@@ -22,7 +22,7 @@ struct task_status
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
  */
-class tasker : public itasker , public CRUD_actionable<tasker>
+class tasker : public itasker , public CRUD_actionable<tasker>, public json_serializable<tasker>
 {
 private:
     friend taskstory_commit_RAII;
@@ -111,7 +111,7 @@ private:
             }
         }},
     };
-
+    string m_user;
     map_local_functions setters;
     void commit_group_then_delete(const string & group);
     void add_to_group(const string & task_tag, task_t && params, const string & group);
@@ -124,12 +124,16 @@ public:
     //void update_time() override {};
     void clear() override;
     void remove(params_map_t params, task &instance);
+    const string & get_name() const noexcept;
+
     void remain(params_map_t params);
     task_t get_task(const string & id ) const override;
     task_t find_task(const string & tag)  const override;
-    tasker();
+    inline const map<string, task_t> & get_tasks() const { return this->tasks_active; }
+    tasker(const string & user);
 };
-
+void to_json(nlohmann::json& new_json, const tasker& ref_tasker);
+void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 /*
 Wraps the group functionality of tasker, you are requiered to commit
 if not we destroy the group at end of scope

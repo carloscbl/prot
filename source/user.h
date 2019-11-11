@@ -7,7 +7,6 @@
 #include <memory>
 #include <string>
 #include <map>
-#include "iuser.h"
 #include "tasker.h"
 #include "CRUD_actionable.h"
 #include "ischeduler.h"
@@ -25,7 +24,7 @@ struct user_minimal_data
     no one else should have one
 
  */
-class user : public CRUD_actionable<user>, public iuser
+class user : public CRUD_actionable<user>
 { //substitute by the final class
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;
@@ -35,7 +34,7 @@ private:
     CRUD_plus_actions_map user_actions_map{
         {"add", [](map<char, string> s) {
             user_minimal_data md {
-                s['u'] , s['p']
+                s['u']
             };
             users[s['u']] = make_unique<user>(md);
         }},
@@ -44,7 +43,7 @@ private:
         {"list", [](map<char, string> s) {
             for (const auto & [k,v] : users)
             {
-                cout << "user: " << k << " pass:" << v->minimal_data.pass << endl;
+                cout << "user: " << k << endl;
             }
         }},
         {"listsch", [](map<char, string> s) {
@@ -86,15 +85,15 @@ public:
     user(); 
     virtual ~user() {}
 
-    itasker &get_tasker() const noexcept override { return *tasker_; }
-    scheduler &get_scheduler() const noexcept override { return *scheduler_; }
+    tasker &get_tasker() const noexcept { return *tasker_; }
+    scheduler &get_scheduler() const noexcept { return *scheduler_; }
     void clear(){
         this->get_scheduler().clear();
         this->get_tasker().clear();
     }
 
-    const string &get_name() const noexcept override { return minimal_data.username; }
-    user & get_user(const string & user_) noexcept override { return static_cast<user&>(*users[user_]); }
+    const string &get_name() const noexcept { return minimal_data.username; }
+    user & get_user(const string & user_) noexcept { return static_cast<user&>(*users[user_]); }
 };
 
 #endif //USER_H

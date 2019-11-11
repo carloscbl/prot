@@ -20,7 +20,7 @@ task_t get_collider(seconds offset_from_today, T_duration duration, string name 
 TEST_CASE( "test form_runner", "[runner]" ) {
   
     user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos","123456"
+        "carlos"
     });
     const auto & carlos_ = user::users["carlos"];
     REQUIRE( carlos_->get_name() == "carlos" );
@@ -77,6 +77,10 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     time_t washer_start_start = carlos->get_tasker().find_task("washer_start")->get_interval().start;
     time_t washer_end_start = carlos->get_tasker().find_task("washer_end")->get_interval().start;
     time_t washer_cleanup_start = carlos->get_tasker().find_task("washer_clean_up")->get_interval().start;
+    
+    carlos->get_tasker().save();
+    carlos->get_tasker().clear();
+    carlos->get_tasker().load("carlos");
 
     time_t expected = system_clock::to_time_t(expected_base_task_start);
     time_t expected_2 = system_clock::to_time_t(expected_washer_start_start);
@@ -99,7 +103,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 TEST_CASE( "test form_runner industrial", "[runner]" ) {
   
     user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos","123456"
+        "carlos"
     });
     const auto & carlos_ = user::users["carlos"];
     REQUIRE( carlos_->get_name() == "carlos" );
@@ -170,7 +174,7 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
 TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
   
     user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos","123456"
+        "carlos"
     });
     const auto & carlos_ = user::users["carlos"];
     REQUIRE( carlos_->get_name() == "carlos" );
@@ -235,7 +239,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
 TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
   
     user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos","123456"
+        "carlos"
     });
     const auto & carlos_ = user::users["carlos"];
     REQUIRE( carlos_->get_name() == "carlos" );

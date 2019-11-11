@@ -23,7 +23,7 @@ using namespace chrono_literals;
 //On construction it will check for the current form being evaluated prevoiously and unfinnised
 //So will find for a existing session and restore it and handle in a threaded way the life time of this session
 //Probably a thread pool is a good idea an a queue, but for now, we will start new threads for simplicity
-//This will requiere a iuser and a form name to find if the user have currently existing one
+//This will requiere a user and a form name to find if the user have currently existing one
 //If not we will create a session and store it
 using sessions = map<string, shared_ptr<form_state>>;
 using variables_t = map<string, json>;

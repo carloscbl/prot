@@ -2,7 +2,7 @@
 
 
 
-tasker::tasker():CRUD_actionable(tasker_map,setters){}
+tasker::tasker(const string & user):CRUD_actionable(tasker_map,setters),m_user(user){}
 
 void tasker::add_to_group(const string & task_tag,task_t && params, const string & group){
     params->set_task_group(group);
@@ -16,6 +16,24 @@ void tasker::add_to_group( task_t && params, const string & group){
 void tasker::clear(){
     this->tasks_active.clear();
     this->tasks_dispenser.clear();
+}
+
+const string & tasker::get_name() const noexcept{
+    return this->m_user;
+}
+
+void from_json(const nlohmann::json& ref_json, tasker& new_tasker){
+    // for (const auto &i : ref_json)
+    // {
+    //     //new_tasker.g i.value()
+    // }
+    
+}
+
+void to_json(nlohmann::json& new_json, const tasker& ref_tasker) {
+    for_each(ref_tasker.get_tasks().begin(),ref_tasker.get_tasks().end(), [&new_json](pair<string,task_t> pair){
+        new_json.push_back(*pair.second);
+    });
 }
 
 task_t tasker::find_task(const string & tag) const {

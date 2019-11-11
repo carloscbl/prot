@@ -12,7 +12,6 @@
 #include <optional>
 #include <unordered_set>
 #include "json.hpp"
-#include "iuser.h"
 #include "command_expr_evaluator.h"
 
 using namespace std;
@@ -124,7 +123,6 @@ struct form_state{
 class form_parser{
 private:
     const json & j;
-    //const iuser & user_;
     map<string,unique_ptr<form_subsection_ADT>> subsections;
     map<string,unique_ptr<form_subsection_ADT>> discover;
     int current_id = static_cast<int>(e_branches::FIRST);
