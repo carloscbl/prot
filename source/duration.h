@@ -26,7 +26,9 @@ namespace prot{
         void convert(unsigned long long time){
             m_duration += std::chrono::duration_cast<std::chrono::seconds>(T_unit(time));
         }
+        friend void to_json(nlohmann::json& j, const duration& p);
     };
     void from_json(const nlohmann::json& j, duration& p);
+    void to_json(nlohmann::json& j, const duration& p);
 }
 #endif //DURATION_H

@@ -17,19 +17,17 @@ void task_space::to_json(nlohmann::json& j, const task_space::task& p) {
         {"m_user", p.get_m_user()},
         {"task_group", p.get_task_group()},
         {"interval", p.get_interval()},
+        {"duration", p.get_duration()},
     };
 }
-
-
 
 void task_space::from_json(const nlohmann::json& j, task_space::task& p){
 
     p.m_frequency.set_frequency( j.at("frequency").get<std::string>() );
     j.at("description").get_to(p.description);
-    j.at("description").get_to(p.description);j.at("tag").get_to(p.tag);
+    j.at("tag").get_to(p.tag);
     //
     j.at("duration").get_to(p.m_duration);
-    
     
     //Optional
     if(j.find("restrictions") != j.end()){

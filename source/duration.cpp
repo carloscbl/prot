@@ -12,3 +12,9 @@ void prot::from_json(const nlohmann::json& j, prot::duration& p){
     }
     assert(p.m_duration.count() != 0);
 }
+
+void prot::to_json(nlohmann::json& j, const prot::duration& p){
+    j = nlohmann::json{
+        {"seconds", p.m_duration.count()}
+    };
+}

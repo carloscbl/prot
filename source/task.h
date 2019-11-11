@@ -35,7 +35,7 @@ namespace task_space{
 
     class task;
     void from_json(const nlohmann::json& j, task_space::task& p);
-    class task : public CRUD_actionable<task> , public persistor
+    class task : public CRUD_actionable<task> , public serializable<task>
     {
     private:
         string name;
@@ -76,7 +76,7 @@ namespace task_space{
                                                      //print_();
         }
 
-        const string        & get_name()        const noexcept { return name;        }
+        const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;        }
         const string        & get_tag()         const noexcept { return tag;        }
         const string        & get_description() const noexcept { return description; }
         const string        & get_stamp()       const noexcept { return stamp;       }

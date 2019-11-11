@@ -7,8 +7,11 @@
 #include <boost/range/iterator_range.hpp>
 #include <fstream>
 #include <iomanip>
+#include <iostream>
 using json = nlohmann::json;
 using std::string;
+using std::endl;
+using std::cout;
 
 /*design
     this class is intended to be an abstraction of serialization to json,
@@ -29,6 +32,7 @@ protected:
     string m_path;
 public:
     persistor(string route_table_or_folder){};
+    persistor(){};
     ~persistor(){};
     static persistor & get_persistor_instance();
     virtual void save (const string & index_name, const json & content_file) const noexcept = 0;
@@ -39,25 +43,28 @@ public:
 };
 
 class disk_storage : public persistor{
+public:
     disk_storage():persistor("../persistence/"){};
     virtual void save ( const string & index_name, const json & content_file) const noexcept override {
         fs::path full_path(fs::current_path());
         path folder = path(path("..") / "persistence");
-
-        if (is_directory(folder))
+        
+        if (!is_directory(folder))
         {
-            string file_ = folder.string() + index_name;
-            std::ofstream o(file_);
-            o << std::setw(4) << content_file << std::endl;
+            boost::filesystem::create_directory(folder);
         }
+        cout << content_file.dump(4) << endl;
+        string file_ = folder.string() + "/" + index_name;
+        std::ofstream o(file_);
+        o << std::setw(4) << content_file << std::endl;
     }
 };
 
-class mongo_db : public persistor{
-    mongo_db():persistor(""){};
-    virtual void save ( const string & index_name, const json & content_file) const noexcept override {
-        throw std::runtime_error("not implemented");
-    }
-};
+// class mongo_db : public persistor{
+//     mongo_db():persistor(""){};
+//     virtual void save ( const string & index_name, const json & content_file) const noexcept override {
+//         throw std::runtime_error("not implemented");
+//     }
+// };
 
 #endif //PERSISTOR_H

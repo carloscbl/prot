@@ -1,6 +1,6 @@
 #include "Catch2/catch.hpp"
-#include "form_runner.h"
 #include "json.hpp"
+#include "form_runner.h"
 #include "user.h"
 #include "form.h"
 #include "task_restrictions.h"

@@ -7,6 +7,7 @@
 #include <iostream>
 #include <any>
 #include "iactionable.h"
+#include "persistor.h"
 
 using namespace std;
 
@@ -67,5 +68,28 @@ public:
     }
 
 };
+
+template<typename T>
+class serializable
+{
+private:
+    
+public:
+    serializable() = default;
+    ~serializable()= default;
+    virtual const string & get_name() const noexcept = 0;
+    void save(){
+        auto & current_persistor = persistor::get_persistor_instance();
+        T * tis = static_cast<T*>(this);
+        auto name =  tis->get_name();
+        if(name.empty()){
+            cout << "Cannot store a file with no name" << endl;
+            return;
+        }
+        current_persistor.save(name +".json" , json(*tis) );
+    }
+};
+
+
 
 #endif //CRUD_ACTIONABLE_H
