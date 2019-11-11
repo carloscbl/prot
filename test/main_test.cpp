@@ -25,6 +25,7 @@
 
 int main( int argc, char* argv[] ) {
   // global setup...
+  persistor::set_persistor(make_unique<disk_storage>());
 
   //Its importan launch the program always from prot/build to take the relative paths
     form_collector fc;

@@ -1,5 +1,6 @@
 {
     "tag": "washer_end",
+    "name": "testorino",
     "description": "Collect and hang out the washing",
     "restrictions": [
         "night"

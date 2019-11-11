@@ -28,6 +28,7 @@ void task_space::from_json(const nlohmann::json& j, task_space::task& p){
 
     p.m_frequency.set_frequency( j.at("frequency").get<std::string>() );
     j.at("description").get_to(p.description);
+    j.at("name").get_to(p.name);
     j.at("tag").get_to(p.tag);
     //
     j.at("duration").get_to(p.m_duration);

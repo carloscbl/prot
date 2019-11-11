@@ -68,11 +68,13 @@ bool form_runner::perform_taskstory(next_question_data & response){
         for (const auto &[k, v] : response.taskstory_json.items())
         {
             task_t task_test = make_shared<task>(v.get<task>());
+            task_test->set_user(this->user_->get_name());
             time_determinator time_dt(task_test, provisional_scheduler);
             cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
             if(result.has_value() ){
                 if(result.value()){
+                    //task_test->save();
                     tasker_.add_to_group(move(task_test), response.taskstory_name);
                 }else{
                     report.failures_report.push_back(task_test);

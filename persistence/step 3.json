@@ -1,0 +1,24 @@
+{
+    "description": "Put them inside and start the machine",
+    "duration": {
+        "seconds": 7199
+    },
+    "frequency": "weekly",
+    "interval": {
+        "end": 1573639321,
+        "start": 1573632122
+    },
+    "name": "step 3",
+    "restrictions": [
+        "night"
+    ],
+    "tag": "washer_intermediate",
+    "task_group": "",
+    "user": "carlos",
+    "when": {
+        "after": "",
+        "minimum_delay": {
+            "seconds": 0
+        }
+    }
+}

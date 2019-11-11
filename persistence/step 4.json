@@ -5,16 +5,16 @@
     },
     "frequency": "weekly",
     "interval": {
-        "end": 140724398983384,
-        "start": 140724398983552
+        "end": 1573640222,
+        "start": 1573639322
     },
-    "name": "test",
+    "name": "step 4",
     "restrictions": [
         "night"
     ],
-    "tag": "tagg",
+    "tag": "washer_end",
     "task_group": "",
-    "user": "useeer",
+    "user": "carlos",
     "when": {
         "after": "washer_start",
         "maximum_delay": {

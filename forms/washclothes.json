@@ -70,6 +70,7 @@
         "normal_user": [
           {
             "tag": "base_task",
+            "name":"step 1",
             "comment": "The user is implicit",
             "description": "Gather Clothes around home",
             "restrictions": [
@@ -86,6 +87,7 @@
           },
           {
             "tag": "washer_start",
+            "name":"step 2",
             "description": "Put them inside and start the machine",
             "restrictions": [
               "night"
@@ -97,6 +99,7 @@
           },
           {
             "tag": "washer_intermediate",
+            "name":"step 3",
             "description": "Put them inside and start the machine",
             "restrictions": [
               "night"
@@ -110,6 +113,7 @@
           },
           {
             "tag": "washer_end",
+            "name":"step 4",
             "description": "Collect and hang out the washing",
             "restrictions": [
               "night"
@@ -131,6 +135,7 @@
           },
           {
             "tag": "washer_clean_up",
+            "name":"step 5",
             "description": "Collect and hang out the washing",
             "restrictions": [
               "night"
@@ -156,6 +161,7 @@
         "industrial_user": [
           {
             "tag": "industrial_start",
+            "name":"step 1",
             "description": "start the machinery",
             "restrictions": [
               "night"
@@ -167,6 +173,7 @@
           },
           {
             "tag": "industrial_middle",
+            "name":"step 2",
             "description": "start the machinery",
             "restrictions": [
               "soon","early","launch","day"

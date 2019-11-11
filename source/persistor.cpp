@@ -21,7 +21,7 @@ void disk_storage::save ( const string & index_name, const json & content_file) 
     {
         boost::filesystem::create_directory(folder);
     }
-    cout << content_file.dump(4) << endl;
+    //cout << content_file.dump(4) << endl;
     string file_ = folder.string() + "/" + index_name;
     std::ofstream o(file_, std::ofstream::trunc);
     o << std::setw(4) << content_file << std::endl;
