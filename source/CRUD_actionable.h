@@ -78,24 +78,24 @@ public:
     virtual const string & get_name() const noexcept = 0;
     void save(){
         auto & current_persistor = persistor::get_persistor_instance();
-        T * tis = static_cast<T*>(this);
-        auto name =  tis->get_name();
+        T * downcast_this = static_cast<T*>(this);
+        auto name =  downcast_this->get_name();
         if(name.empty()){
             cout << "Cannot store a file with no name" << endl;
             return;
         }
-        current_persistor.save(name +".json" , json(*tis) );
+        current_persistor.save(name +".json" , json(*downcast_this) );
     }
     void load(const string & file_name){
         auto & current_persistor = persistor::get_persistor_instance();
-        T * tis = static_cast<T*>(this);
+        T * downcast_this = static_cast<T*>(this);
         if(file_name.empty()){
             cout << "Cannot store a file with no name" << endl;
             return;
         }
         json j;
         current_persistor.load(file_name+".json" , j );
-        from_json(j,*tis);
+        from_json(j,*downcast_this);
     }
 };
 

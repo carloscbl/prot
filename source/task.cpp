@@ -2,43 +2,43 @@
 #include <set>
 
 
-void task_space::to_json(nlohmann::json& j, const pair_interval& p) {
-    j = nlohmann::json{
-        {"end", p.end},
-        {"start", p.start},
+void task_space::to_json(nlohmann::json& new_json, const pair_interval& ref_interval) {
+    new_json = nlohmann::json{
+        {"end",     ref_interval.end},
+        {"start",   ref_interval.start},
     };
 }
 
-void task_space::to_json(nlohmann::json& j, const task_space::task& p) {
-    j = nlohmann::json{
-        {"name", p.get_name()},
-        {"description", p.get_description()},
-        {"user", p.get_m_user()},
-        {"task_group", p.get_task_group()},
-        {"interval", p.get_interval()},
-        {"tag", p.get_tag()},
-        {"duration", p.get_duration()},
-        {"restrictions", p.get_restrictions().get_restrictions()},
-        {"frequency", p.get_frequency().get_frequency_name()},
-        {"when", p.get_when()},
+void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_task) {
+    new_json = nlohmann::json{
+        {"name",        ref_task.get_name()},
+        {"description", ref_task.get_description()},
+        {"user",        ref_task.get_m_user()},
+        {"task_group",  ref_task.get_task_group()},
+        {"interval",    ref_task.get_interval()},
+        {"tag",         ref_task.get_tag()},
+        {"duration",    ref_task.get_duration()},
+        {"restrictions",ref_task.get_restrictions().get_restrictions()},
+        {"frequency",   ref_task.get_frequency().get_frequency_name()},
+        {"when",        ref_task.get_when()},
     };
 }
 
-void task_space::from_json(const nlohmann::json& j, task_space::task& p){
+void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task){
 
-    p.m_frequency.set_frequency( j.at("frequency").get<std::string>() );
-    j.at("description").get_to(p.description);
-    j.at("name").get_to(p.name);
-    j.at("tag").get_to(p.tag);
+    new_task.m_frequency.set_frequency( ref_json.at("frequency").get<std::string>() );
+    ref_json.at("description").get_to(new_task.description);
+    ref_json.at("name").get_to(new_task.name);
+    ref_json.at("tag").get_to(new_task.tag);
     //
-    j.at("duration").get_to(p.m_duration);
+    ref_json.at("duration").get_to(new_task.m_duration);
     
     //Optional
-    if(j.find("restrictions") != j.end()){
-        p.m_restrictions.set_restrictions( j.at("restrictions") .get<std::set<std::string>>() );
+    if(ref_json.find("restrictions") != ref_json.end()){
+        new_task.m_restrictions.set_restrictions( ref_json.at("restrictions") .get<std::set<std::string>>() );
     }
-    if(j.find("when") != j.end()){
-        j.at("when").get_to(p.m_when);
+    if(ref_json.find("when") != ref_json.end()){
+        ref_json.at("when").get_to(new_task.m_when);
     }
 }
 

@@ -23,12 +23,12 @@ void disk_storage::save ( const string & index_name, const json & content_file) 
     }
     //cout << content_file.dump(4) << endl;
     string file_ = folder.string() + "/" + index_name;
-    std::ofstream o(file_, std::ofstream::trunc);
-    o << std::setw(4) << content_file << std::endl;
+    std::ofstream output_stream_to_file(file_, std::ofstream::trunc);
+    output_stream_to_file << std::setw(4) << content_file << std::endl;
 }
 
 void disk_storage::load (const string & index_name, json & content_file) const noexcept
 {
-    std::ifstream i(folder.string() + "/" + index_name);
-    i >> content_file;
+    std::ifstream input_stream_from_file(folder.string() + "/" + index_name);
+    input_stream_from_file >> content_file;
 }

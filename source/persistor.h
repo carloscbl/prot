@@ -31,8 +31,8 @@ protected:
     inline static unique_ptr<persistor> persistor_instance;
     string m_path;
 public:
-    persistor(string route_table_or_folder){};
     persistor(){};
+    persistor(string route_table_or_folder){};
     ~persistor(){};
     static persistor & get_persistor_instance();
     virtual void save (const string & index_name, const json & content_file) const noexcept = 0;

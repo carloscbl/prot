@@ -34,7 +34,7 @@ namespace task_space{
 
 
     class task;
-    void from_json(const nlohmann::json& j, task_space::task& p);
+    void from_json(const nlohmann::json& ref_json, task_space::task& new_task);
     class task : public CRUD_actionable<task> , public serializable<task>
     {
     private:
@@ -56,34 +56,34 @@ namespace task_space{
             {'d', &task::set_description},
             {'u', &task::set_user},
         };
-        friend void task_space::from_json(const nlohmann::json& j, task_space::task& p);
+        friend void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task);
 
     public:
         string id;
         task();
         virtual ~task();
 
-        void set_name        (string name_)         { this->name = name_; }
-        void set_task_group  (string task_group_)   { this->task_group = task_group_; }
-        void set_tag         (string tag_)          { this->tag = tag_; }
-        void set_description (string description_)  { this->description = description_; }
-        void set_user        (string user_)         { this->m_user = user_; }
-        void set_interval(time_t start, time_t end) {
+        inline void set_name        (string name_)         { this->name = name_; }
+        inline void set_task_group  (string task_group_)   { this->task_group = task_group_; }
+        inline void set_tag         (string tag_)          { this->tag = tag_; }
+        inline void set_description (string description_)  { this->description = description_; }
+        inline void set_user        (string user_)         { this->m_user = user_; }
+        inline void set_interval(time_t start, time_t end) {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
                                                      //print_();
         }
 
-        const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;}
-        const string        & get_tag()         const noexcept { return tag;        }
-        const string        & get_description() const noexcept { return description; }
-        const string        & get_m_user()      const noexcept { return m_user;      }
-        const string        & get_task_group()  const noexcept { return task_group;  }
-        const pair_interval & get_interval()    const noexcept { return interval; }
-        const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
-        const frequency     & get_frequency()   const noexcept { return m_frequency; }
-        const prot::duration& get_duration()    const noexcept { return m_duration; }
-        const when          & get_when()        const noexcept { return m_when; }
+        inline const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;}
+        inline const string        & get_tag()         const noexcept { return tag;        }
+        inline const string        & get_description() const noexcept { return description; }
+        inline const string        & get_m_user()      const noexcept { return m_user;      }
+        inline const string        & get_task_group()  const noexcept { return task_group;  }
+        inline const pair_interval & get_interval()    const noexcept { return interval; }
+        inline const restrictions  & get_restrictions()const noexcept { return m_restrictions; }
+        inline const frequency     & get_frequency()   const noexcept { return m_frequency; }
+        inline const prot::duration& get_duration()    const noexcept { return m_duration; }
+        inline const when          & get_when()        const noexcept { return m_when; }
 
         void print_remain() const;
 
@@ -92,8 +92,8 @@ namespace task_space{
 
     };
 
-    void to_json(nlohmann::json& j, const pair_interval& p);
-    void to_json(nlohmann::json& j, const task_space::task& p);
+    void to_json(nlohmann::json& new_json, const pair_interval& ref_interval);
+    void to_json(nlohmann::json& new_json, const task_space::task& ref_task);
 
 }
 
