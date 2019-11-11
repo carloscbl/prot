@@ -13,11 +13,13 @@ void task_space::to_json(nlohmann::json& j, const task_space::task& p) {
     j = nlohmann::json{
         {"name", p.get_name()},
         {"description", p.get_description()},
-        {"stamp", p.get_stamp()},
         {"m_user", p.get_m_user()},
         {"task_group", p.get_task_group()},
         {"interval", p.get_interval()},
-        {"duration", p.get_duration()},
+        {"tag", p.get_tag()},
+        {"restrictions", p.get_restrictions().get_restrictions()},
+        {"frequency", p.get_frequency().get_frequency_name()},
+        {"when", p.get_when()},
     };
 }
 

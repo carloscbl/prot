@@ -16,5 +16,5 @@ public:
 };
 
 void from_json(const nlohmann::json& j, when& p);
-
+void to_json(nlohmann::json& j, const when& p); 
 #endif //WHEN_H

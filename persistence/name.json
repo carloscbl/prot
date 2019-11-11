@@ -1,14 +1,19 @@
 {
     "description": "",
-    "duration": {
-        "seconds": 0
-    },
+    "frequency": "day-regular-basics",
     "interval": {
-        "end": 140735073246424,
-        "start": 140735073246592
+        "end": 140728573376744,
+        "start": 140728573376912
     },
     "m_user": "",
     "name": "name",
-    "stamp": "",
-    "task_group": ""
+    "restrictions": [],
+    "tag": "name",
+    "task_group": "",
+    "when": {
+        "after": "",
+        "minimum_delay": {
+            "seconds": 0
+        }
+    }
 }

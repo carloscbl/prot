@@ -44,6 +44,7 @@ public:
     void set_restrictions(const set<string> & restrictions_);
     //From, to
     vector<json_interval> get_all_from_to() const;
+    const set<string>& get_restrictions() const { return this->m_restrictions; }
 
 };
 

@@ -40,7 +40,6 @@ namespace task_space{
     private:
         string name;
         string description;
-        string stamp;
         string m_user;
         string task_group;
         string tag;
@@ -68,7 +67,6 @@ namespace task_space{
         void set_task_group  (string task_group_)   { this->task_group = task_group_; }
         void set_tag         (string tag_)          { this->tag = tag_; }
         void set_description (string description_)  { this->description = description_; }
-        void set_stamp       (string stamp_)        { this->stamp = stamp_;}
         void set_user        (string user_)         { this->m_user = user_; }
         void set_interval(time_t start, time_t end) {
                                                      this->interval.start = start;
@@ -76,10 +74,9 @@ namespace task_space{
                                                      //print_();
         }
 
-        const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;        }
+        const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;}
         const string        & get_tag()         const noexcept { return tag;        }
         const string        & get_description() const noexcept { return description; }
-        const string        & get_stamp()       const noexcept { return stamp;       }
         const string        & get_m_user()      const noexcept { return m_user;      }
         const string        & get_task_group()  const noexcept { return task_group;  }
         const pair_interval & get_interval()    const noexcept { return interval; }

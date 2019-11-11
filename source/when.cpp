@@ -14,3 +14,12 @@ void from_json(const nlohmann::json& j, when& p){
         assert(p.maximum_delay.m_duration > p.minimum_delay.m_duration);
     }
 }
+void to_json(nlohmann::json& j, const when& p) {
+    j = nlohmann::json{
+        {"after", p.after},
+        {"minimum_delay", p.minimum_delay},
+    };
+    if(p.maximum_delay.m_duration.count() != 0){
+        j["maximum_delay"] = p.maximum_delay;
+    }
+}
