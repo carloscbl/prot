@@ -115,7 +115,7 @@ private:
     map_local_functions setters;
     void commit_group_then_delete(const string & group);
     void add_to_group(const string & task_tag, task_t && params, const string & group);
-
+    friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 public:
     void print_out();
     bool empty() const noexcept override;

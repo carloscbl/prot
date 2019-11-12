@@ -55,6 +55,11 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     REQUIRE(carlos->get_tasker().find_task("base_task") != nullptr);
     
+    const auto & tkr = carlos->get_tasker();
+    carlos->get_tasker().save();
+    carlos->get_tasker().clear();
+    carlos->get_tasker().load("carlos");
+
     time_point now = system_clock::now();
     const time_point day_start = floor<days>(now);
 
@@ -78,9 +83,6 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     time_t washer_end_start = carlos->get_tasker().find_task("washer_end")->get_interval().start;
     time_t washer_cleanup_start = carlos->get_tasker().find_task("washer_clean_up")->get_interval().start;
     
-    carlos->get_tasker().save();
-    carlos->get_tasker().clear();
-    carlos->get_tasker().load("carlos");
 
     time_t expected = system_clock::to_time_t(expected_base_task_start);
     time_t expected_2 = system_clock::to_time_t(expected_washer_start_start);

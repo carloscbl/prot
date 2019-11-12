@@ -2,7 +2,7 @@
 #include <set>
 
 
-void task_space::to_json(nlohmann::json& new_json, const pair_interval& ref_interval) {
+void task_space::to_json(nlohmann::json& new_json, const task_space::pair_interval& ref_interval) {
     new_json = nlohmann::json{
         {"end",     ref_interval.end},
         {"start",   ref_interval.start},
@@ -20,8 +20,15 @@ void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_t
         {"duration",    ref_task.get_duration()},
         {"restrictions",ref_task.get_restrictions().get_restrictions()},
         {"frequency",   ref_task.get_frequency().get_frequency_name()},
-        {"when",        ref_task.get_when()},
     };
+    if(!ref_task.get_when().after.empty()){
+        new_json["when"] = ref_task.get_when();
+    }
+}
+
+void task_space::from_json(const nlohmann::json& ref_json, task_space::pair_interval& new_interval){
+    ref_json.at("start").get_to(new_interval.start);
+    ref_json.at("end").get_to(new_interval.end);
 }
 
 void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task){
@@ -39,6 +46,9 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
     }
     if(ref_json.find("when") != ref_json.end()){
         ref_json.at("when").get_to(new_task.m_when);
+    }
+    if(ref_json.find("interval") != ref_json.end()){
+        ref_json.at("interval").get_to(new_task.interval);
     }
 }
 

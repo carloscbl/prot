@@ -10,7 +10,7 @@ void prot::from_json(const nlohmann::json& j, prot::duration& p){
             conversor(p, match.value().get<int64_t>());
         }
     }
-    assert(p.m_duration.count() != 0);
+    assert(p.m_duration.count() >= 0);//Maybe they want to start inmediately?
 }
 
 void prot::to_json(nlohmann::json& j, const prot::duration& p){

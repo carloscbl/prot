@@ -35,6 +35,7 @@ namespace task_space{
 
     class task;
     void from_json(const nlohmann::json& ref_json, task_space::task& new_task);
+    void from_json(const nlohmann::json& ref_json, task_space::pair_interval& new_interval);
     class task : public CRUD_actionable<task> , public json_serializable<task>
     {
     private:
@@ -92,7 +93,7 @@ namespace task_space{
 
     };
 
-    void to_json(nlohmann::json& new_json, const pair_interval& ref_interval);
+    void to_json(nlohmann::json& new_json, const task_space::pair_interval& ref_interval);
     void to_json(nlohmann::json& new_json, const task_space::task& ref_task);
 
 }

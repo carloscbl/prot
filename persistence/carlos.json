@@ -6,8 +6,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573491904,
-            "start": 1573488001
+            "end": 1573578304,
+            "start": 1573574401
         },
         "name": "step 1",
         "restrictions": [
@@ -17,13 +17,7 @@
         ],
         "tag": "base_task",
         "task_group": "normal_user",
-        "user": "carlos",
-        "when": {
-            "after": "",
-            "minimum_delay": {
-                "seconds": 0
-            }
-        }
+        "user": "carlos"
     },
     {
         "description": "Collect and hang out the washing",
@@ -32,8 +26,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573467422,
-            "start": 1573466522
+            "end": 1573553822,
+            "start": 1573552922
         },
         "name": "step 4",
         "restrictions": [
@@ -59,8 +53,8 @@
         },
         "frequency": "some-days",
         "interval": {
-            "end": 1573560243,
-            "start": 1573558323
+            "end": 1573646643,
+            "start": 1573644723
         },
         "name": "step 5",
         "restrictions": [
@@ -86,8 +80,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573459321,
-            "start": 1573459201
+            "end": 1573545721,
+            "start": 1573545601
         },
         "name": "step 2",
         "restrictions": [
@@ -95,13 +89,7 @@
         ],
         "tag": "washer_start",
         "task_group": "normal_user",
-        "user": "carlos",
-        "when": {
-            "after": "",
-            "minimum_delay": {
-                "seconds": 0
-            }
-        }
+        "user": "carlos"
     },
     {
         "description": "Put them inside and start the machine",
@@ -110,8 +98,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573466521,
-            "start": 1573459322
+            "end": 1573552921,
+            "start": 1573545722
         },
         "name": "step 3",
         "restrictions": [
@@ -119,12 +107,6 @@
         ],
         "tag": "washer_intermediate",
         "task_group": "normal_user",
-        "user": "carlos",
-        "when": {
-            "after": "",
-            "minimum_delay": {
-                "seconds": 0
-            }
-        }
+        "user": "carlos"
     }
 ]
