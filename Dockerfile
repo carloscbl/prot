@@ -8,7 +8,10 @@ RUN apt update && apt install -y \
     coreutils \
     make \
     wget \
-    cmake 
+    cmake \
+    libicu-dev \ 
+    libmongoc-dev \
+    libbson-dev
     #Still looking fo the correct package
 
 ADD ./ /opt/prot
