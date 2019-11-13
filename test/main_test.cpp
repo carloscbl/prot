@@ -22,17 +22,21 @@
 #include "form_collector.h"
 #include "request.h"
 #include "test.h"
+#include <cstdlib>
 #include <mongocxx/client.hpp>
 #include <mongocxx/instance.hpp>
 #include <bsoncxx/builder/stream/document.hpp>
 #include <bsoncxx/json.hpp>
-
 
 int main(int argc, char *argv[])
 {
     // global setup...
     persistor::set_persistor(make_unique<disk_storage>());
 
+    if(const char* env_p = std::getenv("PATH")){
+        std::cout << "Your PATH is: " << env_p << '\n';
+    }
+    
     mongocxx::instance inst{};
     mongocxx::client conn{mongocxx::uri{}};
 

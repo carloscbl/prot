@@ -38,9 +38,9 @@ optional<bool> time_determinator::build(days start_offset)
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
-    if(task_->get_tag() == "washer_clean_up"){
-        print_time(interval_map);
-    }
+    // if(task_->get_tag() == "washer_clean_up"){
+    //     print_time(interval_map);
+    // }
     days d = ceil<days>(end - start);
 
     if(d.count() <= 0){
@@ -55,7 +55,7 @@ optional<bool> time_determinator::build(days start_offset)
             return true;
         }
     }
-    print_time(interval_map);
+    //print_time(interval_map);
     return false;
 }
 
@@ -153,7 +153,7 @@ bool time_determinator::apply_slot(time_point start) noexcept{
     time_point end = start + duration;
     time_t start_ = system_clock::to_time_t(start)+1;
     time_t end_ = system_clock::to_time_t(end)+1;
-    cout << "Allocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
+    //cout << "Allocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
     task_->set_interval( start_, end_);
     if(!sche_.add_single(move(this->task_))){
         return false;
@@ -187,9 +187,9 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
-    if(task_->get_tag() == "washer_clean_up"){
-        print_time(interval_map);
-    }
+    // if(task_->get_tag() == "washer_clean_up"){
+    //     print_time(interval_map);
+    // }
     //First check for upper bound of the beggin of the day... with this we find if exists place
     //Then we need to do lower_bound from result of valid upper_bound + duration of task
     seconds duration = task_->get_duration().m_duration;
@@ -230,7 +230,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
 
     if(!after){//If we got a when structure we skip other restrictions
         if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
-            cout << "edge" << endl;
+            //cout << "edge" << endl;
             return system_clock::from_time_t(prev_time_upper);
         }
     }

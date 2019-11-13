@@ -158,5 +158,5 @@ provisional_scheduler_RAII::~provisional_scheduler_RAII()
     }
 
     parent.scheduler_mutex.unlock();
-    cout << "~provisional_scheduler_RAII " << endl;
+    //cout << "~provisional_scheduler_RAII " << endl;
 }

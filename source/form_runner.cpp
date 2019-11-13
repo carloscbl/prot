@@ -70,7 +70,7 @@ bool form_runner::perform_taskstory(next_question_data & response){
             task_t task_test = make_shared<task>(v.get<task>());
             task_test->set_user(this->user_->get_name());
             time_determinator time_dt(task_test, provisional_scheduler);
-            cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
+            //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
             if(result.has_value() ){
                 if(result.value()){

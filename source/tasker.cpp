@@ -26,7 +26,6 @@ void from_json(const nlohmann::json& ref_json, tasker& new_tasker){
     for (const auto &i : ref_json.items())
     {
         const auto & task_ = i.value();
-        cout << task_.dump(4) << endl;
         task_t taskorino = make_shared<task>(task_);
         string id = taskorino->id;
         new_tasker.tasks_active[id] = taskorino;

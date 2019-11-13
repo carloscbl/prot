@@ -26,10 +26,9 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     REQUIRE( carlos_->get_name() == "carlos" );
 
     const auto & carlos = user::users["carlos"];
-    carlos->get_tasker().print_out();
+    //carlos->get_tasker().print_out();
     REQUIRE( carlos->get_tasker().empty() == true );
 
-    cout << "----" << endl;
     json qa_request1, qa_request2, qa_request3 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
@@ -42,15 +41,15 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     form_runner fr(carlos, *form);
 
     auto &response = fr.run(qa_request1);
-    cout << response.dump() <<endl;
+    //cout << response.dump() <<endl;
     REQUIRE(response["next_question"] == "Do you have washer?");
 
     auto &response1 = fr.run(qa_request2);
-    cout << response1.dump() <<endl;
+    //cout << response1.dump() <<endl;
     REQUIRE(response1["next_question"] == "How many Kilograms have your washer capacity?");
 
     auto &response2 = fr.run(qa_request3);
-    cout << response2.dump() <<endl;
+    //cout << response2.dump() <<endl;
     REQUIRE(response2["next_question"] == "END");
 
     REQUIRE(carlos->get_tasker().find_task("base_task") != nullptr);
@@ -86,7 +85,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     time_t expected = system_clock::to_time_t(expected_base_task_start);
     time_t expected_2 = system_clock::to_time_t(expected_washer_start_start);
-    cout << "Test:" << endl <<ctime(&base_task_start) << ctime(&expected);
+    //cout << "Test:" << endl <<ctime(&base_task_start) << ctime(&expected);
 
     REQUIRE( base_task_start == expected );
 
@@ -134,15 +133,15 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     form_runner fr(carlos, *form);
 
     auto &response = fr.run(qa_request1);
-    cout << response.dump() <<endl;
+    //cout << response.dump() <<endl;
     REQUIRE(response["next_question"] == "Do you have washer?");
 
     auto &response1 = fr.run(qa_request2);
-    cout << response1.dump() <<endl;
+    //cout << response1.dump() <<endl;
     REQUIRE(response1["next_question"] == "How many Kilograms have your washer capacity?");
 
     auto &response2 = fr.run(qa_request3);
-    cout << response2.dump() <<endl;
+    //cout << response2.dump() <<endl;
     REQUIRE(response2["next_question"] == "Your washer is a industrial one?");
     auto &response3 = fr.run(qa_request4);
     REQUIRE(response3["next_question"] == "END");
@@ -185,7 +184,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
     REQUIRE( carlos->get_tasker().empty() == true );
 
     carlos->get_scheduler().add_single(get_collider(days(1) + hours(2), hours(1)));
-    carlos->get_scheduler().print_out();
+    //carlos->get_scheduler().print_out();
     json qa_request1, qa_request2, qa_request3 ,qa_request4 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "50";
@@ -200,15 +199,15 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
     fr.clear_sessions();
 
     auto &response = fr.run(qa_request1);
-    cout << response.dump() <<endl;
+    //cout << response.dump() <<endl;
     REQUIRE(response["next_question"] == "Do you have washer?");
 
     auto &response1 = fr.run(qa_request2);
-    cout << response1.dump() <<endl;
+    //cout << response1.dump() <<endl;
     REQUIRE(response1["next_question"] == "How many Kilograms have your washer capacity?");
 
     auto &response2 = fr.run(qa_request3);
-    cout << response2.dump() <<endl;
+    //cout << response2.dump() <<endl;
     REQUIRE(response2["next_question"] == "Your washer is a industrial one?");
     auto &response3 = fr.run(qa_request4);
     REQUIRE(response3["next_question"] == "END");
@@ -247,10 +246,10 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
     REQUIRE( carlos_->get_name() == "carlos" );
 
     const auto & carlos = user::users["carlos"];
-    carlos->get_tasker().print_out();
+    //carlos->get_tasker().print_out();
     REQUIRE( carlos->get_tasker().empty() == true );
 
-    cout << "----" << endl;
+    //cout << "----" << endl;
     json qa_request1, qa_request2, qa_request3 ;
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
@@ -258,7 +257,7 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
     const auto & form = form::get_register().at("Washer easer");
 
     carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(22)));
-    carlos->get_scheduler().print_out();
+    //carlos->get_scheduler().print_out();
 
     REQUIRE( form->name == "Washer easer" );
 
@@ -275,9 +274,9 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
     auto &response2 = fr.run(qa_request3);
     //cout << response2.dump() <<endl;
     REQUIRE(response2["next_question"] == "END");
-    cout << "---==__==__==__==__==---" << endl;
-    carlos->get_tasker().print_out();
-    carlos->get_scheduler().print_out();
+    //cout << "---==__==__==__==__==---" << endl;
+    //carlos->get_tasker().print_out();
+    //carlos->get_scheduler().print_out();
     REQUIRE(carlos->get_tasker().find_task("base_task") == nullptr);
     REQUIRE( carlos->get_scheduler().get_task("washer_clean_up") == nullptr);
     
@@ -288,8 +287,8 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
     auto size = carlos->get_scheduler().size();
     REQUIRE( size == 1);
     REQUIRE( carlos->get_tasker().size() == 0 );
-    cout << "FINAL SCHEDULER" << endl;
-    carlos->get_scheduler().print_out();
+    //cout << "FINAL SCHEDULER" << endl;
+    //carlos->get_scheduler().print_out();
 
     carlos->clear();
 }

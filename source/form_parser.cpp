@@ -200,7 +200,7 @@ void answer_branches<T>::enroute(const json &j)
             return;
         }
         const auto &opt = it->second(v, any(this->answer));
-        cout << "the next is: " << opt.value().if_branch << endl;
+        //cout << "the next is: " << opt.value().if_branch << endl;
         if (opt.has_value())
         {
             next_branch_result = opt;
