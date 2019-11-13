@@ -10,6 +10,7 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/source)
 find_package(Threads REQUIRED)
 #include_directories("thirdparty/mongocxx/mongocxx/include")
+#include_directories("thirdparty/mongocxx/mongocxx")
 include_directories("thirdparty/nlohmann_json")
 # NOTE: For this to work, the CMAKE_PREFIX_PATH variable must be set to point to the directory that
 # was used as the argument to CMAKE_INSTALL_PREFIX when building libmongocxx.
@@ -17,15 +18,19 @@ include_directories("thirdparty/nlohmann_json")
 FIND_PACKAGE(libmongocxx REQUIRED)
 
 FIND_PACKAGE(libbsoncxx REQUIRED)
-
 # INCLUDE_DIRECTORIES(${LIBMONGOCXX_INCLUDE_DIR})
-
 # INCLUDE_DIRECTORIES(${LIBBSONCXX_INCLUDE_DIR})
-
-
 INCLUDE_DIRECTORIES("thirdparty/mongocxx/mongocxx/include/mongocxx/v_noabi")
-
 INCLUDE_DIRECTORIES("thirdparty/mongocxx/mongocxx/include/bsoncxx/v_noabi")
+# INCLUDE_DIRECTORIES("thirdparty/mongocxx/mongocxx/include/libmongoc-1.0")
+# INCLUDE_DIRECTORIES("thirdparty/mongocxx/mongocxx/include/libbson-1.0")
+link_directories("thirdparty/mongocxx/mongocxx/lib")
+
+
+
+
+
+
 
 # INCLUDE_DIRECTORIES("/usr/local/include/libmongoc-1.0")
 
