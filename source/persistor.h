@@ -45,9 +45,9 @@ public:
 
 class disk_storage : public persistor{
 private:
-    const path folder = path(path("..") / "persistence");
+    inline static path folder = "../persistence";
 public:
-    disk_storage():persistor(folder.string()){};
+    disk_storage():persistor(this->folder.string()){};
     virtual void save ( const string & index_name, const json & content_file) const noexcept override ;
     virtual void load (const string & index_name, json & content_file) const noexcept;
 };

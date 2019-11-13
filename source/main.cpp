@@ -18,6 +18,10 @@
 #include "request.h"
 #include "test.h"
 #include "persistor.h"
+#include <mongocxx/client.hpp>
+#include <mongocxx/instance.hpp>
+#include <bsoncxx/builder/stream/document.hpp>
+#include <bsoncxx/json.hpp>
 
 
 #define p(X) std::cout << X << std::endl;
@@ -43,11 +47,28 @@ int main(int argc, char const *argv[])
   */
     //////////////////////////////////////////////////////
     //// Single Instances
-    ////////////////////////////////////////////////////// 
+    //////////////////////////////////////////////////////
     // task_lex task_l;
     // task_l.print_out();
     persistor::set_persistor(make_unique<disk_storage>());
-    
+
+    mongocxx::instance inst{};
+    mongocxx::client conn{mongocxx::uri{}};
+
+    bsoncxx::builder::stream::document document{};
+
+    auto collection = conn["testdb"]["testcollection"];
+    document << "hello"
+             << "world";
+
+    collection.insert_one(document.view());
+    auto cursor = collection.find({});
+
+    for (auto &&doc : cursor)
+    {
+        std::cout << bsoncxx::to_json(doc) << std::endl;
+    }
+
     form_collector fc;
     command_processor cp;
     user user_;
@@ -66,9 +87,8 @@ int main(int argc, char const *argv[])
     cp.register_actionable("user", &user_);
     cp.register_actionable("test", &test_);
 
-    ////////////////////////////////////////////////////// 
-    ////////////////////////////////////////////////////// 
-
+    //////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////
 
     //////////////////////////////////////////////////////
     //// COMMANDS ARE NOW PERFORMABLE
@@ -78,13 +98,12 @@ int main(int argc, char const *argv[])
     for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string &s) {
         cp.perform_command("form add -P " + s);
     });
-    
+
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");
 
     //////////////////////////////////////////////////////
     //////////////////////////////////////////////////////
-
 
     vector<string> arg_i(argv + 1, argv + argc);
 

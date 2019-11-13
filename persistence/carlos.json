@@ -6,8 +6,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573578304,
-            "start": 1573574401
+            "end": 1573664704,
+            "start": 1573660801
         },
         "name": "step 1",
         "restrictions": [
@@ -26,8 +26,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573553822,
-            "start": 1573552922
+            "end": 1573640222,
+            "start": 1573639322
         },
         "name": "step 4",
         "restrictions": [
@@ -53,8 +53,8 @@
         },
         "frequency": "some-days",
         "interval": {
-            "end": 1573646643,
-            "start": 1573644723
+            "end": 1573733043,
+            "start": 1573731123
         },
         "name": "step 5",
         "restrictions": [
@@ -80,8 +80,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573545721,
-            "start": 1573545601
+            "end": 1573632121,
+            "start": 1573632001
         },
         "name": "step 2",
         "restrictions": [
@@ -98,8 +98,8 @@
         },
         "frequency": "weekly",
         "interval": {
-            "end": 1573552921,
-            "start": 1573545722
+            "end": 1573639321,
+            "start": 1573632122
         },
         "name": "step 3",
         "restrictions": [
