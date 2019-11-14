@@ -9,9 +9,6 @@ TEST_CASE( "serialization test", "[persistor]" ) {
 
     task_t test_probe = make_shared<task>();
 
-    test_probe->load("test copy");
-
-    
     test_probe->set_name("test");
     test_probe->set_tag("tagg");
     // test_probe->set_restrictions();
