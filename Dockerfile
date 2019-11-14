@@ -12,7 +12,6 @@ RUN apt update && apt install -y \
     libicu-dev \ 
     libmongoc-dev \
     libbson-dev
-    #Still looking fo the correct package
 
 ADD ./ /opt/prot
 WORKDIR /opt/prot

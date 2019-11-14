@@ -85,8 +85,8 @@ public:
     user(); 
     virtual ~user() {}
 
-    tasker &get_tasker() const noexcept { return *tasker_; }
-    scheduler &get_scheduler() const noexcept { return *scheduler_; }
+    inline tasker &get_tasker() const noexcept { return *tasker_; }
+    inline scheduler &get_scheduler() const noexcept { return *scheduler_; }
     void clear(){
         this->get_scheduler().clear();
         this->get_tasker().clear();

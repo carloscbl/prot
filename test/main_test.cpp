@@ -36,7 +36,7 @@ int main(int argc, char *argv[])
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';
     }
-    
+    //http://mongocxx.org/mongocxx-v3/tutorial/
     mongocxx::instance inst{};
     mongocxx::client conn{mongocxx::uri{}};
 

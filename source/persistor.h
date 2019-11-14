@@ -45,7 +45,8 @@ public:
 
 class disk_storage : public persistor{
 private:
-    inline static path folder = "../persistence";
+    //TODO : To be adquired by a env var PERSISTENCE_PATH
+    inline static const path folder = "../persistence";
 public:
     disk_storage():persistor(this->folder.string()){};
     virtual void save ( const string & index_name, const json & content_file) const noexcept override ;
