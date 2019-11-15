@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.10.0)
 
 project(prot)
 
-SET(CMAKE_CXX_FLAGS "-g -Wall -Werror -Wno-unused-parameter -Wno-unused-but-set-variable -std=c++17")
+SET(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -Wno-missing-field-initializers -Wno-unused-parameter -Wno-unused-but-set-variable -std=c++17")
 
 INCLUDE_DIRECTORIES(${CMAKE_CURRENT_BINARY_DIR})
 FIND_PACKAGE( Boost 1.69 COMPONENTS program_options filesystem system REQUIRED )
