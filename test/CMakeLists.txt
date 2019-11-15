@@ -22,7 +22,6 @@ add_executable(test_prot ${TEST_SOURCES})
 target_include_directories(test_prot PUBLIC ${CMAKE_SOURCE_DIR}/source)
 target_include_directories(test_prot PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty)
 TARGET_LINK_LIBRARIES( test_prot LINK_PUBLIC lprot  ${Boost_LIBRARIES})
-target_link_libraries( test_prot PRIVATE mongocxx bsoncxx)
 #TARGET_LINK_LIBRARIES( test_prot )
 #target_include_directories(test_prot PUBLIC ../externals/catch2/)
  

@@ -18,10 +18,6 @@
 #include "request.h"
 #include "test.h"
 #include "persistor.h"
-#include <mongocxx/client.hpp>
-#include <mongocxx/instance.hpp>
-#include <bsoncxx/builder/stream/document.hpp>
-#include <bsoncxx/json.hpp>
 
 
 #define p(X) std::cout << X << std::endl;
@@ -51,23 +47,6 @@ int main(int argc, char const *argv[])
     // task_lex task_l;
     // task_l.print_out();
     persistor::set_persistor(make_unique<disk_storage>());
-
-    mongocxx::instance inst{};
-    mongocxx::client conn{mongocxx::uri{}};
-
-    bsoncxx::builder::stream::document document{};
-
-    auto collection = conn["testdb"]["testcollection"];
-    document << "hello"
-             << "world";
-
-    collection.insert_one(document.view());
-    auto cursor = collection.find({});
-
-    for (auto &&doc : cursor)
-    {
-        std::cout << bsoncxx::to_json(doc) << std::endl;
-    }
 
     form_collector fc;
     command_processor cp;

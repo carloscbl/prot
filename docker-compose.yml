@@ -1,24 +1,16 @@
 version: "3"
 services:
-  adminmongo:
-    image: "mrvautin/adminmongo"
-    ports:
-      - "1234:1234"
-    environment:
-      - HOST=0.0.0.0
-    networks:
-      - internalNetwork
-    depends_on:
-      - "mongo"
-  mongo:
-    image: mongo
-    ports:
-      - "27017:27017"
-    networks:
-      - internalNetwork
+  db:
+    image: mysql
+    command: --default-authentication-plugin=mysql_native_password
     restart: always
-    volumes:
-      - /opt/docker-volumes/mongo/db:/data/db
+    environment:
+      MYSQL_ROOT_PASSWORD: example
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - 8080:8080
 networks:
   internalNetwork:
     external: false

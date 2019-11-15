@@ -23,10 +23,7 @@
 #include "request.h"
 #include "test.h"
 #include <cstdlib>
-#include <mongocxx/client.hpp>
-#include <mongocxx/instance.hpp>
-#include <bsoncxx/builder/stream/document.hpp>
-#include <bsoncxx/json.hpp>
+
 
 int main(int argc, char *argv[])
 {
@@ -36,24 +33,6 @@ int main(int argc, char *argv[])
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';
     }
-    //http://mongocxx.org/mongocxx-v3/tutorial/
-    mongocxx::instance inst{};
-    mongocxx::client conn{mongocxx::uri{}};
-
-    bsoncxx::builder::stream::document document{};
-
-    auto collection = conn["testdb"]["testcollection"];
-    document << "hello"
-             << "world";
-
-    collection.insert_one(document.view());
-    auto cursor = collection.find({});
-
-    for (auto &&doc : cursor)
-    {
-        std::cout << bsoncxx::to_json(doc) << std::endl;
-    }
-
 
     //Its importan launch the program always from prot/build to take the relative paths
     form_collector fc;
