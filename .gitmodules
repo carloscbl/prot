@@ -1,9 +1,9 @@
 [submodule "thirdparty/HowardHinnantDate/date"]
 	path = thirdparty/HowardHinnantDate/date
 	url = https://github.com/HowardHinnant/date.git
-[submodule "thirdparty/sql/sqlpp11"]
-	path = thirdparty/sql/sqlpp11
-	url = https://github.com/rbock/sqlpp11.git
 [submodule "thirdparty/sql/sqlpp11-connector-mysql"]
 	path = thirdparty/sql/sqlpp11-connector-mysql
 	url = https://github.com/rbock/sqlpp11-connector-mysql.git
+[submodule "thirdparty/sql/sqlpp11"]
+	path = thirdparty/sql/sqlpp11
+	url = https://github.com/rbock/sqlpp11.git
