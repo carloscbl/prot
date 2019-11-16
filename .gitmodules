@@ -4,3 +4,7 @@
 [submodule "thirdparty/sql/sqlpp11"]
 	path = thirdparty/sql/sqlpp11
 	url = https://github.com/rbock/sqlpp11-connector-mysql.git
+
+[submodule "thirdparty/sql/sqlpp11-connector-mysql"]
+	path = thirdparty/sql/sqlpp11-connector-mysql
+	url = https://github.com/rbock/sqlpp11-connector-mysql.git
