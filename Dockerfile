@@ -9,9 +9,7 @@ RUN apt update && apt install -y \
     make \
     wget \
     cmake \
-    libicu-dev \ 
-    libmongoc-dev \
-    libbson-dev
+    libmariadbclient-dev
 
 ADD ./ /opt/prot
 WORKDIR /opt/prot

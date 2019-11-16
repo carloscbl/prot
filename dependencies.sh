@@ -1,5 +1,6 @@
 #!/bin/bash
-sudo apt install -y gcc-9 g++-9 make cmake wget tar libbson-dev libmongoc-dev libicu-dev
+sudo snap install cmake --classic
+sudo apt install -y gcc-9 g++-9 make wget tar libmariadbclient-dev
 cd thirdparty
 wget https://dl.bintray.com/boostorg/release/1.69.0/source/boost_1_69_0.tar.gz
 tar -xvf boost_1_69_0.tar.gz
