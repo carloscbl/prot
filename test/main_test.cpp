@@ -23,8 +23,11 @@
 #include "request.h"
 #include "test.h"
 #include <cstdlib>
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/mysql/mysql.h>
+#include "../api/generated/test_prot.h"
 
-
+namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
 {
     // global setup...
@@ -33,6 +36,20 @@ int main(int argc, char *argv[])
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';
     }
+    auto config = std::make_shared<mysql::connection_config>();
+ 	config->user = "root";
+ 	config->database = "test_prot";
+	config->debug = true;
+    config->password = "example";
+    config->host = "127.0.0.1";
+    config->port = 3306;
+	mysql::connection db(config);
+
+	test_prot::Users usrs;
+	for(const auto& row : db.run(sqlpp::select(all_of(usrs)).from(usrs).unconditionally()))
+	{
+		std::cerr << "row.name: " << row.name <<  std::endl;
+	};
 
     //Its importan launch the program always from prot/build to take the relative paths
     form_collector fc;
