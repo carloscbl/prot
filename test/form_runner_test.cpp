@@ -54,7 +54,6 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     REQUIRE(carlos->get_tasker().find_task("base_task") != nullptr);
     
-    const auto & tkr = carlos->get_tasker();
     carlos->get_tasker().save();
     carlos->get_tasker().clear();
     carlos->get_tasker().load("carlos");

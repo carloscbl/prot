@@ -37,12 +37,12 @@ int main(int argc, char *argv[])
         std::cout << "Your PATH is: " << env_p << '\n';
     }
     auto config = std::make_shared<mysql::connection_config>();
- 	config->user = "root";
- 	config->database = "test_prot";
-	config->debug = true;
-    config->password = "example";
-    config->host = "127.0.0.1";
-    config->port = 3306;
+ 	config->user = "root";//from env
+ 	config->database = "test_prot";//from env
+	config->debug = true; //from env
+    config->password = "example"; //from env
+    config->host = "127.0.0.1";//Get from env
+    config->port = 3306;//from env
 	mysql::connection db(config);
 
 	test_prot::Users usrs;

@@ -18,11 +18,15 @@
 #include "request.h"
 #include "test.h"
 #include "persistor.h"
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/mysql/mysql.h>
+#include "../api/generated/test_prot.h"
 
 
 #define p(X) std::cout << X << std::endl;
 
 using namespace std;
+namespace mysql = sqlpp::mysql;
 
 int main(int argc, char const *argv[])
 {
@@ -52,6 +56,22 @@ int main(int argc, char const *argv[])
     command_processor cp;
     user user_;
     tasker tasker_("std");
+    
+    auto config = std::make_shared<mysql::connection_config>();
+ 	config->user = "root";//from env
+ 	config->database = "test_prot";//from env
+	config->debug = true; //from env
+    config->password = "example"; //from env
+    config->host = "127.0.0.1";//Get from env
+    config->port = 3306;//from env
+	mysql::connection db(config);
+
+    test_prot::Users usrs;
+	for(const auto& row : db.run(sqlpp::select(all_of(usrs)).from(usrs).unconditionally()))
+	{
+		std::cerr << "row.name: " << row.name <<  std::endl;
+	};
+
 
     std::vector<std::string> forms_paths;
     forms_paths = fc.get_forms_paths();
