@@ -44,8 +44,11 @@ int main(int argc, char *argv[])
     config->host = "127.0.0.1";//Get from env
     config->port = 3306;//from env
 	mysql::connection db(config);
-
-	test_prot::Users usrs;
+    {
+	    test_prot::Users usrs;
+        db(sqlpp::insert_into(usrs).set(usrs.name = "BeBe"));
+    }
+    test_prot::Users usrs;
 	for(const auto& row : db.run(sqlpp::select(all_of(usrs)).from(usrs).unconditionally()))
 	{
 		std::cerr << "row.name: " << row.name <<  std::endl;
