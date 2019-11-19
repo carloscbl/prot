@@ -1,7 +1,7 @@
 #!/bin/bash
 sudo snap install cmake --classic
 #required a cmake > 3.14
-sudo apt install -y gcc-9 g++-9 make wget tar libmariadbclient-dev
+sudo apt install -y gcc-9 g++-9 make wget tar python3-pip libmariadbclient-dev
 cd thirdparty
 
 if [[ ! -d boost_1_69_0 ]]; then
@@ -41,3 +41,10 @@ snap run cmake -DUSE_MARIADB=1 - -DDATE_INCLUDE_DIR=/usr/local/include/ ..
 make -j 5
 sudo make install
 cd ../../..
+
+# Get deps for python parser
+python3 -m pip install -r ../requirements.txt
+
+# Construct ORM objs
+cd ../api/db_schemas
+python3 /usr/local/bin/sqlpp11-ddl2cpp test_prot.sql ../generated/test_prot test_prot
