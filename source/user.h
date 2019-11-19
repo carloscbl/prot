@@ -24,7 +24,7 @@ struct user_minimal_data
     no one else should have one
 
  */
-class user : public CRUD_actionable<user>
+class user : public CRUD_actionable<user> , public json_serializable<user>
 { //substitute by the final class
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;

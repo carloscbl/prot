@@ -8,6 +8,9 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/mysql/mysql.h>
+#include "../api/generated/test_prot.h"
 using json = nlohmann::json;
 using std::string;
 using std::endl;
@@ -53,11 +56,18 @@ public:
     virtual void load (const string & index_name, json & content_file) const noexcept;
 };
 
-// class mongo_db : public persistor{
-//     mongo_db():persistor(""){};
-//     virtual void save ( const string & index_name, const json & content_file) const noexcept override {
-//         throw std::runtime_error("not implemented");
-//     }
-// };
+namespace mysql = sqlpp::mysql;
+class mysql_db : public persistor{
+    static shared_ptr<mysql::connection_config> get_db_config();
+    mysql_db():persistor(""),db(get_db_config()){
+    };
+
+    mysql::connection db;
+    virtual void save ( const string & index_name, const json & content_file) const noexcept override {
+        
+    }
+    virtual void load (const string & index_name, json & content_file) const noexcept;
+};
+
 
 #endif //PERSISTOR_H
