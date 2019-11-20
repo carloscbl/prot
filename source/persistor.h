@@ -58,6 +58,7 @@ public:
 
 namespace mysql = sqlpp::mysql;
 class mysql_db : public persistor{
+public:
     static shared_ptr<mysql::connection_config> get_db_config();
     mysql_db():persistor(""),db(get_db_config()){
     };
