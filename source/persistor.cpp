@@ -33,7 +33,7 @@ void disk_storage::load (const string & index_name, json & content_file) const n
     input_stream_from_file >> content_file;
 }
 void mysql_db::load (const string & index_name, json & content_file) const noexcept{
-
+    //db()
 }
 
 shared_ptr<mysql::connection_config> mysql_db::get_db_config()

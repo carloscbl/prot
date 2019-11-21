@@ -4,6 +4,7 @@
 #include <set>
 #include "itasker.h"
 #include "task.h"
+#include "test_prot.h"
 
 class taskstory_commit_RAII;
 class tasker;
@@ -22,7 +23,7 @@ struct task_status
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
  */
-class tasker : public itasker , public CRUD_actionable<tasker>, public json_serializable<tasker>
+class tasker : public itasker , public CRUD_actionable<tasker>, public json_serializable<tasker,test_prot::Taskers>
 {
 private:
     friend taskstory_commit_RAII;

@@ -12,6 +12,7 @@
 #include "ischeduler.h"
 #include "scheduler.h"
 #include "form.h"
+#include "test_prot.h"
 
 using namespace std;
 
@@ -24,7 +25,7 @@ struct user_minimal_data
     no one else should have one
 
  */
-class user : public CRUD_actionable<user> , public json_serializable<user>
+class user : public CRUD_actionable<user> , public json_serializable<user,test_prot::Users>
 { //substitute by the final class
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;

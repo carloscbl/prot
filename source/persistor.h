@@ -26,6 +26,7 @@ using std::unique_ptr;
 namespace fs = boost::filesystem;
 using namespace fs;
 
+template<typename T>
 class persistor
 {
 private:
@@ -38,23 +39,23 @@ public:
     persistor(string route_table_or_folder){};
     ~persistor(){};
     static persistor & get_persistor_instance();
-    virtual void save (const string & index_name, const json & content_file) const noexcept = 0;
-    virtual void load (const string & index_name, json & content_file) const noexcept = 0;
+    void save (const string & index_name, const json & content_file) const noexcept;
+    void load (const string & index_name, json & content_file) const noexcept;
     persistor & set_path(string route_table_or_folder);
     static void set_persistor(unique_ptr<persistor> && storage){
         persistor::persistor_instance = move(storage);
     }
 };
 
-class disk_storage : public persistor{
-private:
-    //TODO : To be adquired by a env var PERSISTENCE_PATH
-    inline static const path folder = "../persistence";
-public:
-    disk_storage():persistor(this->folder.string()){};
-    virtual void save ( const string & index_name, const json & content_file) const noexcept override ;
-    virtual void load (const string & index_name, json & content_file) const noexcept;
-};
+// class disk_storage : public persistor{
+// private:
+//     //TODO : To be adquired by a env var PERSISTENCE_PATH
+//     inline static const path folder = "../persistence";
+// public:
+//     disk_storage():persistor(this->folder.string()){};
+//     virtual void save ( const string & index_name, const json & content_file) const noexcept override ;
+//     virtual void load (const string & index_name, json & content_file) const noexcept;
+// };
 
 namespace mysql = sqlpp::mysql;
 class mysql_db : public persistor{
@@ -67,6 +68,7 @@ public:
     virtual void save ( const string & index_name, const json & content_file) const noexcept override {
         
     }
+    template<typename T>
     virtual void load (const string & index_name, json & content_file) const noexcept;
 };
 
