@@ -77,25 +77,25 @@ public:
     ~json_serializable()= default;
     virtual const string & get_name() const noexcept = 0;
     void save(){
-        auto & current_persistor = persistor::get_persistor_instance();
+        auto & current_persistor = persistor<mysql_db>::get_persistor_instance();
         T_prot * downcast_this = static_cast<T_prot*>(this);
         auto name =  downcast_this->get_name();
         if(name.empty()){
             cout << "Cannot store a file with no name" << endl;
             return;
         }
-        current_persistor.save(name +".json" , json(*downcast_this) );
+        current_persistor.save<T_db>(name +".json" , json(*downcast_this) );
     }
     void load(const string & file_name){
-        auto & current_persistor = persistor::get_persistor_instance();
-        T_prot * downcast_this = static_cast<T_prot*>(this);
-        if(file_name.empty()){
-            cout << "Cannot store a file with no name" << endl;
-            return;
-        }
-        json j;
-        current_persistor.load(file_name+".json" , j );
-        from_json(j,*downcast_this);
+        // auto & current_persistor = persistor<disk_storage>::get_persistor_instance();
+        // T_prot * downcast_this = static_cast<T_prot*>(this);
+        // if(file_name.empty()){
+        //     cout << "Cannot store a file with no name" << endl;
+        //     return;
+        // }
+        // json j;
+        // current_persistor.load<T_db>(file_name+".json" , j );
+        // from_json(j,*downcast_this);
     }
 };
 

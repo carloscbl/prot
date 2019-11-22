@@ -5,7 +5,7 @@
 
 
 TEST_CASE( "serialization test", "[persistor]" ) {
-    persistor::set_persistor(make_unique<disk_storage>());
+    persistor<mysql_db>::set_persistor(make_unique<mysql_db>());
 
 
     task_t test_probe = make_shared<task>();
@@ -24,7 +24,7 @@ TEST_CASE( "serialization test", "[persistor]" ) {
 }
 
 TEST_CASE( "serialization test", "[persistor]" ) {
-    persistor::set_persistor(make_unique<mysql_db>());
+    persistor<mysql_db>::set_persistor(make_unique<mysql_db>());
 
 
     
