@@ -39,8 +39,14 @@ public:
     persistor(string route_table_or_folder){};
     ~persistor(){};
     static persistor & get_persistor_instance();
-    void save (const string & index_name, const json & content_file) const noexcept;
+
+    template<typaname Tpersistor, typename Tsubtype>
+    void save (const string & index_name, const json & content_file) const noexcept{
+        this-
+    }
+    template<typaname Tpersistor, typename Tsubtype>
     void load (const string & index_name, json & content_file) const noexcept;
+
     persistor & set_path(string route_table_or_folder);
     static void set_persistor(unique_ptr<persistor> && storage){
         persistor::persistor_instance = move(storage);
@@ -65,11 +71,11 @@ public:
     };
 
     mysql::connection db;
-    virtual void save ( const string & index_name, const json & content_file) const noexcept override {
+    void save ( const string & index_name, const json & content_file) const noexcept {
         
     }
     template<typename T>
-    virtual void load (const string & index_name, json & content_file) const noexcept;
+    void load (const string & index_name, json & content_file) const noexcept;
 };
 
 
