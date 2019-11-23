@@ -31,28 +31,28 @@ namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
 {
     // global setup...
-    persistor<mysql_db>::set_persistor(make_unique<mysql_db>());
+    persistor<disk_storage>::set_persistor(make_unique<disk_storage>());
 
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';
     }
-    auto config = std::make_shared<mysql::connection_config>();
- 	config->user = "root";//from env
- 	config->database = "test_prot";//from env
-	config->debug = true; //from env
-    config->password = "example"; //from env
-    config->host = "127.0.0.1";//Get from env
-    config->port = 3306;//from env
-	mysql::connection db(config);
-    {
-	    test_prot::Users usrs;
-        db(sqlpp::insert_into(usrs).set(usrs.name = "BeBe"));
-    }
-    test_prot::Users usrs;
-	for(const auto& row : db.run(sqlpp::select(all_of(usrs)).from(usrs).unconditionally()))
-	{
-		std::cerr << "row.name: " << row.name <<  std::endl;
-	};
+    // auto config = std::make_shared<mysql::connection_config>();
+ 	// config->user = "root";//from env
+ 	// config->database = "test_prot";//from env
+	// config->debug = true; //from env
+    // config->password = "example"; //from env
+    // config->host = "127.0.0.1";//Get from env
+    // config->port = 3306;//from env
+	// mysql::connection db(config);
+    // {
+	//     test_prot::Users usrs;
+    //     db(sqlpp::insert_into(usrs).set(usrs.name = "BeBe"));
+    // }
+    // test_prot::Users usrs;
+	// for(const auto& row : db.run(sqlpp::select(all_of(usrs)).from(usrs).unconditionally()))
+	// {
+	// 	std::cerr << "row.name: " << row.name <<  std::endl;
+	// };
 
     //Its importan launch the program always from prot/build to take the relative paths
     form_collector fc;

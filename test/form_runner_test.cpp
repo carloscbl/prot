@@ -18,6 +18,7 @@ task_t get_collider(seconds offset_from_today, T_duration duration, string name 
 
 
 TEST_CASE( "test form_runner", "[runner]" ) {
+    persistor<disk_storage>::set_persistor(make_unique<disk_storage>());
   
     user::users["carlos"] = make_shared<user>(user_minimal_data{
         "carlos"

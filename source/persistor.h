@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iomanip>
 #include <iostream>
+#include <variant>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
 #include "../api/generated/test_prot.h"
@@ -15,6 +16,7 @@ using json = nlohmann::json;
 using std::string;
 using std::endl;
 using std::cout;
+using std::variant;
 
 /*design
     this class is intended to be an abstraction of serialization to json,
@@ -26,7 +28,8 @@ using std::unique_ptr;
 namespace fs = boost::filesystem;
 using namespace fs;
 
-template<typename T=void>
+
+template<typename T>
 class persistor
 {
 private:
@@ -39,52 +42,39 @@ public:
     persistor(string route_table_or_folder){};
     ~persistor(){};
     static persistor & get_persistor_instance(){
-        if(!persistor<T>::persistor_instance) {
+        if(!persistor_instance) {
             throw std::runtime_error("not initialized yet?");
         }
-        return *persistor<T>::persistor_instance;
+        return *persistor_instance;
     }
 
     template<typename Tsubtype>
     void save (const string & index_name, const json & content_file) const noexcept{
-        ((T*)this)->template save<Tsubtype>(index_name, content_file); //<Tsubtype>
+        ((T*)this)->template save<Tsubtype>(index_name, content_file); 
     }
     template<typename Tsubtype>
     void load (const string & index_name, json & content_file) const noexcept{
-        ((T*)this)->template load<Tsubtype>(index_name, content_file); //<Tsubtype>
+        ((T*)this)->template load<Tsubtype>(index_name, content_file); 
     }
 
     persistor & set_path(string route_table_or_folder);
     static void set_persistor(unique_ptr<persistor> && storage){
-        persistor::persistor_instance = move(storage);
+        persistor_instance = move(storage);
     }
 };
 
-// class disk_storage : public persistor<disk_storage>{
-// private:
-//     //TODO : To be adquired by a env var PERSISTENCE_PATH
-//     inline static const path folder = "../persistence";
-// public:
-//     disk_storage():persistor(this->folder.string()){};
-//     template<typename T>
-//     void save ( const string & index_name, const json & content_file) const noexcept ;
-//     template<typename T>
-//     void load (const string & index_name, json & content_file) const noexcept;
-// };
+class disk_storage : public persistor<disk_storage>{
+private:
+    //TODO : To be adquired by a env var PERSISTENCE_PATH
+    inline static const path folder = "../persistence";
+public:
+    disk_storage():persistor(this->folder.string()){};
+    template<typename Tsubtype>
+    void save ( const string & index_name, const json & content_file) const noexcept ;
+    template<typename Tsubtype>
+    void load (const string & index_name, json & content_file) const noexcept;
+};
 
-// template<typename T>
-// template<typename Tsubtype>
-// void persistor<T>::save (const string & index_name, const json & content_file) const noexcept
-// {
-//     ((T*)this)->save<Tsubtype>(index_name, content_file); //<Tsubtype>
-// }
-
-// template<typename T>
-// template<typename Tsubtype>
-// void persistor<T>::load (const string & index_name, json & content_file) const noexcept
-// {
-//     ((T*)this)->load<Tsubtype>(index_name, content_file); //<Tsubtype>
-// }
 
 namespace mysql = sqlpp::mysql;
 class mysql_db : public persistor<mysql_db>{
@@ -102,6 +92,10 @@ public:
     void load (const string & index_name, json & content_file) const noexcept{
         cout << "aaa" << endl;
     }
+};
+
+class persistor_instance{
+    inline static unique_ptr<variant<persistor<mysql_db>,persistor<disk_storage>>> m_persistor_instance;
 };
 
 

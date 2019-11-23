@@ -23,11 +23,11 @@ TEST_CASE( "serialization test", "[persistor]" ) {
 
 }
 
-TEST_CASE( "serialization test", "[persistor]" ) {
-    persistor<mysql_db>::set_persistor(make_unique<mysql_db>());
+// TEST_CASE( "serialization test", "[persistor]" ) {
+//     persistor<mysql_db>::set_persistor(make_unique<mysql_db>());
 
 
     
-    REQUIRE(true);
+//     REQUIRE(true);
 
-}
+// }
