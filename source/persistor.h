@@ -12,7 +12,7 @@
 #include <functional>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
-#include "../api/generated/test_prot.h"
+#include "test_prot.h"
 using json = nlohmann::json;
 using std::string;
 using std::endl;
@@ -109,10 +109,13 @@ public:
     template<typename Tsubtype>
     void load (const string & index_name, json & content_file) noexcept{
         Tsubtype table;
-        // for(const auto& row : db.run(sqlpp::select(all_of(table)).from(table).unconditionally()))
-        // {
-        // 	std::cerr << "row.name: " << row.name <<  std::endl;
-        // };
+        test_prot::Users usr;
+        usr.
+        for(const auto& row : db.run(sqlpp::select(all_of(table)).from(table).unconditionally()))
+        {
+            row
+        	std::cerr << "row.name: " << row.name <<  std::endl;
+        };
         cout << "load" << endl;
     }
 };
