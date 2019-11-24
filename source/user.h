@@ -13,8 +13,10 @@
 #include "scheduler.h"
 #include "form.h"
 #include "test_prot.h"
+#include "json.hpp"
 
 using namespace std;
+using nlohmann::json;
 
 struct user_minimal_data
 {
@@ -78,6 +80,7 @@ private:
         //{'P', &form::set_path},
     };
     void init();
+    friend void from_json(const nlohmann::json& ref_json, user& new_user);
 
 public:
     map<string,form*> instaled_forms; // List all the forms for a user
@@ -96,5 +99,7 @@ public:
     const string &get_name() const noexcept { return minimal_data.username; }
     user & get_user(const string & user_) noexcept { return static_cast<user&>(*users[user_]); }
 };
+void to_json(nlohmann::json& new_json, const user& ref_task);
+void from_json(const nlohmann::json& ref_json, user& new_user);
 
 #endif //USER_H

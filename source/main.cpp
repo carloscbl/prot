@@ -50,7 +50,8 @@ int main(int argc, char const *argv[])
     //////////////////////////////////////////////////////
     // task_lex task_l;
     // task_l.print_out();
-    persistor<mysql_db>::set_persistor(make_unique<mysql_db>());
+    
+    persistor_instance::set_instance(make_unique<mysql_db>());
 
     form_collector fc;
     command_processor cp;

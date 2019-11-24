@@ -31,7 +31,7 @@ namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
 {
     // global setup...
-    persistor<disk_storage>::set_persistor(make_unique<disk_storage>());
+    persistor_instance::set_instance(make_unique<disk_storage>());
 
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';

@@ -12,3 +12,13 @@ void user::init(){
     tasker_ = make_shared<tasker>(this->get_name());
     taskers_global[this->minimal_data.username] = tasker_;
 }
+
+void to_json(nlohmann::json& new_json, const user& ref_task){
+    new_json = nlohmann::json{
+    {"name",        ref_task.get_name()},
+    };
+}
+
+void from_json(const nlohmann::json& ref_json, user& new_user){
+    ref_json.at("description").get_to(new_user.minimal_data.username);
+}

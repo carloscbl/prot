@@ -7,30 +7,7 @@
     
 // }
 
-template<typename T>
-persistor<T> & persistor<T>::set_path(string route_table_or_folder){
-    this->m_path = route_table_or_folder;
-    return *this;
-}
 
-template<typename Tsubtype>
-void disk_storage::save ( const string & index_name, const json & content_file) const noexcept {
-    if (!is_directory(folder))
-    {
-        boost::filesystem::create_directory(folder);
-    }
-    //cout << content_file.dump(4) << endl;
-    string file_ = folder.string() + "/" + index_name;
-    std::ofstream output_stream_to_file(file_, std::ofstream::trunc);
-    output_stream_to_file << std::setw(4) << content_file << std::endl;
-}
-
-template<typename Tsubtype>
-void disk_storage::load (const string & index_name, json & content_file) const noexcept
-{
-    std::ifstream input_stream_from_file(folder.string() + "/" + index_name);
-    input_stream_from_file >> content_file;
-}
 
 // template<typename Tsubtype>
 // void mysql_db::load (const string & index_name, json & content_file) const noexcept{
