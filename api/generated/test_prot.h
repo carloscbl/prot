@@ -376,12 +376,29 @@ namespace test_prot
             const T& operator()() const { return id; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+    };
+    struct Json
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "json";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T json;
+            T& operator()() { return json; }
+            const T& operator()() const { return json; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::can_be_null>;
     };
   } // namespace Users_
 
   struct Users: sqlpp::table_t<Users,
-               Users_::Id>
+               Users_::Id,
+               Users_::Json>
   {
     struct _alias_t
     {
