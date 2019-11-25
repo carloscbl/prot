@@ -25,13 +25,12 @@
 #include <cstdlib>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
-#include "../api/generated/test_prot.h"
+#include "test_prot.h"
 
 namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
 {
     // global setup...
-    persistor_instance::set_instance(make_unique<disk_storage>());
 
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';

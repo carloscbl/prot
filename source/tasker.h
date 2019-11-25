@@ -23,7 +23,7 @@ struct task_status
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
  */
-class tasker : public itasker , public CRUD_actionable<tasker>, public json_serializable<tasker,test_prot::Taskers>
+class tasker : public itasker , public CRUD_actionable<tasker>, public json_serializable<tasker>
 {
 private:
     friend taskstory_commit_RAII;

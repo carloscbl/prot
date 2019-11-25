@@ -18,7 +18,6 @@ task_t get_collider(seconds offset_from_today, T_duration duration, string name 
 
 
 TEST_CASE( "test form_runner", "[runner]" ) {
-    persistor_instance::set_instance(make_unique<disk_storage>());
   
     user::users["carlos"] = make_shared<user>(user_minimal_data{
         "carlos"
@@ -54,10 +53,6 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     REQUIRE(response2["next_question"] == "END");
 
     REQUIRE(carlos->get_tasker().find_task("base_task") != nullptr);
-    
-    // carlos->get_tasker().save();
-    // carlos->get_tasker().clear();
-    // carlos->get_tasker().load("carlos");
 
     time_point now = system_clock::now();
     const time_point day_start = floor<days>(now);

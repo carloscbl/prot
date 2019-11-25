@@ -1,21 +1,6 @@
 #include "persistor.h"
 
 
-// template<typename T>
-// persistor<T> & persistor<T>::get_persistor_instance()
-// {
-    
-// }
-
-
-
-// template<typename Tsubtype>
-// void mysql_db::load (const string & index_name, json & content_file) const noexcept{
-//     //db()
-// }
-
-
-
 shared_ptr<mysql::connection_config> mysql_db::get_db_config()
 {
     auto config = std::make_shared<mysql::connection_config>();

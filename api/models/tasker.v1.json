@@ -5,11 +5,7 @@
     "tasks": {
       "type": "array",
       "items": {
-        "anyOf": [
-          {
-            "$ref": "./task.v1.json"
-          }
-        ]
+        "$ref": "./task.v1.json"
       }
     }
   }

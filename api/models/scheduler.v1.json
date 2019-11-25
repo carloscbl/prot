@@ -13,9 +13,6 @@
       "items": {
         "$ref": "./task.v1.json"
       }
-    },
-    "user": {
-      "type": "string"
     }
   }
 }

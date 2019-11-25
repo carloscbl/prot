@@ -69,7 +69,7 @@ public:
 
 };
 
-template<typename T_prot, typename T_db>
+template<typename T_prot>
 class json_serializable
 {
 public:
@@ -83,7 +83,7 @@ public:
             cout << "Cannot store a file with no name" << endl;
             return;
         }
-        persistor_instance::save<T_db>(name +".json" , json(*downcast_this) );
+        //persistor_instance::save<T_db>(name +".json" , json(*downcast_this) );
     }
     void load(const string & file_name){
         T_prot * downcast_this = static_cast<T_prot*>(this);
@@ -92,7 +92,7 @@ public:
             return;
         }
         json j;
-        persistor_instance::load<T_db>(file_name+".json" , j );
+        //persistor_instance::load<T_db>(file_name+".json" , j );
         from_json(j,*downcast_this);
     }
 };
