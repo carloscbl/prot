@@ -1,13 +1,13 @@
 
-build/*
-cmake-build-debug/*
-.*/
-thirdparty/boost*
-persistence/*
+/build/*
+/cmake-build-debug/*
+/.*/
+/thirdparty/boost*
+/persistence/*
 
-Testing/*
+/Testing/*
 
-!.vscode/launch.json
-.vscode/*
-!.vscode/tasks.json
-!.vscode/extensions.json
+!/.vscode/launch.json
+/.vscode/*
+!/.vscode/tasks.json
+!/.vscode/extensions.json
