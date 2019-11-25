@@ -28,19 +28,14 @@ using std::unique_ptr;
 namespace mysql = sqlpp::mysql;
 
 class mysql_db {
-    static unique_ptr<mysql_db> current_db;
+private:
+    inline static unique_ptr<mysql_db> current_db;
 public:
     static shared_ptr<mysql::connection_config> get_db_config();
     mysql_db():db(get_db_config()){
     };
     mysql::connection db;
-    inline static mysql_db & get_db_lazy(){
-        if(!current_db){
-            current_db = make_unique<mysql_db>();
-            return *current_db;
-        }
-        return *current_db;
-    }
+    static mysql_db & get_db_lazy();
     // template<typename Tsubtype>
     // void save ( const string & index_name, const json & content_file) noexcept {
     //     cout << "save" << endl;

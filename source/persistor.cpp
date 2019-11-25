@@ -1,5 +1,11 @@
 #include "persistor.h"
 
+mysql_db & mysql_db::get_db_lazy(){
+    if(!mysql_db::current_db){
+        mysql_db::current_db = std::make_unique<mysql_db>();
+    }
+    return *mysql_db::current_db;
+}
 
 shared_ptr<mysql::connection_config> mysql_db::get_db_config()
 {

@@ -15,8 +15,8 @@
 #include "test_prot.h"
 #include "json.hpp"
 
-using namespace std;
 using nlohmann::json;
+using namespace std;
 
 struct user_minimal_data
 {

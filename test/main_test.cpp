@@ -26,6 +26,8 @@
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
 #include "test_prot.h"
+#include "trace_bullet.hpp"
+
 
 namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
@@ -35,6 +37,8 @@ int main(int argc, char *argv[])
     if(const char* env_p = std::getenv("PATH")){
         std::cout << "Your PATH is: " << env_p << '\n';
     }
+    
+    fill_db();
     // auto config = std::make_shared<mysql::connection_config>();
  	// config->user = "root";//from env
  	// config->database = "test_prot";//from env
