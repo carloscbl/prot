@@ -36,6 +36,15 @@ CREATE TABLE `forms` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `forms`
+--
+
+LOCK TABLES `forms` WRITE;
+/*!40000 ALTER TABLE `forms` DISABLE KEYS */;
+/*!40000 ALTER TABLE `forms` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `schedulers`
 --
 
@@ -51,6 +60,15 @@ CREATE TABLE `schedulers` (
   CONSTRAINT `fk_schedulers_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `schedulers`
+--
+
+LOCK TABLES `schedulers` WRITE;
+/*!40000 ALTER TABLE `schedulers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `schedulers` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `taskers`
@@ -70,6 +88,15 @@ CREATE TABLE `taskers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `taskers`
+--
+
+LOCK TABLES `taskers` WRITE;
+/*!40000 ALTER TABLE `taskers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `taskers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tasks`
 --
 
@@ -82,6 +109,15 @@ CREATE TABLE `tasks` (
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `tasks`
+--
+
+LOCK TABLES `tasks` WRITE;
+/*!40000 ALTER TABLE `tasks` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tasks` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `tasks_schedulers`
@@ -101,6 +137,15 @@ CREATE TABLE `tasks_schedulers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `tasks_schedulers`
+--
+
+LOCK TABLES `tasks_schedulers` WRITE;
+/*!40000 ALTER TABLE `tasks_schedulers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tasks_schedulers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `tasks_taskers`
 --
 
@@ -118,6 +163,15 @@ CREATE TABLE `tasks_taskers` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `tasks_taskers`
+--
+
+LOCK TABLES `tasks_taskers` WRITE;
+/*!40000 ALTER TABLE `tasks_taskers` DISABLE KEYS */;
+/*!40000 ALTER TABLE `tasks_taskers` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `users`
 --
 
@@ -125,11 +179,21 @@ DROP TABLE IF EXISTS `users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `json` json DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users`
+--
+
+LOCK TABLES `users` WRITE;
+/*!40000 ALTER TABLE `users` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `users_forms`
@@ -147,6 +211,15 @@ CREATE TABLE `users_forms` (
   CONSTRAINT `users_forms_ibfk_2` FOREIGN KEY (`idform`) REFERENCES `forms` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `users_forms`
+--
+
+LOCK TABLES `users_forms` WRITE;
+/*!40000 ALTER TABLE `users_forms` DISABLE KEYS */;
+/*!40000 ALTER TABLE `users_forms` ENABLE KEYS */;
+UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -157,4 +230,4 @@ CREATE TABLE `users_forms` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-24 21:04:49
+-- Dump completed on 2019-11-25 20:42:39
