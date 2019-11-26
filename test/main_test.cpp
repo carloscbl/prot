@@ -38,7 +38,7 @@ int main(int argc, char *argv[])
         std::cout << "Your PATH is: " << env_p << '\n';
     }
     
-    fill_db();
+    
     // auto config = std::make_shared<mysql::connection_config>();
  	// config->user = "root";//from env
  	// config->database = "test_prot";//from env
@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
         cp.perform_command("form add -P " + s);
     });
 
+    fill_db();
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");
 
