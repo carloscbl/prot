@@ -88,6 +88,7 @@ int main(int argc, char *argv[])
     });
 
     fill_db();
+    join();
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");
 
