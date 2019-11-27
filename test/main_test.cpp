@@ -87,6 +87,7 @@ int main(int argc, char *argv[])
         cp.perform_command("form add -P " + s);
     });
 
+    new_user();
     fill_db();
     join();
     //// DEFAULT USER
