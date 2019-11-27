@@ -27,6 +27,9 @@
 #include <sqlpp11/mysql/mysql.h>
 #include "test_prot.h"
 #include "trace_bullet.hpp"
+#include "json.hpp"
+
+using nlohmann::json;
 
 
 namespace mysql = sqlpp::mysql;
@@ -87,8 +90,8 @@ int main(int argc, char *argv[])
         cp.perform_command("form add -P " + s);
     });
 
-    new_user();
-    fill_db();
+    new_user("carloscbl", json(R"({"username":"carloscbl"})"));
+    //fill_db();
     join();
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");

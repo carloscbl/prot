@@ -378,6 +378,22 @@ namespace test_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
     };
+    struct Username
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "username";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T username;
+            T& operator()() { return username; }
+            const T& operator()() const { return username; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
+    };
     struct Json
     {
       struct _alias_t
@@ -398,6 +414,7 @@ namespace test_prot
 
   struct Users: sqlpp::table_t<Users,
                Users_::Id,
+               Users_::Username,
                Users_::Json>
   {
     struct _alias_t
