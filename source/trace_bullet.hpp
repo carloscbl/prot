@@ -2,33 +2,41 @@
 #define TRACE_BULLET_H
 #include <string>
 #include <map>
+#include <optional>
+#include <functional>
 #include "persistor.h"
 #include "user.h"
 #include "json.hpp"
 
 using nlohmann::json;
 using std::string;
+using std::optional;
+using std::function;
 
 //This is not supported directly by the library, and sql syntax is specific
 //Sparse things to support
 /*
-new user
-get user
+1 new user OK
+2 get user OK
 
-CRUD form
+3 CRUD form
 
-new instalation
-user uninstall
+4 new instalation
+5 user uninstall
 
-CRUD tasks
-get tasks in interval
+6 CRUD tasks
+7 get tasks in interval
 
-new questionary session
-get/resume session
-store responded answers and tag for bigdata
+9 new questionary session
+10 get/resume session
+11 store responded answers and tag for bigdata
 
 get user tasker scheduler and tasks asociations
 */
+
+unique_ptr<form> create_form( json valid_form ){
+    auto & db = mysql_db::get_db_lazy().db;
+}
 
 void read_db_json(){
     auto & db = mysql_db::get_db_lazy().db;
@@ -44,11 +52,20 @@ void read_db_json(){
     }
 }
 
+
+template<typename T>
+bool gen_exists(string unique_val, std::function<string(T const&)> data_member_accessor){
+    auto & db = mysql_db::get_db_lazy().db;
+    T table;
+    if (!db(select(table.json).from(table).where( data_member_accessor(table) == unique_val )).empty()){
+        return false; //Already exists;
+    }
+    return true;
+}
+
 bool user_exists(string username){
     auto & db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
-    //if (db(select(count(t.alpha)).from(t).where(true)).front().count > 0) 
-    // if (db(select(exists(select(t.alpha).from(t).where(true)))).front().exists)
     if (!db(select(usr.json).from(usr).where(usr.username == username )).empty()){
         return false; //Already exists;
     }
@@ -56,20 +73,38 @@ bool user_exists(string username){
 }
 
 //This class is intended to advance needs until they are correctly categorized
-bool new_user(string username, json js){
+unique_ptr<user> new_user(string username, json js){
+    using test_prot::Users;
+    function<string(test_prot::Users)> data_member = &Users::username;
+    gen_exists<test_prot::Users>(username, data_member);
     if(!user_exists(username)){
-        return false;
+        return nullptr;
     }
 
     auto & db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
-    const auto& row = db(sqlpp::select(all_of(usr)).from(usr).unconditionally().limit(1U));
     
-    user us;
+    auto us = make_unique<user>();
     json j = {{"username","carloscbl"}};
-    from_json(j,us);
-    db(insert_into(usr).set( usr.username = username, usr.json = json(us).dump()));
+    from_json(j, *us);
+    db(insert_into(usr).set( usr.username = username, usr.json = json(*us).dump()));
+    return us;
 }
+
+unique_ptr<user> get_user(string username){
+    if(!user_exists(username)){
+        return nullptr;
+    }
+    auto & db = mysql_db::get_db_lazy().db;
+    test_prot::Users usr;
+    const auto& row = db(sqlpp::select(all_of(usr)).from(usr).unconditionally().limit(1U)).front();
+
+    json juser ( row.json );
+    auto us = make_unique<user>();
+    from_json(juser, *us);
+    return us;
+}
+
 
 // void fill_db(){
 //     auto & db = mysql_db::get_db_lazy().db;
@@ -105,17 +140,6 @@ void join(){
     for(const auto & row : db(select(all_of(usr)).from(usr.join(form_).on(usr.id == form_.developer)).unconditionally())){
         cout << row.id << " " << row.json << endl;
     }
-}
-
-
-
-void load_user_from_db(string username){
-    auto & db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    for(const auto& row : db.run(sqlpp::select(all_of(usr)).from(usr).unconditionally()))
-    {
-        std::cerr << "row.json: " << row.json <<  std::endl;
-    };
 }
 
 
