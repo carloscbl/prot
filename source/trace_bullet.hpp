@@ -54,10 +54,16 @@ void read_db_json(){
 
 
 template<typename T>
-bool gen_exists(string unique_val, std::function<string(T const&)> data_member_accessor){
+auto get_data_member = [](){};
+
+template<>
+auto get_data_member<test_prot::Users> = [](){ return test_prot::Users{}.username; };
+
+template<typename T>
+bool gen_exists(string unique_val){
     auto & db = mysql_db::get_db_lazy().db;
     T table;
-    if (!db(select(table.json).from(table).where( data_member_accessor(table) == unique_val )).empty()){
+    if (!db(select(table.json).from(table).where( get_data_member<T>() == unique_val )).empty()){
         return false; //Already exists;
     }
     return true;
@@ -71,12 +77,13 @@ bool user_exists(string username){
     }
     return true;
 }
-
 //This class is intended to advance needs until they are correctly categorized
 unique_ptr<user> new_user(string username, json js){
     using test_prot::Users;
-    function<string(test_prot::Users)> data_member = &Users::username;
-    gen_exists<test_prot::Users>(username, data_member);
+
+
+    // function<string(test_prot::Users)> data_member = &Users::username;
+    gen_exists<test_prot::Users>(username);
     if(!user_exists(username)){
         return nullptr;
     }
