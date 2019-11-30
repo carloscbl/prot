@@ -26,18 +26,18 @@ namespace test_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
     };
-    struct FormJson
+    struct Json
     {
       struct _alias_t
       {
-        static constexpr const char _literal[] =  "form_json";
+        static constexpr const char _literal[] =  "json";
         using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
         template<typename T>
         struct _member_t
           {
-            T formJson;
-            T& operator()() { return formJson; }
-            const T& operator()() const { return formJson; }
+            T json;
+            T& operator()() { return json; }
+            const T& operator()() const { return json; }
           };
       };
       using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::require_insert>;
@@ -78,7 +78,7 @@ namespace test_prot
 
   struct Forms: sqlpp::table_t<Forms,
                Forms_::Id,
-               Forms_::FormJson,
+               Forms_::Json,
                Forms_::Name,
                Forms_::Developer>
   {

@@ -12,45 +12,17 @@
 #include "form_reader.h"
 #include "json.hpp"
 
-#include "CRUD_actionable.h"
 
 using namespace std;
+using nlohmann::json;
 
 //the form class stores the form in raw internally and process it to be able to present it externally
-class form : public CRUD_actionable<form>
+class form 
 {
 private:
     using form_register = map<string, unique_ptr<form>>;
     inline static form_register forms;
-    //Components
-    unique_ptr<form_reader> json_reader;
-
-    //This map, handles the posible actions to be performed from outside commands
-    //Positional params
-    CRUD_plus_actions_map form_map{
-        {"add", [this](map<char, string> s) {
-             //Creates a new form and store it with index id and passing a states machine graph
-             unique_ptr<form> form_ = make_unique<form>();
-             form_->add(s);
-             form::forms[form_->name] = move(form_);
-         }},
-        {"remove", [](map<char, string> s) {}},
-        {"update", [](map<char, string> s) {}},
-        {"list", [](map<char, string> s) {
-             for (const auto &form : form::forms)
-             {
-                 cout << form.second->name << endl;
-             }
-         }},
-    };
-    //Modulator params like -h -n -P
-    map_local_functions setters{
-        {'P', &form::set_path},
-    };
-
-    void set_path(const string &s);
-    void pipelined_json_data_setter(const string &json_path);
-
+    json m_form;
 public:
     bool ready_to_compute = false;
     string id;
@@ -61,11 +33,12 @@ public:
     form(const std::string &path);
     virtual ~form();
 
-    const json &get_json() const noexcept { return json_reader->get_json(); }
+    const json &get_json() const noexcept { return m_form; }
 
     static inline const form_register &get_register() noexcept { return form::forms; }
 
     static const string get_form_name(const json &j) { return j["form"]["form.name"].get<string>(); }
 };
+void from_json(const nlohmann::json& ref_json, form& new_form);
 
 #endif //FORM_H

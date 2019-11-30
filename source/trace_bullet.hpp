@@ -34,8 +34,43 @@ using std::function;
 get user tasker scheduler and tasks asociations
 */
 
-unique_ptr<form> create_form( json valid_form ){
+template<typename T>
+auto get_data_member = [](){};
+
+template<>
+auto get_data_member<test_prot::Users> = [](){ return test_prot::Users{}.username; };
+template<>
+auto get_data_member<test_prot::Forms> = [](){ return test_prot::Forms{}.name; };
+
+
+template<typename T>
+bool gen_exists(string unique_val){
     auto & db = mysql_db::get_db_lazy().db;
+    T table;
+    if (!db(select(table.json).from(table).where( get_data_member<T>() == unique_val )).empty()){
+        return false; //Already exists;
+    }
+    return true;
+}
+
+unique_ptr<form> create_form( const json & valid_form ){
+    using test_prot::Forms;
+    if(!gen_exists<test_prot::Forms>(valid_form["form"]["form.name"].get<string>() )){
+        return nullptr;
+    }
+
+    auto & db = mysql_db::get_db_lazy().db;
+
+    test_prot::Forms form_;
+    auto protform = make_unique<form>();
+    from_json( valid_form, *protform);
+    
+    db(insert_into(form_).set( 
+        form_.json = valid_form.dump(),
+        form_.name = valid_form["form"]["form.name"].get<string>(),
+        form_.developer = 1
+    ));
+    return protform;
 }
 
 void read_db_json(){
@@ -52,45 +87,16 @@ void read_db_json(){
     }
 }
 
-
-template<typename T>
-auto get_data_member = [](){};
-
-template<>
-auto get_data_member<test_prot::Users> = [](){ return test_prot::Users{}.username; };
-
-template<typename T>
-bool gen_exists(string unique_val){
-    auto & db = mysql_db::get_db_lazy().db;
-    T table;
-    if (!db(select(table.json).from(table).where( get_data_member<T>() == unique_val )).empty()){
-        return false; //Already exists;
-    }
-    return true;
-}
-
-bool user_exists(string username){
-    auto & db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    if (!db(select(usr.json).from(usr).where(usr.username == username )).empty()){
-        return false; //Already exists;
-    }
-    return true;
-}
 //This class is intended to advance needs until they are correctly categorized
 unique_ptr<user> new_user(string username, json js){
     using test_prot::Users;
-
-
-    // function<string(test_prot::Users)> data_member = &Users::username;
-    gen_exists<test_prot::Users>(username);
-    if(!user_exists(username)){
+    if(!gen_exists<test_prot::Users>(username)){
         return nullptr;
     }
 
     auto & db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
-    
+
     auto us = make_unique<user>();
     json j = {{"username","carloscbl"}};
     from_json(j, *us);
@@ -99,7 +105,7 @@ unique_ptr<user> new_user(string username, json js){
 }
 
 unique_ptr<user> get_user(string username){
-    if(!user_exists(username)){
+    if(!gen_exists<test_prot::Users>(username)){
         return nullptr;
     }
     auto & db = mysql_db::get_db_lazy().db;
@@ -111,33 +117,6 @@ unique_ptr<user> get_user(string username){
     from_json(juser, *us);
     return us;
 }
-
-
-// void fill_db(){
-//     auto & db = mysql_db::get_db_lazy().db;
-//     test_prot::Users usr;
-    
-//     user us;
-//     json j = {{"username","carloscbl"}};
-//     from_json(j,us);
-//     db(insert_into(usr).set( usr.json = json(us).dump()));
-
-//     //
-//     test_prot::Forms form_;
-//     // //uint64_t id = usr.id;
-//     json jform = form::get_register().begin()->second->get_json();
-//     db(insert_into(form_).set( 
-//         form_.formJson = jform.dump(),
-//         form_.name = jform["form"]["form.name"].get<string>(),
-//         form_.developer = 1
-//     ));
-//     // test_prot::Users usrs;
-// 	for(const auto& row : db.run(sqlpp::select(all_of(form_)).from(form_).unconditionally().limit(1U))){
-//         int id2 =row.id;
-//         cout << row.id << " " << row.name << " " << row.developer << endl;
-//     }
-// }
-
 
 //https://github.com/rbock/sqlpp11/wiki/Select
 void join(){

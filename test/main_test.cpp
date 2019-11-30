@@ -91,6 +91,7 @@ int main(int argc, char *argv[])
     });
 
     new_user("carloscbl", json(R"({"username":"carloscbl"})"));
+    create_form(form::get_register().begin()->second->get_json());
     //fill_db();
     join();
     //// DEFAULT USER
