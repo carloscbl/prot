@@ -33,10 +33,10 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
     
-    const auto & form = form::get_register().at("Washer easer");
+    const auto & form = form::get_forms_register().at("Washer easer");
 
 
-    REQUIRE( form->name == "Washer easer" );
+    REQUIRE( form->get_form_name() == "Washer easer" );
 
     form_runner fr(carlos, *form);
 
@@ -120,10 +120,10 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     qa_request3["answer"] = "50";
     qa_request4["answer"] = "yes";
     
-    const auto & form = form::get_register().at("Washer easer");
+    const auto & form = form::get_forms_register().at("Washer easer");
 
 
-    REQUIRE( form->name == "Washer easer" );
+    REQUIRE( form->get_form_name() == "Washer easer" );
 
     form_runner fr(carlos, *form);
 
@@ -185,10 +185,10 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
     qa_request3["answer"] = "50";
     qa_request4["answer"] = "yes";
     
-    const auto & form = form::get_register().at("Washer easer");
+    const auto & form = form::get_forms_register().at("Washer easer");
 
 
-    REQUIRE( form->name == "Washer easer" );
+    REQUIRE( form->get_form_name() == "Washer easer" );
 
     form_runner fr(carlos, *form);
     fr.clear_sessions();
@@ -249,12 +249,12 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
     qa_request2["answer"] = "yes";
     qa_request3["answer"] = "5";
     
-    const auto & form = form::get_register().at("Washer easer");
+    const auto & form = form::get_forms_register().at("Washer easer");
 
     carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(22)));
     //carlos->get_scheduler().print_out();
 
-    REQUIRE( form->name == "Washer easer" );
+    REQUIRE( form->get_form_name() == "Washer easer" );
 
     form_runner fr(carlos, *form);
 

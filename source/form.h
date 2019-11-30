@@ -9,7 +9,6 @@
 #include <map>
 #include <functional>
 #include <memory>
-#include "form_reader.h"
 #include "json.hpp"
 
 
@@ -22,23 +21,18 @@ class form
 private:
     using form_register = map<string, unique_ptr<form>>;
     inline static form_register forms;
-    json m_form;
+    const json m_form;
 public:
-    bool ready_to_compute = false;
-    string id;
-    string name;                   //name of the form
-    map<string, string> taskstory; //The taskstory handles all the posible commands for this form
 
-    form();
-    form(const std::string &path);
+    form( const json & valid_form );
     virtual ~form();
 
     const json &get_json() const noexcept { return m_form; }
 
-    static inline const form_register &get_register() noexcept { return form::forms; }
+    static inline const form_register &get_forms_register() noexcept { return form::forms; }
 
     static const string get_form_name(const json &j) { return j["form"]["form.name"].get<string>(); }
+    const string get_form_name() const { return m_form["form"]["form.name"].get<string>(); }
 };
-void from_json(const nlohmann::json& ref_json, form& new_form);
 
 #endif //FORM_H

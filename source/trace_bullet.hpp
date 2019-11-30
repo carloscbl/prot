@@ -53,24 +53,22 @@ bool gen_exists(string unique_val){
     return true;
 }
 
-unique_ptr<form> create_form( const json & valid_form ){
+string create_form( const json & valid_form ){
     using test_prot::Forms;
-    if(!gen_exists<test_prot::Forms>(valid_form["form"]["form.name"].get<string>() )){
-        return nullptr;
+    if(!gen_exists<test_prot::Forms>( form::get_form_name(valid_form) )){
+        return string();
     }
 
     auto & db = mysql_db::get_db_lazy().db;
 
     test_prot::Forms form_;
-    auto protform = make_unique<form>();
-    from_json( valid_form, *protform);
-    
+    form protform (valid_form);
     db(insert_into(form_).set( 
         form_.json = valid_form.dump(),
-        form_.name = valid_form["form"]["form.name"].get<string>(),
-        form_.developer = 1
+        form_.name = form::get_form_name(valid_form),
+        form_.developer = 1 // TODO
     ));
-    return protform;
+    return protform.get_form_name();
 }
 
 void read_db_json(){

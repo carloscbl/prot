@@ -9,7 +9,7 @@ form_runner::form_runner(shared_ptr<user> user_, form &form_)
 
 string form_runner::get_unique_id_session() const noexcept
 {
-    return user_->get_name() + form_.name;
+    return user_->get_name() + form_.get_form_name();
 }
 
 //FIX: this is a mess composing responses...

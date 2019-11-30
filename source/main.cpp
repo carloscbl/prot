@@ -75,12 +75,10 @@ int main(int argc, char const *argv[])
     std::vector<std::string> forms_paths;
     forms_paths = fc.get_forms_paths();
 
-    form form_;
     request request_(cp);
     test test_(cp);
 
     cp.register_actionable("task", &tasker_);
-    cp.register_actionable("form", &form_);
     cp.register_actionable("req", &request_);
     cp.register_actionable("user", &user_);
     cp.register_actionable("test", &test_);
@@ -91,11 +89,6 @@ int main(int argc, char const *argv[])
     //////////////////////////////////////////////////////
     //// COMMANDS ARE NOW PERFORMABLE
     //////////////////////////////////////////////////////
-
-    //// FORMS PATHS
-    for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string &s) {
-        cp.perform_command("form add -P " + s);
-    });
 
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");

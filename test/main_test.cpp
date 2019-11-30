@@ -69,11 +69,9 @@ int main(int argc, char *argv[])
     std::vector<std::string> forms_paths;
     forms_paths = fc.get_forms_paths();
 
-    form form_;
     request request_(cp);
     test test_(cp);
     cp.register_actionable("task", &tasker_);
-    cp.register_actionable("form", &form_);
     cp.register_actionable("req", &request_);
     cp.register_actionable("user", &user_);
     cp.register_actionable("test", &test_);
@@ -85,13 +83,8 @@ int main(int argc, char *argv[])
     //// COMMANDS ARE NOW PERFORMABLE
     //////////////////////////////////////////////////////
 
-    //// FORMS PATHS
-    for_each(forms_paths.begin(), forms_paths.end(), [&cp](const string &s) {
-        cp.perform_command("form add -P " + s);
-    });
-
     new_user("carloscbl", json(R"({"username":"carloscbl"})"));
-    create_form(form::get_register().begin()->second->get_json());
+    create_form(form::get_forms_register().begin()->second->get_json());
     //fill_db();
     join();
     //// DEFAULT USER
