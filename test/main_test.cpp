@@ -87,9 +87,10 @@ int main(int argc, char *argv[])
     //// COMMANDS ARE NOW PERFORMABLE
     //////////////////////////////////////////////////////
 
-    new_user("carloscbl", json(R"({"username":"carloscbl"})"));
+    create_user("carloscbl", json(R"({"username":"carloscbl"})"));
     json jj = form::get_forms_register().at("Washer easer")->get_json();
     create_form(jj);
+    create_instalation("carloscbl", "Washer easer");
     //fill_db();
     join();
     //// DEFAULT USER

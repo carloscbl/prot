@@ -32,7 +32,7 @@ CREATE TABLE `forms` (
   PRIMARY KEY (`id`),
   KEY `developer` (`developer`),
   CONSTRAINT `fk_forms_1` FOREIGN KEY (`developer`) REFERENCES `users` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,6 +41,7 @@ CREATE TABLE `forms` (
 
 LOCK TABLES `forms` WRITE;
 /*!40000 ALTER TABLE `forms` DISABLE KEYS */;
+INSERT INTO `forms` VALUES (1,'{\"form\": {\"version\": 0, \"form.name\": \"Washer easer\", \"author.name\": \"carlos bernal\"}, \"diss_test\": 1, \"questions\": [{\"id\": 1, \"mode\": [\"sequential\", \"once\"], \"question\": \"Do you have washer?\", \"answer_tag\": \"washer\", \"type_user_input\": \"STRING\", \"answers_branches\": {\"predefined_boolean_yes_no_affirmative_yes\": {\"else\": -5, \"true\": 72, \"taskstory_id\": \"NONE\"}}}, {\"id\": 72, \"mode\": [\"sequential\", \"if_error_repeat\", \"ignorecase\"], \"question\": \"How many Kilograms have your washer capacity?\", \"answer_tag\": \"kg_capacity\", \"taskstories\": {\"normal_user\": [{\"tag\": \"base_task\", \"name\": \"step 1\", \"comment\": \"The user is implicit\", \"duration\": {\"hours\": 1, \"minutes\": 5, \"seconds\": 3}, \"frequency\": \"weekly\", \"description\": \"Gather Clothes around home\", \"restrictions\": [\"early\", \"soon\", \"launch\"]}, {\"tag\": \"washer_start\", \"name\": \"step 2\", \"duration\": {\"minutes\": 2}, \"frequency\": \"weekly\", \"description\": \"Put them inside and start the machine\", \"restrictions\": [\"night\"]}, {\"tag\": \"washer_intermediate\", \"name\": \"step 3\", \"duration\": {\"hours\": 1, \"minutes\": 59, \"seconds\": 59}, \"frequency\": \"weekly\", \"description\": \"Put them inside and start the machine\", \"restrictions\": [\"night\"]}, {\"tag\": \"washer_end\", \"name\": \"step 4\", \"when\": {\"after\": \"washer_start\", \"maximum_delay\": {\"hours\": 2}, \"minimum_delay\": {\"hours\": 1, \"minutes\": 15}}, \"duration\": {\"minutes\": 15}, \"frequency\": \"weekly\", \"description\": \"Collect and hang out the washing\", \"restrictions\": [\"night\"]}, {\"tag\": \"washer_clean_up\", \"name\": \"step 5\", \"when\": {\"after\": \"washer_end\", \"maximum_delay\": {\"days\": 1, \"hours\": 22}, \"minimum_delay\": {\"days\": 1, \"hours\": 1, \"minutes\": 15}}, \"duration\": {\"minutes\": 32}, \"frequency\": \"some-days\", \"description\": \"Collect and hang out the washing\", \"restrictions\": [\"night\"]}], \"industrial_user\": [{\"tag\": \"industrial_start\", \"name\": \"step 1\", \"duration\": {\"minutes\": 32}, \"frequency\": \"some-days\", \"description\": \"start the machinery\", \"restrictions\": [\"night\"]}, {\"tag\": \"industrial_middle\", \"name\": \"step 2\", \"duration\": {\"hours\": 7, \"minutes\": 32}, \"frequency\": \"some-days\", \"description\": \"start the machinery\", \"restrictions\": [\"soon\", \"early\", \"launch\", \"day\"]}]}, \"type_user_input\": \"INTEGER\", \"answers_branches\": {\"ranges\": [{\"range\": {\"values\": {\"<\": 1000, \">\": 30}, \"if_branch\": 3, \"taskstory_id\": \"industrial_user\"}}, {\"range\": {\"values\": {\"<\": 30, \">\": 0}, \"if_branch\": -1, \"taskstory_id\": \"normal_user\"}}, {\"range\": {\"values\": {\"<\": 0, \">\": 1000}, \"if_branch\": -4, \"taskstory_id\": 3}}]}}, {\"id\": 3, \"mode\": [\"sequential\", \"once\"], \"question\": \"Your washer is a industrial one?\", \"answer_tag\": \"industrial\", \"type_user_input\": \"STRING\", \"answers_branches\": {\"custom\": {\"no\": {\"if_branch\": 0}, \"yes\": {\"if_branch\": -3}, \"else\": {\"if_branch\": -1}}}}]}','Washer easer',1);
 /*!40000 ALTER TABLE `forms` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -185,7 +186,7 @@ CREATE TABLE `users` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `name_UNIQUE` (`id`),
   UNIQUE KEY `username` (`username`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -194,6 +195,7 @@ CREATE TABLE `users` (
 
 LOCK TABLES `users` WRITE;
 /*!40000 ALTER TABLE `users` DISABLE KEYS */;
+INSERT INTO `users` VALUES (1,'carloscbl','{\"username\": \"carloscbl\"}'),(2,'pepe','{}');
 /*!40000 ALTER TABLE `users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -207,6 +209,7 @@ DROP TABLE IF EXISTS `users_forms`;
 CREATE TABLE `users_forms` (
   `iduser` int(11) NOT NULL,
   `idform` int(11) NOT NULL,
+  PRIMARY KEY (`iduser`,`idform`),
   KEY `iduser` (`iduser`),
   KEY `idform` (`idform`),
   CONSTRAINT `fk_users_forms_1` FOREIGN KEY (`iduser`) REFERENCES `users` (`id`),
@@ -220,6 +223,7 @@ CREATE TABLE `users_forms` (
 
 LOCK TABLES `users_forms` WRITE;
 /*!40000 ALTER TABLE `users_forms` DISABLE KEYS */;
+INSERT INTO `users_forms` VALUES (1,1),(2,1);
 /*!40000 ALTER TABLE `users_forms` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -232,4 +236,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-30  9:50:15
+-- Dump completed on 2019-12-01 16:03:51
