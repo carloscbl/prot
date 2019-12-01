@@ -19,12 +19,12 @@ using std::function;
 1 new user OK
 2 get user OK
 
-3 CRUD form
+3 CRUDE form E OK C OK
 
 4 new instalation
 5 user uninstall
 
-6 CRUD tasks
+6 CRUDE tasks
 7 get tasks in interval
 
 9 new questionary session
@@ -53,10 +53,10 @@ bool gen_exists(string unique_val){
     return true;
 }
 
-string create_form( const json & valid_form ){
+form * create_form( const json & valid_form ){
     using test_prot::Forms;
     if(!gen_exists<test_prot::Forms>( form::get_form_name(valid_form) )){
-        return string();
+        return nullptr;
     }
 
     auto & db = mysql_db::get_db_lazy().db;
@@ -68,7 +68,23 @@ string create_form( const json & valid_form ){
         form_.name = form::get_form_name(valid_form),
         form_.developer = 1 // TODO
     ));
-    return protform.get_form_name();
+    return form::get_forms_register().at( protform.get_form_name() ).get();
+}
+
+form * read_form(const string & form_name){
+    auto & db = mysql_db::get_db_lazy().db;
+
+    test_prot::Forms form_;
+    const auto& result = db(sqlpp::select(all_of(form_)).from(form_).where( form_.name == form_name ).limit(1U));
+    if(result.empty()){
+        return nullptr;
+    }
+
+    const auto & row = result.front();
+    form protform (row.json); //We create it implictly or refresh it
+
+    return form::get_forms_register().at( protform.get_form_name() ).get();
+    
 }
 
 void read_db_json(){

@@ -68,6 +68,10 @@ int main(int argc, char *argv[])
 
     std::vector<std::string> forms_paths;
     forms_paths = fc.get_forms_paths();
+    for_each(forms_paths.begin(), forms_paths.end(), [](const string & file_path ){
+        form_reader freader(file_path);
+        form fr(freader.get_json());
+    });
 
     request request_(cp);
     test test_(cp);
@@ -84,7 +88,9 @@ int main(int argc, char *argv[])
     //////////////////////////////////////////////////////
 
     new_user("carloscbl", json(R"({"username":"carloscbl"})"));
-    create_form(form::get_forms_register().begin()->second->get_json());
+    json jj = form::get_forms_register().begin()->second->get_json();
+    //cout << jj.dump(4) << endl;
+    create_form(jj);
     //fill_db();
     join();
     //// DEFAULT USER
