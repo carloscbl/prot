@@ -23,7 +23,7 @@ using std::string;
 
 3 CRUDE form OK
 
-4 new instalation 
+4 new instalation OK READ ok
 5 user uninstall
 
 6 CRUDE tasks
@@ -163,13 +163,11 @@ void delete_user(const string &username)
 
 bool create_instalation(const string &username, const string &form_name)
 {
-    auto start = chrono::steady_clock::now();
-
     auto &db = mysql_db::get_db_lazy().db;
 
     test_prot::Users usr;
     test_prot::Forms form_;
-    //
+
     // Exists? TODO JOIN both to get existent one
     const auto &usr_res = db(sqlpp::select(usr.id).from(usr).where(usr.username == username).limit(1U));
     const auto &form_res = db(sqlpp::select(form_.id).from(form_).where(form_.name == form_name).limit(1U));
@@ -177,41 +175,50 @@ bool create_instalation(const string &username, const string &form_name)
     {
         return false;
     }
-    test_prot::UsersForms instals;
-    const auto &user_form_res = db(sqlpp::select(all_of(instals)).from(instals).where(instals.iduser == usr_res.front().id and instals.idform == form_res.front().id).limit(1U));
+    test_prot::UsersForms instls;
+    const auto &user_form_res = db(sqlpp::select(all_of(instls)).from(instls).where(instls.iduser == usr_res.front().id and instls.idform == form_res.front().id).limit(1U));
 
     if (!user_form_res.empty())
     {
         return false;
     }
    
-    db(insert_into(instals).set(
-        instals.iduser = usr_res.front().id,
-        instals.idform = form_res.front().id));
+    db(insert_into(instls).set(
+        instls.iduser = usr_res.front().id,
+        instls.idform = form_res.front().id));
 
-    auto end = chrono::steady_clock::now();
-    cout << "Elapsed time in nanoseconds : "
-                << chrono::duration_cast<chrono::nanoseconds>(end - start).count()
-                << " ns" << endl;
-
-        cout << "Elapsed time in microseconds : "
-                << chrono::duration_cast<chrono::microseconds>(end - start).count()
-                << " µs" << endl;
-
-        cout << "Elapsed time in milliseconds : "
-                << chrono::duration_cast<chrono::milliseconds>(end - start).count()
-                << " ms" << endl;
-
-        cout << "Elapsed time in seconds : "
-                << chrono::duration_cast<chrono::seconds>(end - start).count()
-                << " sec";
     //We shouldn't load anything that is not required to perform
     //user::users.at(username)->instaled_forms[form_name] = form::get_forms_register().at(form_name).get();
     return true;
 }
 
-void read_instalations(const string &username, optional<string> form_name = nullopt)
+bool delete_instalation(const string &username, const string &form_name){
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Users usr;
+    test_prot::UsersForms usr_forms;
+    test_prot::Forms form_;
+    
+    db(remove_from(usr_forms).using_(usr,form_,usr_forms).where( 
+        usr_forms.iduser == usr.id 
+        and usr.username == username 
+        and usr_forms.idform == form_.id
+        and form_.name == form_name
+        ));
+    return true;
+}
+
+vector<string> read_instalations(const string &username, optional<string> form_name = nullopt)
 {
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Users usr;
+    test_prot::Forms form_;
+    test_prot::UsersForms usr_forms;
+    vector<string> formsresult;
+    for (const auto &row : db(select(all_of(form_)).from(usr.join(usr_forms).on(usr.id == usr_forms.iduser).join(form_).on(form_.id == usr_forms.idform)).where(usr.username == username)))
+    {
+        formsresult.push_back(row.name);
+    }
+    return formsresult;
 }
 
 //https://github.com/rbock/sqlpp11/wiki/Select

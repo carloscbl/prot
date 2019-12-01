@@ -91,8 +91,13 @@ int main(int argc, char *argv[])
     json jj = form::get_forms_register().at("Washer easer")->get_json();
     create_form(jj);
     create_instalation("carloscbl", "Washer easer");
+    create_instalation("carloscbl", "Lemon");
+    create_instalation("carloscbl", "Pepoform");
     //fill_db();
     join();
+    read_instalations("carloscbl");
+    delete_instalation("carloscbl", "Lemon");
+    read_instalations("carloscbl");
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");
 
