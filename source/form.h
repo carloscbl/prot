@@ -30,6 +30,7 @@ public:
     const json &get_json() const noexcept { return m_form; }
 
     static inline const form_register &get_forms_register() noexcept { return form::forms; }
+    static inline void remove_form(const string & form_name ) noexcept { form::forms.erase(form_name); }
 
     static const string get_form_name(const json &j) { return j["form"]["form.name"].get<string>(); }
     const string get_form_name() const { return m_form["form"]["form.name"].get<string>(); }

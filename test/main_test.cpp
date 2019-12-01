@@ -88,8 +88,7 @@ int main(int argc, char *argv[])
     //////////////////////////////////////////////////////
 
     new_user("carloscbl", json(R"({"username":"carloscbl"})"));
-    json jj = form::get_forms_register().begin()->second->get_json();
-    //cout << jj.dump(4) << endl;
+    json jj = form::get_forms_register().at("Washer easer")->get_json();
     create_form(jj);
     //fill_db();
     join();

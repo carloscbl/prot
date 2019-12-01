@@ -16,12 +16,13 @@ using std::function;
 //This is not supported directly by the library, and sql syntax is specific
 //Sparse things to support
 /*
-1 new user OK
-2 get user OK
+1 create user OK
+2 read & E user OK 
+3 delete user OK
 
-3 CRUDE form E OK C OK
+3 CRUDE form OK
 
-4 new instalation
+4 new instalation 
 5 user uninstall
 
 6 CRUDE tasks
@@ -84,7 +85,14 @@ form * read_form(const string & form_name){
     form protform (row.json); //We create it implictly or refresh it
 
     return form::get_forms_register().at( protform.get_form_name() ).get();
-    
+}
+
+void delete_form(const string & form_name){
+    auto & db = mysql_db::get_db_lazy().db;
+
+    test_prot::Forms form_;
+    db(remove_from(form_).where(form_.name == form_name));
+    form::remove_form(form_name);
 }
 
 void read_db_json(){
@@ -102,7 +110,7 @@ void read_db_json(){
 }
 
 //This class is intended to advance needs until they are correctly categorized
-unique_ptr<user> new_user(string username, json js){
+unique_ptr<user> create_user(string username, json js){
     using test_prot::Users;
     if(!gen_exists<test_prot::Users>(username)){
         return nullptr;
@@ -118,7 +126,7 @@ unique_ptr<user> new_user(string username, json js){
     return us;
 }
 
-unique_ptr<user> get_user(string username){
+unique_ptr<user> read_user(string username){
     if(!gen_exists<test_prot::Users>(username)){
         return nullptr;
     }
@@ -131,6 +139,16 @@ unique_ptr<user> get_user(string username){
     from_json(juser, *us);
     return us;
 }
+
+void delete_user(const string & username){
+    auto & db = mysql_db::get_db_lazy().db;
+
+    test_prot::Users usr;
+    db(remove_from(usr).where(usr.username == username));
+    user::users.erase(username);
+}
+
+
 
 //https://github.com/rbock/sqlpp11/wiki/Select
 void join(){
