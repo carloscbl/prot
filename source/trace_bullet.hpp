@@ -24,7 +24,7 @@ using std::string;
 3 CRUDE form OK
 
 4 new instalation OK READ ok
-5 user uninstall
+5 user uninstall OK Not need for update
 
 6 CRUDE tasks
 7 get tasks in interval

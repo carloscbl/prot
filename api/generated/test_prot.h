@@ -432,6 +432,22 @@ namespace test_prot
   };
   namespace UsersForms_
   {
+    struct Id
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "id";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T id;
+            T& operator()() { return id; }
+            const T& operator()() const { return id; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+    };
     struct Iduser
     {
       struct _alias_t
@@ -467,6 +483,7 @@ namespace test_prot
   } // namespace UsersForms_
 
   struct UsersForms: sqlpp::table_t<UsersForms,
+               UsersForms_::Id,
                UsersForms_::Iduser,
                UsersForms_::Idform>
   {
