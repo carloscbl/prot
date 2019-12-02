@@ -43,6 +43,8 @@ template <>
 auto get_data_member<test_prot::Users> = []() { return test_prot::Users{}.username; };
 template <>
 auto get_data_member<test_prot::Forms> = []() { return test_prot::Forms{}.name; };
+template <>
+auto get_data_member<test_prot::Tasks> = []() { return test_prot::Tasks{}.id; };
 
 template <typename T>
 bool gen_exists(string unique_val)
@@ -219,6 +221,41 @@ vector<string> read_instalations(const string &username, optional<string> form_n
         formsresult.push_back(row.name);
     }
     return formsresult;
+}
+
+void create_task(const task & task_){
+    test_prot::Tasks tks;
+    db(insert_into(tks).set(
+        tks = usr_res.front().id,
+}
+
+void read_task(const string &username){
+
+}
+
+void delete_task(const int64_t task_id ){
+
+}
+void update_task(const int64_t task_id, const json & new_task){
+
+}
+
+void create_session(const string & username, const string & form_name){
+
+}
+
+form_state read_session(const string & username, const string & form_name, const form_state & fs){
+
+}
+
+void update_session(const string & username, const string & form_name, const form_state & fs){
+
+}
+
+void delete_session(const string & username, const string & form_name)
+
+void delete_session(){
+
 }
 
 //https://github.com/rbock/sqlpp11/wiki/Select

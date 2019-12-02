@@ -8,6 +8,93 @@
 
 namespace test_prot
 {
+  namespace FormSessions_
+  {
+    struct Id
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "id";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T id;
+            T& operator()() { return id; }
+            const T& operator()() const { return id; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+    };
+    struct UnqName
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "unq_name";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T unqName;
+            T& operator()() { return unqName; }
+            const T& operator()() const { return unqName; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
+    };
+    struct Json
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "json";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T json;
+            T& operator()() { return json; }
+            const T& operator()() const { return json; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::require_insert>;
+    };
+    struct UserForms
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "user_forms";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T userForms;
+            T& operator()() { return userForms; }
+            const T& operator()() const { return userForms; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+    };
+  } // namespace FormSessions_
+
+  struct FormSessions: sqlpp::table_t<FormSessions,
+               FormSessions_::Id,
+               FormSessions_::UnqName,
+               FormSessions_::Json,
+               FormSessions_::UserForms>
+  {
+    struct _alias_t
+    {
+      static constexpr const char _literal[] =  "form_sessions";
+      using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+      template<typename T>
+      struct _member_t
+      {
+        T formSessions;
+        T& operator()() { return formSessions; }
+        const T& operator()() const { return formSessions; }
+      };
+    };
+  };
   namespace Forms_
   {
     struct Id
