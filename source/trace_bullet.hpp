@@ -223,40 +223,49 @@ vector<string> read_instalations(const string &username, optional<string> form_n
     return formsresult;
 }
 
-void create_task(const task & task_){
+//Users to asociate a task and boolean true to be scheduled not only added to tasker
+void create_task(set< pair<string,bool> > usernames, const task & task_){
+    auto &db = mysql_db::get_db_lazy().db;
     test_prot::Tasks tks;
     db(insert_into(tks).set(
-        tks = usr_res.front().id,
+        tks.json = json(task_).dump()
+    ));
 }
 
 void read_task(const string &username){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
 
 void delete_task(const int64_t task_id ){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
 void update_task(const int64_t task_id, const json & new_task){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
 
 void create_session(const string & username, const string & form_name){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
 
 form_state read_session(const string & username, const string & form_name, const form_state & fs){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
 
 void update_session(const string & username, const string & form_name, const form_state & fs){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
 
-void delete_session(const string & username, const string & form_name)
-
-void delete_session(){
+void delete_session(const string & username, const string & form_name){
+    auto &db = mysql_db::get_db_lazy().db;
 
 }
+
 
 //https://github.com/rbock/sqlpp11/wiki/Select
 void join()
