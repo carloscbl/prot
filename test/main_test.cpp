@@ -94,6 +94,8 @@ int main(int argc, char *argv[])
     create_instalation("carloscbl", "Lemon");
     create_instalation("carloscbl", "Pepoform");
     //fill_db();
+    task tk;
+    create_task({{"carloscbl",false}},tk);
     join();
     read_instalations("carloscbl");
     delete_instalation("carloscbl", "Lemon");

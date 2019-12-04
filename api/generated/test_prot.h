@@ -368,7 +368,7 @@ namespace test_prot
             const T& operator()() const { return start; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
     };
     struct End
     {
@@ -384,7 +384,7 @@ namespace test_prot
             const T& operator()() const { return end; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
     };
     struct ConfirmedDone
     {

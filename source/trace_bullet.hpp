@@ -224,12 +224,38 @@ vector<string> read_instalations(const string &username, optional<string> form_n
 }
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-void create_task(set< pair<string,bool> > usernames, const task & task_){
+void create_task(const set< pair<string,bool> > & usernames_bindings_optional_scheduler, const task & task_){
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Tasks tks;
-    db(insert_into(tks).set(
-        tks.json = json(task_).dump()
-    ));
+
+    for_each( usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&db, &task_](const pair<string,bool> & binding){
+        test_prot::Tasks tks;
+        test_prot::TasksTaskers tksTkrs;
+        test_prot::Users usr;
+
+        const auto result = db(sqlpp::select(all_of(usr)).from(usr).unconditionally().limit(1U));
+        if(result.empty()){
+            return;
+        }
+        const auto & uid = result.front().id;
+        auto start_ = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().start);
+        auto end_  = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().end);
+        //Returns last insert
+        const auto & tsk_res = db(insert_into(tks).set(
+            tks.name = task_.get_name(),
+            tks.json = json(task_).dump(),
+            tks.group = task_.get_task_group(),
+            tks.start = ),
+            tks.end = system_clock::from_time_t(task_.get_interval().end)
+        ));
+        if (tsk_res == 0){
+            // Not insertion
+            return;
+        }
+        //Inserted so we need the binding
+    });
+
+
+
 }
 
 void read_task(const string &username){

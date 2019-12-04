@@ -28,8 +28,8 @@ namespace task_space{
 
     struct pair_interval
     {
-        time_t end;
-        time_t start;
+        time_t end = 0;
+        time_t start = 0;
     };
 
 

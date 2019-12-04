@@ -64,8 +64,8 @@ CREATE TABLE `tasks` (
   `name` varchar(720) NOT NULL,
   `group` varchar(360) NOT NULL,
   `json` json NOT NULL,
-  `start` timestamp NOT NULL,
-  `end` timestamp NOT NULL,
+  `start` timestamp NULL DEFAULT NULL,
+  `end` timestamp NULL DEFAULT NULL,
   `confirmed_done` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
@@ -123,4 +123,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2019-12-04 09:45:46
+-- 2019-12-04 15:12:06
