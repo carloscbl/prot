@@ -184,21 +184,21 @@ namespace test_prot
   };
   namespace Schedulers_
   {
-    struct Idscheduler
+    struct Id
     {
       struct _alias_t
       {
-        static constexpr const char _literal[] =  "idscheduler";
+        static constexpr const char _literal[] =  "id";
         using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
         template<typename T>
         struct _member_t
           {
-            T idscheduler;
-            T& operator()() { return idscheduler; }
-            const T& operator()() const { return idscheduler; }
+            T id;
+            T& operator()() { return id; }
+            const T& operator()() const { return id; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
     };
     struct User
     {
@@ -219,7 +219,7 @@ namespace test_prot
   } // namespace Schedulers_
 
   struct Schedulers: sqlpp::table_t<Schedulers,
-               Schedulers_::Idscheduler,
+               Schedulers_::Id,
                Schedulers_::User>
   {
     struct _alias_t
@@ -304,7 +304,39 @@ namespace test_prot
             const T& operator()() const { return id; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+    };
+    struct Name
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "name";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T name;
+            T& operator()() { return name; }
+            const T& operator()() const { return name; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
+    };
+    struct Group
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "!group";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T group;
+            T& operator()() { return group; }
+            const T& operator()() const { return group; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct Json
     {
@@ -322,11 +354,64 @@ namespace test_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::require_insert>;
     };
+    struct Start
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "start";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T start;
+            T& operator()() { return start; }
+            const T& operator()() const { return start; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::require_insert>;
+    };
+    struct End
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "end";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T end;
+            T& operator()() { return end; }
+            const T& operator()() const { return end; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::require_insert>;
+    };
+    struct ConfirmedDone
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "confirmed_done";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T confirmedDone;
+            T& operator()() { return confirmedDone; }
+            const T& operator()() const { return confirmedDone; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::tinyint, sqlpp::tag::can_be_null>;
+    };
   } // namespace Tasks_
 
   struct Tasks: sqlpp::table_t<Tasks,
                Tasks_::Id,
-               Tasks_::Json>
+               Tasks_::Name,
+               Tasks_::Group,
+               Tasks_::Json,
+               Tasks_::Start,
+               Tasks_::End,
+               Tasks_::ConfirmedDone>
   {
     struct _alias_t
     {
