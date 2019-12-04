@@ -237,15 +237,15 @@ void create_task(const set< pair<string,bool> > & usernames_bindings_optional_sc
             return;
         }
         const auto & uid = result.front().id;
-        auto start_ = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().start);
-        auto end_  = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().end);
+        // auto start_ = sqlpp::value_or_null<sqlpp::time_point>();
+        // auto end_  = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().end);
         //Returns last insert
         const auto & tsk_res = db(insert_into(tks).set(
             tks.name = task_.get_name(),
             tks.json = json(task_).dump(),
             tks.group = task_.get_task_group(),
-            tks.start = ),
-            tks.end = system_clock::from_time_t(task_.get_interval().end)
+            tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
+            tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end))
         ));
         if (tsk_res == 0){
             // Not insertion
