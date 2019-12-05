@@ -141,11 +141,15 @@ unique_ptr<user> create_user(string username, json js)
 
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
+    test_prot::Taskers tasker_;
+    test_prot::Schedulers sche;
 
     auto us = make_unique<user>();
     json j = {{"username", "carloscbl"}};
     from_json(j, *us);
-    db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
+    const auto & result = db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
+    db(insert_into(tasker_).set(tasker_.user = result ));
+    db(insert_into(sche).set(sche.user = result ));
     return us;
 }
 
@@ -253,9 +257,6 @@ void create_task(const set< pair<string,bool> > & usernames_bindings_optional_sc
         const auto & uid = result.front().id;
         const auto & tasker_id = result.front().idtasker;
         const auto & sche_id = result.front().a;
-        // const auto & tasker_id = result.front().idtasker;
-        // auto start_ = sqlpp::value_or_null<sqlpp::time_point>();
-        // auto end_  = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().end);
         //Returns last insert
         const auto & tsk_res = db(insert_into(tks).set(
             tks.name = task_.get_name(),
@@ -270,6 +271,13 @@ void create_task(const set< pair<string,bool> > & usernames_bindings_optional_sc
         }
         test_prot::TasksTaskers tksTkrs;
         //Inserted so we need the binding
+        const auto & res_task_tasker = db(insert_into(tksTkrs).set(
+            tksTkrs.idtask = tsk_res,
+            tksTkrs.idtasker = tasker_id
+        ));
+        if(!binding.second){
+            return;
+        }
         test_prot::TasksSchedulers tskSche;
     });
 
