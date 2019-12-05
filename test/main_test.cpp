@@ -103,9 +103,4 @@ int main(int argc, char *argv[])
     //// DEFAULT USER
     cp.perform_command("user add -u carlos -p 123456 ");
 
-    int result = Catch::Session().run(argc, argv);
-
-    // global clean-up...
-
-    return result;
 }

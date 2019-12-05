@@ -8,11 +8,22 @@
 #include "user.h"
 #include "json.hpp"
 #include "time_utils.hpp"
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/alias_provider.h>
+#include <sqlpp11/sqlpp11.h>
+#include <sqlpp11/mysql/mysql.h>
+#include <sqlpp11/alias_provider.h>
+#include <sqlpp11/connection.h>
+#include <sqlpp11/functions.h>
+#include <sqlpp11/select.h>
 
 using nlohmann::json;
 using std::function;
 using std::optional;
 using std::string;
+//using namespace
+using namespace sqlpp;
+namespace mysql = sqlpp::mysql;
 
 //This is not supported directly by the library, and sql syntax is specific
 //Sparse things to support
@@ -223,20 +234,26 @@ vector<string> read_instalations(const string &username, optional<string> form_n
     return formsresult;
 }
 
+
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
 void create_task(const set< pair<string,bool> > & usernames_bindings_optional_scheduler, const task & task_){
     auto &db = mysql_db::get_db_lazy().db;
 
     for_each( usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&db, &task_](const pair<string,bool> & binding){
         test_prot::Tasks tks;
-        test_prot::TasksTaskers tksTkrs;
+        test_prot::Taskers tasker_;
+        test_prot::Schedulers sche;
         test_prot::Users usr;
 
-        const auto result = db(sqlpp::select(all_of(usr)).from(usr).unconditionally().limit(1U));
+        
+        const auto result = db(sqlpp::select(all_of(usr), tasker_.idtasker, sche.id.as( alias::a ) ).from(usr.join(tasker_).on(tasker_.user == usr.id).join(sche).on(sche.user == usr.id)).unconditionally().limit(1U));
         if(result.empty()){
             return;
         }
         const auto & uid = result.front().id;
+        const auto & tasker_id = result.front().idtasker;
+        const auto & sche_id = result.front().a;
+        // const auto & tasker_id = result.front().idtasker;
         // auto start_ = sqlpp::value_or_null<sqlpp::time_point>();
         // auto end_  = sqlpp::value_or_null<sqlpp::time_point>(system_clock::from_time_t(task_.get_interval().end);
         //Returns last insert
@@ -247,11 +264,13 @@ void create_task(const set< pair<string,bool> > & usernames_bindings_optional_sc
             tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
             tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end))
         ));
-        if (tsk_res == 0){
+        if (tsk_res != 1){
             // Not insertion
             return;
         }
+        test_prot::TasksTaskers tksTkrs;
         //Inserted so we need the binding
+        test_prot::TasksSchedulers tskSche;
     });
 
 
