@@ -251,7 +251,7 @@ namespace test_prot
             const T& operator()() const { return idtasker; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
     };
     struct User
     {
@@ -481,6 +481,22 @@ namespace test_prot
   };
   namespace TasksTaskers_
   {
+    struct Id
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "id";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T id;
+            T& operator()() { return id; }
+            const T& operator()() const { return id; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+    };
     struct Idtask
     {
       struct _alias_t
@@ -516,6 +532,7 @@ namespace test_prot
   } // namespace TasksTaskers_
 
   struct TasksTaskers: sqlpp::table_t<TasksTaskers,
+               TasksTaskers_::Id,
                TasksTaskers_::Idtask,
                TasksTaskers_::Idtasker>
   {
