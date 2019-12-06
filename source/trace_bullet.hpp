@@ -55,7 +55,6 @@ auto get_id_member<test_prot::Users> = []() { return test_prot::Users{}.id; };
 
 //-----------------------
 
-
 template <typename T>
 auto get_data_member = []() {};
 
@@ -83,15 +82,15 @@ optional<uint64_t> get_id(string unique_val)
 {
     auto &db = mysql_db::get_db_lazy().db;
     T table;
-    const auto & result = db(select(get_id_member<T>() .as(alias::a)).from(table).where(get_data_member<T>() == unique_val));
-    if (!result.empty())
+    const auto &result = db(select(get_id_member<T>().as(alias::a)).from(table).where(get_data_member<T>() == unique_val));
+    if (result.empty())
     {
         return nullopt; //Already exists;
     }
     return result.front().a;
 }
 
-form *create_form(const json &valid_form, const string & username)
+form *create_form(const json &valid_form, const string &username)
 {
     using test_prot::Forms;
     if (!gen_exists<test_prot::Forms>(form::get_form_name(valid_form)))
@@ -101,7 +100,8 @@ form *create_form(const json &valid_form, const string & username)
 
     auto &db = mysql_db::get_db_lazy().db;
     auto user_id = get_id<test_prot::Users>(username);
-    if(!user_id.has_value()){
+    if (!user_id.has_value())
+    {
         return nullptr;
     }
 
@@ -173,9 +173,9 @@ unique_ptr<user> create_user(string username, json js)
     auto us = make_unique<user>();
     json j = {{"username", "carloscbl"}};
     from_json(j, *us);
-    const auto & result = db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
-    db(insert_into(tasker_).set(tasker_.user = result ));
-    db(insert_into(sche).set(sche.user = result ));
+    const auto &result = db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
+    db(insert_into(tasker_).set(tasker_.user = result));
+    db(insert_into(sche).set(sche.user = result));
     return us;
 }
 
@@ -225,7 +225,7 @@ bool create_instalation(const string &username, const string &form_name)
     {
         return false;
     }
-   
+
     db(insert_into(instls).set(
         instls.iduser = usr_res.front().id,
         instls.idform = form_res.front().id));
@@ -235,18 +235,14 @@ bool create_instalation(const string &username, const string &form_name)
     return true;
 }
 
-bool delete_instalation(const string &username, const string &form_name){
+bool delete_instalation(const string &username, const string &form_name)
+{
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
     test_prot::UsersForms usr_forms;
     test_prot::Forms form_;
-    
-    db(remove_from(usr_forms).using_(usr,form_,usr_forms).where( 
-        usr_forms.iduser == usr.id 
-        and usr.username == username 
-        and usr_forms.idform == form_.id
-        and form_.name == form_name
-        ));
+
+    db(remove_from(usr_forms).using_(usr, form_, usr_forms).where(usr_forms.iduser == usr.id and usr.username == username and usr_forms.idform == form_.id and form_.name == form_name));
     return true;
 }
 
@@ -264,87 +260,98 @@ vector<string> read_instalations(const string &username, optional<string> form_n
     return formsresult;
 }
 
-
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-void create_task(const set< pair<string,bool> > & usernames_bindings_optional_scheduler, const task & task_){
+void create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, const task &task_)
+{
     auto &db = mysql_db::get_db_lazy().db;
 
     test_prot::Tasks tks;
-    const auto & tsk_res = db(insert_into(tks).set(
+    const auto &tsk_res = db(insert_into(tks).set(
         tks.name = task_.get_name(),
         tks.json = json(task_).dump(),
         tks.group = task_.get_task_group(),
         tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
-        tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end))
-    ));
-    if (tsk_res != 1){
+        tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end))));
+    if (tsk_res < 1)
+    {
         // Not insertion
         return;
     }
-    for_each( usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string,bool> & binding){
+    for_each(usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
         test_prot::Taskers tasker_;
         test_prot::Schedulers sche;
         test_prot::Users usr;
 
-        
-        const auto result = db(sqlpp::select(all_of(usr), tasker_.idtasker, sche.id.as( alias::a ) ).from(usr.join(tasker_).on(tasker_.user == usr.id).join(sche).on(sche.user == usr.id)).unconditionally().limit(1U));
-        if(result.empty()){
+        const auto result = db(sqlpp::select(all_of(usr), tasker_.idtasker, sche.id.as(alias::a))
+                                   .from(usr.join(tasker_).on(tasker_.user == usr.id).join(sche).on(sche.user == usr.id))
+                                   .where(usr.username == binding.first)
+                                   .limit(1U));
+        if (result.empty())
+        {
             return;
         }
-        const auto & uid = result.front().id;
-        const auto & tasker_id = result.front().idtasker;
-        const auto & sche_id = result.front().a;
+        const auto &uid = result.front().id;
+        const auto &tasker_id = result.front().idtasker;
+        const auto &sche_id = result.front().a;
         //Returns last insert
         test_prot::TasksTaskers tksTkrs;
         //Inserted so we need the binding
-        const auto & res_task_tasker = db(insert_into(tksTkrs).set(
+        const auto &res_task_tasker = db(insert_into(tksTkrs).set(
             tksTkrs.idtask = tsk_res,
-            tksTkrs.idtasker = tasker_id
-        ));
-        if(!binding.second){
-            return;
+            tksTkrs.idtasker = tasker_id));
+        if (binding.second)
+        {
+            test_prot::TasksSchedulers tskSche;
+            const auto &res_task_tasker = db(insert_into(tskSche).set(
+                tskSche.idtask = tsk_res,
+                tskSche.idscheduler = sche_id));
         }
-        test_prot::TasksSchedulers tskSche;
     });
-
-
-
 }
 
-void read_task(const string &username){
+void read_tasks(const string &username)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
+    test_prot::Taskers tasker_;
+    test_prot::TasksTaskers tskTkr;
+    test_prot::Tasks tsk;
+    test_prot::Users usr;
+    for (const auto & row : db(sqlpp::select(all_of(tsk))
+                                .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
+                                .where(usr.username == username)))
+    {
+        row.json
+    }
 }
 
-void delete_task(const int64_t task_id ){
+void delete_task(const int64_t task_id)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
 }
-void update_task(const int64_t task_id, const json & new_task){
+void update_task(const int64_t task_id, const json &new_task)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
 }
 
-void create_session(const string & username, const string & form_name){
+void create_session(const string &username, const string &form_name)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
 }
 
-form_state read_session(const string & username, const string & form_name, const form_state & fs){
+form_state read_session(const string &username, const string &form_name, const form_state &fs)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
 }
 
-void update_session(const string & username, const string & form_name, const form_state & fs){
+void update_session(const string &username, const string &form_name, const form_state &fs)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
 }
 
-void delete_session(const string & username, const string & form_name){
+void delete_session(const string &username, const string &form_name)
+{
     auto &db = mysql_db::get_db_lazy().db;
-
 }
-
 
 //https://github.com/rbock/sqlpp11/wiki/Select
 void join()

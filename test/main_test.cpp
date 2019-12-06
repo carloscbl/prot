@@ -96,7 +96,7 @@ int main(int argc, char *argv[])
     create_instalation("carloscbl", "Pepoform");
     //fill_db();
     task tk;
-    create_task({{"carloscbl",false},{"pepe",false}},tk);
+    create_task({{"carloscbl",true},{"pepe",false}},tk);
     join();
     read_instalations("carloscbl");
     delete_instalation("carloscbl", "Lemon");
