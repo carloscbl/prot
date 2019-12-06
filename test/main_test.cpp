@@ -88,14 +88,15 @@ int main(int argc, char *argv[])
     //////////////////////////////////////////////////////
 
     create_user("carloscbl", json(R"({"username":"carloscbl"})"));
+    create_user("pepe", json(R"({"username":"pepe"})"));
     json jj = form::get_forms_register().at("Washer easer")->get_json();
-    create_form(jj);
+    create_form(jj, "carloscbl");
     create_instalation("carloscbl", "Washer easer");
     create_instalation("carloscbl", "Lemon");
     create_instalation("carloscbl", "Pepoform");
     //fill_db();
     task tk;
-    create_task({{"carloscbl",false}},tk);
+    create_task({{"carloscbl",false},{"pepe",false}},tk);
     join();
     read_instalations("carloscbl");
     delete_instalation("carloscbl", "Lemon");
