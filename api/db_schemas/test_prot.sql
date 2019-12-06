@@ -1,4 +1,4 @@
--- Adminer 4.7.4 MySQL dump
+-- Adminer 4.7.5 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -49,7 +49,7 @@ CREATE TABLE `schedulers` (
 
 DROP TABLE IF EXISTS `taskers`;
 CREATE TABLE `taskers` (
-  `idtasker` int(11) NOT NULL,
+  `idtasker` int(11) NOT NULL AUTO_INCREMENT,
   `user` int(11) NOT NULL,
   PRIMARY KEY (`idtasker`),
   UNIQUE KEY `idtaskers_UNIQUE` (`idtasker`),
@@ -69,7 +69,8 @@ CREATE TABLE `tasks` (
   `confirmed_done` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`),
-  KEY `group` (`group`)
+  KEY `group` (`group`),
+  KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -87,11 +88,15 @@ CREATE TABLE `tasks_schedulers` (
 
 DROP TABLE IF EXISTS `tasks_taskers`;
 CREATE TABLE `tasks_taskers` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `idtask` int(11) NOT NULL,
   `idtasker` int(11) NOT NULL,
-  PRIMARY KEY (`idtask`,`idtasker`),
-  KEY `idtasker_idx` (`idtasker`),
-  CONSTRAINT `idtasker` FOREIGN KEY (`idtasker`) REFERENCES `taskers` (`idtasker`) ON DELETE CASCADE ON UPDATE CASCADE
+  PRIMARY KEY (`id`),
+  KEY `index2` (`id`),
+  KEY `fk_tasks_taskers_1_idx` (`idtasker`),
+  KEY `fk_tasks_taskers_2_idx` (`idtask`),
+  CONSTRAINT `fk_tasks_taskers_1` FOREIGN KEY (`idtasker`) REFERENCES `taskers` (`idtasker`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tasks_taskers_ibfk_1` FOREIGN KEY (`idtask`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -123,4 +128,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2019-12-04 15:12:06
+-- 2019-12-06 09:12:00
