@@ -61,6 +61,7 @@ int main(int argc, char *argv[])
     //// COMMANDS ARE NOW PERFORMABLE
     //////////////////////////////////////////////////////
 
+    read_db_json();
     create_user("carloscbl", json(R"({"username":"carloscbl"})"));
     create_user("pepe", json(R"({"username":"pepe"})"));
     json jj = form::get_forms_register().at("Washer easer")->get_json();

@@ -1,5 +1,6 @@
 #ifndef TRACE_BULLET_H
 #define TRACE_BULLET_H
+
 #include <string>
 #include <map>
 #include <optional>
@@ -66,7 +67,7 @@ template <>
 auto get_data_member<test_prot::Tasks> = []() { return test_prot::Tasks{}.id; };
 
 template <typename T>
-bool gen_exists(string unique_val)
+inline bool gen_exists(string unique_val)
 {
     auto &db = mysql_db::get_db_lazy().db;
     T table;
@@ -78,7 +79,7 @@ bool gen_exists(string unique_val)
 }
 
 template <typename T>
-optional<uint64_t> get_id(string unique_val)
+inline optional<uint64_t> get_id(string unique_val)
 {
     auto &db = mysql_db::get_db_lazy().db;
     T table;
@@ -90,7 +91,7 @@ optional<uint64_t> get_id(string unique_val)
     return result.front().a;
 }
 
-form *create_form(const json &valid_form, const string &username)
+inline form *create_form(const json &valid_form, const string &username)
 {
     using test_prot::Forms;
     if (!gen_exists<test_prot::Forms>(form::get_form_name(valid_form)))
@@ -115,7 +116,7 @@ form *create_form(const json &valid_form, const string &username)
     return form::get_forms_register().at(protform.get_form_name()).get();
 }
 
-form *read_form(const string &form_name)
+inline form *read_form(const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -132,7 +133,7 @@ form *read_form(const string &form_name)
     return form::get_forms_register().at(protform.get_form_name()).get();
 }
 
-void delete_form(const string &form_name)
+inline void delete_form(const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -141,7 +142,7 @@ void delete_form(const string &form_name)
     form::remove_form(form_name);
 }
 
-void read_db_json()
+inline void read_db_json()
 {
     auto &db = mysql_db::get_db_lazy().db;
     std::stringstream sql;
@@ -157,7 +158,7 @@ void read_db_json()
 }
 
 //This class is intended to advance needs until they are correctly categorized
-unique_ptr<user> create_user(string username, json js)
+inline unique_ptr<user> create_user(string username, json js)
 {
     using test_prot::Users;
     if (!gen_exists<test_prot::Users>(username))
@@ -179,7 +180,7 @@ unique_ptr<user> create_user(string username, json js)
     return us;
 }
 
-unique_ptr<user> read_user(string username)
+inline unique_ptr<user> read_user(string username)
 {
     if (!gen_exists<test_prot::Users>(username))
     {
@@ -195,7 +196,7 @@ unique_ptr<user> read_user(string username)
     return us;
 }
 
-void delete_user(const string &username)
+inline void delete_user(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -204,7 +205,7 @@ void delete_user(const string &username)
     user::users.erase(username);
 }
 
-bool create_instalation(const string &username, const string &form_name)
+inline bool create_instalation(const string &username, const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -235,7 +236,7 @@ bool create_instalation(const string &username, const string &form_name)
     return true;
 }
 
-bool delete_instalation(const string &username, const string &form_name)
+inline bool delete_instalation(const string &username, const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
@@ -246,7 +247,7 @@ bool delete_instalation(const string &username, const string &form_name)
     return true;
 }
 
-vector<string> read_instalations(const string &username, optional<string> form_name = nullopt)
+inline vector<string> read_instalations(const string &username, optional<string> form_name = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
@@ -261,7 +262,7 @@ vector<string> read_instalations(const string &username, optional<string> form_n
 }
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-void create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, const task &task_)
+inline void create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -277,6 +278,7 @@ void create_task(const set<pair<string, bool>> &usernames_bindings_optional_sche
         // Not insertion
         return;
     }
+    task_.set_id(tsk_res);
     for_each(usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
         test_prot::Taskers tasker_;
         test_prot::Schedulers sche;
@@ -290,26 +292,28 @@ void create_task(const set<pair<string, bool>> &usernames_bindings_optional_sche
         {
             return;
         }
-        const auto &uid = result.front().id;
+        //const auto &uid = result.front().id;
         const auto &tasker_id = result.front().idtasker;
         const auto &sche_id = result.front().a;
         //Returns last insert
         test_prot::TasksTaskers tksTkrs;
         //Inserted so we need the binding
-        const auto &res_task_tasker = db(insert_into(tksTkrs).set(
+        //const auto &res_task_tasker =
+         db(insert_into(tksTkrs).set(
             tksTkrs.idtask = tsk_res,
             tksTkrs.idtasker = tasker_id));
         if (binding.second)
         {
             test_prot::TasksSchedulers tskSche;
-            const auto &res_task_tasker = db(insert_into(tskSche).set(
+            //const auto &res_task_tasker =
+             db(insert_into(tskSche).set(
                 tskSche.idtask = tsk_res,
                 tskSche.idscheduler = sche_id));
         }
     });
 }
 
-vector<unique_ptr<task>> read_tasks(const string &username)
+inline vector<unique_ptr<task>> read_tasks(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Taskers tasker_;
@@ -330,50 +334,50 @@ vector<unique_ptr<task>> read_tasks(const string &username)
     return vtasks;
 }
 
-void delete_task(const uint64_t task_id)
+inline void delete_task(const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Tasks tsk;
     db(remove_from(tsk).where(tsk.id == task_id));
 }
-void update_task( task &new_task , const uint64_t task_id )
+inline void update_task( task &new_task , const uint64_t task_id )
 {
-    auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Tasks tsk;
-    const auto & result = db(update(tsk).set(
-        tsk.name = new_task.get_name(),
-        tsk.json = json(new_task).dump(),
-        tsk.group = new_task.get_task_group(),
-        tsk.start = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().start)),
-        tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
-    ).where(tsk.id == task_id));
+    // auto &db = mysql_db::get_db_lazy().db;
+    // test_prot::Tasks tsk;
+    // // const auto & result = db(update(tsk).set(
+    // //     tsk.name = new_task.get_name(),
+    // //     tsk.json = json(new_task).dump(),
+    // //     tsk.group = new_task.get_task_group(),
+    // //     tsk.start = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().start)),
+    // //     tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
+    // // ).where(tsk.id == task_id));
 
-    new_task.set_id(task_id);
+    // // new_task.set_id(task_id);
 
 }
 
-void create_session(const string &username, const string &form_name)
-{
-    auto &db = mysql_db::get_db_lazy().db;
-}
+// void create_session(const string &username, const string &form_name)
+// {
+//     auto &db = mysql_db::get_db_lazy().db;
+// }
 
-form_state read_session(const string &username, const string &form_name, const form_state &fs)
-{
-    auto &db = mysql_db::get_db_lazy().db;
-}
+// form_state read_session(const string &username, const string &form_name, const form_state &fs)
+// {
+//     auto &db = mysql_db::get_db_lazy().db;
+// }
 
-void update_session(const string &username, const string &form_name, const form_state &fs)
-{
-    auto &db = mysql_db::get_db_lazy().db;
-}
+// void update_session(const string &username, const string &form_name, const form_state &fs)
+// {
+//     auto &db = mysql_db::get_db_lazy().db;
+// }
 
-void delete_session(const string &username, const string &form_name)
-{
-    auto &db = mysql_db::get_db_lazy().db;
-}
+// void delete_session(const string &username, const string &form_name)
+// {
+//     auto &db = mysql_db::get_db_lazy().db;
+// }
 
 //https://github.com/rbock/sqlpp11/wiki/Select
-void join()
+inline void join()
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;

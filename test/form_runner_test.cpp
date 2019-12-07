@@ -19,13 +19,13 @@ task_t get_collider(seconds offset_from_today, T_duration duration, string name 
 
 TEST_CASE( "test form_runner", "[runner]" ) {
   
-    user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos"
+    user::users["carloscbl"] = make_shared<user>(user_minimal_data{
+        "carloscbl"
     });
-    const auto & carlos_ = user::users["carlos"];
-    REQUIRE( carlos_->get_name() == "carlos" );
+    const auto & carlos_ = user::users["carloscbl"];
+    REQUIRE( carlos_->get_name() == "carloscbl" );
 
-    const auto & carlos = user::users["carlos"];
+    const auto & carlos = user::users["carloscbl"];
     //carlos->get_tasker().print_out();
     REQUIRE( carlos->get_tasker().empty() == true );
 
@@ -98,13 +98,13 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
 TEST_CASE( "test form_runner industrial", "[runner]" ) {
   
-    user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos"
+    user::users["carloscbl"] = make_shared<user>(user_minimal_data{
+        "carloscbl"
     });
-    const auto & carlos_ = user::users["carlos"];
-    REQUIRE( carlos_->get_name() == "carlos" );
+    const auto & carlos_ = user::users["carloscbl"];
+    REQUIRE( carlos_->get_name() == "carloscbl" );
 
-    const auto & carlos = user::users["carlos"];
+    const auto & carlos = user::users["carloscbl"];
     REQUIRE( carlos->get_tasker().empty() == true );
 
     task_t test_probe = make_shared<task>();
@@ -169,13 +169,13 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
 
 TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
   
-    user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos"
+    user::users["carloscbl"] = make_shared<user>(user_minimal_data{
+        "carloscbl"
     });
-    const auto & carlos_ = user::users["carlos"];
-    REQUIRE( carlos_->get_name() == "carlos" );
+    const auto & carlos_ = user::users["carloscbl"];
+    REQUIRE( carlos_->get_name() == "carloscbl" );
 
-    const auto & carlos = user::users["carlos"];
+    const auto & carlos = user::users["carloscbl"];
     REQUIRE( carlos->get_tasker().empty() == true );
 
     carlos->get_scheduler().add_single(get_collider(days(1) + hours(2), hours(1)));
@@ -234,13 +234,13 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
 
 TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
   
-    user::users["carlos"] = make_shared<user>(user_minimal_data{
-        "carlos"
+    user::users["carloscbl"] = make_shared<user>(user_minimal_data{
+        "carloscbl"
     });
-    const auto & carlos_ = user::users["carlos"];
-    REQUIRE( carlos_->get_name() == "carlos" );
+    const auto & carlos_ = user::users["carloscbl"];
+    REQUIRE( carlos_->get_name() == "carloscbl" );
 
-    const auto & carlos = user::users["carlos"];
+    const auto & carlos = user::users["carloscbl"];
     //carlos->get_tasker().print_out();
     REQUIRE( carlos->get_tasker().empty() == true );
 

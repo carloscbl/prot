@@ -1,5 +1,5 @@
 #include "tasker.h"
-
+#include "trace_bullet.hpp"
 
 
 tasker::tasker(const string & user):m_user(user){}
@@ -64,6 +64,7 @@ void tasker::commit_group_then_delete(const string & group){
         //Filling the active tasker
         for(auto & task_ : match->second){
             task_t task_active = move(task_.second);
+            create_task({{this->m_user,false}},*task_active);
             tasks_active[task_active->get_id()] = task_active;
         }
         //And delete
