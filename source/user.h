@@ -27,58 +27,14 @@ struct user_minimal_data
     no one else should have one
 
  */
-class user : public CRUD_actionable<user> , public json_serializable<user>
+class user : public json_serializable<user>
 { //substitute by the final class
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;
 private:
     shared_ptr<tasker> tasker_;
     unique_ptr<scheduler> scheduler_;
-    CRUD_plus_actions_map user_actions_map{
-        {"add", [](map<char, string> s) {
-            user_minimal_data md {
-                s['u']
-            };
-            users[s['u']] = make_unique<user>(md);
-        }},
-        {"remove", [](map<char, string> params) {}},
-        {"update", [](map<char, string> params) {}},
-        {"list", [](map<char, string> s) {
-            for (const auto & [k,v] : users)
-            {
-                cout << "user: " << k << endl;
-            }
-        }},
-        {"listsch", [](map<char, string> s) {
-            users["carlos"]->scheduler_->print_out();
-        }},
-        {"getrange", [](map<char, string> s) {
-            auto & schedul = users["carlos"]->scheduler_;
-            auto vec_opt = schedul->get_range(stoi(s['s']),stoi(s['e']));
-            if (!vec_opt.has_value())
-            {
-                cout << "Empty range" << endl;
-                return;
-            }
-            for_each(vec_opt.value().cbegin(),vec_opt.value().cend(), [](const task_t & task_){
-                cout << task_->id << endl;
-            });
-            
-        }},
-        {"sch", [](map<char, string> s) {
-            auto & schedul = users["carlos"]->scheduler_;
-            auto & taske = users["carlos"]->tasker_;
-            task_t task_ = taske->get_task("task0");
 
-            task_->set_interval(stoi(s['s']) ,stoi(s['e']));
-            schedul->add_single(move(task_));
-            schedul->print_out();
-            auto & schedul2 = users["carlos"]->scheduler_;
-            schedul2->print_out();
-        }}};
-    map_local_functions setters{
-        //{'P', &form::set_path},
-    };
     void init();
     friend void from_json(const nlohmann::json& ref_json, user& new_user);
 

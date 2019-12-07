@@ -15,9 +15,9 @@ To install dependencies for debian like systems
 ## Manual Installation
 
 To compile the project you need to have:
--  Installed boost 1.69 libs and includes in your machine as CMake will look for it in the local machine
--  C++ 17 compiler
--  cmake > 3.10
+  - Installed boost 1.69 libs and includes in your machine as CMake will look for it in the local machine
+  - C++ 17 compiler
+  - cmake > 3.10
 
 ```bash
 sudo apt install gcc g++ make cmake

@@ -94,11 +94,11 @@ bool time_determinator::build_daily_restrictions(
         for_each(normalized_intervals.begin(), normalized_intervals.end(), [&]( time_point_interval & normalized_interval ){
 
             task_t dummy_task = std::make_shared<task>();
-            dummy_task->id = "dummy_day_" + to_string(iteration_day) 
+            dummy_task->set_description( "dummy_day_" + to_string(iteration_day) 
                 + "_" 
                 + _24_restriction_interval.restriction_name
                 + "_" 
-                + normalized_interval.tag;
+                + normalized_interval.tag);
             time_point start = normalized_interval.from ;
             time_t start_ = system_clock::to_time_t(start);
 

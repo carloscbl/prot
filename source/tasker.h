@@ -23,11 +23,11 @@ struct task_status
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
  */
-class tasker : public itasker , public CRUD_actionable<tasker>, public json_serializable<tasker>
+class tasker : public itasker , public json_serializable<tasker>
 {
 private:
     friend taskstory_commit_RAII;
-    map<string, task_t> tasks_active; // TODO Setters and getters
+    map<uint64_t, task_t> tasks_active; // TODO Setters and getters
     //The dispenser is a pre_commit group tasker, that should be used for temporal storage of groups,
     // until its complete submission
 
@@ -41,79 +41,7 @@ private:
     //FIX: TrackLife time of groups and expirate sync with form runner life time
     //Taskstory : Name -> each task have a tag
     map<string, map< string, task_t > > tasks_dispenser;
-
-    CRUD_plus_actions_map tasker_map{
-        {"add", [&](params_map_t s) {
-            task_t task_ = make_shared<task>();
-            auto tasker_ = taskers_global["carlos"].lock();
-
-            auto match = s.find('g');
-            task_->add(s);
-            if (match != s.end()){
-                //Got groups, they aren't directly committed
-                ((tasker&)*tasker_).add_to_group(s['t'],move(task_),match->second);
-            }else{
-                ((tasker&)*tasker_).tasks_active[task_->id] = move(task_);
-            }
-        }},
-        {"remove", [this](params_map_t params) {
-            auto it = params.end();
-
-            it = params.find('i');
-            if (it != params.end())
-            {
-            tasks_active.erase(it->second);
-            }
-            else
-            {
-                cout << "please provide 'i' argument";
-                return;
-            }
-        }},
-        {"update", [this](params_map_t params) {
-            auto it = params.end();
-
-            it = params.find('i');
-            if (it != params.end())
-            {
-                // auto instance =
-                tasks_active[it->second].get()->update(params);
-                //this->update(params, *instance);
-            }
-            else
-            {
-                cout << "please provide 'i' argument";
-                return;
-            }
-        }},
-        {"list", [&](params_map_t s) {
-            // TODO General or associate a user
-            for( auto & [user, tasker] : taskers_global){
-                auto tskr = tasker.lock();
-                cout << user << ": "<< endl;
-                if (tskr->tasks_active.size() == 0)
-                    cout << "\tEmpty list, no task provided" << endl;
-                for (auto &&e : tskr->tasks_active)
-                {
-                    //cout << e.first << "-:-" << e.second->id <<endl;
-                    cout << "\t" ; e.second->print_();
-                }
-            }
-        }},
-        {"remain", [this](params_map_t s) {
-            this->remain(s);
-        }},
-        {"listdispatcher", [this](params_map_t s) {
-            for(auto & [k,v] : this->tasks_dispenser){
-                cout << k << ":" << endl;
-                for(auto & [k2,v2] : v){
-                    v2->print_();
-                }
-            }
-        }},
-    };
     string m_user;
-    map_local_functions setters;
     void commit_group_then_delete(const string & group);
     void add_to_group(const string & task_tag, task_t && params, const string & group);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
@@ -124,13 +52,11 @@ public:
     void add_to_group( task_t && params, const string & group);
     //void update_time() override {};
     void clear() override;
-    void remove(params_map_t params, task &instance);
     const string & get_name() const noexcept;
 
-    void remain(params_map_t params);
-    task_t get_task(const string & id ) const override;
+    task_t get_task(const uint64_t id ) const override;
     task_t find_task(const string & tag)  const override;
-    inline const map<string, task_t> & get_tasks() const { return this->tasks_active; }
+    inline const map<uint64_t, task_t> & get_tasks() const { return this->tasks_active; }
     tasker(const string & user);
 };
 void to_json(nlohmann::json& new_json, const tasker& ref_tasker);

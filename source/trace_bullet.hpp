@@ -330,13 +330,26 @@ vector<unique_ptr<task>> read_tasks(const string &username)
     return vtasks;
 }
 
-void delete_task(const int64_t task_id)
+void delete_task(const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Tasks tsk;
+    db(remove_from(tsk).where(tsk.id == task_id));
 }
-void update_task(const int64_t task_id, const json &new_task)
+void update_task( task &new_task , const uint64_t task_id )
 {
     auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Tasks tsk;
+    const auto & result = db(update(tsk).set(
+        tsk.name = new_task.get_name(),
+        tsk.json = json(new_task).dump(),
+        tsk.group = new_task.get_task_group(),
+        tsk.start = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().start)),
+        tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
+    ).where(tsk.id == task_id));
+
+    new_task.set_id(task_id);
+
 }
 
 void create_session(const string &username, const string &form_name)

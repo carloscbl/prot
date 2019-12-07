@@ -1,10 +1,10 @@
 #include "user.h"
 #include "tasker.h"
-user::user(const user_minimal_data &m_data): CRUD_actionable(this->user_actions_map, setters),minimal_data(m_data){
+user::user(const user_minimal_data &m_data): minimal_data(m_data){
     init();
 }
 
-user::user():CRUD_actionable(this->user_actions_map, setters){
+user::user(){
     init();
 }
 void user::init(){

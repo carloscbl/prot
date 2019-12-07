@@ -16,7 +16,6 @@
 #include "form_parser.h"
 #include "form_collector.h"
 #include "request.h"
-#include "test.h"
 #include "persistor.h"
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
@@ -53,8 +52,6 @@ int main(int argc, char const *argv[])
     
     form_collector fc;
     command_processor cp;
-    user user_;
-    tasker tasker_("std");
     
     // auto config = std::make_shared<mysql::connection_config>();
  	// config->user = "root";//from env
@@ -76,12 +73,8 @@ int main(int argc, char const *argv[])
     forms_paths = fc.get_forms_paths();
 
     request request_(cp);
-    test test_(cp);
 
-    cp.register_actionable("task", &tasker_);
     cp.register_actionable("req", &request_);
-    cp.register_actionable("user", &user_);
-    cp.register_actionable("test", &test_);
 
     //////////////////////////////////////////////////////
     //////////////////////////////////////////////////////

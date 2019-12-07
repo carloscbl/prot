@@ -59,11 +59,12 @@ namespace task_space{
         };
         friend void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task);
 
+        uint64_t id;
     public:
-        string id;
         task();
         virtual ~task();
 
+        inline void set_id          (uint64_t id_)         { this->id = id_; }
         inline void set_name        (string name_)         { this->name = name_; }
         inline void set_task_group  (string task_group_)   { this->task_group = task_group_; }
         inline void set_tag         (string tag_)          { this->tag = tag_; }
@@ -72,9 +73,9 @@ namespace task_space{
         inline void set_interval(time_t start, time_t end) {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
-                                                     //print_();
         }
 
+        inline uint64_t              get_id()          const noexcept { return id; }
         inline const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;}
         inline const string        & get_tag()         const noexcept { return tag;        }
         inline const string        & get_description() const noexcept { return description; }

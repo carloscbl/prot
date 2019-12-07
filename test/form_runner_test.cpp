@@ -9,7 +9,7 @@ template<typename T_duration>
 task_t get_collider(seconds offset_from_today, T_duration duration, string name = "test_probe"){
     task_t test_probe = make_shared<task>();
     test_probe->set_tag(name);
-    test_probe->id = name;
+    test_probe->set_id( 9999);
     time_t next_day_collider_start = system_clock::to_time_t( floor<days>( system_clock::now()) + offset_from_today);
     time_t next_day_collider_end = next_day_collider_start + duration_cast<seconds>(duration).count() ;
     test_probe->set_interval( next_day_collider_start, next_day_collider_end);
@@ -109,7 +109,7 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
 
     task_t test_probe = make_shared<task>();
     test_probe->set_tag("test_probe");
-    test_probe->id = "test_probe";
+    test_probe->set_id(9999);
     time_t next_day_collider_start = system_clock::to_time_t( floor<days>( system_clock::now()) +days(1) + hours(6));
     time_t next_day_collider_end = next_day_collider_start + duration_cast<seconds>(hours(1)).count() ;
     test_probe->set_interval( next_day_collider_start, next_day_collider_end);

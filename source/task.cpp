@@ -55,7 +55,7 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
 task_space::task::task() : CRUD_actionable(this->tasks_map, setters)
 {
     static int acummulator = 0;
-    id = "task" + to_string(acummulator++);
+    id = acummulator++;
 }
 
 task_space::task::~task()
