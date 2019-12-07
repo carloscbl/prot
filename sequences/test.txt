@@ -1,6 +1,0 @@
-#YOU CAN ADD COMMENTS WITH THE FIRST CHAR AS A "#"
-#How to use: ./prot test sequence -p ../test_sequences/test.txt
-#task list
-task add -n pepe
-#task add -n limon
-task list
