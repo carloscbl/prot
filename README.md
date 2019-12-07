@@ -1,3 +1,5 @@
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/2d4567f7bacd461aaec359bcb6e2c54c)](https://www.codacy.com/manual/carloscbl/prot?utm_source=github.com&amp;utm_medium=referral&amp;utm_content=carloscbl/prot&amp;utm_campaign=Badge_Grade)
+
 # Prot
 Is a C++ core of task scheduler, with support for users and auto-task setter based on user questionaries for recurrent tasks.
 
