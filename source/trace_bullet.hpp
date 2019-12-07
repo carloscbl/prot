@@ -342,17 +342,17 @@ inline void delete_task(const uint64_t task_id)
 }
 inline void update_task( task &new_task , const uint64_t task_id )
 {
-    // auto &db = mysql_db::get_db_lazy().db;
-    // test_prot::Tasks tsk;
-    // // const auto & result = db(update(tsk).set(
-    // //     tsk.name = new_task.get_name(),
-    // //     tsk.json = json(new_task).dump(),
-    // //     tsk.group = new_task.get_task_group(),
-    // //     tsk.start = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().start)),
-    // //     tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
-    // // ).where(tsk.id == task_id));
-
-    // // new_task.set_id(task_id);
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Tasks tsk;
+    const auto & result = db(update(tsk).set(
+        tsk.name = new_task.get_name(),
+        tsk.json = json(new_task).dump(),
+        tsk.group = new_task.get_task_group(),
+        tsk.start = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().start)),
+        tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
+    ).where(tsk.id == task_id));
+    if(result <= 0){ return;}
+    new_task.set_id(result);
 
 }
 
