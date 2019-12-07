@@ -98,7 +98,7 @@ int main(int argc, char *argv[])
     task tk;
     tk.set_name("lemonsss_task");
     task tk2;
-    tk.set_name("pepe_task");
+    tk2.set_name("pepe_task");
     create_task({{"carloscbl",true},{"pepe",false}},tk);
     create_task({{"pepe",false}},tk2);
     join();
