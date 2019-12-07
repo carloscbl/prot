@@ -309,19 +309,25 @@ void create_task(const set<pair<string, bool>> &usernames_bindings_optional_sche
     });
 }
 
-void read_tasks(const string &username)
+vector<unique_ptr<task>> read_tasks(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Taskers tasker_;
     test_prot::TasksTaskers tskTkr;
     test_prot::Tasks tsk;
     test_prot::Users usr;
-    for (const auto & row : db(sqlpp::select(all_of(tsk))
+    const auto & select = sqlpp::select(all_of(tsk))
                                 .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
-                                .where(usr.username == username)))
+                                .where(usr.username == username);
+    vector<unique_ptr<task>> vtasks;
+    for (const auto & row : db(select))
     {
-        row.json
+        json js  = json::parse(row.json.text); //bad parsing
+        auto tk = make_unique<task>();
+        from_json(js,*tk);
+        vtasks.push_back(move(tk));
     }
+    return vtasks;
 }
 
 void delete_task(const int64_t task_id)

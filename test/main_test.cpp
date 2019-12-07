@@ -96,8 +96,20 @@ int main(int argc, char *argv[])
     create_instalation("carloscbl", "Pepoform");
     //fill_db();
     task tk;
+    tk.set_name("lemonsss_task");
+    task tk2;
+    tk.set_name("pepe_task");
     create_task({{"carloscbl",true},{"pepe",false}},tk);
+    create_task({{"pepe",false}},tk2);
     join();
+    auto tasksss =  read_tasks("pepe");
+
+    for (auto &&i : tasksss)
+    {
+        cout << i->get_name() << endl;
+    }
+    
+
     read_instalations("carloscbl");
     delete_instalation("carloscbl", "Lemon");
     read_instalations("carloscbl");
