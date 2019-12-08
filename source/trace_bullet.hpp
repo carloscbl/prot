@@ -340,6 +340,7 @@ inline void delete_task(const uint64_t task_id)
     test_prot::Tasks tsk;
     db(remove_from(tsk).where(tsk.id == task_id));
 }
+
 inline void update_task( task &new_task , const uint64_t task_id )
 {
     auto &db = mysql_db::get_db_lazy().db;
@@ -351,7 +352,7 @@ inline void update_task( task &new_task , const uint64_t task_id )
         tsk.start = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().start)),
         tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
     ).where(tsk.id == task_id));
-    if(result <= 0){ return;}
+    if(result <= 0){ return; }
     new_task.set_id(result);
 
 }
