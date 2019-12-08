@@ -56,7 +56,7 @@ python3 /usr/local/bin/sqlpp11-ddl2cpp test_prot.sql ../generated/test_prot test
 # https://github.com/OpenAPITools/openapi-generator#16---docker
 # The best option is the "Codewind OpenAPI Tools" extension for visual code from IBM
 
-docker run --rm -v ${PWD}:/local openapitools/openapi-generator-cli generate \
+docker run --rm -u $(id -u ${USER}):$(id -g ${USER}) -v ${PWD}:/local openapitools/openapi-generator-cli generate \
     -i /local/api/prot.v1.yaml \
     -g cpp-pistache-server \
     -o /local/rest_server

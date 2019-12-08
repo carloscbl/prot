@@ -2,7 +2,7 @@ cmake_minimum_required (VERSION 3.2)
 
 project(api-server)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14 -pg -g3" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pg -g3" )
 
 include(ExternalProject)
 
@@ -21,6 +21,9 @@ ExternalProject_Add(NLOHMANN
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
+include_directories(${CMAKE_SOURCE_DIR}/source)
+include_directories(${CMAKE_SOURCE_DIR}/api/generated)
+
 include_directories(model)
 include_directories(api)
 include_directories(impl)
@@ -33,5 +36,9 @@ file(GLOB SRCS
 )
 
 add_executable(${PROJECT_NAME} ${SRCS} )
+target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/source)
+target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty)
 add_dependencies(${PROJECT_NAME} PISTACHE NLOHMANN)
-target_link_libraries(${PROJECT_NAME} pistache pthread)
+target_link_libraries( ${PROJECT_NAME} pistache pthread lprot sqlpp11 sqlpp-mysql mariadb)
+# target_link_libraries( ${PROJECT_NAME} PUBLIC lprot )
+# target_link_libraries( ${PROJECT_NAME} PRIVATE sqlpp11 sqlpp-mysql mariadb)

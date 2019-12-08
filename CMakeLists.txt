@@ -17,6 +17,7 @@ include_directories(${CMAKE_SOURCE_DIR}/api/generated)
 include_directories("thirdparty/nlohmann_json")
 
 add_subdirectory(test)
+add_subdirectory(rest_server)
 
 
 

@@ -11,6 +11,7 @@
 */
 
 #include "DefaultApiImpl.h"
+#include "trace_bullet.hpp"
 
 namespace org {
 namespace openapitools {
@@ -24,7 +25,15 @@ DefaultApiImpl::DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router> rtr)
     { }
 
 void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+
+    auto tasksss =  read_tasks("carloscbl");
+
+    for (auto &&i : tasksss)
+    {
+        cout << i->get_name() << endl;
+    }
+
+    response.send(Pistache::Http::Code::Ok, json(*tasksss.begin()->get()).dump(4) );
 }
 void DefaultApiImpl::user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");

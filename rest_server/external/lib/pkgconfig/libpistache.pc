@@ -1,0 +1,14 @@
+prefix=/home/cbernal/prot/rest_server/external
+exec_prefix=/home/cbernal/prot/rest_server/external/bin
+libdir=/home/cbernal/prot/rest_server/external/lib/
+includedir=/home/cbernal/prot/rest_server/external/include/
+
+Name: libpistache
+URL: http://pistache.io/
+Description: An elegant C++ REST framework.
+Version: 0.0.001-git20191031
+Requires:
+Libs: -L'${libdir}/' -lpistache -lpthread
+Libs.private:
+Cflags: -I'${includedir}/'
+
