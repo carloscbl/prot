@@ -22,6 +22,14 @@ paths:
             application/json:
               schema:
                 $ref: ./models/user.v1.json
+    delete:
+      summary: ''
+      operationId: 'delete-user-{username}'
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
   /user:
     post:
       summary: ''
@@ -36,5 +44,131 @@ paths:
               properties:
                 username:
                   type: string
+  '/user/{username}/tasks':
+    parameters:
+      - type: string
+        name: username
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: ./models/task.v1.json
+      operationId: 'get-user-{username}-task'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                from:
+                  type: integer
+                to:
+                  type: integer
+  '/user/{developer}/form':
+    parameters:
+      - type: string
+        name: developer
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                description: 'Returns all the developer, forms_names submited'
+                items:
+                  type: string
+      operationId: 'get-user-{developer}-form'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+    post:
+      summary: ''
+      operationId: 'post-user-{developer}-form'
+      responses:
+        '201':
+          description: Created
+        '401':
+          description: Unauthorized
+        '406':
+          description: Not Acceptable
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                json_str:
+                  type: string
+                '':
+                  type: string
+  '/user/{developer}/form/{form_name}':
+    parameters:
+      - type: string
+        name: developer
+        in: path
+        required: true
+      - type: string
+        name: form_name
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses:
+        '200':
+          description: OK
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not Found
+          content:
+            application/json:
+              schema:
+                type: object
+                properties: {}
+      operationId: 'get-user-{developer}-form-{form_name}'
+  '/user/{username}/apps':
+    parameters:
+      - type: string
+        name: username
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: 'get-user-{username}-apps'
+  '/user/{username}/apps/{install_app_id}':
+    parameters:
+      - type: string
+        name: username
+        in: path
+        required: true
+      - type: string
+        name: install_app_id
+        in: path
+        required: true
+    get:
+      summary: Your GET endpoint
+      tags: []
+      responses: {}
+      operationId: 'get-user-{username}-apps-{install_app_id}'
 components:
   schemas: {}
