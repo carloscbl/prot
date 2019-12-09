@@ -46,7 +46,8 @@ paths:
                   type: string
   '/user/{username}/tasks':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: username
         in: path
         required: true
@@ -75,7 +76,8 @@ paths:
                   type: integer
   '/user/{developer}/form':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: developer
         in: path
         required: true
@@ -120,11 +122,13 @@ paths:
                   type: string
   '/user/{developer}/form/{form_name}':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: developer
         in: path
         required: true
-      - type: string
+      - schema:
+          type: string
         name: form_name
         in: path
         required: true
@@ -146,37 +150,46 @@ paths:
       operationId: 'get-user-{developer}-form-{form_name}'
   '/user/{username}/apps':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: username
         in: path
         required: true
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
       operationId: 'get-user-{username}-apps'
   '/user/{username}/apps/{install_app_id}':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: username
         in: path
         required: true
-      - type: string
+      - schema:
+          type: string
         name: install_app_id
         in: path
         required: true
     get:
       summary: Your GET endpoint
       tags: []
-      responses: {}
+      responses:
+        '200':
+          description: OK
       operationId: 'get-user-{username}-apps-{install_app_id}'
   '/user/{username}/questionary/{app_id}':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: username
         in: path
         required: true
-      - type: string
+      - schema:
+          type: string
         name: app_id
         in: path
         required: true
@@ -254,7 +267,8 @@ paths:
       operationId: get-apps
   '/apps/{app_id}':
     parameters:
-      - type: string
+      - schema:
+          type: string
         name: app_id
         in: path
         required: true

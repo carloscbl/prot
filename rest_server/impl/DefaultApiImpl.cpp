@@ -11,7 +11,6 @@
 */
 
 #include "DefaultApiImpl.h"
-#include "trace_bullet.hpp"
 
 namespace org {
 namespace openapitools {
@@ -24,16 +23,41 @@ DefaultApiImpl::DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router> rtr)
     : DefaultApi(rtr)
     { }
 
+void DefaultApiImpl::delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_apps(Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_appsapp_id(const std::string &appId, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_userdeveloper_form(const std::string &developer, const Object &body, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_userusername_apps(const std::string &username, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_userusername_appsinstall_app_id(const std::string &username, const std::string &installAppId, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_userusername_questionaryapp_id(const std::string &username, const std::string &appId, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::get_userusername_task(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
+void DefaultApiImpl::post_userusername_questionaryapp_id(const std::string &username, const std::string &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) {
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+}
 void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response) {
-
-    auto tasksss =  read_tasks("carloscbl");
-
-    for (auto &&i : tasksss)
-    {
-        cout << i->get_name() << endl;
-    }
-
-    response.send(Pistache::Http::Code::Ok, json(*tasksss.begin()->get()).dump(4) );
+    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 void DefaultApiImpl::user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
