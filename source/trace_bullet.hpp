@@ -211,13 +211,18 @@ inline unique_ptr<user> read_user(string username)
     return us;
 }
 
-inline void delete_user(const string &username)
+inline bool delete_user(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
     test_prot::Users usr;
-    db(remove_from(usr).where(usr.username == username));
-    user::users.erase(username);
+    const auto & result = db(remove_from(usr).where(usr.username == username));
+    if(result > 0){
+        return true;
+    }else{
+        return false;
+    }
+
 }
 
 inline bool create_instalation(const string &username, const string &form_name)

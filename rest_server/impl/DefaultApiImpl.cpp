@@ -25,7 +25,11 @@ DefaultApiImpl::DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router> rtr)
     { }
 
 void DefaultApiImpl::delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+    if(delete_user(username)){
+        response.send(Pistache::Http::Code::Ok, "Done");
+    }else{
+        response.send(Pistache::Http::Code::Not_Found, "Username doest not exists");
+    }
 }
 void DefaultApiImpl::get_apps(Pistache::Http::ResponseWriter &response) {
     json forms = read_form_names();
