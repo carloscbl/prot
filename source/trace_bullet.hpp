@@ -73,9 +73,9 @@ inline bool gen_exists(string unique_val)
     T table;
     if (!db(select(table.json).from(table).where(get_data_member<T>() == unique_val)).empty())
     {
-        return false; //Already exists;
+        return true; //Already exists;
     }
-    return true;
+    return false;
 }
 
 template <typename T>
@@ -94,7 +94,7 @@ inline optional<uint64_t> get_id(string unique_val)
 inline form *create_form(const json &valid_form, const string &username)
 {
     using test_prot::Forms;
-    if (!gen_exists<test_prot::Forms>(form::get_form_name(valid_form)))
+    if (gen_exists<test_prot::Forms>(form::get_form_name(valid_form)))
     {
         return nullptr;
     }
@@ -161,7 +161,7 @@ inline void read_db_json()
 inline unique_ptr<user> create_user(string username, json js)
 {
     using test_prot::Users;
-    if (!gen_exists<test_prot::Users>(username))
+    if (gen_exists<test_prot::Users>(username))
     {
         return nullptr;
     }
@@ -190,7 +190,7 @@ inline unique_ptr<user> read_user(string username)
     test_prot::Users usr;
     const auto &row = db(sqlpp::select(all_of(usr)).from(usr).unconditionally().limit(1U)).front();
 
-    json juser(row.json);
+    json juser = json::parse(row.json.text);
     auto us = make_unique<user>();
     from_json(juser, *us);
     return us;

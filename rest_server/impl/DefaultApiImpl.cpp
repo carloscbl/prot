@@ -11,6 +11,7 @@
 */
 
 #include "DefaultApiImpl.h"
+#include "trace_bullet.hpp"
 
 namespace org {
 namespace openapitools {
@@ -32,7 +33,7 @@ void DefaultApiImpl::get_apps(Pistache::Http::ResponseWriter &response) {
 void DefaultApiImpl::get_appsapp_id(const std::string &appId, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
-void DefaultApiImpl::get_userdeveloper_form(const std::string &developer, const Object &body, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 void DefaultApiImpl::get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response) {
@@ -60,7 +61,15 @@ void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 void DefaultApiImpl::user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+
+    const auto usr = read_user(username);
+    if(!usr){
+        response.send(Pistache::Http::Code::Not_Found, "Do some magic\n");
+        return;
+    }
+
+    json js = *usr;
+    response.send(Pistache::Http::Code::Ok, js.dump(4));
 }
 
 }

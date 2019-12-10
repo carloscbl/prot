@@ -22,6 +22,8 @@ paths:
             application/json:
               schema:
                 $ref: ./models/user.v1.json
+        '404':
+          description: Not Found
     delete:
       summary: ''
       operationId: 'delete-user-{username}'
@@ -95,11 +97,6 @@ paths:
                 items:
                   type: string
       operationId: 'get-user-{developer}-form'
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
     post:
       summary: ''
       operationId: 'post-user-{developer}-form'

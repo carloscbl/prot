@@ -105,8 +105,7 @@ private:
     /// 
     /// </remarks>
     /// <param name="developer"></param>
-    /// <param name="body"> (optional)</param>
-    virtual void get_userdeveloper_form(const std::string &developer, const Object &body, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint

@@ -20,5 +20,6 @@ void to_json(nlohmann::json& new_json, const user& ref_task){
 }
 
 void from_json(const nlohmann::json& ref_json, user& new_user){
+    cout << ref_json.dump(4) << endl;
     ref_json.at("username").get_to(new_user.minimal_data.username);
 }

@@ -56,7 +56,7 @@ public:
     void delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response);
     void get_apps(Pistache::Http::ResponseWriter &response);
     void get_appsapp_id(const std::string &appId, Pistache::Http::ResponseWriter &response);
-    void get_userdeveloper_form(const std::string &developer, const Object &body, Pistache::Http::ResponseWriter &response);
+    void get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response);
     void get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response);
     void get_userusername_apps(const std::string &username, Pistache::Http::ResponseWriter &response);
     void get_userusername_appsinstall_app_id(const std::string &username, const std::string &installAppId, Pistache::Http::ResponseWriter &response);

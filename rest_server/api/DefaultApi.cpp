@@ -103,13 +103,8 @@ void DefaultApi::get_userdeveloper_form_handler(const Pistache::Rest::Request &r
     // Getting the path params
     auto developer = request.param(":developer").as<std::string>();
     
-    // Getting the body param
-    
-    Object body;
-    
     try {
-      body = request.body();
-      this->get_userdeveloper_form(developer, body, response);
+      this->get_userdeveloper_form(developer, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
