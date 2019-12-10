@@ -46,14 +46,12 @@ public:
     /// </summary>
     std::string getUsername() const;
     void setUsername(std::string const& value);
-    bool usernameIsSet() const;
-    void unsetUsername();
 
     friend void to_json(nlohmann::json& j, const Inline_object& o);
     friend void from_json(const nlohmann::json& j, Inline_object& o);
 protected:
     std::string m_Username;
-    bool m_UsernameIsSet;
+
 };
 
 }

@@ -133,6 +133,21 @@ inline form *read_form(const string &form_name)
     return form::get_forms_register().at(protform.get_form_name()).get();
 }
 
+inline vector<string> read_form_names()
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    test_prot::Forms form_;
+    vector<string> forms_names;
+    
+    for (const auto &result : db(sqlpp::select(form_.name).from(form_).unconditionally().limit(1000U)))
+    {
+        forms_names.push_back(result.name);
+    }
+
+    return forms_names;
+}
+
 inline void delete_form(const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
@@ -158,7 +173,7 @@ inline void read_db_json()
 }
 
 //This class is intended to advance needs until they are correctly categorized
-inline unique_ptr<user> create_user(string username, json js)
+inline unique_ptr<user> create_user(string username)
 {
     using test_prot::Users;
     if (gen_exists<test_prot::Users>(username))
@@ -172,7 +187,7 @@ inline unique_ptr<user> create_user(string username, json js)
     test_prot::Schedulers sche;
 
     auto us = make_unique<user>();
-    json j = {{"username", "carloscbl"}};
+    json j = {{"username", username}};
     from_json(j, *us);
     const auto &result = db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
     db(insert_into(tasker_).set(tasker_.user = result));
@@ -188,7 +203,7 @@ inline unique_ptr<user> read_user(string username)
     }
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
-    const auto &row = db(sqlpp::select(all_of(usr)).from(usr).unconditionally().limit(1U)).front();
+    const auto &row = db(sqlpp::select(all_of(usr)).from(usr).where( usr.username == username).limit(1U)).front();
 
     json juser = json::parse(row.json.text);
     auto us = make_unique<user>();

@@ -46,6 +46,8 @@ paths:
               properties:
                 username:
                   type: string
+              required:
+                - username
   '/user/{username}/tasks':
     parameters:
       - schema:

@@ -21,7 +21,6 @@ namespace model {
 Inline_object::Inline_object()
 {
     m_Username = "";
-    m_UsernameIsSet = false;
     
 }
 
@@ -37,17 +36,12 @@ void Inline_object::validate()
 void to_json(nlohmann::json& j, const Inline_object& o)
 {
     j = nlohmann::json();
-    if(o.usernameIsSet())
-        j["username"] = o.m_Username;
+    j["username"] = o.m_Username;
 }
 
 void from_json(const nlohmann::json& j, Inline_object& o)
 {
-    if(j.find("username") != j.end())
-    {
-        j.at("username").get_to(o.m_Username);
-        o.m_UsernameIsSet = true;
-    } 
+    j.at("username").get_to(o.m_Username);
 }
 
 std::string Inline_object::getUsername() const
@@ -57,15 +51,6 @@ std::string Inline_object::getUsername() const
 void Inline_object::setUsername(std::string const& value)
 {
     m_Username = value;
-    m_UsernameIsSet = true;
-}
-bool Inline_object::usernameIsSet() const
-{
-    return m_UsernameIsSet;
-}
-void Inline_object::unsetUsername()
-{
-    m_UsernameIsSet = false;
 }
 
 }
