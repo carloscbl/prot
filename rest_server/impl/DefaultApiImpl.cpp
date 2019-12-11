@@ -32,12 +32,32 @@ void DefaultApiImpl::delete_userusername(const std::string &username, Pistache::
     }
 }
 void DefaultApiImpl::get_apps(Pistache::Http::ResponseWriter &response) {
-    json forms = read_form_names();
-    response.send(Pistache::Http::Code::Ok, forms.dump(4));
+    auto binds_forms = read_form_names();
+    vector<Prot_app_info> apps;
+    for (auto &[ k,v] : binds_forms)
+    {
+        Prot_app_info app;
+        app.setFormId(k);
+        app.setFormName(v);
+        apps.push_back(app);
+    }
+    json jresponse = apps;
+    response.send(Pistache::Http::Code::Ok, jresponse.dump(4));
 }
-void DefaultApiImpl::get_appsapp_id(const std::string &appId, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response){
+    auto ff = read_form_by_id(id);
+    if(!ff.has_value()){
+        response.send(Pistache::Http::Code::Not_Found, "app id doesn't match any");
+        return;
+    }
+    auto paired = ff.value();
+    Prot_app_info app;
+    app.setFormId(paired.first);
+    app.setFormName(paired.second);
+    json jresponse = app;
+    response.send(Pistache::Http::Code::Ok, jresponse.dump(4));
 }
+
 void DefaultApiImpl::get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }

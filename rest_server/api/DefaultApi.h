@@ -30,9 +30,8 @@
 #include "Inline_object_2.h"
 #include "Inline_object_3.h"
 #include "Inline_response_200.h"
-#include "Inline_response_200_1.h"
-#include "Inline_response_200_2.h"
 #include "Object.h"
+#include "Prot_app_info.h"
 #include "Task.h"
 #include "User.h"
 #include <string>
@@ -55,9 +54,9 @@ public:
 private:
     void setupRoutes();
 
+    void apps_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void delete_userusername_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void get_apps_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_appsapp_id_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void get_userdeveloper_form_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void get_userdeveloper_formform_name_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void get_userusername_apps_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
@@ -71,6 +70,15 @@ private:
     void default_api_default_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
 
     std::shared_ptr<Pistache::Rest::Router> router;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="id"></param>
+    virtual void apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// 
@@ -88,15 +96,6 @@ private:
     /// 
     /// </remarks>
     virtual void get_apps(Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="appId"></param>
-    virtual void get_appsapp_id(const std::string &appId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint

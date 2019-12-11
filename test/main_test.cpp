@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
     //////////////////////////////////////////////////////
 
     read_db_json();
-    delete_user("pepe");
+    //delete_user("pepe");
     create_user("carloscbl");
     create_user("pepe");
     
@@ -90,7 +90,7 @@ int main(int argc, char *argv[])
     read_instalations("carloscbl");
     delete_instalation("carloscbl", "Lemon");
     read_instalations("carloscbl");
-    delete_user("pepe");
+    //delete_user("pepe");
 
 
     int result = Catch::Session().run(argc, argv);

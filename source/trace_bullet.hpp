@@ -133,16 +133,31 @@ inline form *read_form(const string &form_name)
     return form::get_forms_register().at(protform.get_form_name()).get();
 }
 
-inline vector<string> read_form_names()
+inline optional<pair<uint64_t,string>> read_form_by_id(const int32_t &id)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
     test_prot::Forms form_;
-    vector<string> forms_names;
-    
-    for (const auto &result : db(sqlpp::select(form_.name).from(form_).unconditionally().limit(1000U)))
+    const auto &result = db( sqlpp::select(all_of(form_)).from(form_).where(form_.id == id ).limit(1U) );
+    if (result.empty())
     {
-        forms_names.push_back(result.name);
+        return nullopt;
+    }
+
+    const auto &row = result.front();
+    return make_pair(row.id,row.name);
+}
+
+inline map<uint64_t,string> read_form_names()
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    test_prot::Forms form_;
+    map<uint64_t,string> forms_names;
+    
+    for (const auto &result : db(sqlpp::select(form_.id,form_.name).from(form_).unconditionally().limit(1000U)))
+    {
+        forms_names[result.id] = result.name;
     }
 
     return forms_names;

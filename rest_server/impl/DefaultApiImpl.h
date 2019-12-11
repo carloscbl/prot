@@ -34,9 +34,8 @@
 #include "Inline_object_2.h"
 #include "Inline_object_3.h"
 #include "Inline_response_200.h"
-#include "Inline_response_200_1.h"
-#include "Inline_response_200_2.h"
 #include "Object.h"
+#include "Prot_app_info.h"
 #include "Task.h"
 #include "User.h"
 #include <string>
@@ -53,9 +52,9 @@ public:
     DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router>);
     ~DefaultApiImpl() {}
 
+    void apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response);
     void delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response);
     void get_apps(Pistache::Http::ResponseWriter &response);
-    void get_appsapp_id(const std::string &appId, Pistache::Http::ResponseWriter &response);
     void get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response);
     void get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response);
     void get_userusername_apps(const std::string &username, Pistache::Http::ResponseWriter &response);

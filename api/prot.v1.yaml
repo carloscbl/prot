@@ -249,26 +249,13 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
-                  properties:
-                    name:
-                      type: string
-                    picture:
-                      type: string
-                    price:
-                      type: number
-                    tags:
-                      type: array
-                      items:
-                        type: string
-                    '':
-                      type: string
+                  $ref: ./models/prot_app_info.v1.json
       operationId: get-apps
-  '/apps/{app_id}':
+  '/apps/{id}':
     parameters:
       - schema:
-          type: string
-        name: app_id
+          type: integer
+        name: id
         in: path
         required: true
     get:
@@ -280,26 +267,10 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties:
-                  name:
-                    type: string
-                  picture:
-                    type: string
-                  starts:
-                    type: number
-                  tags:
-                    type: string
-                  developer:
-                    type: string
-                  description:
-                    type: string
-                  downloads:
-                    type: integer
-                required:
-                  - name
+                $ref: ./models/prot_app_info.v1.json
         '404':
           description: Not Found
-      operationId: 'get-apps-{app_id}'
+      operationId: ''
+      description: ''
 components:
   schemas: {}
