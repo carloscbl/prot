@@ -67,7 +67,6 @@ paths:
                 type: array
                 items:
                   $ref: ./models/task.v1.json
-      operationId: 'get-user-{username}-task'
       requestBody:
         content:
           application/json:
@@ -98,7 +97,6 @@ paths:
                 description: 'Returns all the developer, forms_names submited'
                 items:
                   type: string
-      operationId: 'get-user-{developer}-form'
     post:
       summary: ''
       operationId: 'post-user-{developer}-form'
@@ -119,7 +117,7 @@ paths:
                   type: string
                 '':
                   type: string
-  '/user/{developer}/form/{form_name}':
+  '/user/{developer}/form/{formId}':
     parameters:
       - schema:
           type: string
@@ -127,8 +125,8 @@ paths:
         in: path
         required: true
       - schema:
-          type: string
-        name: form_name
+          type: integer
+        name: formId
         in: path
         required: true
     get:
@@ -146,7 +144,6 @@ paths:
               schema:
                 type: object
                 properties: {}
-      operationId: 'get-user-{developer}-form-{form_name}'
   '/user/{username}/apps':
     parameters:
       - schema:
@@ -162,8 +159,7 @@ paths:
           description: OK
         '404':
           description: Not Found
-      operationId: 'get-user-{username}-apps'
-  '/user/{username}/apps/{install_app_id}':
+  '/user/{username}/apps/{installAppId}':
     parameters:
       - schema:
           type: string
@@ -172,7 +168,7 @@ paths:
         required: true
       - schema:
           type: integer
-        name: install_app_id
+        name: installAppId
         in: path
         required: true
     get:
@@ -181,8 +177,8 @@ paths:
       responses:
         '200':
           description: OK
-      operationId: 'get-user-{username}-apps-{install_app_id}'
-  '/user/{username}/questionary/{app_id}':
+      description: ''
+  '/user/{username}/questionary/{appId}':
     parameters:
       - schema:
           type: string
@@ -190,8 +186,8 @@ paths:
         in: path
         required: true
       - schema:
-          type: string
-        name: app_id
+          type: integer
+        name: appId
         in: path
         required: true
     get:
@@ -220,7 +216,6 @@ paths:
           description: Forbidden
         '404':
           description: Not Found
-      operationId: 'get-user-{username}-questionary-{app_id}'
     post:
       summary: ''
       operationId: 'post-user-{username}-questionary-{app_id}'
@@ -252,7 +247,6 @@ paths:
                 type: array
                 items:
                   $ref: ./models/prot_app_info.v1.json
-      operationId: get-apps
   '/apps/{id}':
     parameters:
       - schema:
@@ -272,7 +266,6 @@ paths:
                 $ref: ./models/prot_app_info.v1.json
         '404':
           description: Not Found
-      operationId: ''
       description: ''
 components:
   schemas: {}

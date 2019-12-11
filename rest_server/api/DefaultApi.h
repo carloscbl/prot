@@ -54,22 +54,30 @@ public:
 private:
     void setupRoutes();
 
+    void apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void apps_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void delete_userusername_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_apps_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_userdeveloper_form_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_userdeveloper_formform_name_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_userusername_apps_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_userusername_appsinstall_app_id_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_userusername_questionaryapp_id_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void get_userusername_task_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void post_userdeveloper_form_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void post_userusername_questionaryapp_id_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_developer_form_form_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_developer_form_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_apps_install_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_questionary_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_tasks_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void default_api_default_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
 
     std::shared_ptr<Pistache::Rest::Router> router;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    virtual void apps_get(Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
@@ -90,72 +98,6 @@ private:
     virtual void delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    virtual void get_apps(Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="developer"></param>
-    virtual void get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="developer"></param>
-    /// <param name="formName"></param>
-    virtual void get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="username"></param>
-    virtual void get_userusername_apps(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="username"></param>
-    /// <param name="installAppId"></param>
-    virtual void get_userusername_appsinstall_app_id(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="username"></param>
-    /// <param name="appId"></param>
-    virtual void get_userusername_questionaryapp_id(const std::string &username, const std::string &appId, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// Your GET endpoint
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="username"></param>
-    /// <param name="inlineObject1"> (optional)</param>
-    virtual void get_userusername_task(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
     /// 
     /// </summary>
     /// <remarks>
@@ -174,7 +116,26 @@ private:
     /// <param name="username"></param>
     /// <param name="appId"></param>
     /// <param name="inlineObject3"> (optional)</param>
-    virtual void post_userusername_questionaryapp_id(const std::string &username, const std::string &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void post_userusername_questionaryapp_id(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="developer"></param>
+    /// <param name="formId"></param>
+    virtual void user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="developer"></param>
+    virtual void user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// 
@@ -192,7 +153,46 @@ private:
     /// 
     /// </remarks>
     /// <param name="username"></param>
+    virtual void user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="installAppId"></param>
+    virtual void user_username_apps_install_app_id_get(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
     virtual void user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="appId"></param>
+    virtual void user_username_questionary_app_id_get(const std::string &username, const int32_t &appId, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="inlineObject1"> (optional)</param>
+    virtual void user_username_tasks_get(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) = 0;
 
 };
 
