@@ -31,6 +31,7 @@ void DefaultApiImpl::delete_userusername(const std::string &username, Pistache::
         response.send(Pistache::Http::Code::Not_Found, "Username doest not exists");
     }
 }
+
 void DefaultApiImpl::get_apps(Pistache::Http::ResponseWriter &response) {
     auto binds_forms = read_form_names();
     vector<Prot_app_info> apps;
@@ -44,6 +45,7 @@ void DefaultApiImpl::get_apps(Pistache::Http::ResponseWriter &response) {
     json jresponse = apps;
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4));
 }
+
 void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response){
     auto ff = read_form_by_id(id);
     if(!ff.has_value()){
@@ -64,10 +66,25 @@ void DefaultApiImpl::get_userdeveloper_form(const std::string &developer, Pistac
 void DefaultApiImpl::get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
+
 void DefaultApiImpl::get_userusername_apps(const std::string &username, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+    if(!gen_exists<test_prot::Users>(username)){
+        response.send(Pistache::Http::Code::Not_Found, "user does not exists");
+        return;
+    }
+    json jsresponse = read_instalations(username);
+
+    response.send(Pistache::Http::Code::Ok, jsresponse.dump(4));
 }
-void DefaultApiImpl::get_userusername_appsinstall_app_id(const std::string &username, const std::string &installAppId, Pistache::Http::ResponseWriter &response) {
+
+void DefaultApiImpl::get_userusername_appsinstall_app_id(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) {
+    if(!gen_exists<test_prot::Users>(username)){
+        response.send(Pistache::Http::Code::Not_Found, "user does not exists");
+        return;
+    }
+    json jsresponse = read_instalations(username, installAppId);
+
+    response.send(Pistache::Http::Code::Ok, jsresponse.dump(4));
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 void DefaultApiImpl::get_userusername_questionaryapp_id(const std::string &username, const std::string &appId, Pistache::Http::ResponseWriter &response) {

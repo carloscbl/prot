@@ -154,7 +154,7 @@ void DefaultApi::get_userusername_apps_handler(const Pistache::Rest::Request &re
 void DefaultApi::get_userusername_appsinstall_app_id_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
     // Getting the path params
     auto username = request.param(":username").as<std::string>();
-    auto installAppId = request.param(":installAppId").as<std::string>();
+    auto installAppId = request.param(":installAppId").as<int32_t>();
     
     try {
       this->get_userusername_appsinstall_app_id(username, installAppId, response);

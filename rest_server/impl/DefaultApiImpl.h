@@ -58,7 +58,7 @@ public:
     void get_userdeveloper_form(const std::string &developer, Pistache::Http::ResponseWriter &response);
     void get_userdeveloper_formform_name(const std::string &developer, const std::string &formName, Pistache::Http::ResponseWriter &response);
     void get_userusername_apps(const std::string &username, Pistache::Http::ResponseWriter &response);
-    void get_userusername_appsinstall_app_id(const std::string &username, const std::string &installAppId, Pistache::Http::ResponseWriter &response);
+    void get_userusername_appsinstall_app_id(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response);
     void get_userusername_questionaryapp_id(const std::string &username, const std::string &appId, Pistache::Http::ResponseWriter &response);
     void get_userusername_task(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response);
     void post_userdeveloper_form(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response);

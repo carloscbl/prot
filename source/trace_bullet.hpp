@@ -30,7 +30,7 @@ namespace mysql = sqlpp::mysql;
 //Sparse things to support
 /*
 1 create user OK
-2 read & E user OK 
+2 read & E user OK
 3 delete user OK
 
 3 CRUDE form OK
@@ -154,7 +154,7 @@ inline map<uint64_t,string> read_form_names()
 
     test_prot::Forms form_;
     map<uint64_t,string> forms_names;
-    
+
     for (const auto &result : db(sqlpp::select(form_.id,form_.name).from(form_).unconditionally().limit(1000U)))
     {
         forms_names[result.id] = result.name;
@@ -177,14 +177,25 @@ inline void read_db_json()
     auto &db = mysql_db::get_db_lazy().db;
     std::stringstream sql;
     sql << "SELECT json->>\"$.username\" FROM users";
-
-    auto statement = sqlpp::custom_query(sqlpp::verbatim(sql.str()))
-                         .with_result_type_of(sqlpp::select(sqlpp::value("username").as(sqlpp::alias::a)));
-
-    for (const auto &row : db(statement))
     {
-        std::cout << "ID: " << row.a << std::endl;
+        auto statement = sqlpp::custom_query(sqlpp::verbatim(sql.str()))
+                            .with_result_type_of(sqlpp::select(sqlpp::value("username").as(sqlpp::alias::a)));
+        for (const auto &row : db(statement))
+        {
+            std::cout << "ID: " << row.a << std::endl;
+        }
+
     }
+//     test_prot::Users usr;
+
+//     auto statement = select(select(sqlpp::verbatim(R"--(json->>"$.username")--").as(sqlpp::alias::a)))
+//    .from(usr)
+//    .unconditionally();
+
+//     for (const auto &row : db(statement))
+//     {
+//         std::cout << "ID: " << row.a << std::endl;
+//     }
 }
 
 //This class is intended to advance needs until they are correctly categorized
@@ -282,16 +293,27 @@ inline bool delete_instalation(const string &username, const string &form_name)
     return true;
 }
 
-inline vector<string> read_instalations(const string &username, optional<string> form_name = nullopt)
+inline map<uint64_t,string> read_instalations(const string &username, optional<uint64_t> form_id = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Users usr;
     test_prot::Forms form_;
     test_prot::UsersForms usr_forms;
-    vector<string> formsresult;
-    for (const auto &row : db(select(all_of(form_)).from(usr.join(usr_forms).on(usr.id == usr_forms.iduser).join(form_).on(form_.id == usr_forms.idform)).where(usr.username == username)))
+    map<uint64_t,string> formsresult;
+
+    if(form_id.has_value()){
+        for (const auto &row : db(select(all_of(form_)).from(usr.join(usr_forms).on(usr.id == usr_forms.iduser).join(form_).on(form_.id == usr_forms.idform))
+        .where(usr.username == username and form_.id == form_id.value() ) ))
+        {
+            formsresult[row.id] = row.name;
+        }
+        return formsresult;
+    }
+
+    for (const auto &row : db(select(all_of(form_)).from(usr.join(usr_forms).on(usr.id == usr_forms.iduser).join(form_).on(form_.id == usr_forms.idform)
+    ).where(usr.username == username )))
     {
-        formsresult.push_back(row.name);
+        formsresult[row.id] = row.name;
     }
     return formsresult;
 }

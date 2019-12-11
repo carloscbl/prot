@@ -133,7 +133,7 @@ private:
     /// </remarks>
     /// <param name="username"></param>
     /// <param name="installAppId"></param>
-    virtual void get_userusername_appsinstall_app_id(const std::string &username, const std::string &installAppId, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void get_userusername_appsinstall_app_id(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
