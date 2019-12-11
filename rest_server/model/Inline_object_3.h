@@ -19,6 +19,7 @@
 #define Inline_object_3_H_
 
 
+#include <string>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -47,12 +48,21 @@ public:
     void setRestart(bool const value);
     bool restartIsSet() const;
     void unsetRestart();
+    /// <summary>
+    /// 
+    /// </summary>
+    std::string getResponse() const;
+    void setResponse(std::string const& value);
+    bool responseIsSet() const;
+    void unsetResponse();
 
     friend void to_json(nlohmann::json& j, const Inline_object_3& o);
     friend void from_json(const nlohmann::json& j, Inline_object_3& o);
 protected:
     bool m_Restart;
     bool m_RestartIsSet;
+    std::string m_Response;
+    bool m_ResponseIsSet;
 };
 
 }

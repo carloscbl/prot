@@ -21,11 +21,8 @@ namespace model {
 Inline_response_200::Inline_response_200()
 {
     m_Current_question = "";
-    m_Answer_type = "";
     m_Hints = "";
     m_HintsIsSet = false;
-    m_ = "";
-    m_IsSet = false;
     
 }
 
@@ -42,26 +39,17 @@ void to_json(nlohmann::json& j, const Inline_response_200& o)
 {
     j = nlohmann::json();
     j["current_question"] = o.m_Current_question;
-    j["answer_type"] = o.m_Answer_type;
     if(o.hintsIsSet())
         j["hints"] = o.m_Hints;
-    if(o.IsSet())
-        j[""] = o.m_;
 }
 
 void from_json(const nlohmann::json& j, Inline_response_200& o)
 {
     j.at("current_question").get_to(o.m_Current_question);
-    j.at("answer_type").get_to(o.m_Answer_type);
     if(j.find("hints") != j.end())
     {
         j.at("hints").get_to(o.m_Hints);
         o.m_HintsIsSet = true;
-    } 
-    if(j.find("") != j.end())
-    {
-        j.at("").get_to(o.m_);
-        o.m_IsSet = true;
     } 
 }
 
@@ -72,14 +60,6 @@ std::string Inline_response_200::getCurrentQuestion() const
 void Inline_response_200::setCurrentQuestion(std::string const& value)
 {
     m_Current_question = value;
-}
-std::string Inline_response_200::getAnswerType() const
-{
-    return m_Answer_type;
-}
-void Inline_response_200::setAnswerType(std::string const& value)
-{
-    m_Answer_type = value;
 }
 std::string Inline_response_200::getHints() const
 {
@@ -97,23 +77,6 @@ bool Inline_response_200::hintsIsSet() const
 void Inline_response_200::unsetHints()
 {
     m_HintsIsSet = false;
-}
-std::string Inline_response_200::get() const
-{
-    return m_;
-}
-void Inline_response_200::set(std::string const& value)
-{
-    m_ = value;
-    m_IsSet = true;
-}
-bool Inline_response_200::IsSet() const
-{
-    return m_IsSet;
-}
-void Inline_response_200::unset()
-{
-    m_IsSet = false;
 }
 
 }

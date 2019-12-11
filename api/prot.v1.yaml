@@ -207,22 +207,18 @@ paths:
                 properties:
                   current_question:
                     type: string
-                  answer_type:
-                    type: string
                   hints:
-                    type: string
-                  '':
                     type: string
                 required:
                   - current_question
-                  - answer_type
         '403':
           description: Forbidden
         '404':
           description: Not Found
+      description: Returns the current question pending to be responded
     post:
       summary: ''
-      operationId: 'post-user-{username}-questionary-{app_id}'
+      operationId: ''
       requestBody:
         content:
           application/json:
@@ -231,6 +227,8 @@ paths:
               properties:
                 restart:
                   type: boolean
+                response:
+                  type: string
       responses:
         '200':
           description: OK

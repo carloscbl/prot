@@ -38,7 +38,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(carlos, *form);
+    form_runner fr(*carlos, *form);
 
     auto &response = fr.run(qa_request1);
     //cout << response.dump() <<endl;
@@ -125,7 +125,7 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(carlos, *form);
+    form_runner fr(*carlos, *form);
 
     auto &response = fr.run(qa_request1);
     //cout << response.dump() <<endl;
@@ -190,7 +190,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(carlos, *form);
+    form_runner fr(*carlos, *form);
     fr.clear_sessions();
 
     auto &response = fr.run(qa_request1);
@@ -256,7 +256,7 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(carlos, *form);
+    form_runner fr(*carlos, *form);
 
     auto &response = fr.run(qa_request1);
     // cout << response.dump() <<endl;

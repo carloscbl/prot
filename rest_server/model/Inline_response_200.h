@@ -49,34 +49,18 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getAnswerType() const;
-    void setAnswerType(std::string const& value);
-    /// <summary>
-    /// 
-    /// </summary>
     std::string getHints() const;
     void setHints(std::string const& value);
     bool hintsIsSet() const;
     void unsetHints();
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string get() const;
-    void set(std::string const& value);
-    bool IsSet() const;
-    void unset();
 
     friend void to_json(nlohmann::json& j, const Inline_response_200& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200& o);
 protected:
     std::string m_Current_question;
 
-    std::string m_Answer_type;
-
     std::string m_Hints;
     bool m_HintsIsSet;
-    std::string m_;
-    bool m_IsSet;
 };
 
 }

@@ -14,7 +14,11 @@
 #include "json.hpp"
 #include "command_expr_evaluator.h"
 
-using namespace std;
+using std::any;
+using std::string;
+using std::optional;
+using std::function;
+using std::map;
 
 enum class branches_ids : int
 {
@@ -54,7 +58,7 @@ private:
 
     std::optional<strategy_return> next_branch_result = std::nullopt;
     const json & question_obj;
-    const any & answer;
+    const std::any & answer;
     function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
 
     std::optional<strategy_return> ranges(const json & ranges_array,int arg) const noexcept;
@@ -62,18 +66,18 @@ private:
     std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
 
     //C++17, with inline you can use header :O
-    const map<string_view, function<std::optional<strategy_return>(const json & current_selector,any)>> kind_branch_t_map{
-        {"custom",[this](const json & j,any s){ return custom(j,any_cast<string>(s));}},
-        {"ranges",[this](const json & j,any s){ return ranges(j,any_cast<int>(s));}},
+    const map<string_view, function<std::optional<strategy_return>(const json & current_selector,std::any)>> kind_branch_t_map{
+        {"custom",[this](const json & j,std::any s){ return custom(j,any_cast<string>(s));}},
+        {"ranges",[this](const json & j,std::any s){ return ranges(j,any_cast<int>(s));}},
         {"predefined_boolean_yes_no_affirmative_yes", 
-            [this](const json & j,any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
+            [this](const json & j,std::any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
     };
 
     void enroute(const json & j);
 
 public:
     static const int default_brach_error = static_cast<int>(e_branches::ERROR_JSON);
-    answer_branches(const json & question_obj, const any & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
+    answer_branches(const json & question_obj, const std::any & answer, function<T(T)> answer_transformation_strategy_ = nullptr);
     strategy_return get_next_branch(){return next_branch_result.value();}
     void print_out();
 };

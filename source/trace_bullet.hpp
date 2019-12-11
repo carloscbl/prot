@@ -128,7 +128,7 @@ inline form *read_form(const string &form_name)
     }
 
     const auto &row = result.front();
-    form protform(row.json); //We create it implictly or refresh it
+    form protform(json::parse(row.json.text)); //We create it implictly or refresh it
 
     return form::get_forms_register().at(protform.get_form_name()).get();
 }

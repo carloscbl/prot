@@ -32,13 +32,13 @@ class form_runner
 {
 private:
     inline static sessions user_running_forms;
-    const chrono::minutes life_time = 5min;
-    shared_ptr<user> user_;
+    const std::chrono::minutes life_time = 5min;
+    user & user_;
     form & form_;
     unique_ptr<form_parser> fp;
 
 public:
-    form_runner(shared_ptr<user> user_, form &form_);
+    form_runner(user & user_, form &form_);
     bool perform_taskstory(next_question_data & response);
     shared_ptr<form_state> get_session() const noexcept;
     shared_ptr<form_state> fetch_next_session() const noexcept;

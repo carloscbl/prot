@@ -22,6 +22,8 @@ Inline_object_3::Inline_object_3()
 {
     m_Restart = false;
     m_RestartIsSet = false;
+    m_Response = "";
+    m_ResponseIsSet = false;
     
 }
 
@@ -39,6 +41,8 @@ void to_json(nlohmann::json& j, const Inline_object_3& o)
     j = nlohmann::json();
     if(o.restartIsSet())
         j["restart"] = o.m_Restart;
+    if(o.responseIsSet())
+        j["response"] = o.m_Response;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_3& o)
@@ -47,6 +51,11 @@ void from_json(const nlohmann::json& j, Inline_object_3& o)
     {
         j.at("restart").get_to(o.m_Restart);
         o.m_RestartIsSet = true;
+    } 
+    if(j.find("response") != j.end())
+    {
+        j.at("response").get_to(o.m_Response);
+        o.m_ResponseIsSet = true;
     } 
 }
 
@@ -66,6 +75,23 @@ bool Inline_object_3::restartIsSet() const
 void Inline_object_3::unsetRestart()
 {
     m_RestartIsSet = false;
+}
+std::string Inline_object_3::getResponse() const
+{
+    return m_Response;
+}
+void Inline_object_3::setResponse(std::string const& value)
+{
+    m_Response = value;
+    m_ResponseIsSet = true;
+}
+bool Inline_object_3::responseIsSet() const
+{
+    return m_ResponseIsSet;
+}
+void Inline_object_3::unsetResponse()
+{
+    m_ResponseIsSet = false;
 }
 
 }

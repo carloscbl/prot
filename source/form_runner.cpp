@@ -2,14 +2,14 @@
 #include "form_runner.h"
 #include "time_determinator.h"
 
-form_runner::form_runner(shared_ptr<user> user_, form &form_)
+form_runner::form_runner(user & user_, form &form_)
     : user_(user_),
       form_(form_)
 {}
 
 string form_runner::get_unique_id_session() const noexcept
 {
-    return user_->get_name() + form_.get_form_name();
+    return user_.get_name() + form_.get_form_name();
 }
 
 //FIX: this is a mess composing responses...
@@ -59,8 +59,8 @@ bool form_runner::perform_taskstory(next_question_data & response){
     failure_report_t report;
     for (size_t day = 0; day < 365; day++)
     {
-        provisional_scheduler_RAII provisional_scheduler = this->user_->get_scheduler().get_provisional();
-        tasker &tasker_ = static_cast<tasker &>(this->user_->get_tasker());
+        provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
+        tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
         taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
 
         bool complete = true;
@@ -68,7 +68,7 @@ bool form_runner::perform_taskstory(next_question_data & response){
         for (const auto &[k, v] : response.taskstory_json.items())
         {
             task_t task_test = make_shared<task>(v.get<task>());
-            task_test->set_user(this->user_->get_name());
+            task_test->set_user(this->user_.get_name());
             time_determinator time_dt(task_test, provisional_scheduler);
             //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
