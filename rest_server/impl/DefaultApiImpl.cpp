@@ -72,7 +72,13 @@ void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistach
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    json jsresponse = read_instalations(username);
+    json jsresponse;
+    for(const auto & [k,v] : read_instalations(username) ){
+        json inner;
+        inner["appID"] = k;
+        inner["appName"] = v;
+        jsresponse.push_back(inner);
+    }
 
     response.send(Pistache::Http::Code::Ok, jsresponse.dump(4));
 }
@@ -82,10 +88,16 @@ void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &us
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    json jsresponse = read_instalations(username, installAppId);
+    auto res = read_instalations(username, installAppId);
+    if(res.empty()){
+        response.send(Pistache::Http::Code::Not_Found, "Not found id");
+        return;
+    }
+    json jsresponse;
+    jsresponse["appID"]= res.begin()->first;
+    jsresponse["appName"]= res.begin()->second;
 
     response.send(Pistache::Http::Code::Ok, jsresponse.dump(4));
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
 }
 void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &username, const int32_t &appId, Pistache::Http::ResponseWriter &response) {
     response.send(Pistache::Http::Code::Ok, "Do some magic\n");
@@ -102,6 +114,10 @@ void DefaultApiImpl::post_userusername_questionaryapp_id(const std::string &user
 
 void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response) {
     auto usr = create_user(inlineObject.getUsername());
+    if(!usr){
+        response.send(Pistache::Http::Code::Bad_Request, "Already exists");
+        return;
+    }
     
     response.send(Pistache::Http::Code::Ok, "Created");
 }

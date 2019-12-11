@@ -38,6 +38,8 @@ paths:
       responses:
         '200':
           description: OK
+        '400':
+          description: Bad Request
       requestBody:
         content:
           application/json:
@@ -177,6 +179,8 @@ paths:
       responses:
         '200':
           description: OK
+        '404':
+          description: Not Found
       description: ''
   '/user/{username}/questionary/{appId}':
     parameters:
