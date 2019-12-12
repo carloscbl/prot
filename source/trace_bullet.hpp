@@ -133,6 +133,19 @@ inline form *read_form(const string &form_name)
     return form::get_forms_register().at(protform.get_form_name()).get();
 }
 
+inline map<uint64_t,string> read_forms_by_developer(const string & developer){
+    auto &db = mysql_db::get_db_lazy().db;
+
+    test_prot::Forms form_;
+    test_prot::Users usr;
+
+    map<uint64_t,string> dev_forms;
+    for( const auto &result : db( sqlpp::select(all_of(form_)).from(form_.join(usr).on(form_.developer == usr.id)).where(usr.username == developer ) )){
+        dev_forms[result.id] = result.name;
+    }
+    return dev_forms;
+}
+
 inline optional<pair<uint64_t,string>> read_form_by_id(const int32_t &id)
 {
     auto &db = mysql_db::get_db_lazy().db;

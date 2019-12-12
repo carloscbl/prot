@@ -62,10 +62,25 @@ void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWrit
 }
 
 void DefaultApiImpl::user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+    //Need to create a new call that joins forms, by a given developer
+    auto mp = read_forms_by_developer(developer);
+    vector<string> form_names;
+
+    for_each(mp.begin(), mp.end(), [&form_names](const pair<uint64_t,string>& c){
+        form_names.push_back(c.second);
+    });
+    json jresponse = form_names;
+    response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
 void DefaultApiImpl::user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+    auto form_ =read_form_by_id (formId);
+    if(!form_.has_value()){
+        response.send(Pistache::Http::Code::Not_Found, "not form for that id");
+        return;
+    }
+    auto form_res =read_form(form_.value().second);
+    
+    response.send(Pistache::Http::Code::Ok, form_res->get_json().dump(4));
 }
 
 void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
@@ -121,10 +136,26 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
 }
 
 void DefaultApiImpl::user_username_tasks_get(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+    //Get all tasks for the user
+    auto tsks = read_tasks(username);
+    json jresponse;
+    for (auto &&i : tsks)
+    {
+        jresponse.push_back(json(*i));
+    }
+    
+    response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
 void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
-    response.send(Pistache::Http::Code::Ok, "Do some magic\n");
+    if(!gen_exists<test_prot::Users>(developer)){
+        response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
+    }
+    auto res = create_form(json::parse( inlineObject2.getJsonStr() ),developer);
+    if(!res){
+        response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
+
+    }
+    response.send(Pistache::Http::Code::Created, "Done");
 }
 void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) {
     auto usr = read_user(username);

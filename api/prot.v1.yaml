@@ -117,8 +117,6 @@ paths:
               properties:
                 json_str:
                   type: string
-                '':
-                  type: string
   '/user/{developer}/form/{formId}':
     parameters:
       - schema:
