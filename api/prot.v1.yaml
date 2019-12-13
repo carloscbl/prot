@@ -69,16 +69,6 @@ paths:
                 type: array
                 items:
                   $ref: ./models/task.v1.json
-      requestBody:
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                from:
-                  type: integer
-                to:
-                  type: integer
   '/user/{developer}/form':
     parameters:
       - schema:

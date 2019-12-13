@@ -32,7 +32,6 @@
 #include "Inline_object.h"
 #include "Inline_object_1.h"
 #include "Inline_object_2.h"
-#include "Inline_object_3.h"
 #include "Inline_response_200.h"
 #include "Object.h"
 #include "Prot_app_info.h"
@@ -55,7 +54,7 @@ public:
     void apps_get(Pistache::Http::ResponseWriter &response);
     void apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response);
     void delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response);
-    void post_userdeveloper_form(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response);
+    void post_userdeveloper_form(const std::string &developer, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response);
     void user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response);
     void user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response);
     void user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response);
@@ -63,8 +62,8 @@ public:
     void user_username_apps_install_app_id_get(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response);
     void user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response);
     void user_username_questionary_app_id_get(const std::string &username, const int32_t &appId, Pistache::Http::ResponseWriter &response);
-    void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response);
-    void user_username_tasks_get(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response);
+    void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response);
+    void user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response);
 
 };
 

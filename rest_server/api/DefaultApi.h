@@ -28,7 +28,6 @@
 #include "Inline_object.h"
 #include "Inline_object_1.h"
 #include "Inline_object_2.h"
-#include "Inline_object_3.h"
 #include "Inline_response_200.h"
 #include "Object.h"
 #include "Prot_app_info.h"
@@ -104,8 +103,8 @@ private:
     /// 
     /// </remarks>
     /// <param name="developer"></param>
-    /// <param name="inlineObject2"> (optional)</param>
-    virtual void post_userdeveloper_form(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) = 0;
+    /// <param name="inlineObject1"> (optional)</param>
+    virtual void post_userdeveloper_form(const std::string &developer, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
@@ -181,8 +180,8 @@ private:
     /// </remarks>
     /// <param name="username"></param>
     /// <param name="appId"></param>
-    /// <param name="inlineObject3"> (optional)</param>
-    virtual void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) = 0;
+    /// <param name="inlineObject2"> (optional)</param>
+    virtual void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
@@ -191,8 +190,7 @@ private:
     /// 
     /// </remarks>
     /// <param name="username"></param>
-    /// <param name="inlineObject1"> (optional)</param>
-    virtual void user_username_tasks_get(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
 
 };
 

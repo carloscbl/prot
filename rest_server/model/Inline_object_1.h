@@ -19,6 +19,7 @@
 #define Inline_object_1_H_
 
 
+#include <string>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -43,25 +44,16 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    int32_t getFrom() const;
-    void setFrom(int32_t const value);
-    bool fromIsSet() const;
-    void unsetFrom();
-    /// <summary>
-    /// 
-    /// </summary>
-    int32_t getTo() const;
-    void setTo(int32_t const value);
-    bool toIsSet() const;
-    void unsetTo();
+    std::string getJsonStr() const;
+    void setJsonStr(std::string const& value);
+    bool jsonStrIsSet() const;
+    void unsetJson_str();
 
     friend void to_json(nlohmann::json& j, const Inline_object_1& o);
     friend void from_json(const nlohmann::json& j, Inline_object_1& o);
 protected:
-    int32_t m_From;
-    bool m_FromIsSet;
-    int32_t m_To;
-    bool m_ToIsSet;
+    std::string m_Json_str;
+    bool m_Json_strIsSet;
 };
 
 }

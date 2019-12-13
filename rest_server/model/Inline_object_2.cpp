@@ -20,10 +20,10 @@ namespace model {
 
 Inline_object_2::Inline_object_2()
 {
-    m_Json_str = "";
-    m_Json_strIsSet = false;
-    m_ = "";
-    m_IsSet = false;
+    m_Restart = false;
+    m_RestartIsSet = false;
+    m_Response = "";
+    m_ResponseIsSet = false;
     
 }
 
@@ -39,59 +39,59 @@ void Inline_object_2::validate()
 void to_json(nlohmann::json& j, const Inline_object_2& o)
 {
     j = nlohmann::json();
-    if(o.jsonStrIsSet())
-        j["json_str"] = o.m_Json_str;
-    if(o.IsSet())
-        j[""] = o.m_;
+    if(o.restartIsSet())
+        j["restart"] = o.m_Restart;
+    if(o.responseIsSet())
+        j["response"] = o.m_Response;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_2& o)
 {
-    if(j.find("json_str") != j.end())
+    if(j.find("restart") != j.end())
     {
-        j.at("json_str").get_to(o.m_Json_str);
-        o.m_Json_strIsSet = true;
+        j.at("restart").get_to(o.m_Restart);
+        o.m_RestartIsSet = true;
     } 
-    if(j.find("") != j.end())
+    if(j.find("response") != j.end())
     {
-        j.at("").get_to(o.m_);
-        o.m_IsSet = true;
+        j.at("response").get_to(o.m_Response);
+        o.m_ResponseIsSet = true;
     } 
 }
 
-std::string Inline_object_2::getJsonStr() const
+bool Inline_object_2::isRestart() const
 {
-    return m_Json_str;
+    return m_Restart;
 }
-void Inline_object_2::setJsonStr(std::string const& value)
+void Inline_object_2::setRestart(bool const value)
 {
-    m_Json_str = value;
-    m_Json_strIsSet = true;
+    m_Restart = value;
+    m_RestartIsSet = true;
 }
-bool Inline_object_2::jsonStrIsSet() const
+bool Inline_object_2::restartIsSet() const
 {
-    return m_Json_strIsSet;
+    return m_RestartIsSet;
 }
-void Inline_object_2::unsetJson_str()
+void Inline_object_2::unsetRestart()
 {
-    m_Json_strIsSet = false;
+    m_RestartIsSet = false;
 }
-std::string Inline_object_2::get() const
+std::string Inline_object_2::getResponse() const
 {
-    return m_;
+    return m_Response;
 }
-void Inline_object_2::set(std::string const& value)
+void Inline_object_2::setResponse(std::string const& value)
 {
-    m_ = value;
-    m_IsSet = true;
+    m_Response = value;
+    m_ResponseIsSet = true;
 }
-bool Inline_object_2::IsSet() const
+bool Inline_object_2::responseIsSet() const
 {
-    return m_IsSet;
+    return m_ResponseIsSet;
 }
-void Inline_object_2::unset()
+void Inline_object_2::unsetResponse()
 {
-    m_IsSet = false;
+    m_ResponseIsSet = false;
 }
 
 }

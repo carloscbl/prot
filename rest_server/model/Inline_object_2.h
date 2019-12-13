@@ -44,25 +44,25 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getJsonStr() const;
-    void setJsonStr(std::string const& value);
-    bool jsonStrIsSet() const;
-    void unsetJson_str();
+    bool isRestart() const;
+    void setRestart(bool const value);
+    bool restartIsSet() const;
+    void unsetRestart();
     /// <summary>
     /// 
     /// </summary>
-    std::string get() const;
-    void set(std::string const& value);
-    bool IsSet() const;
-    void unset();
+    std::string getResponse() const;
+    void setResponse(std::string const& value);
+    bool responseIsSet() const;
+    void unsetResponse();
 
     friend void to_json(nlohmann::json& j, const Inline_object_2& o);
     friend void from_json(const nlohmann::json& j, Inline_object_2& o);
 protected:
-    std::string m_Json_str;
-    bool m_Json_strIsSet;
-    std::string m_;
-    bool m_IsSet;
+    bool m_Restart;
+    bool m_RestartIsSet;
+    std::string m_Response;
+    bool m_ResponseIsSet;
 };
 
 }

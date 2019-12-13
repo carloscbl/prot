@@ -105,11 +105,11 @@ void DefaultApi::post_userdeveloper_form_handler(const Pistache::Rest::Request &
     
     // Getting the body param
     
-    Inline_object_2 inlineObject2;
+    Inline_object_1 inlineObject1;
     
     try {
-      nlohmann::json::parse(request.body()).get_to(inlineObject2);
-      this->post_userdeveloper_form(developer, inlineObject2, response);
+      nlohmann::json::parse(request.body()).get_to(inlineObject1);
+      this->post_userdeveloper_form(developer, inlineObject1, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
@@ -253,11 +253,11 @@ void DefaultApi::user_username_questionary_app_id_post_handler(const Pistache::R
     
     // Getting the body param
     
-    Inline_object_3 inlineObject3;
+    Inline_object_2 inlineObject2;
     
     try {
-      nlohmann::json::parse(request.body()).get_to(inlineObject3);
-      this->user_username_questionary_app_id_post(username, appId, inlineObject3, response);
+      nlohmann::json::parse(request.body()).get_to(inlineObject2);
+      this->user_username_questionary_app_id_post(username, appId, inlineObject2, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
@@ -273,13 +273,8 @@ void DefaultApi::user_username_tasks_get_handler(const Pistache::Rest::Request &
     // Getting the path params
     auto username = request.param(":username").as<std::string>();
     
-    // Getting the body param
-    
-    Inline_object_1 inlineObject1;
-    
     try {
-      nlohmann::json::parse(request.body()).get_to(inlineObject1);
-      this->user_username_tasks_get(username, inlineObject1, response);
+      this->user_username_tasks_get(username, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());

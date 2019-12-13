@@ -126,6 +126,10 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
 
     auto pair = read_form_by_id(appId);
     auto form_ = read_form(pair->second);
+    if(!form_){
+        response.send(Pistache::Http::Code::Not_Found, "form does not exists");
+        return ;
+    }
     form_runner fr(*usr, *form_);
     json qa_request1;
     auto & qa_res = fr.run(qa_request1);
@@ -135,7 +139,7 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
     response.send(Pistache::Http::Code::Ok, json(response_200).dump(4));
 }
 
-void DefaultApiImpl::user_username_tasks_get(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
     //Get all tasks for the user
     auto tsks = read_tasks(username);
     json jresponse;
@@ -146,24 +150,24 @@ void DefaultApiImpl::user_username_tasks_get(const std::string &username, const 
     
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
-void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
     if(!gen_exists<test_prot::Users>(developer)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
-    auto res = create_form(json::parse( inlineObject2.getJsonStr() ),developer);
+    auto res = create_form(json::parse( inlineObject1.getJsonStr() ),developer);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
 
     }
     response.send(Pistache::Http::Code::Created, "Done");
 }
-void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
     auto usr = read_user(username);
     if(!usr){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    if(inlineObject3.restartIsSet()){
+    if(inlineObject2.restartIsSet()){
         response.send(Pistache::Http::Code::Ok, "Rested " + username + " " + std::to_string(appId) );
 
         return;
@@ -172,7 +176,7 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
     auto form_ = read_form(pair->second);
     form_runner fr(*usr, *form_);
     json qa_request;
-    qa_request["answer"] = inlineObject3.getResponse();
+    qa_request["answer"] = inlineObject2.getResponse();
     auto & qa_res = fr.run(qa_request);
 
     Inline_response_200 response_200;

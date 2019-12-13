@@ -20,10 +20,8 @@ namespace model {
 
 Inline_object_1::Inline_object_1()
 {
-    m_From = 0;
-    m_FromIsSet = false;
-    m_To = 0;
-    m_ToIsSet = false;
+    m_Json_str = "";
+    m_Json_strIsSet = false;
     
 }
 
@@ -39,59 +37,35 @@ void Inline_object_1::validate()
 void to_json(nlohmann::json& j, const Inline_object_1& o)
 {
     j = nlohmann::json();
-    if(o.fromIsSet())
-        j["from"] = o.m_From;
-    if(o.toIsSet())
-        j["to"] = o.m_To;
+    if(o.jsonStrIsSet())
+        j["json_str"] = o.m_Json_str;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_1& o)
 {
-    if(j.find("from") != j.end())
+    if(j.find("json_str") != j.end())
     {
-        j.at("from").get_to(o.m_From);
-        o.m_FromIsSet = true;
-    } 
-    if(j.find("to") != j.end())
-    {
-        j.at("to").get_to(o.m_To);
-        o.m_ToIsSet = true;
+        j.at("json_str").get_to(o.m_Json_str);
+        o.m_Json_strIsSet = true;
     } 
 }
 
-int32_t Inline_object_1::getFrom() const
+std::string Inline_object_1::getJsonStr() const
 {
-    return m_From;
+    return m_Json_str;
 }
-void Inline_object_1::setFrom(int32_t const value)
+void Inline_object_1::setJsonStr(std::string const& value)
 {
-    m_From = value;
-    m_FromIsSet = true;
+    m_Json_str = value;
+    m_Json_strIsSet = true;
 }
-bool Inline_object_1::fromIsSet() const
+bool Inline_object_1::jsonStrIsSet() const
 {
-    return m_FromIsSet;
+    return m_Json_strIsSet;
 }
-void Inline_object_1::unsetFrom()
+void Inline_object_1::unsetJson_str()
 {
-    m_FromIsSet = false;
-}
-int32_t Inline_object_1::getTo() const
-{
-    return m_To;
-}
-void Inline_object_1::setTo(int32_t const value)
-{
-    m_To = value;
-    m_ToIsSet = true;
-}
-bool Inline_object_1::toIsSet() const
-{
-    return m_ToIsSet;
-}
-void Inline_object_1::unsetTo()
-{
-    m_ToIsSet = false;
+    m_Json_strIsSet = false;
 }
 
 }
