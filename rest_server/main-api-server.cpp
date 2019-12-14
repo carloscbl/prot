@@ -23,8 +23,8 @@
 #include "DefaultApiImpl.h"
 
 #define PISTACHE_SERVER_THREADS     2
-#define PISTACHE_SERVER_MAX_REQUEST_SIZE 32768
-#define PISTACHE_SERVER_MAX_RESPONSE_SIZE 32768
+#define PISTACHE_SERVER_MAX_REQUEST_SIZE 1000000
+#define PISTACHE_SERVER_MAX_RESPONSE_SIZE 1000000
 
 static Pistache::Http::Endpoint *httpEndpoint;
 #ifdef __linux__

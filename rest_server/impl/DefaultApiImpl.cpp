@@ -70,7 +70,7 @@ void DefaultApiImpl::user_developer_form_get(const std::string &developer, Pista
         form_names.push_back(c.second);
     });
     json jresponse = form_names;
-    response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
+    response.send( Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
 void DefaultApiImpl::user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response) {
     auto form_ =read_form_by_id (formId);
