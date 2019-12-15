@@ -2,25 +2,31 @@ FROM ubuntu:19.04
 
 
 RUN apt update && apt install -y \
+    software-properties-common \
     git \
-    gcc \
-    g++ \
+    gcc-9 \
+    g++-9 \
     coreutils \
     make \
+    cmake \
     wget \
+    tar \
     curl \
     cmake \
     python3.7 \
-    python3.7 \
     python3-pip \
-    libmariadbclient-dev libcpprest-dev libpistache-dev
+    libboost1.67-dev libmariadbclient-dev \
+    && add-apt-repository -y ppa:kip/pistache-unstable \
+    && apt update \
+    && apt install -y libpistache-dev
 
-RUN curl https://bootstrap.pypa.io/get-pip.py -o get-pip.py
-RUN python3.7 get-pip.py
-RUN python3.7 -m pip install Pyparsing
+
 
 COPY ./ /opt/prot
 WORKDIR /opt/prot
-RUN ./dependencies.sh
+
+RUN python3.7 -m pip install -r requirements.txt
+
+RUN ./dependencies.sh --docker
 RUN ./build.sh
 
