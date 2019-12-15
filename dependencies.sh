@@ -4,8 +4,15 @@ SUDO=sudo
 if [ "$1" == "--docker" ]; then
     SUDO=""
 fi
-$SUDO add-apt-repository -y ppa:kip/pistache
-$SUDO apt update && $SUDO apt install -y gcc-9 g++-9 make wget tar python3.7 python3-pip libboost1.67-dev libmariadbclient-dev libpistache-dev
+wget http://mirrors.kernel.org/ubuntu/pool/main/c/cmake/cmake_3.15.4-1_amd64.deb
+wget http://mirrors.kernel.org/ubuntu/pool/main/c/cmake/cmake-data_3.15.4-1_all.deb
+
+$SUDO dpkg -i ./cmake-data_3.15.4-1_all.deb
+$SUDO dpkg -i ./cmake_3.15.4-1_amd64.deb
+$SUDO apt-get install -f
+$SUDO add-apt-repository -y ppa:kip/pistache-unstable
+$SUDO add-apt-repository -y ppa:mhier/libboost-latest
+$SUDO apt update && $SUDO apt install -y gcc-9 g++-9 make wget tar python3.7 python3-pip libboost1.70-dev libmariadbclient-dev libpistache-dev 
 cd thirdparty
 
 if [[ "$1" == *"--custom-boost"* ]]; then
@@ -23,8 +30,10 @@ fi
 
 #date
 cd HowardHinnantDate/date
-mkdir build
-cd build
+if [ ! -d  "build" ]; then
+  mkdir build
+fi
+cd build && rm -rf *
 cmake ..
 make -j 5
 $SUDO make install
@@ -32,8 +41,10 @@ cd ../../..
 
 #sqlpp11
 cd sql/sqlpp11
-mkdir build
-cd build
+if [ ! -d  "build" ]; then
+  mkdir build
+fi
+cd build && rm -rf *
 cmake ..
 make -j 5
 $SUDO make install
@@ -41,8 +52,10 @@ cd ../../..
 
 #connector
 cd sql/sqlpp11-connector-mysql
-mkdir build
-cd build
+if [ ! -d  "build" ]; then
+  mkdir build
+fi
+cd build && rm -rf *
 cmake -DUSE_MARIADB=1 - -DDATE_INCLUDE_DIR=/usr/local/include/ ..
 make -j 5
 $SUDO make install

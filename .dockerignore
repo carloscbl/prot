@@ -1,1 +1,3 @@
 persistence
+/build
+thirdparty/boost*

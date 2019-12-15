@@ -11,3 +11,5 @@
 /.vscode/*
 !/.vscode/tasks.json
 !/.vscode/extensions.json
+cmake_3.15.4-1_amd64.deb
+cmake-data_3.15.4-1_all.deb

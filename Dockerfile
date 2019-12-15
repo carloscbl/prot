@@ -15,10 +15,11 @@ RUN apt update && apt install -y \
     cmake \
     python3.7 \
     python3-pip \
-    libboost1.67-dev libmariadbclient-dev \
+    libmariadbclient-dev \
     && add-apt-repository -y ppa:kip/pistache-unstable \
+    && add-apt-repository -y ppa:mhier/libboost-latest \
     && apt update \
-    && apt install -y libpistache-dev
+    && apt install -y libpistache-dev libboost1.70-dev
 
 
 
