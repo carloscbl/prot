@@ -1,5 +1,14 @@
 #include "persistor.h"
 
+
+optional<string> get_env(const string & env_var) {
+    const char* env_p = std::getenv(env_var.c_str());
+    if(!env_p){
+        return std::nullopt;
+    }
+
+    return env_p;
+}
 mysql_db & mysql_db::get_db_lazy(){
     if(!mysql_db::current_db){
         mysql_db::current_db = std::make_unique<mysql_db>();
@@ -10,11 +19,11 @@ mysql_db & mysql_db::get_db_lazy(){
 shared_ptr<mysql::connection_config> mysql_db::get_db_config()
 {
     auto config = std::make_shared<mysql::connection_config>();
-    config->user = "root";//from env
-    config->database = "test_prot";//from env
-    config->debug = true; //from env
-    config->password = "example"; //from env
-    config->host = "127.0.0.1";//Get from env
-    config->port = 3306;//from env
+    config->user = get_env("PROT_DB_USER").value_or("root");
+    config->database = get_env("PROT_DB_SCHEMA").value_or("test_prot");
+    config->debug = true; 
+    config->password = get_env("PROT_DB_PASSW").value_or("example");
+    config->host = get_env("PROT_DB_HOST").value_or("127.0.0.1");
+    config->port = stol(get_env("PROT_DB_PORT").value_or("3306"));
     return config;
 }

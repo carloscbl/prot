@@ -7,11 +7,13 @@
 #include <iostream>
 #include <variant>
 #include <functional>
+#include <optional>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
 #include "test_prot.h"
 using json = nlohmann::json;
 using std::string;
+using std::optional;
 using std::endl;
 using std::cout;
 using std::variant;
@@ -36,22 +38,7 @@ public:
     };
     mysql::connection db;
     static mysql_db & get_db_lazy();
-    // template<typename Tsubtype>
-    // void save ( const string & index_name, const json & content_file) noexcept {
-    //     cout << "save" << endl;
-    // }
-    // template<typename Tsubtype>
-    // void load (const string & index_name, json & content_file) noexcept{
-    //     Tsubtype table;
-    //     test_prot::Users usr;
-    //     usr.
-    //     for(const auto& row : db.run(sqlpp::select(all_of(table)).from(table).unconditionally()))
-    //     {
-    //         row
-    //     	std::cerr << "row.name: " << row.name <<  std::endl;
-    //     };
-    //     cout << "load" << endl;
-    // }
+
 };
 
 

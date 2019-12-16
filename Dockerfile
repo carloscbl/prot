@@ -30,4 +30,4 @@ RUN python3.7 -m pip install -r requirements.txt
 
 RUN ./dependencies.sh --docker
 RUN ./build.sh
-
+ENTRYPOINT [ "/bin/bash" ]

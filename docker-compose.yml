@@ -16,6 +16,26 @@ services:
     restart: always
     ports:
       - 8080:8080
+  prot:
+    image: prot
+    tty: true
+    stdin_open: true
+    restart: always
+    # networks:
+    #   - internalNetwork
+    entrypoint: build/rest_server/api-server
+    environment:
+      PROT_DB_USER: root
+      PROT_DB_SCHEMA: test_prot
+      PROT_DB_PASSW: example
+      PROT_DB_HOST: db
+      PROT_DB_PORT: 3306
+    ports:
+      - 3000:3000
+    expose:
+      - "3000"
+    depends_on:
+    - db
 networks:
   internalNetwork:
     external: false
