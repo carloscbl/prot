@@ -16,6 +16,7 @@ services:
     restart: always
     ports:
       - 8087:8087
+    command: docker-php-entrypoint php -S [::]:8087 -t /var/www/html
   prot:
     image: prot:latest
     tty: true
