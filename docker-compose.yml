@@ -15,9 +15,9 @@ services:
     image: adminer
     restart: always
     ports:
-      - 8080:8080
+      - 8087:8087
   prot:
-    image: prot
+    image: prot:latest
     tty: true
     stdin_open: true
     restart: always
