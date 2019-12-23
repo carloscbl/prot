@@ -20,8 +20,7 @@ namespace model {
 
 Inline_object_1::Inline_object_1()
 {
-    m_Json_str = "";
-    m_Json_strIsSet = false;
+    m_Form_objIsSet = false;
     
 }
 
@@ -37,35 +36,35 @@ void Inline_object_1::validate()
 void to_json(nlohmann::json& j, const Inline_object_1& o)
 {
     j = nlohmann::json();
-    if(o.jsonStrIsSet())
-        j["json_str"] = o.m_Json_str;
+    if(o.formObjIsSet())
+        j["form_obj"] = o.m_Form_obj;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_1& o)
 {
-    if(j.find("json_str") != j.end())
+    if(j.find("form_obj") != j.end())
     {
-        j.at("json_str").get_to(o.m_Json_str);
-        o.m_Json_strIsSet = true;
+        o.m_Form_obj = j.at("form_obj");
+        o.m_Form_objIsSet = true;
     } 
 }
 
-std::string Inline_object_1::getJsonStr() const
+Object Inline_object_1::getFormObj() const
 {
-    return m_Json_str;
+    return m_Form_obj;
 }
-void Inline_object_1::setJsonStr(std::string const& value)
+void Inline_object_1::setFormObj(Object const& value)
 {
-    m_Json_str = value;
-    m_Json_strIsSet = true;
+    m_Form_obj = value;
+    m_Form_objIsSet = true;
 }
-bool Inline_object_1::jsonStrIsSet() const
+bool Inline_object_1::formObjIsSet() const
 {
-    return m_Json_strIsSet;
+    return m_Form_objIsSet;
 }
-void Inline_object_1::unsetJson_str()
+void Inline_object_1::unsetForm_obj()
 {
-    m_Json_strIsSet = false;
+    m_Form_objIsSet = false;
 }
 
 }

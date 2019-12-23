@@ -24,7 +24,7 @@ services:
     restart: always
     # networks:
     #   - internalNetwork
-    entrypoint: ./api-server
+    #entrypoint: ./api-server
     environment:
       PROT_DB_USER: root
       PROT_DB_SCHEMA: test_prot

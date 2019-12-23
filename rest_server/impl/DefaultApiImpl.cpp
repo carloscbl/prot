@@ -161,7 +161,8 @@ void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const
     if(!gen_exists<test_prot::Users>(developer)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
-    auto res = create_form(json::parse( inlineObject1.getJsonStr() ),developer);
+    json whole_request(inlineObject1);
+    auto res = create_form( whole_request.at("form_obj") ,developer);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
 

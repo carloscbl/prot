@@ -27,6 +27,7 @@ Task::Task()
     m_Tag = "";
     m_TagIsSet = false;
     m_DurationIsSet = false;
+    m_Frequency = "";
     m_FrequencyIsSet = false;
     m_WhenIsSet = false;
     m_IntervalIsSet = false;
@@ -194,11 +195,11 @@ void Task::unsetDuration()
 {
     m_DurationIsSet = false;
 }
-Frequency Task::getFrequency() const
+std::string Task::getFrequency() const
 {
     return m_Frequency;
 }
-void Task::setFrequency(Frequency const& value)
+void Task::setFrequency(std::string const& value)
 {
     m_Frequency = value;
     m_FrequencyIsSet = true;

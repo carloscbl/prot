@@ -105,8 +105,8 @@ paths:
             schema:
               type: object
               properties:
-                json_str:
-                  type: string
+                form_obj:
+                  type: object
   '/user/{developer}/form/{formId}':
     parameters:
       - schema:

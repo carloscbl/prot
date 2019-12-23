@@ -20,7 +20,6 @@
 
 
 #include "Duration.h"
-#include "Frequency.h"
 #include <string>
 #include "When.h"
 #include "Interval.h"
@@ -77,8 +76,8 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    Frequency getFrequency() const;
-    void setFrequency(Frequency const& value);
+    std::string getFrequency() const;
+    void setFrequency(std::string const& value);
     bool frequencyIsSet() const;
     void unsetFrequency();
     /// <summary>
@@ -128,7 +127,7 @@ protected:
     bool m_TagIsSet;
     Duration m_Duration;
     bool m_DurationIsSet;
-    Frequency m_Frequency;
+    std::string m_Frequency;
     bool m_FrequencyIsSet;
     When m_When;
     bool m_WhenIsSet;

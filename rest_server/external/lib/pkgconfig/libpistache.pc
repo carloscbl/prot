@@ -1,7 +1,7 @@
-prefix=/home/cbernal/prot/rest_server/external
-exec_prefix=/home/cbernal/prot/rest_server/external/bin
-libdir=/home/cbernal/prot/rest_server/external/lib/
-includedir=/home/cbernal/prot/rest_server/external/include/
+prefix=/opt/prot/rest_server/external
+exec_prefix=/opt/prot/rest_server/external/bin
+libdir=/opt/prot/rest_server/external/lib/
+includedir=/opt/prot/rest_server/external/include/
 
 Name: libpistache
 URL: http://pistache.io/
