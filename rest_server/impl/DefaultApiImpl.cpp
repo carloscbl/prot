@@ -141,11 +141,18 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
 
 void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
     //Get all tasks for the user
+    cout << "Inside user_username_tasks_get" << endl;
     auto tsks = read_tasks(username);
+    cout << username << endl;
+    cout << tsks.size() << endl;
+    cout << tsks.begin()->get()->get_name() << endl;
     json jresponse;
     for (auto &&i : tsks)
     {
-        jresponse.push_back(json(*i));
+        json new_json;
+        nlohmann::to_json(new_json,*i);
+        cout << new_json.dump(4) << endl;
+        jresponse.push_back(new_json);
     }
     
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );

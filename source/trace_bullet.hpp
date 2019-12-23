@@ -396,10 +396,15 @@ inline vector<unique_ptr<task>> read_tasks(const string &username)
     vector<unique_ptr<task>> vtasks;
     for (const auto & row : db(select))
     {
-        json js  = json::parse(row.json.text); //bad parsing
+        cout << row.json.text << endl;
+        cout << row.json.value() << endl;
+        json js  = json::parse(row.json.value()); //bad parsing
         auto tk = make_unique<task>();
+        cout << "prev to from_json" << endl;
         from_json(js,*tk);
+        cout << "after to from_json" << endl;
         vtasks.push_back(move(tk));
+        cout << "moved and push_back done" << endl;
     }
     return vtasks;
 }
