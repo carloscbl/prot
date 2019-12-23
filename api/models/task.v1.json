@@ -15,7 +15,7 @@
       "$ref": "./duration.v1.json"
     },
     "frequency": {
-      "$ref": "./frequency.v1.json"
+      "type": "string"
     },
     "when": {
       "$ref": "./when.v1.json"
