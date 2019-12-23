@@ -4,12 +4,15 @@
 #include <fstream>
 #include <iostream>
 #include "json.hpp"
+#include <boost/filesystem.hpp>
 
 using std::string;
 using std::cout;
 using std::endl;
 using nlohmann::json;
 
+namespace fs = boost::filesystem;
+using namespace fs;
 class api_validated
 {
 private:
@@ -18,6 +21,8 @@ public:
     json api_json;
 
     api_validated(const string & api_file):definitions_file(api_file){
+        boost::filesystem::path full_path(boost::filesystem::current_path());
+        std::cout << "Current path is : " << full_path << std::endl;
         std::ifstream file(definitions_file, std::fstream::in);
         file >> api_json;
     };

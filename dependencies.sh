@@ -12,7 +12,7 @@ $SUDO dpkg -i ./cmake_3.15.4-1_amd64.deb
 $SUDO apt-get install -f
 $SUDO add-apt-repository -y ppa:kip/pistache-unstable
 $SUDO add-apt-repository -y ppa:mhier/libboost-latest
-$SUDO apt update && $SUDO apt install -y gcc-9 g++-9 make wget tar python3.7 python3-pip libboost1.70-dev libmariadbclient-dev libpistache-dev 
+$SUDO apt update && $SUDO apt install -y gcc-9 g++-9 gdb make wget tar python3.7 python3-pip libboost1.70-dev libmariadbclient-dev libpistache-dev 
 cd thirdparty
 
 if [[ "$1" == *"--custom-boost"* ]]; then
