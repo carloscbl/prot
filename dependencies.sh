@@ -7,8 +7,8 @@ fi
 #wget -P thirdparty/ http://mirrors.edge.kernel.org/ubuntu/pool/main/c/cmake/cmake_3.15.4-1ubuntu2_amd64.deb 
 #wget -P thirdparty/ http://mirrors.edge.kernel.org/ubuntu/pool/main/c/cmake/cmake-data_3.15.4-1ubuntu2_all.deb
 
-$SUDO dpkg -i ./thirdparty/cmake-data_3.15.4-1_all.deb
-$SUDO dpkg -i ./thirdparty/cmake_3.15.4-1_amd64.deb
+$SUDO dpkg -i ./thirdparty/cmake-data_3.15.4-1ubuntu2_all.deb
+$SUDO dpkg -i ./thirdparty/cmake_3.15.4-1ubuntu2_amd64.deb
 $SUDO apt-get install -f
 $SUDO add-apt-repository -y ppa:kip/pistache-unstable
 $SUDO add-apt-repository -y ppa:mhier/libboost-latest
