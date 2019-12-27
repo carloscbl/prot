@@ -6,7 +6,7 @@ if [ "$1" == "--docker" ]; then
 fi
 #wget -P thirdparty/ http://mirrors.edge.kernel.org/ubuntu/pool/main/c/cmake/cmake_3.15.4-1ubuntu2_amd64.deb 
 #wget -P thirdparty/ http://mirrors.edge.kernel.org/ubuntu/pool/main/c/cmake/cmake-data_3.15.4-1ubuntu2_all.deb
-
+CORES=$(nproc --all)
 $SUDO dpkg -i ./thirdparty/cmake-data_3.15.4-1ubuntu2_all.deb
 $SUDO dpkg -i ./thirdparty/cmake_3.15.4-1ubuntu2_amd64.deb
 $SUDO apt-get install -f
@@ -35,7 +35,7 @@ if [ ! -d  "build" ]; then
 fi
 cd build && rm -rf *
 cmake ..
-make -j 5
+make -j $CORES
 $SUDO make install
 cd ../../..
 
@@ -46,7 +46,7 @@ if [ ! -d  "build" ]; then
 fi
 cd build && rm -rf *
 cmake ..
-make -j 5
+make -j $CORES
 $SUDO make install
 cd ../../..
 
@@ -57,7 +57,7 @@ if [ ! -d  "build" ]; then
 fi
 cd build && rm -rf *
 cmake -DUSE_MARIADB=1 - -DDATE_INCLUDE_DIR=/usr/local/include/ ..
-make -j 5
+make -j $CORES
 $SUDO make install
 cd ../../..
 
