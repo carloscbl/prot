@@ -1,9 +1,9 @@
-FROM ubuntu:19.04
+FROM ubuntu:19.04 as min-stage
 
 ARG NBUILDCORES=5
 #--build-arg NBUILDCORES=12
 
-RUN  apt update && apt install -y \
+RUN apt update && apt install -y \
     software-properties-common \
     git \
     gcc-9 \
@@ -23,7 +23,7 @@ RUN  apt update && apt install -y \
     && add-apt-repository -y ppa:mhier/libboost-latest \
     && apt update && apt install -y libpistache-dev libboost1.70-dev
 
-
+FROM min-stage as build-stage
 
 COPY ./ /opt/prot
 WORKDIR /opt/prot
@@ -56,5 +56,18 @@ RUN rm -rf * \
 
 WORKDIR /opt/prot/
 RUN ./build.sh
+WORKDIR /opt/prot/build
+
+
+FROM min-stage as production-stage
+COPY  --from=build-stage /opt/prot/build/api-server /opt/prot/build/api-server
+COPY  --from=build-stage /opt/prot/build/liblprot.a /opt/prot/build/liblprot.a
+COPY  --from=build-stage /opt/prot/source /opt/prot/source
+COPY  --from=build-stage /opt/prot/rest_server/impl /opt/prot/rest_server/impl
+COPY  --from=build-stage /opt/prot/rest_server/model /opt/prot/rest_server/model
+COPY  --from=build-stage /opt/prot/rest_server/api /opt/prot/rest_server/api
+COPY  --from=build-stage /opt/prot/api /opt/prot/api
+COPY  --from=build-stage /opt/prot/forms /opt/prot/forms
+
 WORKDIR /opt/prot/build
 ENTRYPOINT [ "/bin/bash" ]
