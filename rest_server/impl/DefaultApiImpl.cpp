@@ -21,12 +21,61 @@ namespace api {
 
 using namespace org::openapitools::server::model;
 
+
+
+bool url_decode(const std::string& in, std::string& out)
+{
+  out.clear();
+  out.reserve(in.size());
+  for (std::size_t i = 0; i < in.size(); ++i)
+  {
+    if (in[i] == '%')
+    {
+      if (i + 3 <= in.size())
+      {
+        int value = 0;
+        std::istringstream is(in.substr(i + 1, 2));
+        if (is >> std::hex >> value)
+        {
+          out += static_cast<char>(value);
+          i += 2;
+        }
+        else
+        {
+          return false;
+        }
+      }
+      else
+      {
+        return false;
+      }
+    }
+    else if (in[i] == '+')
+    {
+      out += ' ';
+    }
+    else
+    {
+      out += in[i];
+    }
+  }
+  return true;
+}
+
+std::string geturl_decode(const std::string& in){
+    std::string out;
+    if(url_decode(in,out)){
+        return out;
+    }
+    throw std::runtime_error("Error: decoding url" + in);
+}
+
 DefaultApiImpl::DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router> rtr)
     : DefaultApi(rtr)
     { }
 
 void DefaultApiImpl::delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response) {
-    if(delete_user(username)){
+    if(delete_user(geturl_decode(username))){
         response.send(Pistache::Http::Code::Ok, "Done");
     }else{
         response.send(Pistache::Http::Code::Not_Found, "Username doest not exists");
@@ -63,7 +112,7 @@ void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWrit
 
 void DefaultApiImpl::user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response) {
     //Need to create a new call that joins forms, by a given developer
-    auto mp = read_forms_by_developer(developer);
+    auto mp = read_forms_by_developer(geturl_decode(developer));
     vector<string> form_names;
 
     for_each(mp.begin(), mp.end(), [&form_names](const pair<uint64_t,string>& c){
@@ -84,12 +133,13 @@ void DefaultApiImpl::user_developer_form_form_id_get(const std::string &develope
 }
 
 void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
-    if(!gen_exists<test_prot::Users>(username)){
+    std::string decoded = geturl_decode(username);
+    if(!gen_exists<test_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
     json jsresponse;
-    for(const auto & [k,v] : read_instalations(username) ){
+    for(const auto & [k,v] : read_instalations(decoded) ){
         json inner;
         inner["appID"] = k;
         inner["appName"] = v;
@@ -100,11 +150,12 @@ void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistach
 }
 
 void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) {
-    if(!gen_exists<test_prot::Users>(username)){
+    std::string decoded = geturl_decode(username);
+    if(!gen_exists<test_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    auto res = read_instalations(username, installAppId);
+    auto res = read_instalations(decoded, installAppId);
     if(res.empty()){
         response.send(Pistache::Http::Code::Not_Found, "Not found id");
         return;
@@ -118,7 +169,7 @@ void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &us
 
 void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &username, const int32_t &appId, Pistache::Http::ResponseWriter &response) {
     //This is the request of questions
-    auto usr = read_user(username);
+    auto usr = read_user(geturl_decode(username));
     if(!usr){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
@@ -142,8 +193,9 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
 void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
     //Get all tasks for the user
     cout << "Inside user_username_tasks_get" << endl;
-    auto tsks = read_tasks(username);
-    cout << username << endl;
+    std::string decoded = geturl_decode(username);
+    auto tsks = read_tasks(decoded);
+    cout << decoded << endl;
     cout << tsks.size() << endl;
     cout << tsks.begin()->get()->get_name() << endl;
     json jresponse;
@@ -158,11 +210,12 @@ void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistac
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
 void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
-    if(!gen_exists<test_prot::Users>(developer)){
+    std::string decoded = geturl_decode(developer);
+    if(!gen_exists<test_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
     json whole_request(inlineObject1);
-    auto res = create_form( whole_request.at("form_obj") ,developer);
+    auto res = create_form( whole_request.at("form_obj") ,decoded);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
 
@@ -170,13 +223,14 @@ void DefaultApiImpl::post_userdeveloper_form(const std::string &developer, const
     response.send(Pistache::Http::Code::Created, "Done");
 }
 void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
-    auto usr = read_user(username);
+    std::string decoded = geturl_decode(username);
+    auto usr = read_user(decoded);
     if(!usr){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
     if(inlineObject2.restartIsSet()){
-        response.send(Pistache::Http::Code::Ok, "Rested " + username + " " + std::to_string(appId) );
+        response.send(Pistache::Http::Code::Ok, "Rested " + decoded + " " + std::to_string(appId) );
 
         return;
     }
@@ -203,8 +257,8 @@ void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http
 }
 
 void DefaultApiImpl::user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
-
-    const auto usr = read_user(username);
+    std::string decoded = geturl_decode(username);
+    const auto usr = read_user(decoded);
     if(!usr){
         response.send(Pistache::Http::Code::Not_Found, "username does not exists");
         return;
