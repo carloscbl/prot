@@ -61,12 +61,15 @@ WORKDIR /opt/prot/build
 
 FROM min-stage as production-stage
 COPY  --from=build-stage /opt/prot/build/api-server /opt/prot/build/api-server
+COPY  --from=build-stage /opt/prot/build/test_prot /opt/prot/build/test_prot
 COPY  --from=build-stage /opt/prot/build/liblprot.a /opt/prot/build/liblprot.a
 COPY  --from=build-stage /opt/prot/source /opt/prot/source
 COPY  --from=build-stage /opt/prot/rest_server/impl /opt/prot/rest_server/impl
 COPY  --from=build-stage /opt/prot/rest_server/model /opt/prot/rest_server/model
 COPY  --from=build-stage /opt/prot/rest_server/api /opt/prot/rest_server/api
 COPY  --from=build-stage /opt/prot/api /opt/prot/api
+COPY  --from=build-stage /opt/prot/test.sh /opt/prot/test.sh
+COPY  --from=build-stage /opt/prot/build.sh /opt/prot/build.sh
 COPY  --from=build-stage /opt/prot/forms /opt/prot/forms
 
 WORKDIR /opt/prot/build
