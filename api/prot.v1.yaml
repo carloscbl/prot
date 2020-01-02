@@ -186,6 +186,20 @@ paths:
         '404':
           description: Not Found
       description: ''
+    post:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
+    delete:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+        '404':
+          description: Not Found
   '/user/{username}/questionary/{appId}':
     parameters:
       - schema:

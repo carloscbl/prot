@@ -295,6 +295,17 @@ inline bool create_instalation(const string &username, const string &form_name)
     return true;
 }
 
+inline bool delete_instalation(const string &username, const uint64_t form_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Users usr;
+    test_prot::UsersForms usr_forms;
+    test_prot::Forms form_;
+
+    db(remove_from(usr_forms).using_(usr, form_, usr_forms).where(usr_forms.iduser == usr.id and usr.username == username and usr_forms.idform == form_.id and form_.id == form_id));
+    return true;
+}
+
 inline bool delete_instalation(const string &username, const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;

@@ -167,6 +167,50 @@ void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &us
     response.send(Pistache::Http::Code::Ok, jsresponse.dump(4));
 }
 
+void DefaultApiImpl::user_username_apps_install_app_id_delete(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response){
+    std::string decoded = geturl_decode(username);
+    if(!gen_exists<test_prot::Users>(decoded)){
+        response.send(Pistache::Http::Code::Not_Found, "user does not exists");
+        return;
+    }
+    if(!read_form_by_id(installAppId)){
+        response.send(Pistache::Http::Code::Not_Found, "form does not exists");
+        return;
+    }
+    auto res = read_instalations(decoded, installAppId);
+    if(res.empty()){
+        response.send(Pistache::Http::Code::Not_Found, "User doesn't have that instalation");
+        return;
+    }
+    delete_instalation(decoded,installAppId);
+
+    response.send(Pistache::Http::Code::Ok, "Done");
+}
+
+void DefaultApiImpl::user_username_apps_install_app_id_post(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response){
+    std::string decoded = geturl_decode(username);
+    if(!gen_exists<test_prot::Users>(decoded)){
+        response.send(Pistache::Http::Code::Not_Found, "user does not exists");
+        return;
+    }
+    auto form_name = read_form_by_id(installAppId);
+    if(!form_name){
+        response.send(Pistache::Http::Code::Not_Found, "form does not exists");
+        return;
+    }
+    auto res = read_instalations(decoded, installAppId);
+    if(!res.empty()){
+        response.send(Pistache::Http::Code::Not_Found, "User already have that instalation");
+        return;
+    }
+    if(!create_instalation(decoded,form_name.value().second)){
+        response.send(Pistache::Http::Code::Not_Found, "unable to do instalation");
+        return;
+    }
+
+    response.send(Pistache::Http::Code::Ok, "Done");
+}
+
 void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &username, const int32_t &appId, Pistache::Http::ResponseWriter &response) {
     //This is the request of questions
     auto usr = read_user(geturl_decode(username));

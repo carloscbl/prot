@@ -61,7 +61,9 @@ private:
     void user_developer_form_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_apps_install_app_id_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_install_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_apps_install_app_id_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_questionary_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_questionary_app_id_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
@@ -144,6 +146,16 @@ private:
     virtual void user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="installAppId"></param>
+    virtual void user_username_apps_install_app_id_delete(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
     /// Your GET endpoint
     /// </summary>
     /// <remarks>
@@ -152,6 +164,16 @@ private:
     /// <param name="username"></param>
     /// <param name="installAppId"></param>
     virtual void user_username_apps_install_app_id_get(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="installAppId"></param>
+    virtual void user_username_apps_install_app_id_post(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
