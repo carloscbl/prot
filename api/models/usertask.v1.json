@@ -1,0 +1,35 @@
+{
+  "title": "task",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string"
+    },
+    "task_group": {
+      "type": "string"
+    },
+    "interval": {
+      "$ref": "./interval.v1.json"
+    },
+    "duration": {
+      "$ref": "./duration.v1.json"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    },
+    "other_data": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user",
+    "interval",
+    "name"
+  ]
+}

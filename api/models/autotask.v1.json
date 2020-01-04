@@ -1,0 +1,42 @@
+{
+  "title": "autotask",
+  "type": "object",
+  "properties": {
+    "user": {
+      "type": "string"
+    },
+    "restrictions": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "task_group": {
+      "type": "string"
+    },
+    "when": {
+      "$ref": "./when.v1.json"
+    },
+    "frequency": {
+      "type": "string"
+    },
+    "duration": {
+      "$ref": "./duration.v1.json"
+    },
+    "tag": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "name": {
+      "type": "string"
+    }
+  },
+  "required": [
+    "user",
+    "frequency",
+    "duration",
+    "name"
+  ]
+}

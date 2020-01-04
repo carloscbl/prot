@@ -68,8 +68,7 @@ COPY  --from=build-stage /opt/prot/rest_server/impl /opt/prot/rest_server/impl
 COPY  --from=build-stage /opt/prot/rest_server/model /opt/prot/rest_server/model
 COPY  --from=build-stage /opt/prot/rest_server/api /opt/prot/rest_server/api
 COPY  --from=build-stage /opt/prot/api /opt/prot/api
-COPY  --from=build-stage /opt/prot/test.sh /opt/prot/test.sh
-COPY  --from=build-stage /opt/prot/build.sh /opt/prot/build.sh
+COPY  --from=build-stage /opt/prot/.vscode /opt/prot/.vscode
 COPY  --from=build-stage /opt/prot/forms /opt/prot/forms
 
 WORKDIR /opt/prot/build
