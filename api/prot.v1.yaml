@@ -26,7 +26,6 @@ paths:
           description: Not Found
     delete:
       summary: ''
-      operationId: 'delete-user-{username}'
       responses:
         '200':
           description: OK
@@ -72,7 +71,6 @@ paths:
                   description: task.v1.json as reference
     post:
       summary: ''
-      operationId: ''
       responses:
         '200':
           description: OK
@@ -90,11 +88,11 @@ paths:
                     - auto
                     - user
                 task:
-                  oneOf:
-                    - $ref: ./models/autotask.v1.json
-                    - $ref: ./models/usertask.v1.json
+                  type: object
+                  description: auto or user... oneOf
               required:
                 - type_of_task
+                - task
   '/user/{username}/task/{taskId}':
     parameters:
       - schema:
@@ -120,10 +118,8 @@ paths:
                 properties: {}
         '404':
           description: Not Found
-      operationId: ''
     delete:
       summary: ''
-      operationId: ''
       responses:
         '200':
           description: OK
@@ -151,7 +147,6 @@ paths:
                   type: string
     post:
       summary: ''
-      operationId: 'post-user-{developer}-form'
       responses:
         '201':
           description: Created
@@ -296,7 +291,6 @@ paths:
       description: Returns the current question pending to be responded
     post:
       summary: ''
-      operationId: ''
       requestBody:
         content:
           application/json:

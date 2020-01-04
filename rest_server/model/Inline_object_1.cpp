@@ -20,7 +20,7 @@ namespace model {
 
 Inline_object_1::Inline_object_1()
 {
-    m_Form_objIsSet = false;
+    m_Type_of_task = "";
     
 }
 
@@ -36,35 +36,31 @@ void Inline_object_1::validate()
 void to_json(nlohmann::json& j, const Inline_object_1& o)
 {
     j = nlohmann::json();
-    if(o.formObjIsSet())
-        j["form_obj"] = o.m_Form_obj;
+    j["type_of_task"] = o.m_Type_of_task;
+    j["task"] = o.m_Task;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_1& o)
 {
-    if(j.find("form_obj") != j.end())
-    {
-        o.m_Form_obj = j.at("form_obj");
-        o.m_Form_objIsSet = true;
-    } 
+    j.at("type_of_task").get_to(o.m_Type_of_task);
+    o.m_Task = j.at("task");
 }
 
-Object Inline_object_1::getFormObj() const
+std::string Inline_object_1::getTypeOfTask() const
 {
-    return m_Form_obj;
+    return m_Type_of_task;
 }
-void Inline_object_1::setFormObj(Object const& value)
+void Inline_object_1::setTypeOfTask(std::string const& value)
 {
-    m_Form_obj = value;
-    m_Form_objIsSet = true;
+    m_Type_of_task = value;
 }
-bool Inline_object_1::formObjIsSet() const
+Object Inline_object_1::getTask() const
 {
-    return m_Form_objIsSet;
+    return m_Task;
 }
-void Inline_object_1::unsetForm_obj()
+void Inline_object_1::setTask(Object const& value)
 {
-    m_Form_objIsSet = false;
+    m_Task = value;
 }
 
 }

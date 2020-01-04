@@ -19,6 +19,7 @@
 #define Inline_object_1_H_
 
 
+#include <string>
 #include "Object.h"
 #include <nlohmann/json.hpp>
 
@@ -44,16 +45,21 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    Object getFormObj() const;
-    void setFormObj(Object const& value);
-    bool formObjIsSet() const;
-    void unsetForm_obj();
+    std::string getTypeOfTask() const;
+    void setTypeOfTask(std::string const& value);
+    /// <summary>
+    /// auto or user... oneOf
+    /// </summary>
+    Object getTask() const;
+    void setTask(Object const& value);
 
     friend void to_json(nlohmann::json& j, const Inline_object_1& o);
     friend void from_json(const nlohmann::json& j, Inline_object_1& o);
 protected:
-    nlohmann::json m_Form_obj;
-    bool m_Form_objIsSet;
+    std::string m_Type_of_task;
+
+    nlohmann::json m_Task;
+
 };
 
 }

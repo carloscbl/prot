@@ -394,7 +394,28 @@ inline void create_task(const set<pair<string, bool>> &usernames_bindings_option
     });
 }
 
-inline vector<unique_ptr<task>> read_tasks(const string &username)
+inline unique_ptr<task> read_task(const string &username, const uint64_t task_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Taskers tasker_;
+    test_prot::TasksTaskers tskTkr;
+    test_prot::Tasks tsk;
+    test_prot::Users usr;
+    const auto & select = sqlpp::select(all_of(tsk))
+                                .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
+                                .where(usr.username == username and tsk.id == task_id);
+    auto resu = db(select);
+    if(resu.empty()){
+        return nullptr;
+    }
+    const auto & row = resu.front();
+    json js  = json::parse(row.json.value()); //bad parsing
+    auto tk = make_unique<task>();
+    from_json(js,*tk);
+    return tk;
+}
+
+inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Taskers tasker_;
@@ -404,7 +425,7 @@ inline vector<unique_ptr<task>> read_tasks(const string &username)
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
                                 .where(usr.username == username);
-    vector<unique_ptr<task>> vtasks;
+    map<uint64_t,unique_ptr<task>> vtasks;
     for (const auto & row : db(select))
     {
         cout << row.json.text << endl;
@@ -414,7 +435,7 @@ inline vector<unique_ptr<task>> read_tasks(const string &username)
         cout << "prev to from_json" << endl;
         from_json(js,*tk);
         cout << "after to from_json" << endl;
-        vtasks.push_back(move(tk));
+        vtasks[row.id] = move(tk);
         cout << "moved and push_back done" << endl;
     }
     return vtasks;
@@ -425,6 +446,24 @@ inline void delete_task(const uint64_t task_id)
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::Tasks tsk;
     db(remove_from(tsk).where(tsk.id == task_id));
+}
+
+inline bool delete_task(const string &username, const uint64_t task_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::Taskers tasker_;
+    test_prot::TasksTaskers tskTkr;
+    test_prot::Tasks tsk;
+    test_prot::Users usr;
+    
+    if(db(remove_from(tsk).using_(usr, tasker_,tskTkr).where( 
+    tasker_.user == usr.id 
+    and usr.username == username 
+    and tskTkr.idtask == tsk.id
+    and tsk.id == task_id))){
+        return true;
+    }
+    return false;
 }
 
 inline void update_task( task &new_task , const uint64_t task_id )

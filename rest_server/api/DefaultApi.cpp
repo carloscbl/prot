@@ -34,19 +34,22 @@ void DefaultApi::setupRoutes() {
 
     Routes::Get(*router, base + "/apps", Routes::bind(&DefaultApi::apps_get_handler, this));
     Routes::Get(*router, base + "/apps/:id", Routes::bind(&DefaultApi::apps_id_get_handler, this));
-    Routes::Delete(*router, base + "/user/:username", Routes::bind(&DefaultApi::delete_userusername_handler, this));
-    Routes::Post(*router, base + "/user/:developer/form", Routes::bind(&DefaultApi::post_userdeveloper_form_handler, this));
     Routes::Get(*router, base + "/user/:developer/form/:formId", Routes::bind(&DefaultApi::user_developer_form_form_id_get_handler, this));
     Routes::Get(*router, base + "/user/:developer/form", Routes::bind(&DefaultApi::user_developer_form_get_handler, this));
+    Routes::Post(*router, base + "/user/:developer/form", Routes::bind(&DefaultApi::user_developer_form_post_handler, this));
     Routes::Post(*router, base + "/user", Routes::bind(&DefaultApi::user_post_handler, this));
     Routes::Get(*router, base + "/user/:username/apps", Routes::bind(&DefaultApi::user_username_apps_get_handler, this));
     Routes::Delete(*router, base + "/user/:username/apps/:installAppId", Routes::bind(&DefaultApi::user_username_apps_install_app_id_delete_handler, this));
     Routes::Get(*router, base + "/user/:username/apps/:installAppId", Routes::bind(&DefaultApi::user_username_apps_install_app_id_get_handler, this));
     Routes::Post(*router, base + "/user/:username/apps/:installAppId", Routes::bind(&DefaultApi::user_username_apps_install_app_id_post_handler, this));
+    Routes::Delete(*router, base + "/user/:username", Routes::bind(&DefaultApi::user_username_delete_handler, this));
     Routes::Get(*router, base + "/user/:username", Routes::bind(&DefaultApi::user_username_get_handler, this));
     Routes::Get(*router, base + "/user/:username/questionary/:appId", Routes::bind(&DefaultApi::user_username_questionary_app_id_get_handler, this));
     Routes::Post(*router, base + "/user/:username/questionary/:appId", Routes::bind(&DefaultApi::user_username_questionary_app_id_post_handler, this));
+    Routes::Delete(*router, base + "/user/:username/task/:taskId", Routes::bind(&DefaultApi::user_username_task_task_id_delete_handler, this));
+    Routes::Get(*router, base + "/user/:username/task/:taskId", Routes::bind(&DefaultApi::user_username_task_task_id_get_handler, this));
     Routes::Get(*router, base + "/user/:username/tasks", Routes::bind(&DefaultApi::user_username_tasks_get_handler, this));
+    Routes::Post(*router, base + "/user/:username/tasks", Routes::bind(&DefaultApi::user_username_tasks_post_handler, this));
 
     // Default handler, called when a route is not found
     router->addCustomHandler(Routes::bind(&DefaultApi::default_api_default_handler, this));
@@ -84,45 +87,6 @@ void DefaultApi::apps_id_get_handler(const Pistache::Rest::Request &request, Pis
     }
 
 }
-void DefaultApi::delete_userusername_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
-    // Getting the path params
-    auto username = request.param(":username").as<std::string>();
-    
-    try {
-      this->delete_userusername(username, response);
-    } catch (nlohmann::detail::exception &e) {
-        //send a 400 error
-        response.send(Pistache::Http::Code::Bad_Request, e.what());
-        return;
-    } catch (std::exception &e) {
-        //send a 500 error
-        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
-        return;
-    }
-
-}
-void DefaultApi::post_userdeveloper_form_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
-    // Getting the path params
-    auto developer = request.param(":developer").as<std::string>();
-    
-    // Getting the body param
-    
-    Inline_object_1 inlineObject1;
-    
-    try {
-      nlohmann::json::parse(request.body()).get_to(inlineObject1);
-      this->post_userdeveloper_form(developer, inlineObject1, response);
-    } catch (nlohmann::detail::exception &e) {
-        //send a 400 error
-        response.send(Pistache::Http::Code::Bad_Request, e.what());
-        return;
-    } catch (std::exception &e) {
-        //send a 500 error
-        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
-        return;
-    }
-
-}
 void DefaultApi::user_developer_form_form_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
     // Getting the path params
     auto developer = request.param(":developer").as<std::string>();
@@ -147,6 +111,28 @@ void DefaultApi::user_developer_form_get_handler(const Pistache::Rest::Request &
     
     try {
       this->user_developer_form_get(developer, response);
+    } catch (nlohmann::detail::exception &e) {
+        //send a 400 error
+        response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (std::exception &e) {
+        //send a 500 error
+        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
+        return;
+    }
+
+}
+void DefaultApi::user_developer_form_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
+    // Getting the path params
+    auto developer = request.param(":developer").as<std::string>();
+    
+    // Getting the body param
+    
+    Inline_object_2 inlineObject2;
+    
+    try {
+      nlohmann::json::parse(request.body()).get_to(inlineObject2);
+      this->user_developer_form_post(developer, inlineObject2, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
@@ -249,6 +235,23 @@ void DefaultApi::user_username_apps_install_app_id_post_handler(const Pistache::
     }
 
 }
+void DefaultApi::user_username_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
+    // Getting the path params
+    auto username = request.param(":username").as<std::string>();
+    
+    try {
+      this->user_username_delete(username, response);
+    } catch (nlohmann::detail::exception &e) {
+        //send a 400 error
+        response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (std::exception &e) {
+        //send a 500 error
+        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
+        return;
+    }
+
+}
 void DefaultApi::user_username_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
     // Getting the path params
     auto username = request.param(":username").as<std::string>();
@@ -291,11 +294,47 @@ void DefaultApi::user_username_questionary_app_id_post_handler(const Pistache::R
     
     // Getting the body param
     
-    Inline_object_2 inlineObject2;
+    Inline_object_3 inlineObject3;
     
     try {
-      nlohmann::json::parse(request.body()).get_to(inlineObject2);
-      this->user_username_questionary_app_id_post(username, appId, inlineObject2, response);
+      nlohmann::json::parse(request.body()).get_to(inlineObject3);
+      this->user_username_questionary_app_id_post(username, appId, inlineObject3, response);
+    } catch (nlohmann::detail::exception &e) {
+        //send a 400 error
+        response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (std::exception &e) {
+        //send a 500 error
+        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
+        return;
+    }
+
+}
+void DefaultApi::user_username_task_task_id_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
+    // Getting the path params
+    auto username = request.param(":username").as<std::string>();
+    auto taskId = request.param(":taskId").as<std::string>();
+    
+    try {
+      this->user_username_task_task_id_delete(username, taskId, response);
+    } catch (nlohmann::detail::exception &e) {
+        //send a 400 error
+        response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (std::exception &e) {
+        //send a 500 error
+        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
+        return;
+    }
+
+}
+void DefaultApi::user_username_task_task_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
+    // Getting the path params
+    auto username = request.param(":username").as<std::string>();
+    auto taskId = request.param(":taskId").as<std::string>();
+    
+    try {
+      this->user_username_task_task_id_get(username, taskId, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
@@ -313,6 +352,28 @@ void DefaultApi::user_username_tasks_get_handler(const Pistache::Rest::Request &
     
     try {
       this->user_username_tasks_get(username, response);
+    } catch (nlohmann::detail::exception &e) {
+        //send a 400 error
+        response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (std::exception &e) {
+        //send a 500 error
+        response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
+        return;
+    }
+
+}
+void DefaultApi::user_username_tasks_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
+    // Getting the path params
+    auto username = request.param(":username").as<std::string>();
+    
+    // Getting the body param
+    
+    Inline_object_1 inlineObject1;
+    
+    try {
+      nlohmann::json::parse(request.body()).get_to(inlineObject1);
+      this->user_username_tasks_post(username, inlineObject1, response);
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());

@@ -28,10 +28,10 @@
 #include "Inline_object.h"
 #include "Inline_object_1.h"
 #include "Inline_object_2.h"
+#include "Inline_object_3.h"
 #include "Inline_response_200.h"
 #include "Object.h"
 #include "Prot_app_info.h"
-#include "Task.h"
 #include "User.h"
 #include <string>
 
@@ -55,19 +55,22 @@ private:
 
     void apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void apps_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void delete_userusername_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void post_userdeveloper_form_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_developer_form_form_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_developer_form_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_developer_form_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_install_app_id_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_install_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_install_app_id_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_questionary_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_questionary_app_id_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_task_task_id_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_task_task_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_tasks_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_username_tasks_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void default_api_default_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
 
     std::shared_ptr<Pistache::Rest::Router> router;
@@ -90,25 +93,6 @@ private:
     virtual void apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
-    /// 
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="username"></param>
-    virtual void delete_userusername(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <remarks>
-    /// 
-    /// </remarks>
-    /// <param name="developer"></param>
-    /// <param name="inlineObject1"> (optional)</param>
-    virtual void post_userdeveloper_form(const std::string &developer, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) = 0;
-
-    /// <summary>
     /// Your GET endpoint
     /// </summary>
     /// <remarks>
@@ -126,6 +110,16 @@ private:
     /// </remarks>
     /// <param name="developer"></param>
     virtual void user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="developer"></param>
+    /// <param name="inlineObject2"> (optional)</param>
+    virtual void user_developer_form_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// 
@@ -176,6 +170,15 @@ private:
     virtual void user_username_apps_install_app_id_post(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    virtual void user_username_delete(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
     /// Your GET endpoint
     /// </summary>
     /// <remarks>
@@ -202,8 +205,28 @@ private:
     /// </remarks>
     /// <param name="username"></param>
     /// <param name="appId"></param>
-    /// <param name="inlineObject2"> (optional)</param>
-    virtual void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) = 0;
+    /// <param name="inlineObject3"> (optional)</param>
+    virtual void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="taskId"></param>
+    virtual void user_username_task_task_id_delete(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// Your GET endpoint
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="taskId"></param>
+    virtual void user_username_task_task_id_get(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
@@ -213,6 +236,16 @@ private:
     /// </remarks>
     /// <param name="username"></param>
     virtual void user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response) = 0;
+
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <remarks>
+    /// 
+    /// </remarks>
+    /// <param name="username"></param>
+    /// <param name="inlineObject1"> (optional)</param>
+    virtual void user_username_tasks_post(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) = 0;
 
 };
 

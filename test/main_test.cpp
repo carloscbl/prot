@@ -81,9 +81,9 @@ int main(int argc, char *argv[])
     join();
     auto tasksss =  read_tasks("pepe");
 
-    for (auto &&i : tasksss)
+    for (auto &&[k,v] : tasksss)
     {
-        cout << i->get_name() << endl;
+        cout << v->get_name() << endl;
     }
     
 

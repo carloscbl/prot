@@ -50,8 +50,6 @@ public:
     /// </summary>
     std::string getName() const;
     void setName(std::string const& value);
-    bool nameIsSet() const;
-    void unsetName();
     /// <summary>
     /// 
     /// </summary>
@@ -115,12 +113,19 @@ public:
     void setUser(std::string const& value);
     bool userIsSet() const;
     void unsetUser();
+    /// <summary>
+    /// 
+    /// </summary>
+    std::string getId() const;
+    void setId(std::string const& value);
+    bool idIsSet() const;
+    void unsetId();
 
     friend void to_json(nlohmann::json& j, const Task& o);
     friend void from_json(const nlohmann::json& j, Task& o);
 protected:
     std::string m_Name;
-    bool m_NameIsSet;
+
     std::string m_Description;
     bool m_DescriptionIsSet;
     std::string m_Tag;
@@ -139,6 +144,8 @@ protected:
     bool m_RestrictionsIsSet;
     std::string m_User;
     bool m_UserIsSet;
+    std::string m_Id;
+    bool m_IdIsSet;
 };
 
 }

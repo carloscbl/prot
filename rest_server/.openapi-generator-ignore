@@ -25,4 +25,4 @@
 CMakeLists.txt
 impl/DefaultApiImpl.cpp
 main-api-server.cpp
-model/Inline_object_1.*
+model/Inline_object*

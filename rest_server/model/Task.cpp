@@ -21,7 +21,6 @@ namespace model {
 Task::Task()
 {
     m_Name = "";
-    m_NameIsSet = false;
     m_Description = "";
     m_DescriptionIsSet = false;
     m_Tag = "";
@@ -36,6 +35,8 @@ Task::Task()
     m_RestrictionsIsSet = false;
     m_User = "";
     m_UserIsSet = false;
+    m_Id = "";
+    m_IdIsSet = false;
     
 }
 
@@ -51,8 +52,7 @@ void Task::validate()
 void to_json(nlohmann::json& j, const Task& o)
 {
     j = nlohmann::json();
-    if(o.nameIsSet())
-        j["name"] = o.m_Name;
+    j["name"] = o.m_Name;
     if(o.descriptionIsSet())
         j["description"] = o.m_Description;
     if(o.tagIsSet())
@@ -71,15 +71,13 @@ void to_json(nlohmann::json& j, const Task& o)
         j["restrictions"] = o.m_Restrictions;
     if(o.userIsSet())
         j["user"] = o.m_User;
+    if(o.idIsSet())
+        j["id"] = o.m_Id;
 }
 
 void from_json(const nlohmann::json& j, Task& o)
 {
-    if(j.find("name") != j.end())
-    {
-        j.at("name").get_to(o.m_Name);
-        o.m_NameIsSet = true;
-    } 
+    j.at("name").get_to(o.m_Name);
     if(j.find("description") != j.end())
     {
         j.at("description").get_to(o.m_Description);
@@ -125,6 +123,11 @@ void from_json(const nlohmann::json& j, Task& o)
         j.at("user").get_to(o.m_User);
         o.m_UserIsSet = true;
     } 
+    if(j.find("id") != j.end())
+    {
+        j.at("id").get_to(o.m_Id);
+        o.m_IdIsSet = true;
+    } 
 }
 
 std::string Task::getName() const
@@ -134,15 +137,6 @@ std::string Task::getName() const
 void Task::setName(std::string const& value)
 {
     m_Name = value;
-    m_NameIsSet = true;
-}
-bool Task::nameIsSet() const
-{
-    return m_NameIsSet;
-}
-void Task::unsetName()
-{
-    m_NameIsSet = false;
 }
 std::string Task::getDescription() const
 {
@@ -296,6 +290,23 @@ bool Task::userIsSet() const
 void Task::unsetUser()
 {
     m_UserIsSet = false;
+}
+std::string Task::getId() const
+{
+    return m_Id;
+}
+void Task::setId(std::string const& value)
+{
+    m_Id = value;
+    m_IdIsSet = true;
+}
+bool Task::idIsSet() const
+{
+    return m_IdIsSet;
+}
+void Task::unsetId()
+{
+    m_IdIsSet = false;
 }
 
 }
