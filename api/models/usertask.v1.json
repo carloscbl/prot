@@ -25,6 +25,10 @@
     },
     "other_data": {
       "type": "string"
+    },
+    "task_source": {
+      "type": "string",
+      "description": "For example if this task comes from a alexa or outlook task"
     }
   },
   "required": [
