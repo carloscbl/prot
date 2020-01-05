@@ -343,7 +343,7 @@ inline map<uint64_t,string> read_instalations(const string &username, optional<u
 }
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-inline void create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
+inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -357,7 +357,7 @@ inline void create_task(const set<pair<string, bool>> &usernames_bindings_option
     if (tsk_res < 1)
     {
         // Not insertion
-        return;
+        return false;
     }
     task_.set_id(tsk_res);
     for_each(usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
@@ -371,7 +371,7 @@ inline void create_task(const set<pair<string, bool>> &usernames_bindings_option
                                    .limit(1U));
         if (result.empty())
         {
-            return;
+            return ;
         }
         //const auto &uid = result.front().id;
         const auto &tasker_id = result.front().idtasker;
@@ -392,6 +392,7 @@ inline void create_task(const set<pair<string, bool>> &usernames_bindings_option
                 tskSche.idscheduler = sche_id));
         }
     });
+    return true;
 }
 
 inline unique_ptr<task> read_task(const string &username, const uint64_t task_id)

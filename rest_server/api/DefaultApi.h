@@ -216,7 +216,7 @@ private:
     /// </remarks>
     /// <param name="username"></param>
     /// <param name="taskId"></param>
-    virtual void user_username_task_task_id_delete(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void user_username_task_task_id_delete(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
@@ -226,7 +226,7 @@ private:
     /// </remarks>
     /// <param name="username"></param>
     /// <param name="taskId"></param>
-    virtual void user_username_task_task_id_get(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void user_username_task_task_id_get(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint

@@ -287,9 +287,9 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
     response.send(Pistache::Http::Code::Ok, json(response_200).dump(4));
 }
 
-void DefaultApiImpl::user_username_task_task_id_delete(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response){
+void DefaultApiImpl::user_username_task_task_id_delete(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response){
     std::string decoded = geturl_decode(username);
-    if(delete_task(decoded, stoull(taskId) )){
+    if(delete_task(decoded, taskId )){
         response.send(Pistache::Http::Code::Ok, "Done" );
     }
     else{
@@ -297,7 +297,7 @@ void DefaultApiImpl::user_username_task_task_id_delete(const std::string &userna
     }
 }
 
-void DefaultApiImpl::user_username_task_task_id_get(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response){
+void DefaultApiImpl::user_username_task_task_id_get(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response){
     std::string decoded = geturl_decode(username);
     auto result = read_task(decoded, taskId);
     if(!result){
@@ -315,14 +315,33 @@ void DefaultApiImpl::user_username_tasks_post(const std::string &username, const
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    if(inlineObject1.getTypeOfTask() == "auto"){
+    task tk;
+    try
+    {
+        json jauto = json(inlineObject1)["task"];
+        if(inlineObject1.getTypeOfTask() == "auto"){
+            from_json(jauto, tk);
+        }else if (inlineObject1.getTypeOfTask() == "user"){
+            from_json(jauto, tk);
+        }else{
+            response.send(Pistache::Http::Code::Not_Found, "bad type of task");
+            return;
+        }
+        if(! create_task({{decoded,false}},tk)){
+            response.send(Pistache::Http::Code::Not_Found, "unable to create task");
+            return;
+        }
+        response.send(Pistache::Http::Code::Ok, "Done");
+        return;
 
-    }else if (inlineObject1.getTypeOfTask() == "user"){
-
-    }else{
-        response.send(Pistache::Http::Code::Not_Found, "bad type of task");
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        response.send(Pistache::Http::Code::Not_Found, "bad json conversion" + string(e.what()) );
         return;
     }
+    
     
     //create_task()
 }

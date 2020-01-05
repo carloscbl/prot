@@ -65,8 +65,8 @@ public:
     void user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response);
     void user_username_questionary_app_id_get(const std::string &username, const int32_t &appId, Pistache::Http::ResponseWriter &response);
     void user_username_questionary_app_id_post(const std::string &username, const int32_t &appId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response);
-    void user_username_task_task_id_delete(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response);
-    void user_username_task_task_id_get(const std::string &username, const std::string &taskId, Pistache::Http::ResponseWriter &response);
+    void user_username_task_task_id_delete(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response);
+    void user_username_task_task_id_get(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response);
     void user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response);
     void user_username_tasks_post(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response);
 
