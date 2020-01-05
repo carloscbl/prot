@@ -412,8 +412,8 @@ inline unique_ptr<task> read_task(const string &username, const uint64_t task_id
     const auto & row = resu.front();
     json js  = json::parse(row.json.value()); //bad parsing
     auto tk = make_unique<task>();
-    tk->set_id(row.id);
     from_json(js,*tk);
+    tk->set_id(row.id);
     return tk;
 }
 
@@ -435,12 +435,9 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
         json js  = json::parse(row.json.value()); //bad parsing
 
         auto tk = make_unique<task>();
-        tk->set_id(row.id);
-        cout << "prev to from_json" << endl;
         from_json(js,*tk);
-        cout << "after to from_json" << endl;
+        tk->set_id(row.id);
         vtasks[row.id] = move(tk);
-        cout << "moved and push_back done" << endl;
     }
     return vtasks;
 }
