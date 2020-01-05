@@ -1,9 +1,7 @@
 FROM base_prot:latest as min-stage
 
 ARG NBUILDCORES=3
-#--build-arg NBUILDCORES=12
 
-WORKDIR /opt/prot/
 RUN ./build.sh
 WORKDIR /opt/prot/build
 
