@@ -20,6 +20,7 @@ void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_t
         {"duration",    ref_task.get_duration()},
         {"restrictions",ref_task.get_restrictions().get_restrictions()},
         {"frequency",   ref_task.get_frequency().get_frequency_name()},
+        {"id",          ref_task.get_id()},
     };
     if(!ref_task.get_when().after.empty()){
         new_json["when"] = ref_task.get_when();
@@ -32,35 +33,28 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::pair_inte
 }
 
 void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task){
-    cout << 1 << endl;
     new_task.m_frequency.set_frequency( ref_json.at("frequency").get<std::string>() );
-    cout << 2 << endl;
     ref_json.at("description").get_to(new_task.description);
-    cout << 3 << endl;
     ref_json.at("name").get_to(new_task.name);
-    cout << 4 << endl;
     ref_json.at("tag").get_to(new_task.tag);
-    cout << 5 << endl;
-    //
     ref_json.at("duration").get_to(new_task.m_duration);
     
-    cout << 6 << endl;
     //Optional
     if(ref_json.find("restrictions") != ref_json.end()){
-    cout << 7 << endl;
         new_task.m_restrictions.set_restrictions( ref_json.at("restrictions") .get<std::set<std::string>>() );
     }
     if(ref_json.find("when") != ref_json.end()){
-    cout << 8 << endl;
         ref_json.at("when").get_to(new_task.m_when);
     }
     if(ref_json.find("interval") != ref_json.end()){
-    cout << 9 << endl;
         ref_json.at("interval").get_to(new_task.interval);
+    }
+    if(ref_json.find("id") != ref_json.end()){
+        ref_json.at("id").get_to(new_task.id);
     }
 }
 
-task_space::task::task() : CRUD_actionable(this->tasks_map, setters)
+task_space::task::task() : CRUD_actionable(this->tasks_map, setters),id(0)
 {
     //Acumulation wont happend here, the id will be provided by the db
 }

@@ -412,6 +412,7 @@ inline unique_ptr<task> read_task(const string &username, const uint64_t task_id
     const auto & row = resu.front();
     json js  = json::parse(row.json.value()); //bad parsing
     auto tk = make_unique<task>();
+    tk->set_id(row.id);
     from_json(js,*tk);
     return tk;
 }
@@ -432,7 +433,9 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
         cout << row.json.text << endl;
         cout << row.json.value() << endl;
         json js  = json::parse(row.json.value()); //bad parsing
+
         auto tk = make_unique<task>();
+        tk->set_id(row.id);
         cout << "prev to from_json" << endl;
         from_json(js,*tk);
         cout << "after to from_json" << endl;
@@ -457,7 +460,7 @@ inline bool delete_task(const string &username, const uint64_t task_id)
     test_prot::Tasks tsk;
     test_prot::Users usr;
     
-    if(db(remove_from(tsk).using_(usr, tasker_,tskTkr).where( 
+    if(db(remove_from(tsk).using_(usr, tasker_,tskTkr,tsk).where( 
     tasker_.user == usr.id 
     and usr.username == username 
     and tskTkr.idtask == tsk.id
