@@ -239,6 +239,10 @@ void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistac
     cout << "Inside user_username_tasks_get" << endl;
     std::string decoded = geturl_decode(username);
     auto tsks = read_tasks(decoded);
+    if(tsks.empty()){
+        response.send(Pistache::Http::Code::Not_Found, "not tasks or user");
+    }
+
     json jresponse;
     for (auto &&[k,v] : tsks)
     {
@@ -259,7 +263,6 @@ void DefaultApiImpl::user_developer_form_post(const std::string &developer, cons
     auto res = create_form( whole_request.at("form_obj") ,decoded);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
-
     }
     response.send(Pistache::Http::Code::Created, "Done");
 }
