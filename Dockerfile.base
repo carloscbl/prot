@@ -2,6 +2,9 @@ FROM ubuntu:19.04 as min-stage
 
 ARG NBUILDCORES=3
 #--build-arg NBUILDCORES=12
+# RUN echo "deb http://archive.ubuntu.com/ubuntu trusty multiverse" >> /etc/apt/sources.list
+# RUN echo "deb http://archive.ubuntu.com/ubuntu trusty-updates multiverse" >> /etc/apt/sources.list
+# RUN echo "deb http://security.ubuntu.com/ubuntu trusty-security multiverse" >> /etc/apt/sources.list
 
 RUN apt update && apt install -y \
     software-properties-common \
