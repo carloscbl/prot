@@ -27,7 +27,7 @@ services:
     entrypoint: ./api-server
     environment:
       PROT_DB_USER: root
-      PROT_DB_SCHEMA: test_prot
+      PROT_DB_SCHEMA: prot
       PROT_DB_PASSW: example
       PROT_DB_HOST: db
       PROT_DB_PORT: 3306
