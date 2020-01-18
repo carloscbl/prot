@@ -10,7 +10,7 @@ CORES=$(nproc --all)
 $SUDO dpkg -i ./thirdparty/cmake-data_3.15.4-1ubuntu2_all.deb
 $SUDO dpkg -i ./thirdparty/cmake_3.15.4-1ubuntu2_amd64.deb
 $SUDO apt-get install -f
-$SUDO add-apt-repository -y ppa:kip/pistache-unstable
+$SUDO add-apt-repository -y ppa:pistache+team/unstable
 $SUDO add-apt-repository -y ppa:mhier/libboost-latest
 $SUDO apt update && $SUDO apt install -y gcc-9 g++-9 gdb make wget tar python3.7 python3-pip libboost1.70-dev libmariadbclient-dev libpistache-dev 
 cd thirdparty

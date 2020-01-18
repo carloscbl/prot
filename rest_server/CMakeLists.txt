@@ -8,11 +8,11 @@ include(ExternalProject)
 
 set(EXTERNAL_INSTALL_LOCATION ${CMAKE_CURRENT_SOURCE_DIR}/external)
 
-#ExternalProject_Add(PISTACHE
-#    GIT_REPOSITORY https://github.com/oktal/pistache.git
-#    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-#)
-#
+ExternalProject_Add(PISTACHE
+   GIT_REPOSITORY https://github.com/oktal/pistache.git
+   CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+)
+
 #ExternalProject_Add(NLOHMANN
 #    GIT_REPOSITORY https://github.com/nlohmann/json.git
 #    GIT_TAG master
