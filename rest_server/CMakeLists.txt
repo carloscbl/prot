@@ -13,11 +13,11 @@ ExternalProject_Add(PISTACHE
    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
 )
 
-#ExternalProject_Add(NLOHMANN
-#    GIT_REPOSITORY https://github.com/nlohmann/json.git
-#    GIT_TAG master
-#    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
-#)
+ExternalProject_Add(NLOHMANN
+    GIT_REPOSITORY https://github.com/nlohmann/json.git
+    GIT_TAG develop
+    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+)
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
@@ -38,6 +38,6 @@ set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 add_executable(${PROJECT_NAME} ${SRCS} )
 target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/source)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty)
-#add_dependencies(${PROJECT_NAME} PISTACHE NLOHMANN)
-add_dependencies(${PROJECT_NAME} PISTACHE )
+add_dependencies(${PROJECT_NAME} PISTACHE NLOHMANN)
+#add_dependencies(${PROJECT_NAME} PISTACHE)
 target_link_libraries( ${PROJECT_NAME} pistache pthread lprot sqlpp11 sqlpp-mysql mariadb ${Boost_LIBRARIES})
