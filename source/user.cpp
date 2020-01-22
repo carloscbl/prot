@@ -15,7 +15,7 @@ void user::init(){
 
 void to_json(nlohmann::json& new_json, const user& ref_task){
     new_json = nlohmann::json{
-    {"id", ref_task.get_name()},
+    {"id", ref_task.get_id()},
     {"username",ref_task.get_name()},
     };
 }
