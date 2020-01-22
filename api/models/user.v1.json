@@ -13,9 +13,13 @@
     },
     "scheduler": {
       "$ref": "./scheduler.v1.json"
+    },
+    "user_id": {
+      "type": "integer"
     }
   },
   "required": [
-    "username"
+    "username",
+    "user_id"
   ]
 }

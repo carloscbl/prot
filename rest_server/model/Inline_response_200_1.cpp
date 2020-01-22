@@ -20,15 +20,9 @@ namespace model {
 
 Inline_response_200_1::Inline_response_200_1()
 {
-    m_Name = "";
-    m_NameIsSet = false;
-    m_Picture = "";
-    m_PictureIsSet = false;
-    m_Price = 0.0;
-    m_PriceIsSet = false;
-    m_TagsIsSet = false;
-    m_ = "";
-    m_IsSet = false;
+    m_Current_question = "";
+    m_Hints = "";
+    m_HintsIsSet = false;
     
 }
 
@@ -44,131 +38,45 @@ void Inline_response_200_1::validate()
 void to_json(nlohmann::json& j, const Inline_response_200_1& o)
 {
     j = nlohmann::json();
-    if(o.nameIsSet())
-        j["name"] = o.m_Name;
-    if(o.pictureIsSet())
-        j["picture"] = o.m_Picture;
-    if(o.priceIsSet())
-        j["price"] = o.m_Price;
-    if(o.tagsIsSet() || !o.m_Tags.empty())
-        j["tags"] = o.m_Tags;
-    if(o.IsSet())
-        j[""] = o.m_;
+    j["current_question"] = o.m_Current_question;
+    if(o.hintsIsSet())
+        j["hints"] = o.m_Hints;
 }
 
 void from_json(const nlohmann::json& j, Inline_response_200_1& o)
 {
-    if(j.find("name") != j.end())
+    j.at("current_question").get_to(o.m_Current_question);
+    if(j.find("hints") != j.end())
     {
-        j.at("name").get_to(o.m_Name);
-        o.m_NameIsSet = true;
-    } 
-    if(j.find("picture") != j.end())
-    {
-        j.at("picture").get_to(o.m_Picture);
-        o.m_PictureIsSet = true;
-    } 
-    if(j.find("price") != j.end())
-    {
-        j.at("price").get_to(o.m_Price);
-        o.m_PriceIsSet = true;
-    } 
-    if(j.find("tags") != j.end())
-    {
-        j.at("tags").get_to(o.m_Tags);
-        o.m_TagsIsSet = true;
-    } 
-    if(j.find("") != j.end())
-    {
-        j.at("").get_to(o.m_);
-        o.m_IsSet = true;
+        j.at("hints").get_to(o.m_Hints);
+        o.m_HintsIsSet = true;
     } 
 }
 
-std::string Inline_response_200_1::getName() const
+std::string Inline_response_200_1::getCurrentQuestion() const
 {
-    return m_Name;
+    return m_Current_question;
 }
-void Inline_response_200_1::setName(std::string const& value)
+void Inline_response_200_1::setCurrentQuestion(std::string const& value)
 {
-    m_Name = value;
-    m_NameIsSet = true;
+    m_Current_question = value;
 }
-bool Inline_response_200_1::nameIsSet() const
+std::string Inline_response_200_1::getHints() const
 {
-    return m_NameIsSet;
+    return m_Hints;
 }
-void Inline_response_200_1::unsetName()
+void Inline_response_200_1::setHints(std::string const& value)
 {
-    m_NameIsSet = false;
+    m_Hints = value;
+    m_HintsIsSet = true;
 }
-std::string Inline_response_200_1::getPicture() const
+bool Inline_response_200_1::hintsIsSet() const
 {
-    return m_Picture;
+    return m_HintsIsSet;
 }
-void Inline_response_200_1::setPicture(std::string const& value)
+void Inline_response_200_1::unsetHints()
 {
-    m_Picture = value;
-    m_PictureIsSet = true;
-}
-bool Inline_response_200_1::pictureIsSet() const
-{
-    return m_PictureIsSet;
-}
-void Inline_response_200_1::unsetPicture()
-{
-    m_PictureIsSet = false;
-}
-double Inline_response_200_1::getPrice() const
-{
-    return m_Price;
-}
-void Inline_response_200_1::setPrice(double const value)
-{
-    m_Price = value;
-    m_PriceIsSet = true;
-}
-bool Inline_response_200_1::priceIsSet() const
-{
-    return m_PriceIsSet;
-}
-void Inline_response_200_1::unsetPrice()
-{
-    m_PriceIsSet = false;
-}
-std::vector<std::string>& Inline_response_200_1::getTags()
-{
-    return m_Tags;
-}
-void Inline_response_200_1::setTags(std::vector<std::string> const& value)
-{
-    m_Tags = value;
-    m_TagsIsSet = true;
-}
-bool Inline_response_200_1::tagsIsSet() const
-{
-    return m_TagsIsSet;
-}
-void Inline_response_200_1::unsetTags()
-{
-    m_TagsIsSet = false;
-}
-std::string Inline_response_200_1::get() const
-{
-    return m_;
-}
-void Inline_response_200_1::set(std::string const& value)
-{
-    m_ = value;
-    m_IsSet = true;
-}
-bool Inline_response_200_1::IsSet() const
-{
-    return m_IsSet;
-}
-void Inline_response_200_1::unset()
-{
-    m_IsSet = false;
+    m_HintsIsSet = false;
 }
 
 }

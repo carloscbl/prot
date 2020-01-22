@@ -229,6 +229,7 @@ inline unique_ptr<user> create_user(string username)
     json j = {{"username", username}};
     from_json(j, *us);
     const auto &result = db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
+    us->set_id(result);
     db(insert_into(tasker_).set(tasker_.user = result));
     db(insert_into(sche).set(sche.user = result));
     return us;
@@ -247,6 +248,7 @@ inline unique_ptr<user> read_user(string username)
     json juser = json::parse(row.json.text);
     auto us = make_unique<user>();
     from_json(juser, *us);
+    us->set_id(row.id);
     return us;
 }
 

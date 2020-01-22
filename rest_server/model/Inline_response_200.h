@@ -19,7 +19,6 @@
 #define Inline_response_200_H_
 
 
-#include <string>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -44,23 +43,14 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getCurrentQuestion() const;
-    void setCurrentQuestion(std::string const& value);
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string getHints() const;
-    void setHints(std::string const& value);
-    bool hintsIsSet() const;
-    void unsetHints();
+    int32_t getUserId() const;
+    void setUserId(int32_t const value);
 
     friend void to_json(nlohmann::json& j, const Inline_response_200& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200& o);
 protected:
-    std::string m_Current_question;
+    int32_t m_User_id;
 
-    std::string m_Hints;
-    bool m_HintsIsSet;
 };
 
 }

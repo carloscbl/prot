@@ -20,9 +20,7 @@ namespace model {
 
 Inline_response_200::Inline_response_200()
 {
-    m_Current_question = "";
-    m_Hints = "";
-    m_HintsIsSet = false;
+    m_User_id = 0;
     
 }
 
@@ -38,45 +36,21 @@ void Inline_response_200::validate()
 void to_json(nlohmann::json& j, const Inline_response_200& o)
 {
     j = nlohmann::json();
-    j["current_question"] = o.m_Current_question;
-    if(o.hintsIsSet())
-        j["hints"] = o.m_Hints;
+    j["user_id"] = o.m_User_id;
 }
 
 void from_json(const nlohmann::json& j, Inline_response_200& o)
 {
-    j.at("current_question").get_to(o.m_Current_question);
-    if(j.find("hints") != j.end())
-    {
-        j.at("hints").get_to(o.m_Hints);
-        o.m_HintsIsSet = true;
-    } 
+    j.at("user_id").get_to(o.m_User_id);
 }
 
-std::string Inline_response_200::getCurrentQuestion() const
+int32_t Inline_response_200::getUserId() const
 {
-    return m_Current_question;
+    return m_User_id;
 }
-void Inline_response_200::setCurrentQuestion(std::string const& value)
+void Inline_response_200::setUserId(int32_t const value)
 {
-    m_Current_question = value;
-}
-std::string Inline_response_200::getHints() const
-{
-    return m_Hints;
-}
-void Inline_response_200::setHints(std::string const& value)
-{
-    m_Hints = value;
-    m_HintsIsSet = true;
-}
-bool Inline_response_200::hintsIsSet() const
-{
-    return m_HintsIsSet;
-}
-void Inline_response_200::unsetHints()
-{
-    m_HintsIsSet = false;
+    m_User_id = value;
 }
 
 }

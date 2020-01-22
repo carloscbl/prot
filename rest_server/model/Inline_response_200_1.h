@@ -20,7 +20,6 @@
 
 
 #include <string>
-#include <vector>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -45,52 +44,23 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getName() const;
-    void setName(std::string const& value);
-    bool nameIsSet() const;
-    void unsetName();
+    std::string getCurrentQuestion() const;
+    void setCurrentQuestion(std::string const& value);
     /// <summary>
     /// 
     /// </summary>
-    std::string getPicture() const;
-    void setPicture(std::string const& value);
-    bool pictureIsSet() const;
-    void unsetPicture();
-    /// <summary>
-    /// 
-    /// </summary>
-    double getPrice() const;
-    void setPrice(double const value);
-    bool priceIsSet() const;
-    void unsetPrice();
-    /// <summary>
-    /// 
-    /// </summary>
-    std::vector<std::string>& getTags();
-    void setTags(std::vector<std::string> const& value);
-    bool tagsIsSet() const;
-    void unsetTags();
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string get() const;
-    void set(std::string const& value);
-    bool IsSet() const;
-    void unset();
+    std::string getHints() const;
+    void setHints(std::string const& value);
+    bool hintsIsSet() const;
+    void unsetHints();
 
     friend void to_json(nlohmann::json& j, const Inline_response_200_1& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200_1& o);
 protected:
-    std::string m_Name;
-    bool m_NameIsSet;
-    std::string m_Picture;
-    bool m_PictureIsSet;
-    double m_Price;
-    bool m_PriceIsSet;
-    std::vector<std::string> m_Tags;
-    bool m_TagsIsSet;
-    std::string m_;
-    bool m_IsSet;
+    std::string m_Current_question;
+
+    std::string m_Hints;
+    bool m_HintsIsSet;
 };
 
 }

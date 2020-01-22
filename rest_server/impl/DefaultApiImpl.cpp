@@ -228,10 +228,10 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
     form_runner fr(*usr, *form_);
     json qa_request1;
     auto & qa_res = fr.run(qa_request1);
-    Inline_response_200 response_200;
-    response_200.setCurrentQuestion(qa_res["next_question"].get<string>());
+    Inline_response_200_1 response_200_1;
+    response_200_1.setCurrentQuestion(qa_res["next_question"].get<string>());
 
-    response.send(Pistache::Http::Code::Ok, json(response_200).dump(4));
+    response.send(Pistache::Http::Code::Ok, json(response_200_1).dump(4));
 }
 
 void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
@@ -285,9 +285,9 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
     qa_request["answer"] = inlineObject3.getResponse();
     auto & qa_res = fr.run(qa_request);
 
-    Inline_response_200 response_200;
-    response_200.setCurrentQuestion(qa_res["next_question"].get<string>());
-    response.send(Pistache::Http::Code::Ok, json(response_200).dump(4));
+    Inline_response_200_1 response_200_1;
+    response_200_1.setCurrentQuestion(qa_res["next_question"].get<string>());
+    response.send(Pistache::Http::Code::Ok, json(response_200_1).dump(4));
 }
 
 void DefaultApiImpl::user_username_task_task_id_delete(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response){
@@ -355,8 +355,9 @@ void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http
         response.send(Pistache::Http::Code::Bad_Request, "Already exists");
         return;
     }
-    
-    response.send(Pistache::Http::Code::Ok, "Created");
+    Inline_response_200 response_200;
+    response_200.setUserId(usr->get_id());
+    response.send(Pistache::Http::Code::Ok, json(response_200).dump(4));
 }
 
 void DefaultApiImpl::user_username_get(const std::string &username, Pistache::Http::ResponseWriter &response) {

@@ -37,6 +37,15 @@ paths:
       responses:
         '200':
           description: OK
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  user_id:
+                    type: integer
+                required:
+                  - user_id
         '400':
           description: Bad Request
       requestBody:

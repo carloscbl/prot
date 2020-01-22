@@ -30,6 +30,7 @@
 #include "Inline_object_2.h"
 #include "Inline_object_3.h"
 #include "Inline_response_200.h"
+#include "Inline_response_200_1.h"
 #include "Object.h"
 #include "Prot_app_info.h"
 #include "User.h"
