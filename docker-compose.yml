@@ -1,7 +1,7 @@
 version: "3"
 services:
   db:
-    image: mysql
+    image: mysql:latest
     command: --default-authentication-plugin=mysql_native_password
     restart: always
     ports:
@@ -11,6 +11,9 @@ services:
       - ./api/db_schemas:/docker-entrypoint-initdb.d
     environment:
       MYSQL_ROOT_PASSWORD: example
+    security_opt:
+    - seccomp:unconfined
+
   adminer:
     image: adminer
     restart: always
