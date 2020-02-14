@@ -312,3 +312,17 @@ std::optional<strategy_return> answer_branches<T>::custom(const json &j, string 
         return std::nullopt;
     }
 }
+
+void to_json(nlohmann::json& new_json, const form_state& ref_state){
+    new_json = nlohmann::json{
+        {"current_id",     ref_state.current_id},
+        {"current_answer",     ref_state.current_answer},
+        {"next_branch_id",     ref_state.next_branch_id},
+    };
+}
+
+void from_json(const nlohmann::json& ref_json, form_state& new_state){
+    ref_json.at("current_id").get_to(new_state.current_id);
+    ref_json.at("current_answer").get_to(new_state.current_answer);
+    ref_json.at("next_branch_id").get_to(new_state.next_branch_id);
+}

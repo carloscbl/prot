@@ -119,10 +119,13 @@ struct form_state{
     //int current_QA_id;
     //queue<command> taskstory;
     //map<string,string> answers_history;
-    int current_id;
+    int current_id = static_cast<int>(e_branches::FIRST);;
     string current_answer;
-    int next_branch_id;
+    int next_branch_id = static_cast<int>(e_branches::RESTART);;
 };
+
+void to_json(nlohmann::json& new_json, const form_state& ref_state);
+void from_json(const nlohmann::json& ref_json, form_state& new_state);
 
 class form_parser{
 private:
@@ -206,10 +209,6 @@ public:
     }
     unique_ptr<form_state> get_state() const noexcept{
         auto ptr = make_unique<form_state>();
-        //     .current_id = this->current_id,
-        //     .current_answer = this->current_answer,
-        //     .next_branch_id = this->next_branch_id
-        // });
         ptr->current_id = this->current_id;
         ptr->current_answer = this->current_answer;
         ptr->next_branch_id = this->next_branch_id;

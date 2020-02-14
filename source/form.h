@@ -22,12 +22,16 @@ private:
     using form_register = map<string, unique_ptr<form>>;
     inline static form_register forms;
     const json m_form;
+    uint32_t id = 0;
 public:
 
     form( const json & valid_form );
     virtual ~form();
 
     const json &get_json() const noexcept { return m_form; }
+
+    void set_id(uint32_t AppId){ this->id = AppId; }
+    uint32_t get_id(){ return this->id; }
 
     static inline const form_register &get_forms_register() noexcept { return form::forms; }
     static inline void remove_form(const string & form_name ) noexcept { form::forms.erase(form_name); }

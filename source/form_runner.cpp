@@ -1,6 +1,7 @@
 
 #include "form_runner.h"
 #include "time_determinator.h"
+#include "trace_bullet.hpp"
 
 form_runner::form_runner(user & user_, form &form_)
     : user_(user_),
@@ -98,38 +99,20 @@ bool form_runner::perform_taskstory(next_question_data & response){
 
 shared_ptr<form_state> form_runner::get_session() const noexcept
 {
-    auto session_id = get_unique_id_session();
-    const auto &&state = form_runner::user_running_forms.find(session_id);
-    if (state != form_runner::user_running_forms.end())
-    {
-        return state->second;
+    //This needs to come from db
+    const auto &&state = read_session(this->user_.get_name() , this->form_.get_id() );
+    if (!state){
+        return create_session(this->user_.get_id() , this->form_.get_id() );
     }
-    else
-    {
-        return new_session(session_id);
-    }
+    return state;
 }
 
 shared_ptr<form_state> form_runner::fetch_next_session() const noexcept
 {
     auto session = get_session();
     if(session->next_branch_id < 0){
-        return new_session();
+        return create_session(this->user_.get_id() , this->form_.get_id() );
     }
     return session;
 }
 
-shared_ptr<form_state> form_runner::new_session() const noexcept
-{
-    auto session_id = get_unique_id_session();
-    auto new_state = make_shared<form_state>();
-    form_runner::user_running_forms[session_id] = new_state;
-    return new_state;
-}
-
-shared_ptr<form_state> form_runner::new_session(const string & session_id) const noexcept
-{
-        auto new_state = make_shared<form_state>();
-        form_runner::user_running_forms[session_id] = new_state;
-        return new_state;
-}

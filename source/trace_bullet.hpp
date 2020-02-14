@@ -9,6 +9,7 @@
 #include "user.h"
 #include "json.hpp"
 #include "time_utils.hpp"
+#include "form_parser.h"
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/alias_provider.h>
 #include <sqlpp11/sqlpp11.h>
@@ -91,7 +92,7 @@ inline optional<uint64_t> get_id(string unique_val)
     return result.front().a;
 }
 
-inline form *create_form(const json &valid_form, const string &username)
+inline unique_ptr<form> create_form(const json &valid_form, const string &username)
 {
     using test_prot::Forms;
     if (gen_exists<test_prot::Forms>(form::get_form_name(valid_form)))
@@ -107,16 +108,17 @@ inline form *create_form(const json &valid_form, const string &username)
     }
 
     test_prot::Forms form_;
-    form protform(valid_form);
-    db(insert_into(form_).set(
+    unique_ptr<form> protform = make_unique<form>(valid_form);
+    const auto &result = db(insert_into(form_).set(
         form_.json = valid_form.dump(),
         form_.name = form::get_form_name(valid_form),
         form_.developer = user_id.value() // TODO
         ));
-    return form::get_forms_register().at(protform.get_form_name()).get();
+    protform->set_id(result);
+    return protform;
 }
 
-inline form *read_form(const string &form_name)
+inline unique_ptr<form> read_form(const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -128,9 +130,10 @@ inline form *read_form(const string &form_name)
     }
 
     const auto &row = result.front();
-    form protform(json::parse(row.json.text)); //We create it implictly or refresh it
+    unique_ptr<form> protform = make_unique<form>(json::parse(row.json.text)); //We create it implictly or refresh it
+    protform->set_id(result.front().id);
 
-    return form::get_forms_register().at(protform.get_form_name()).get();
+    return protform;
 }
 
 inline map<uint64_t,string> read_forms_by_developer(const string & developer){
@@ -485,22 +488,61 @@ inline void update_task( task &new_task , const uint64_t task_id )
 
 }
 
-// void create_session(const string &username, const string &form_name)
+inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint64_t form_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::FormSessions sess;
+    test_prot::UsersForms uforms;
+    const auto & select = sqlpp::select(all_of(uforms))
+                                .from(uforms)
+                                .where(uforms.iduser == user_id and uforms.idform == form_id);
+    auto resu = db(select);
+    if(resu.empty()){
+        // No installation
+        return nullptr;
+    }
+    const auto & row = resu.front();
+    const auto & user_forms_id = row.id ;
+    shared_ptr<form_state> new_sess = make_shared<form_state>();
+    const auto &sess_res = db(insert_into(sess).set(
+        sess.json = json(*new_sess).dump(),
+        sess.userForms =  user_forms_id,
+        sess.unqName = "asdasd"
+        ));
+    if (sess_res < 1)
+    {
+        // Not insertion
+        return nullptr;
+    }
+    return new_sess;
+}
+
+inline shared_ptr<form_state> read_session(const string &username, const uint64_t form_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::FormSessions sess;
+    test_prot::Users usr;
+    test_prot::UsersForms uforms;
+    const auto & select = sqlpp::select(all_of(sess))
+                                .from(sess.join(uforms).on(uforms.id == sess.userForms).join(usr).on(uforms.iduser == usr.id))
+                                .where(usr.username == username and uforms.idform == form_id);
+    auto resu = db(select);
+    if(resu.empty()){
+        return nullptr;
+    }
+    const auto & row = resu.front();
+    json js  = json::parse(row.json.value());
+    shared_ptr<form_state> fs = make_shared<form_state>();
+    from_json(js,*fs);
+    return fs;
+}
+
+// void update_session(const string &username, const uint64_t form_id, const form_state &fs)
 // {
 //     auto &db = mysql_db::get_db_lazy().db;
 // }
 
-// form_state read_session(const string &username, const string &form_name, const form_state &fs)
-// {
-//     auto &db = mysql_db::get_db_lazy().db;
-// }
-
-// void update_session(const string &username, const string &form_name, const form_state &fs)
-// {
-//     auto &db = mysql_db::get_db_lazy().db;
-// }
-
-// void delete_session(const string &username, const string &form_name)
+// inline  void delete_session(const string &username, const uint64_t form_id)
 // {
 //     auto &db = mysql_db::get_db_lazy().db;
 // }
