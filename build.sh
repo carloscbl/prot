@@ -23,9 +23,16 @@ if [ -n "$1" ]; then
   CORES=$1
 fi
 
+if [ -x "$(command -v clang)" ]; then
+  export CC=/usr/bin/clang
+  export CXX=/usr/bin/clang++
+  echo 'Using Clang'
+fi
 
-cmake ..
+cmake  ..
 if [[ -n "$CLEAN" ]]; then
   make clean
 fi
+
+
 make -j $CORES

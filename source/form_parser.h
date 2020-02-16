@@ -115,7 +115,7 @@ struct next_question_data
 //Lets try to keep us from add more indirection, to find a more direct and concise solution
 
 struct form_state{
-    //string id;
+    uint64_t id = 0;
     //int current_QA_id;
     //queue<command> taskstory;
     //map<string,string> answers_history;

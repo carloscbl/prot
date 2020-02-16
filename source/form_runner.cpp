@@ -28,9 +28,12 @@ const json form_runner::run(const json &request_json) noexcept
         response = fp.form_next_in_pipeline(request_json["answer"]);
     }
     if(response->question_str == "END"){
-        this->user_running_forms.erase(this->get_unique_id_session());
+        delete_session(state->id);
+        // this->user_running_forms.erase(this->get_unique_id_session());
+    }else{
+        update_session(state->id, *fp.get_state());
     }
-    user_running_forms[get_unique_id_session()] = fp.get_state();
+
     json response_j;
     response_j["next_question"] = response->question_str;
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler

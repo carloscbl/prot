@@ -54,7 +54,7 @@ endif()
 add_library(pistache_static STATIC IMPORTED)
 
 set_target_properties(pistache_static PROPERTIES
-  INTERFACE_LINK_LIBRARIES "pthread"
+  INTERFACE_LINK_LIBRARIES "Threads::Threads"
 )
 
 # Load information for each installed configuration.

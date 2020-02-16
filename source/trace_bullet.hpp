@@ -496,8 +496,9 @@ inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint6
     const auto & select = sqlpp::select(all_of(uforms))
                                 .from(uforms)
                                 .where(uforms.iduser == user_id and uforms.idform == form_id);
-    auto resu = db(select);
+    const auto & resu = db(select);
     if(resu.empty()){
+        
         // No installation
         return nullptr;
     }
@@ -514,6 +515,7 @@ inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint6
         // Not insertion
         return nullptr;
     }
+    new_sess->id = row.id;
     return new_sess;
 }
 
@@ -526,7 +528,7 @@ inline shared_ptr<form_state> read_session(const string &username, const uint64_
     const auto & select = sqlpp::select(all_of(sess))
                                 .from(sess.join(uforms).on(uforms.id == sess.userForms).join(usr).on(uforms.iduser == usr.id))
                                 .where(usr.username == username and uforms.idform == form_id);
-    auto resu = db(select);
+    const auto & resu = db(select);
     if(resu.empty()){
         return nullptr;
     }
@@ -534,18 +536,32 @@ inline shared_ptr<form_state> read_session(const string &username, const uint64_
     json js  = json::parse(row.json.value());
     shared_ptr<form_state> fs = make_shared<form_state>();
     from_json(js,*fs);
+    fs->id = row.id;
     return fs;
 }
 
-// void update_session(const string &username, const uint64_t form_id, const form_state &fs)
-// {
-//     auto &db = mysql_db::get_db_lazy().db;
-// }
+inline void update_session( const uint64_t fs_id, form_state &new_fs)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::FormSessions sess;
+    const auto & result = db(update(sess).set(
+        sess.json = json(new_fs).dump()
+    ).where(sess.id == fs_id));
+    if(result <= 0){ return; }
+    new_fs.id =result;
+}
 
-// inline  void delete_session(const string &username, const uint64_t form_id)
-// {
-//     auto &db = mysql_db::get_db_lazy().db;
-// }
+inline bool delete_session(const uint64_t fs_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::FormSessions sess;
+    if(db(remove_from(sess).using_(sess).where( 
+    sess.id == fs_id
+    ))){
+        return true;
+    }
+    return false;
+}
 
 //https://github.com/rbock/sqlpp11/wiki/Select
 inline void join()
