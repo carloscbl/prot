@@ -207,6 +207,11 @@ public:
         initial_question->question_str = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
         return initial_question;
     }
+    unique_ptr <next_question_data> get_current_question() const noexcept{
+        auto initial_question = make_unique<next_question_data> ();
+        initial_question->question_str = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+        return initial_question;
+    }
     unique_ptr<form_state> get_state() const noexcept{
         auto ptr = make_unique<form_state>();
         ptr->current_id = this->current_id;

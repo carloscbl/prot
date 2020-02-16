@@ -275,7 +275,10 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
     }
     if(inlineObject3.restartIsSet()){
         response.send(Pistache::Http::Code::Ok, "Rested " + decoded + " " + std::to_string(appId) );
-
+        auto session = read_session(usr->get_name() , appId);
+        if (session){
+            delete_session(session->id);
+        }
         return;
     }
     auto pair = read_form_by_id(appId);

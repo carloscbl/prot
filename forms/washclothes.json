@@ -199,6 +199,29 @@
       "answers_branches": {
         "custom": {
           "yes": {
+            "if_branch": 4
+          },
+          "no": {
+            "if_branch": 0
+          },
+          "else": {
+            "if_branch": -1
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "question": "Do you have employees?",
+      "answer_tag": "employees",
+      "type_user_input": "STRING",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "custom": {
+          "yes": {
             "if_branch": -3
           },
           "no": {
@@ -210,6 +233,7 @@
         }
       }
     }
+
   ],
   "diss_test": 1
 }
