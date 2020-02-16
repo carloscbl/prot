@@ -24,7 +24,7 @@ User::User()
     m_ParamsIsSet = false;
     m_TaskerIsSet = false;
     m_SchedulerIsSet = false;
-    m_User_id = 0;
+    m_Id = 0;
     
 }
 
@@ -47,7 +47,7 @@ void to_json(nlohmann::json& j, const User& o)
         j["tasker"] = o.m_Tasker;
     if(o.schedulerIsSet())
         j["scheduler"] = o.m_Scheduler;
-    j["user_id"] = o.m_User_id;
+    j["id"] = o.m_Id;
 }
 
 void from_json(const nlohmann::json& j, User& o)
@@ -68,7 +68,7 @@ void from_json(const nlohmann::json& j, User& o)
         j.at("scheduler").get_to(o.m_Scheduler);
         o.m_SchedulerIsSet = true;
     } 
-    j.at("user_id").get_to(o.m_User_id);
+    j.at("id").get_to(o.m_Id);
 }
 
 std::string User::getUsername() const
@@ -130,13 +130,13 @@ void User::unsetScheduler()
 {
     m_SchedulerIsSet = false;
 }
-int32_t User::getUserId() const
+int32_t User::getId() const
 {
-    return m_User_id;
+    return m_Id;
 }
-void User::setUserId(int32_t const value)
+void User::setId(int32_t const value)
 {
-    m_User_id = value;
+    m_Id = value;
 }
 
 }

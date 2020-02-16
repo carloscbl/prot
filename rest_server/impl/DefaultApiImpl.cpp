@@ -277,6 +277,7 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
         response.send(Pistache::Http::Code::Ok, "Rested " + decoded + " " + std::to_string(appId) );
         auto session = read_session(usr->get_name() , appId);
         if (session){
+            //We need to delete too, all associated tasks!
             delete_session(session->id);
         }
         return;

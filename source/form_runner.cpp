@@ -21,7 +21,7 @@ const json form_runner::run(const json &request_json) noexcept
     unique_ptr<next_question_data> response;
     if (request_json.is_null()) // Get, for get current state, for example for resume questionary
     {
-        response = fp.get_initial_question();
+        response = fp.get_current_question();
     }
     else
     {

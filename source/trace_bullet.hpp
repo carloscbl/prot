@@ -348,7 +348,7 @@ inline map<uint64_t,string> read_instalations(const string &username, optional<u
 }
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
+inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_, const uint64_t user_forms_id = 0)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
