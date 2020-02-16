@@ -5,9 +5,11 @@ SET time_zone = '+00:00';
 SET foreign_key_checks = 0;
 SET sql_mode = 'NO_AUTO_VALUE_ON_ZERO';
 
-USE `prot`;
-
 SET NAMES utf8mb4;
+
+DROP DATABASE IF EXISTS `prot`;
+CREATE DATABASE `prot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
+USE `prot`;
 
 DROP TABLE IF EXISTS `form_sessions`;
 CREATE TABLE `form_sessions` (
@@ -131,4 +133,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-02-16 16:41:15
+-- 2020-02-16 22:12:34
