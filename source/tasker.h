@@ -41,7 +41,7 @@ private:
     //FIX: TrackLife time of groups and expirate sync with form runner life time
     //Taskstory : Name -> each task have a tag
     map<string, map< string, task_t > > tasks_dispenser;
-    string m_user;
+    const string & m_user;
     void commit_group_then_delete(const string & group);
     void add_to_group(const string & task_tag, task_t && params, const string & group);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
