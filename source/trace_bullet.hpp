@@ -348,7 +348,7 @@ inline map<uint64_t,string> read_instalations(const string &username, optional<u
 }
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_, const uint64_t user_forms_id = 0)
+inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -358,7 +358,9 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         tks.json = json(task_).dump(),
         tks.group = task_.get_task_group(),
         tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
-        tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end))));
+        tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end)),
+        tks.fromUserFormsId = task_.get_user_forms_id()
+    ));
     if (tsk_res < 1)
     {
         // Not insertion
@@ -488,22 +490,30 @@ inline void update_task( task &new_task , const uint64_t task_id )
 
 }
 
-inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint64_t form_id)
-{
+inline uint64_t get_user_forms_id(const uint64_t user_id, const uint64_t form_id){
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::FormSessions sess;
     test_prot::UsersForms uforms;
     const auto & select = sqlpp::select(all_of(uforms))
                                 .from(uforms)
                                 .where(uforms.iduser == user_id and uforms.idform == form_id);
     const auto & resu = db(select);
     if(resu.empty()){
-        
         // No installation
-        return nullptr;
+        return 0;
     }
     const auto & row = resu.front();
     const auto & user_forms_id = row.id ;
+    return user_forms_id;
+}
+
+inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint64_t form_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    test_prot::FormSessions sess;
+    const uint64_t user_forms_id = get_user_forms_id( user_id, form_id);
+    if(!user_forms_id){
+        return nullptr; // No installation
+    }
     shared_ptr<form_state> new_sess = make_shared<form_state>();
     const auto &sess_res = db(insert_into(sess).set(
         sess.json = json(*new_sess).dump(),
@@ -515,7 +525,7 @@ inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint6
         // Not insertion
         return nullptr;
     }
-    new_sess->id = row.id;
+    new_sess->id = sess_res;
     return new_sess;
 }
 
@@ -548,7 +558,7 @@ inline void update_session( const uint64_t fs_id, form_state &new_fs)
         sess.json = json(new_fs).dump()
     ).where(sess.id == fs_id));
     if(result <= 0){ return; }
-    new_fs.id =result;
+    new_fs.id = result;
 }
 
 inline bool delete_session(const uint64_t fs_id)

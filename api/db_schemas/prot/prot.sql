@@ -28,7 +28,7 @@ CREATE TABLE `forms` (
   `json` json NOT NULL,
   `name` varchar(360) NOT NULL,
   `developer` int NOT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '1',
+  `id_public` tinyint(1) NOT NULL DEFAULT '1',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `developer` (`developer`),
@@ -131,4 +131,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-02-16 16:02:16
+-- 2020-02-16 16:41:15

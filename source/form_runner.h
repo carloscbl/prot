@@ -35,6 +35,7 @@ private:
     const std::chrono::minutes life_time = 5min;
     user & user_;
     form & form_;
+    uint64_t user_forms_id;
     unique_ptr<form_parser> fp;
 
 public:

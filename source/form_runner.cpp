@@ -5,8 +5,11 @@
 
 form_runner::form_runner(user & user_, form &form_)
     : user_(user_),
-      form_(form_)
-{}
+      form_(form_),
+      user_forms_id(get_user_forms_id(this->user_.get_id() , this->form_.get_id()))
+{
+
+}
 
 string form_runner::get_unique_id_session() const noexcept
 {
@@ -73,6 +76,7 @@ bool form_runner::perform_taskstory(next_question_data & response){
         {
             task_t task_test = make_shared<task>(v.get<task>());
             task_test->set_user(this->user_.get_name());
+            task_test->set_user_forms_id(user_forms_id);
             time_determinator time_dt(task_test, provisional_scheduler);
             //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
