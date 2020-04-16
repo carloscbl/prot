@@ -15,7 +15,7 @@ ExternalProject_Add(PISTACHE
 
 ExternalProject_Add(NLOHMANN
     GIT_REPOSITORY https://github.com/nlohmann/json.git
-    GIT_TAG develop
+    GIT_TAG master
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
 )
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
