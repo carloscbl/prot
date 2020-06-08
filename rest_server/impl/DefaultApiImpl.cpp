@@ -327,9 +327,9 @@ void DefaultApiImpl::user_username_tasks_post(const std::string &username, const
     {
         json jauto = json(inlineObject1)["task"];
         if(inlineObject1.getTypeOfTask() == "auto"){
-            from_json(jauto, tk);
+            from_json_auto_task(jauto, tk);
         }else if (inlineObject1.getTypeOfTask() == "user"){
-            from_json(jauto, tk);
+            from_json_user_task(jauto, tk);
         }else{
             response.send(Pistache::Http::Code::Not_Found, "bad type of task");
             return;

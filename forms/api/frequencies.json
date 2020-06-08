@@ -1,4 +1,15 @@
 {
+    "None":{
+        "tags":[
+            "external"
+        ],
+        "period":{
+            "minutes": 0
+        },
+        "is":[
+            "external"
+        ]
+    },
     "vital-emergency":{
         "tags":[
             "fire","earthquake","hearh-attack","accident"

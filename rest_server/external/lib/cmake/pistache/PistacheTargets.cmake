@@ -54,7 +54,7 @@ endif()
 add_library(pistache_static STATIC IMPORTED)
 
 set_target_properties(pistache_static PROPERTIES
-  INTERFACE_LINK_LIBRARIES "Threads::Threads"
+  INTERFACE_LINK_LIBRARIES "-latomic;Threads::Threads"
 )
 
 # Load information for each installed configuration.

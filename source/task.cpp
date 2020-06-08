@@ -54,6 +54,50 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
     }
 }
 
+void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task){
+    new_task.m_frequency.set_frequency( ref_json.at("frequency").get<std::string>() );
+    ref_json.at("description").get_to(new_task.description);
+    ref_json.at("name").get_to(new_task.name);
+    ref_json.at("tag").get_to(new_task.tag);
+    ref_json.at("duration").get_to(new_task.m_duration);
+    
+    //Optional
+    if(ref_json.find("restrictions") != ref_json.end()){
+        new_task.m_restrictions.set_restrictions( ref_json.at("restrictions") .get<std::set<std::string>>() );
+    }
+    if(ref_json.find("when") != ref_json.end()){
+        ref_json.at("when").get_to(new_task.m_when);
+    }
+    if(ref_json.find("interval") != ref_json.end()){
+        ref_json.at("interval").get_to(new_task.interval);
+    }
+    if(ref_json.find("id") != ref_json.end()){
+        ref_json.at("id").get_to(new_task.id);
+    }
+}
+
+void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task){
+    ref_json.at("description").get_to(new_task.description);
+    ref_json.at("name").get_to(new_task.name);
+    // ref_json.at("tag").get_to(new_task.tag);
+    // ref_json.at("duration").get_to(new_task.m_duration);
+    
+    new_task.m_frequency.set_frequency( "None" );
+    //Optional
+    if(ref_json.find("restrictions") != ref_json.end()){
+        new_task.m_restrictions.set_restrictions( ref_json.at("restrictions") .get<std::set<std::string>>() );
+    }
+    if(ref_json.find("when") != ref_json.end()){
+        ref_json.at("when").get_to(new_task.m_when);
+    }
+    if(ref_json.find("interval") != ref_json.end()){
+        ref_json.at("interval").get_to(new_task.interval);
+    }
+    if(ref_json.find("id") != ref_json.end()){
+        ref_json.at("id").get_to(new_task.id);
+    }
+}
+
 task_space::task::task() : CRUD_actionable(this->tasks_map, setters),id(0)
 {
     //Acumulation wont happend here, the id will be provided by the db

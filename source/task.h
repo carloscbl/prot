@@ -35,6 +35,8 @@ namespace task_space{
 
     class task;
     void from_json(const nlohmann::json& ref_json, task_space::task& new_task);
+    void from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
+    void from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task);
     void from_json(const nlohmann::json& ref_json, task_space::pair_interval& new_interval);
     class task : public CRUD_actionable<task> , public json_serializable<task>
     {
@@ -58,6 +60,8 @@ namespace task_space{
             {'u', &task::set_user},
         };
         friend void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task);
+        friend void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
+        friend void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task);
 
         uint64_t id;
         uint64_t user_forms_id = 0;

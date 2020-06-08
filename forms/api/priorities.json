@@ -3,5 +3,6 @@
     "critical",
     "obligation",
     "mandatory",
-    "skipable"
+    "skipable",
+    "external"
 ]

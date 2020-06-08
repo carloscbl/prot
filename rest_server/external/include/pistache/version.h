@@ -12,7 +12,7 @@ namespace Version {
     static constexpr int Major = 0;
     static constexpr int Minor = 0;
     static constexpr int Patch = 002;
-    static constexpr int Git   = 20200117;
+    static constexpr int Git   = 20200301;
 } // namespace Version
 } // namespace Pistache
 

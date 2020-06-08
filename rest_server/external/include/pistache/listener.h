@@ -9,9 +9,11 @@
 #include <pistache/async.h>
 #include <pistache/config.h>
 #include <pistache/flags.h>
+#include <pistache/log.h>
 #include <pistache/net.h>
 #include <pistache/os.h>
 #include <pistache/reactor.h>
+#include <pistache/ssl_wrappers.h>
 #include <pistache/tcp.h>
 
 #include <sys/resource.h>
@@ -50,7 +52,8 @@ public:
   void init(size_t workers,
             Flags<Options> options = Flags<Options>(Options::None),
             const std::string &workersName = "",
-            int backlog = Const::MaxBacklog);
+            int backlog = Const::MaxBacklog,
+            PISTACHE_STRING_LOGGER_T logger = PISTACHE_NULL_STRING_LOGGER);
   void setHandler(const std::shared_ptr<Handler> &handler);
 
   void bind();
@@ -97,8 +100,10 @@ private:
   int acceptConnection(struct sockaddr_in &peer_addr) const;
   void dispatchPeer(const std::shared_ptr<Peer> &peer);
 
-  bool useSSL_;
-  void *ssl_ctx_;
+  bool useSSL_ = false;
+  ssl::SSLCtxPtr ssl_ctx_ = nullptr;
+
+  PISTACHE_STRING_LOGGER_T logger_ = PISTACHE_NULL_STRING_LOGGER;
 };
 
 } // namespace Tcp
