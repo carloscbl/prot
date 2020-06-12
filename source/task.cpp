@@ -10,18 +10,19 @@ void task_space::to_json(nlohmann::json& new_json, const task_space::pair_interv
 }
 
 void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_task) {
-    new_json = nlohmann::json{
-        {"name",        ref_task.get_name()},
-        {"description", ref_task.get_description()},
-        {"user",        ref_task.get_m_user()},
-        {"task_group",  ref_task.get_task_group()},
-        {"interval",    ref_task.get_interval()},
-        {"tag",         ref_task.get_tag()},
-        {"duration",    ref_task.get_duration()},
-        {"restrictions",ref_task.get_restrictions().get_restrictions()},
-        {"frequency",   ref_task.get_frequency().get_frequency_name()},
-        {"id",          ref_task.get_id()},
-    };
+    new_json = ref_task.get_json();
+
+    new_json["name"]        = ref_task.get_name();
+    new_json["description"] = ref_task.get_description();
+    new_json["user"]        = ref_task.get_m_user();
+    new_json["task_group"]  = ref_task.get_task_group();
+    new_json["interval"]    = ref_task.get_interval();
+    new_json["tag"]         = ref_task.get_tag();
+    new_json["duration"]    = ref_task.get_duration();
+    new_json["restrictions"]= ref_task.get_restrictions().get_restrictions();
+    new_json["frequency"]   = ref_task.get_frequency().get_frequency_name();
+    new_json["id"]          = ref_task.get_id();
+
     if(!ref_task.get_when().after.empty()){
         new_json["when"] = ref_task.get_when();
     }
@@ -33,6 +34,7 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::pair_inte
 }
 
 void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task){
+    new_task.inner_json = ref_json;
     new_task.m_frequency.set_frequency( ref_json.at("frequency").get<std::string>() );
     ref_json.at("description").get_to(new_task.description);
     ref_json.at("name").get_to(new_task.name);
@@ -55,6 +57,7 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
 }
 
 void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task){
+    new_task.inner_json = ref_json;
     new_task.m_frequency.set_frequency( ref_json.at("frequency").get<std::string>() );
     ref_json.at("description").get_to(new_task.description);
     ref_json.at("name").get_to(new_task.name);
@@ -77,6 +80,7 @@ void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space:
 }
 
 void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task){
+    new_task.inner_json = ref_json;
     ref_json.at("description").get_to(new_task.description);
     ref_json.at("name").get_to(new_task.name);
     // ref_json.at("tag").get_to(new_task.tag);

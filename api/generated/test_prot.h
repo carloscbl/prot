@@ -436,6 +436,22 @@ namespace test_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::tinyint, sqlpp::tag::can_be_null>;
     };
+    struct ExternalId
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "external_id";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T externalId;
+            T& operator()() { return externalId; }
+            const T& operator()() const { return externalId; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
+    };
     struct FromUserFormsId
     {
       struct _alias_t
@@ -462,6 +478,7 @@ namespace test_prot
                Tasks_::Start,
                Tasks_::End,
                Tasks_::ConfirmedDone,
+               Tasks_::ExternalId,
                Tasks_::FromUserFormsId>
   {
     struct _alias_t

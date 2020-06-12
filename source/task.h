@@ -51,7 +51,8 @@ namespace task_space{
         restrictions m_restrictions;
         when m_when;
         pair_interval interval;
-        
+        nlohmann::json inner_json;
+
         CRUD_plus_actions_map tasks_map;
 
         map_local_functions setters{
@@ -69,14 +70,15 @@ namespace task_space{
         task();
         virtual ~task();
 
-        inline void set_id          (uint64_t id_)         { this->id = id_; }
-        inline void set_name        (string name_)         { this->name = name_; }
-        inline void set_task_group  (string task_group_)   { this->task_group = task_group_; }
-        inline void set_tag         (string tag_)          { this->tag = tag_; }
-        inline void set_description (string description_)  { this->description = description_; }
-        inline void set_user        (string user_)         { this->m_user = user_; }
-        inline void set_user_forms_id(uint64_t uf_id)      { this->user_forms_id = uf_id; }
-        inline void set_interval(time_t start, time_t end) {
+        inline void set_id           (uint64_t id_)            { this->id = id_; }
+        inline void set_name         (string name_)            { this->name = name_; }
+        inline void set_task_group   (string task_group_)      { this->task_group = task_group_; }
+        inline void set_tag          (string tag_)             { this->tag = tag_; }
+        inline void set_description  (string description_)     { this->description = description_; }
+        inline void set_user         (string user_)            { this->m_user = user_; }
+        inline void set_user_forms_id(uint64_t uf_id)          { this->user_forms_id = uf_id; }
+        inline void set_json         (nlohmann::json & json_)  { this->inner_json = json_; }
+        inline void set_interval(time_t start, time_t end)     {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
         }
@@ -93,6 +95,7 @@ namespace task_space{
         inline const frequency     & get_frequency()   const noexcept { return m_frequency; }
         inline const prot::duration& get_duration()    const noexcept { return m_duration; }
         inline const when          & get_when()        const noexcept { return m_when; }
+        inline const nlohmann::json& get_json()        const noexcept { return inner_json; }
 
         void print_remain() const;
 

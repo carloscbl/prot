@@ -1,4 +1,4 @@
--- Adminer 4.7.6 MySQL dump
+-- Adminer 4.7.7 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -13,10 +13,10 @@ USE `prot`;
 
 DROP TABLE IF EXISTS `form_sessions`;
 CREATE TABLE `form_sessions` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `unq_name` varchar(720) NOT NULL,
   `json` json NOT NULL,
-  `user_forms` int NOT NULL,
+  `user_forms` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `unq_name` (`unq_name`),
   KEY `user_forms` (`user_forms`),
@@ -26,10 +26,10 @@ CREATE TABLE `form_sessions` (
 
 DROP TABLE IF EXISTS `forms`;
 CREATE TABLE `forms` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `json` json NOT NULL,
   `name` varchar(360) NOT NULL,
-  `developer` int NOT NULL,
+  `developer` int(11) NOT NULL,
   `id_public` tinyint(1) NOT NULL DEFAULT '1',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -40,8 +40,8 @@ CREATE TABLE `forms` (
 
 DROP TABLE IF EXISTS `schedulers`;
 CREATE TABLE `schedulers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `user` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user` int(11) NOT NULL,
   PRIMARY KEY (`id`,`user`),
   KEY `user` (`user`),
   KEY `id` (`id`),
@@ -51,8 +51,8 @@ CREATE TABLE `schedulers` (
 
 DROP TABLE IF EXISTS `taskers`;
 CREATE TABLE `taskers` (
-  `idtasker` int NOT NULL AUTO_INCREMENT,
-  `user` int NOT NULL,
+  `idtasker` int(11) NOT NULL AUTO_INCREMENT,
+  `user` int(11) NOT NULL,
   PRIMARY KEY (`idtasker`),
   UNIQUE KEY `idtaskers_UNIQUE` (`idtasker`),
   KEY `fk_taskers_1_idx` (`user`),
@@ -62,15 +62,17 @@ CREATE TABLE `taskers` (
 
 DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(720) NOT NULL,
   `group` varchar(360) NOT NULL,
   `json` json NOT NULL,
   `start` timestamp NULL DEFAULT NULL,
   `end` timestamp NULL DEFAULT NULL,
   `confirmed_done` tinyint(1) DEFAULT NULL,
-  `from_user_forms_id` int DEFAULT NULL,
+  `external_id` varchar(360) DEFAULT NULL,
+  `from_user_forms_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `external_id` (`external_id`),
   KEY `name` (`name`),
   KEY `group` (`group`),
   KEY `id` (`id`),
@@ -81,8 +83,8 @@ CREATE TABLE `tasks` (
 
 DROP TABLE IF EXISTS `tasks_schedulers`;
 CREATE TABLE `tasks_schedulers` (
-  `idtask` int NOT NULL,
-  `idscheduler` int NOT NULL,
+  `idtask` int(11) NOT NULL,
+  `idscheduler` int(11) NOT NULL,
   PRIMARY KEY (`idtask`,`idscheduler`),
   KEY `idtask_idx` (`idtask`),
   KEY `tasks_schedulers_ibfk_2` (`idscheduler`),
@@ -93,9 +95,9 @@ CREATE TABLE `tasks_schedulers` (
 
 DROP TABLE IF EXISTS `tasks_taskers`;
 CREATE TABLE `tasks_taskers` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `idtask` int NOT NULL,
-  `idtasker` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `idtask` int(11) NOT NULL,
+  `idtasker` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index2` (`id`),
   KEY `fk_tasks_taskers_1_idx` (`idtasker`),
@@ -107,7 +109,7 @@ CREATE TABLE `tasks_taskers` (
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` int NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(360) NOT NULL,
   `json` json DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -119,9 +121,9 @@ CREATE TABLE `users` (
 
 DROP TABLE IF EXISTS `users_forms`;
 CREATE TABLE `users_forms` (
-  `id` int NOT NULL AUTO_INCREMENT,
-  `iduser` int NOT NULL,
-  `idform` int NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `iduser` int(11) NOT NULL,
+  `idform` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `user_form` (`iduser`,`idform`),
@@ -133,4 +135,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-02-16 22:12:34
+-- 2020-06-12 06:28:29

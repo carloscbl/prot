@@ -63,6 +63,9 @@ void DefaultApi::apps_get_handler(const Pistache::Rest::Request &, Pistache::Htt
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -79,6 +82,9 @@ void DefaultApi::apps_id_get_handler(const Pistache::Rest::Request &request, Pis
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -98,6 +104,9 @@ void DefaultApi::user_developer_form_form_id_get_handler(const Pistache::Rest::R
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -114,6 +123,9 @@ void DefaultApi::user_developer_form_get_handler(const Pistache::Rest::Request &
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -137,6 +149,9 @@ void DefaultApi::user_developer_form_post_handler(const Pistache::Rest::Request 
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -157,6 +172,9 @@ void DefaultApi::user_post_handler(const Pistache::Rest::Request &request, Pista
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -173,6 +191,9 @@ void DefaultApi::user_username_apps_get_handler(const Pistache::Rest::Request &r
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -192,6 +213,9 @@ void DefaultApi::user_username_apps_install_app_id_delete_handler(const Pistache
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -209,6 +233,9 @@ void DefaultApi::user_username_apps_install_app_id_get_handler(const Pistache::R
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -228,6 +255,9 @@ void DefaultApi::user_username_apps_install_app_id_post_handler(const Pistache::
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -244,6 +274,9 @@ void DefaultApi::user_username_delete_handler(const Pistache::Rest::Request &req
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -262,6 +295,9 @@ void DefaultApi::user_username_get_handler(const Pistache::Rest::Request &reques
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -279,6 +315,9 @@ void DefaultApi::user_username_questionary_app_id_get_handler(const Pistache::Re
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -303,6 +342,9 @@ void DefaultApi::user_username_questionary_app_id_post_handler(const Pistache::R
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -320,6 +362,9 @@ void DefaultApi::user_username_task_task_id_delete_handler(const Pistache::Rest:
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -339,6 +384,9 @@ void DefaultApi::user_username_task_task_id_get_handler(const Pistache::Rest::Re
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
         return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
+        return;
     } catch (std::exception &e) {
         //send a 500 error
         response.send(Pistache::Http::Code::Internal_Server_Error, e.what());
@@ -355,6 +403,9 @@ void DefaultApi::user_username_tasks_get_handler(const Pistache::Rest::Request &
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
@@ -377,6 +428,9 @@ void DefaultApi::user_username_tasks_post_handler(const Pistache::Rest::Request 
     } catch (nlohmann::detail::exception &e) {
         //send a 400 error
         response.send(Pistache::Http::Code::Bad_Request, e.what());
+        return;
+    } catch (Pistache::Http::HttpError &e) {
+        response.send(static_cast<Pistache::Http::Code>(e.code()), e.what());
         return;
     } catch (std::exception &e) {
         //send a 500 error
