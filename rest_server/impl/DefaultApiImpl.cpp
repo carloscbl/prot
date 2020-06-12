@@ -329,6 +329,10 @@ void DefaultApiImpl::user_username_tasks_post(const std::string &username, const
         if(inlineObject1.getTypeOfTask() == "auto"){
             from_json_auto_task(jauto, tk);
         }else if (inlineObject1.getTypeOfTask() == "user"){
+            if (jauto.find("external_id") == jauto.end()){
+                response.send(Pistache::Http::Code::Not_Found, "if task is from a user calendar it needs an external_id");
+                return;
+            }
             from_json_user_task(jauto, tk);
         }else{
             response.send(Pistache::Http::Code::Not_Found, "bad type of task");

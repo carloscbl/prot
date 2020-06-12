@@ -353,13 +353,21 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     auto &db = mysql_db::get_db_lazy().db;
 
     test_prot::Tasks tks;
+
+    //["external_id"].get<string>()
+    auto jtask = task_.get_json();
+    string external_id;
+    if (jtask.find("external_id") != jtask.end()){
+        external_id = jtask["external_id"].get<string>();
+    }
+
     const auto &tsk_res = db(insert_into(tks).set(
         tks.name = task_.get_name(),
         tks.json = json(task_).dump(),
         tks.group = task_.get_task_group(),
         tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
         tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end)),
-        tks.externalId = sqlpp::tvin(task_.get_json()["external_id"].get<string>()),
+        tks.externalId = sqlpp::tvin(external_id),
         tks.fromUserFormsId = sqlpp::tvin(task_.get_user_forms_id())
     ));
     if (tsk_res < 1)
