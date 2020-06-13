@@ -31,8 +31,8 @@ namespace mysql = sqlpp::mysql;
 
 class mysql_db {
 private:
-    inline static unique_ptr<mysql_db> current_db;
 public:
+    inline static unique_ptr<mysql_db> current_db;
     static shared_ptr<mysql::connection_config> get_db_config();
     mysql_db():db(get_db_config()){
     };

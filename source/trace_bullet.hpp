@@ -408,6 +408,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
                 tskSche.idscheduler = sche_id));
         }
     });
+    mysql_db::current_db.reset();
     return true;
 }
 
