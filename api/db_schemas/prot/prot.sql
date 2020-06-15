@@ -71,12 +71,14 @@ CREATE TABLE `tasks` (
   `confirmed_done` tinyint(1) DEFAULT NULL,
   `external_id` varchar(360) DEFAULT NULL,
   `from_user_forms_id` int(11) DEFAULT NULL,
+  `prot_id` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `external_id` (`external_id`),
   KEY `name` (`name`),
   KEY `group` (`group`),
   KEY `id` (`id`),
   KEY `from_user_forms_id` (`from_user_forms_id`),
+  KEY `prot_id` (`prot_id`),
   CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`from_user_forms_id`) REFERENCES `users_forms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -135,4 +137,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-12 06:28:29
+-- 2020-06-15 09:22:41
