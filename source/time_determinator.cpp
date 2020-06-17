@@ -87,6 +87,22 @@ bool time_determinator::build_daily_restrictions(
     
     time_point day_from = get_current_day_begin(iteration_day, from);
 
+    if (iteration_day == 0){ // Should not schedule in the past even if there is free slots
+        task_t dummy_task = std::make_shared<task>();
+        dummy_task->set_description( "dummy_day_" + to_string(iteration_day)
+            + "_" 
+            + "elapsed_day"
+            + "_" 
+            + "within");
+        time_point start =  day_from;
+        time_t start_ = system_clock::to_time_t(start);
+
+        time_point end   = system_clock::now() ;
+        time_t end_ = system_clock::to_time_t(end);
+        dummy_task->set_interval(start_, end_);
+        interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
+    }
+
     for (auto &_24_restriction_interval : restrictions_interval)
     {
         auto normalized_intervals = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
