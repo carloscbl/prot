@@ -373,6 +373,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     if (tsk_res < 1)
     {
         // Not insertion
+        mysql_db::current_db.reset();
         return false;
     }
     task_.set_id(tsk_res);
