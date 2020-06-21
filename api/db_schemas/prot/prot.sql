@@ -133,8 +133,8 @@ CREATE TABLE `users_forms` (
   KEY `idform` (`idform`),
   KEY `id_index` (`id`),
   CONSTRAINT `users_forms_ibfk_3` FOREIGN KEY (`iduser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `users_forms_ibfk_5` FOREIGN KEY (`idform`) REFERENCES `forms` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `users_forms_ibfk_6` FOREIGN KEY (`idform`) REFERENCES `forms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-15 09:22:41
+-- 2020-06-21 18:17:10

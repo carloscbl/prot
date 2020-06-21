@@ -92,6 +92,9 @@
             "restrictions": [
               "night"
             ],
+            "when": {
+              "after": "base_task"
+            },
             "frequency": "weekly",
             "duration": {
               "minutes": 2
@@ -104,6 +107,9 @@
             "restrictions": [
               "night"
             ],
+            "when": {
+              "after": "washer_start"
+            },
             "frequency": "weekly",
             "duration": {
               "hours": 1,
@@ -123,7 +129,7 @@
               "minutes": 15
             },
             "when": {
-              "after": "washer_start",
+              "after": "washer_intermediate",
               "minimum_delay": {
                 "minutes": 15,
                 "hours": 1
@@ -140,7 +146,7 @@
             "restrictions": [
               "night"
             ],
-            "frequency": "some-days",
+            "frequency": "weekly",
             "duration": {
               "minutes": 32
             },

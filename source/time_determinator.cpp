@@ -46,6 +46,7 @@ optional<bool> time_determinator::build(days start_offset)
     if(d.count() <= 0){
         return nullopt;
     }
+    build_elapsed_today_restriction(start_offset, start, interval_map);
 
     for (days::rep iteration_day = 0; iteration_day < d.count(); iteration_day++)
     {
@@ -87,22 +88,6 @@ bool time_determinator::build_daily_restrictions(
     
     time_point day_from = get_current_day_begin(iteration_day, from);
 
-    if (iteration_day == 0){ // Should not schedule in the past even if there is free slots
-        task_t dummy_task = std::make_shared<task>();
-        dummy_task->set_description( "dummy_day_" + to_string(iteration_day)
-            + "_" 
-            + "elapsed_day"
-            + "_" 
-            + "within");
-        time_point start =  day_from;
-        time_t start_ = system_clock::to_time_t(start);
-
-        time_point end   = system_clock::now() ;
-        time_t end_ = system_clock::to_time_t(end);
-        dummy_task->set_interval(start_, end_);
-        interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
-    }
-
     for (auto &_24_restriction_interval : restrictions_interval)
     {
         auto normalized_intervals = _24_hour_interval_to_time_point(_24_restriction_interval, day_from);
@@ -137,6 +122,8 @@ bool time_determinator::forward_pipeline(const im_t & interval_map, time_point c
     if( slot.has_value() ){
         return apply_slot(slot.value());
     }
+    print_hour(current_day_begin);
+    print_time(interval_map);
     return false;
 }
 
@@ -160,6 +147,10 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
     if( slot.has_value() ){
         return apply_slot(slot.value());
     }
+    // print here current map to check why it failed
+
+    print_hour(current_day_begin);
+    print_time(interval_map);
     return false;
 }
 
@@ -273,6 +264,23 @@ bool time_determinator::find_time_gap_edge(time_t prev_upper, const im_t & inter
         return true;
     }
     return false;
+}
+
+bool time_determinator::build_elapsed_today_restriction(days start_offset, const time_point & day_from , im_t & interval_map){
+    if(start_offset.count() != 0){
+        return false;
+    }
+
+    task_t dummy_task = std::make_shared<task>();
+    dummy_task->set_description( "elapsed_first_day_0_within");
+    time_point start =  day_from;
+    time_t start_ = system_clock::to_time_t(start);
+
+    time_point end   = system_clock::now() + minutes(15) ;
+    time_t end_ = system_clock::to_time_t(end);
+    dummy_task->set_interval(start_, end_);
+    interval_map.set(make_pair(time_interval::closed(start_, end_), dummy_task ));
+    return true;
 }
 
 

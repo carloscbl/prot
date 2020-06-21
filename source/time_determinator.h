@@ -34,6 +34,7 @@ public:
 
     optional<bool> build(days start_offset);
     bool build_daily_restrictions( const time_point from, const time_point to, im_t & interval_map, int64_t iteration_day)const noexcept;
+    bool build_elapsed_today_restriction(days start_offset, const time_point & day_from , im_t & interval_map);
 
     //Diferent pipelines, they cannot be noexcept signature
     bool forward_pipeline(const im_t & interval_map, time_point current_day_begin) ;
