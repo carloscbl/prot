@@ -51,7 +51,6 @@ namespace task_space{
         restrictions m_restrictions;
         when m_when;
         pair_interval interval;
-        nlohmann::json inner_json;
 
         CRUD_plus_actions_map tasks_map;
 
@@ -67,6 +66,7 @@ namespace task_space{
         uint64_t id;
         uint64_t user_forms_id = 0;
     public:
+        nlohmann::json inner_json;
         task();
         virtual ~task();
 
