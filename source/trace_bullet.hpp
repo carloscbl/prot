@@ -357,10 +357,13 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     //["external_id"].get<string>()
     auto jtask = task_.get_json();
     string external_id;
+    string prot_id;
     if (jtask.find("external_id") != jtask.end()){
         external_id = jtask["external_id"].get<string>();
     }
-
+    if (jtask.find("prot_id") != jtask.end()){
+        prot_id = jtask["prot_id"].get<string>();
+    }
     const auto &tsk_res = db(insert_into(tks).set(
         tks.name = task_.get_name(),
         tks.json = json(task_).dump(),
@@ -368,7 +371,8 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
         tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end)),
         tks.externalId = sqlpp::tvin(external_id),
-        tks.fromUserFormsId = sqlpp::tvin(task_.get_user_forms_id())
+        tks.fromUserFormsId = sqlpp::tvin(task_.get_user_forms_id()),
+        tks.protId = sqlpp::tvin(prot_id),
     ));
     if (tsk_res < 1)
     {

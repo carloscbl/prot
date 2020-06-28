@@ -1,4 +1,4 @@
--- Adminer 4.7.7 MySQL dump
+-- Adminer 4.7.6 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -72,6 +72,8 @@ CREATE TABLE `tasks` (
   `external_id` varchar(360) DEFAULT NULL,
   `from_user_forms_id` int(11) DEFAULT NULL,
   `prot_id` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`),
   UNIQUE KEY `external_id` (`external_id`),
   KEY `name` (`name`),
@@ -137,4 +139,4 @@ CREATE TABLE `users_forms` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-21 18:17:10
+-- 2020-06-28 15:51:02
