@@ -372,7 +372,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end)),
         tks.externalId = sqlpp::tvin(external_id),
         tks.fromUserFormsId = sqlpp::tvin(task_.get_user_forms_id()),
-        tks.protId = sqlpp::tvin(prot_id),
+        tks.protId = sqlpp::tvin(prot_id)
     ));
     if (tsk_res < 1)
     {
