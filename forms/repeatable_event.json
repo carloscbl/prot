@@ -1,0 +1,244 @@
+﻿{
+  "form": {
+    "version": 0,
+    "form.name": "Daily workout",
+    "author.name": "carlos bernal"
+  },
+  "questions": [
+    {
+      "id": 1,
+      "question": "Do you workout at home?",
+      "answer_tag": "washer",
+      "type_user_input": "STRING",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "predefined_boolean_yes_no_affirmative_yes": {
+          "true": 0,
+          "else": -5,
+          "taskstory_id": "NONE"
+        }
+      }
+    },
+    {
+      "id": 2,
+      "question": "How many Kilograms have your washer capacity?",
+      "answer_tag": "kg_capacity",
+      "type_user_input": "INTEGER",
+      "mode": [
+        "sequential",
+        "if_error_repeat",
+        "ignorecase"
+      ],
+      "answers_branches": {
+        "ranges": [
+          {
+            "range": {
+              "values": {
+                ">": 30,
+                "<": 1000
+              },
+              "if_branch": 3,
+              "taskstory_id": "industrial_user"
+            }
+          },
+          {
+            "range": {
+              "values": {
+                ">": 0,
+                "<": 30
+              },
+              "if_branch": -1,
+              "taskstory_id": "normal_user"
+            }
+          },
+          {
+            "range": {
+              "values": {
+                "<": 0,
+                ">": 1000
+              },
+              "if_branch": -4,
+              "taskstory_id": 3
+            }
+          }
+        ]
+      },
+      "taskstories": {
+        "normal_user": [
+          {
+            "tag": "base_task",
+            "name":"step 1",
+            "comment": "The user is implicit",
+            "description": "Gather Clothes around home",
+            "restrictions": [
+              "early",
+              "soon",
+              "launch"
+            ],
+            "frequency": "weekly",
+            "duration": {
+              "minutes": 5,
+              "hours": 1,
+              "seconds": 3
+            }
+          },
+          {
+            "tag": "washer_start",
+            "name":"step 2",
+            "description": "Put them inside and start the machine",
+            "restrictions": [
+              "night"
+            ],
+            "when": {
+              "after": "base_task"
+            },
+            "frequency": "weekly",
+            "duration": {
+              "minutes": 2
+            }
+          },
+          {
+            "tag": "washer_intermediate",
+            "name":"step 3",
+            "description": "Put them inside and start the machine",
+            "restrictions": [
+              "night"
+            ],
+            "when": {
+              "after": "washer_start"
+            },
+            "frequency": "weekly",
+            "duration": {
+              "hours": 1,
+              "minutes": 59,
+              "seconds": 59
+            }
+          },
+          {
+            "tag": "washer_end",
+            "name":"step 4",
+            "description": "Collect and hang out the washing",
+            "restrictions": [
+              "night"
+            ],
+            "frequency": "weekly",
+            "duration": {
+              "minutes": 15
+            },
+            "when": {
+              "after": "washer_intermediate",
+              "minimum_delay": {
+                "minutes": 15,
+                "hours": 1
+              },
+              "maximum_delay": {
+                "hours": 2
+              }
+            }
+          },
+          {
+            "tag": "washer_clean_up",
+            "name":"step 5",
+            "description": "Collect and hang out the washing",
+            "restrictions": [
+              "night"
+            ],
+            "frequency": "weekly",
+            "duration": {
+              "minutes": 32
+            },
+            "when": {
+              "after": "washer_end",
+              "minimum_delay": {
+                "minutes": 15,
+                "hours": 1,
+                "days": 1
+              },
+              "maximum_delay": {
+                "days": 1,
+                "hours":22
+              }
+            }
+          }
+        ],
+        "industrial_user": [
+          {
+            "tag": "industrial_start",
+            "name":"step 1",
+            "description": "start the machinery",
+            "restrictions": [
+              "night"
+            ],
+            "frequency": "some-days",
+            "duration": {
+              "minutes": 32
+            }
+          },
+          {
+            "tag": "industrial_middle",
+            "name":"step 2",
+            "description": "start the machinery",
+            "restrictions": [
+              "soon","early","launch","day"
+            ],
+            "frequency": "some-days",
+            "duration": {
+              "minutes": 32,
+              "hours": 7
+            }
+          }
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "question": "Your washer is a industrial one?",
+      "answer_tag": "industrial",
+      "type_user_input": "STRING",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "custom": {
+          "yes": {
+            "if_branch": 4
+          },
+          "no": {
+            "if_branch": 0
+          },
+          "else": {
+            "if_branch": -1
+          }
+        }
+      }
+    },
+    {
+      "id": 4,
+      "question": "Do you have employees?",
+      "answer_tag": "employees",
+      "type_user_input": "STRING",
+      "mode": [
+        "sequential",
+        "once"
+      ],
+      "answers_branches": {
+        "custom": {
+          "yes": {
+            "if_branch": -3
+          },
+          "no": {
+            "if_branch": 0
+          },
+          "else": {
+            "if_branch": -1
+          }
+        }
+      }
+    }
+
+  ]
+}
