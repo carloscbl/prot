@@ -11,14 +11,18 @@
 #include <boost/algorithm/string.hpp>
 #include <optional>
 #include <unordered_set>
+#include <string_view>
 #include "json.hpp"
-#include "command_expr_evaluator.h"
 
 using std::any;
+using std::any_cast;
 using std::string;
 using std::optional;
 using std::function;
 using std::map;
+using std::vector;
+using std::unique_ptr;
+using std::make_unique;
 
 // if_branch 
 enum class if_branch : int
@@ -68,11 +72,11 @@ private:
     std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
 
     //C++17, with inline you can use header :O
-    const map<string_view, function<std::optional<strategy_return>(const json & current_selector,std::any)>> kind_branch_t_map{
-        {"custom",[this](const json & j,std::any s){ return custom(j,any_cast<string>(s));}},
-        {"ranges",[this](const json & j,std::any s){ return ranges(j,any_cast<int>(s));}},
+    const map<std::string_view, function<std::optional<strategy_return>(const json & current_selector,std::any)>> kind_branch_t_map{
+        {"custom",[this](const json & j,std::any s){ return custom(j,std::any_cast<string>(s));}},
+        {"ranges",[this](const json & j,std::any s){ return ranges(j,std::any_cast<int>(s));}},
         {"predefined_boolean_yes_no_affirmative_yes", 
-            [this](const json & j,std::any s){ return predefined_boolean_yes_no_affirmative_yes(j,any_cast<string>(s));}},
+            [this](const json & j,std::any s){ return predefined_boolean_yes_no_affirmative_yes(j,std::any_cast<string>(s));}},
     };
 
     void enroute(const json & j);

@@ -8,6 +8,7 @@
 #include <optional>
 #include "task.h"
 class provisional_scheduler_RAII;
+using std::queue;
 
 class ischeduler
 {
@@ -19,7 +20,7 @@ public:
     virtual bool add_group(queue<task_t> && provisional_taskstory) = 0;
     virtual optional<vector<task_t>> get_range(time_t start, time_t end) = 0;
     virtual bool find_range(time_t start, time_t end) = 0;
-    virtual bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) = 0;
+    virtual bool find_relative(task_t item, std::chrono::seconds after_before, time_t end, time_t min_dur) = 0;
     virtual void print_out() const = 0;
     virtual provisional_scheduler_RAII get_provisional() = 0;
 };

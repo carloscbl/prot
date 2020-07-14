@@ -13,19 +13,15 @@
 #include <functional>
 #include <vector>
 #include <memory>
-#include "command_processor.h"
 #include "task.h"
 #include "form.h"
-#include "iactionable.h"
 #include "form_reader.h"
 #include "form_parser.h"
-#include "form_collector.h"
-#include "request.h"
 #include <cstdlib>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
 #include "test_prot.h"
-#include "trace_bullet.hpp"
+#include "db_ops.hpp"
 #include "json.hpp"
 
 using nlohmann::json;
@@ -34,32 +30,6 @@ using nlohmann::json;
 namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
 {
-    // global setup...
-
-    if(const char* env_p = std::getenv("PATH")){
-        std::cout << "Your PATH is: " << env_p << '\n';
-    }
-
-    //Its importan launch the program always from prot/build to take the relative paths
-    form_collector fc;
-    command_processor cp;
-
-    std::vector<std::string> forms_paths;
-    forms_paths = fc.get_forms_paths();
-    for_each(forms_paths.begin(), forms_paths.end(), [](const string & file_path ){
-        form_reader freader(file_path);
-        form fr(freader.get_json());
-    });
-
-    request request_(cp);
-    cp.register_actionable("req", &request_);
-
-    //////////////////////////////////////////////////////
-    //////////////////////////////////////////////////////
-
-    //////////////////////////////////////////////////////
-    //// COMMANDS ARE NOW PERFORMABLE
-    //////////////////////////////////////////////////////
 
     read_db_json();
     //delete_user("pepe");

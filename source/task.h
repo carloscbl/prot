@@ -10,7 +10,6 @@
 #include <memory>
 #include <ctime>
 #include <cmath>
-#include "CRUD_actionable.h"
 #include "duration.h"
 #include "when.h"
 #include "json.hpp"
@@ -38,7 +37,7 @@ namespace task_space{
     void from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
     void from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task);
     void from_json(const nlohmann::json& ref_json, task_space::pair_interval& new_interval);
-    class task : public CRUD_actionable<task> , public json_serializable<task>
+    class task
     {
     private:
         string name;
@@ -52,13 +51,6 @@ namespace task_space{
         when m_when;
         pair_interval interval;
 
-        CRUD_plus_actions_map tasks_map;
-
-        map_local_functions setters{
-            {'n', &task::set_name},
-            {'d', &task::set_description},
-            {'u', &task::set_user},
-        };
         friend void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task);
         friend void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
         friend void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task);
@@ -97,9 +89,7 @@ namespace task_space{
         inline const when          & get_when()        const noexcept { return m_when; }
         inline const nlohmann::json& get_json()        const noexcept { return inner_json; }
 
-        void print_remain() const;
 
-        void remain(map<char, string> params) const;
         void print_() { cout << id << ":" << tag << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
 
     };

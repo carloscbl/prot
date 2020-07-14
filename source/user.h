@@ -8,7 +8,6 @@
 #include <string>
 #include <map>
 #include "tasker.h"
-#include "CRUD_actionable.h"
 #include "ischeduler.h"
 #include "scheduler.h"
 #include "form.h"
@@ -27,7 +26,7 @@ struct user_minimal_data
     no one else should have one
 
  */
-class user : public json_serializable<user>
+class user 
 { //substitute by the final class
 public://FIX: this should be wrapped
     static inline map<string, shared_ptr<user>> users;

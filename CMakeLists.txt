@@ -30,8 +30,5 @@ message(${SOURCES})
 
 
 
-add_library (lprot ${PROJECT_SOURCE_DIR}/source/main.cpp ${SOURCES} )
-add_executable (prot ${PROJECT_SOURCE_DIR}/source/main.cpp ${SOURCES} )
-TARGET_LINK_LIBRARIES( prot LINK_PUBLIC ${Boost_LIBRARIES})
+add_library (lprot  ${SOURCES} ) #${PROJECT_SOURCE_DIR}/source/main.cpp
 TARGET_LINK_LIBRARIES( lprot LINK_PUBLIC ${Boost_LIBRARIES})
-target_link_libraries(prot PRIVATE sqlpp11 sqlpp-mysql mariadb)

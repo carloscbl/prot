@@ -102,7 +102,7 @@ void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space:
     }
 }
 
-task_space::task::task() : CRUD_actionable(this->tasks_map, setters),id(0)
+task_space::task::task() : id(0)
 {
     //Acumulation wont happend here, the id will be provided by the db
 }
@@ -112,19 +112,3 @@ task_space::task::~task()
     //cout << "~destroying " << this->id << endl;
 }
 
-
-void task_space::task::print_remain() const
-{
-    double remain_sec = difftime(this->interval.start, time(nullptr));
-    //cout << remain_sec << endl;
-
-    double years = remain_sec / (60 * 60 * 24 * 365);
-    double days = modf(years, &years) * 365;
-    double hours = modf(days, &days) * 24;
-    double minutes = modf(hours, &hours) * 60;
-    modf(minutes, &minutes); // * 60;// task add -nMDY pipo 0 4 2020
-
-    cout << id << ":"
-         << "remain"
-         << ": " << minutes << " minutes :" << hours << " hours :" << (uint32_t)days << " days :" << (uint32_t)years << " years" << endl;
-}
