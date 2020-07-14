@@ -313,6 +313,34 @@ std::optional<strategy_return> answer_branches<T>::custom(const json &j, string 
     }
 }
 
+template <typename T>
+std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, string arg)
+    const noexcept
+{
+    const auto &modulated_answer = arg;
+    optional<string> taskstory_id = nullopt;
+    if(j.find("taskstory_id") != j.end() && !j["taskstory_id"].is_null()){
+        taskstory_id = j["taskstory_id"].get<string>();
+    }
+    if (!modulated_answer.empty())
+    {
+        return strategy_return{
+            j["true"].get<int>(),
+            taskstory_id};
+    }
+    else if (j.contains("else"))
+    {
+        return strategy_return{
+            j["else"].get<int>(),
+            taskstory_id};
+    }
+    else
+    {
+        return nullopt;
+    }
+}
+
+
 void to_json(nlohmann::json& new_json, const form_state& ref_state){
     new_json = nlohmann::json{
         {"current_id",     ref_state.current_id},
