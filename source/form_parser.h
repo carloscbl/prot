@@ -20,7 +20,8 @@ using std::optional;
 using std::function;
 using std::map;
 
-enum class branches_ids : int
+// if_branch 
+enum class if_branch : int
 {
     RESTART = 0,
     FIRST = 1,
@@ -31,9 +32,10 @@ enum class branches_ids : int
     NOT_SUPPORTED = -5,
     ERROR_JSON = -9999,
 };
+
 using json = nlohmann::json;
 using enum_of_json_t = nlohmann::detail::value_t;
-using e_branches = branches_ids;
+using e_branches = if_branch;
 
 
 class form_subsection_ADT{
