@@ -3,7 +3,7 @@
         "type": "SELECT",
         "data_input_from_user": ["MON", "TUE", "FRI"],
         "metadata":{
-            "options": ["MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"],
+            "options": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
             "max_selection":7,
             "min_selection":0
         }
@@ -12,7 +12,7 @@
         "type": "SELECT",
         "data_input_from_user": ["MON", "TUE", "FRI"],
         "metadata":{
-            "options": ["MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"],
+            "options": ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
             "max_selection":7,
             "min_selection":2
         }

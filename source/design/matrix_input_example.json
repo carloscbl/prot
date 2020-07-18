@@ -1,7 +1,7 @@
 {
     "type": "MATRIX",
     "data_input_from_user": [
-        ["MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"],
+        ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
         ["natacion", "", "", "", "", "", "dance"],
         [{
             "type":"duration",
