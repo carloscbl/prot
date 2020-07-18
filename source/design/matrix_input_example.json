@@ -18,9 +18,9 @@
         }]
     ],
     "metadata":{
-        "x": 7,
-        "y": 3,
+        "cols": 7,
+        "rows": 3,
         "header_index" : 0,
-        "group_by": "y"
+        "group_by": "rows"
     }
 }

@@ -62,20 +62,23 @@
         "cols" : 7,
         "rows" : 2,
         "subtypes": {
-          "by" : "rows",
-          "rows" : [
-            {
-              "type" : "STRING",
-              "description": "Day of the week",
-              "auto_fill" : [
-                "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
-              ]
-            },
-            {
-              "type" : "STRING",
-              "description": "Put your description of the workouts!"
-            }
-          ]
+          "group_by" : "rows",
+          "group_types":{
+            "rows" : [
+              {
+                "type" : "STRING",
+                "description": "Day of the week",
+                "auto_fill" : [
+                  "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
+                ],
+                "readonly": true
+              },
+              {
+                "type" : "STRING",
+                "description": "Put your description of the workouts!"
+              }
+            ]
+          }
         }
       },
       "mode": [
