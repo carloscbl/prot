@@ -65,7 +65,7 @@ private:
     std::optional<strategy_return> next_branch_result = std::nullopt;
     const json & question_obj;
     const std::any & answer;
-    function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;};
+    function<T(T)> answer_transformation_strategy = [](T s) -> T {return s;}; // General answer conversion strategy
 
     std::optional<strategy_return> ranges(const json & ranges_array,int arg) const noexcept;
     std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg)const noexcept;

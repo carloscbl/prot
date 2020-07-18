@@ -212,7 +212,7 @@ void answer_branches<T>::enroute(const json &j)
 optional<string> get_taskstory_id(const json &j)
 {
     const auto &task_id = j.find("taskstory_id");
-    if (task_id != j.end())
+    if (task_id != j.end() && !task_id.value().is_null())
     {
         return task_id.value();
     }
@@ -246,14 +246,16 @@ std::optional<strategy_return> answer_branches<T>::predefined_boolean_yes_no_aff
     if (possible_affirmative.find(lowered) != possible_affirmative.end())
     {
         return strategy_return{
-            j["true"].get<int>(),
-            j["taskstory_id"]};
+            .if_branch = j["true"].get<int>(),
+            .taskstory_id = get_taskstory_id(j)
+        };
     }
     else if (j.contains("else"))
     {
         return strategy_return{
-            j["else"].get<int>(),
-            j["taskstory_id"]};
+            .if_branch = j["else"].get<int>(),
+            .taskstory_id = get_taskstory_id(j)
+        };
     }
     else
     {
@@ -275,7 +277,7 @@ std::optional<strategy_return> answer_branches<T>::ranges(const json &ranges_arr
             //Meet the range!
             strategy_return sr{
                 .if_branch = range["if_branch"],
-                .taskstory_id = range["taskstory_id"]};
+                .taskstory_id = get_taskstory_id(range)};
             return sr;
         }
     }
@@ -298,14 +300,16 @@ std::optional<strategy_return> answer_branches<T>::custom(const json &j, string 
         //cout << match.value() << endl;
         strategy_return sr{
             .if_branch = get_if_branch(match.value()),
-            .taskstory_id = get_taskstory_id(j)};
+            .taskstory_id = get_taskstory_id(j)
+        };
         return sr;
     }
     else if (j.find("else") != j.end())
     {
         return strategy_return{
             .if_branch = get_if_branch(j["else"]),
-            .taskstory_id = get_taskstory_id(j)};
+            .taskstory_id = get_taskstory_id(j)
+        };
     }
     else
     {
@@ -318,21 +322,20 @@ std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, s
     const noexcept
 {
     const auto &modulated_answer = arg;
-    optional<string> taskstory_id = nullopt;
-    if(j.find("taskstory_id") != j.end() && !j["taskstory_id"].is_null()){
-        taskstory_id = j["taskstory_id"].get<string>();
-    }
+    optional<string> taskstory_id = get_taskstory_id(j);
     if (!modulated_answer.empty())
     {
         return strategy_return{
             j["true"].get<int>(),
-            taskstory_id};
+            taskstory_id
+        };
     }
     else if (j.contains("else"))
     {
         return strategy_return{
             j["else"].get<int>(),
-            taskstory_id};
+            taskstory_id
+        };
     }
     else
     {

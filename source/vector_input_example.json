@@ -1,0 +1,7 @@
+{
+    "type": "VECTOR",
+    "data_input_from_user": ["MON", "TUE", "FRI", "SAT", "SUN"],
+    "metadata":{
+        "max_lenght": 7
+    }
+}
