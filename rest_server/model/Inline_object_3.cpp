@@ -22,7 +22,7 @@ Inline_object_3::Inline_object_3()
 {
     m_Restart = false;
     m_RestartIsSet = false;
-    m_Response = "";
+    // m_Response = "";
     m_ResponseIsSet = false;
     
 }
@@ -54,7 +54,7 @@ void from_json(const nlohmann::json& j, Inline_object_3& o)
     } 
     if(j.find("response") != j.end())
     {
-        j.at("response").get_to(o.m_Response);
+        o.m_Response = j.at("response");
         o.m_ResponseIsSet = true;
     } 
 }
@@ -76,11 +76,11 @@ void Inline_object_3::unsetRestart()
 {
     m_RestartIsSet = false;
 }
-std::string Inline_object_3::getResponse() const
+nlohmann::json Inline_object_3::getResponse() const
 {
     return m_Response;
 }
-void Inline_object_3::setResponse(std::string const& value)
+void Inline_object_3::setResponse(nlohmann::json const& value)
 {
     m_Response = value;
     m_ResponseIsSet = true;

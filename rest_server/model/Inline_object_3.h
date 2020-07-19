@@ -51,8 +51,8 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getResponse() const;
-    void setResponse(std::string const& value);
+    nlohmann::json getResponse() const;
+    void setResponse(nlohmann::json const& value);
     bool responseIsSet() const;
     void unsetResponse();
 
@@ -61,7 +61,7 @@ public:
 protected:
     bool m_Restart;
     bool m_RestartIsSet;
-    std::string m_Response;
+    nlohmann::json m_Response;
     bool m_ResponseIsSet;
 };
 
