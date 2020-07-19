@@ -40,17 +40,22 @@ std::unordered_map<std::type_index, function<strategy_return(const json &, any)>
     {std::type_index(typeid(string)), make_get_next_branch<string>},
     {std::type_index(typeid(double)), make_get_next_branch<double>},
     {std::type_index(typeid(float)), make_get_next_branch<float>},
+    {std::type_index(typeid(json)), make_get_next_branch<json>},
 };
 
-strategy_return form_parser::enroute_json_type(const json &question_obj, const string &answer)
+strategy_return form_parser::enroute_json_type(const json &question_obj, const json & answer_input)
 {
 
     string expected_answer_type = question_obj["type_user_input"].get<string>();
+    if  (expected_answer_type != answer_input["type"]){
+        return strategy_return{};
+    }
+
     std::any converted_answer;
     auto conversor = conversors_map.find(expected_answer_type);
     if (conversor != conversors_map.end())
     {
-        converted_answer = conversor->second(answer);
+        converted_answer = conversor->second(answer_input);
         if (converted_answer.has_value())
         {
             std::type_index index(converted_answer.type());
@@ -65,7 +70,7 @@ strategy_return form_parser::enroute_json_type(const json &question_obj, const s
     return strategy_return{};
 }
 
-unique_ptr <next_question_data> form_parser::get_next(const string &answer)
+unique_ptr <next_question_data> form_parser::get_next(const json & answer_input)
 {
     json question;
     if (this->next_branch_id == static_cast<int>(e_branches::RESTART))
@@ -77,7 +82,7 @@ unique_ptr <next_question_data> form_parser::get_next(const string &answer)
     {
         question = find_questions_by_id(this->next_branch_id).value();
     }
-    auto strategy_returned = enroute_json_type(question, answer); //v is question{} object
+    auto strategy_returned = enroute_json_type(question, answer_input);
     this->next_branch_id = strategy_returned.if_branch;
     //cout << "taskstory " << strategy_returned.taskstory_id << endl;
     string next_question;

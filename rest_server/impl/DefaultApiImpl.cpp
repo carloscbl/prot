@@ -273,6 +273,7 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
+
     if(inlineObject3.restartIsSet()){
         response.send(Pistache::Http::Code::Ok, "Rested " + decoded + " " + std::to_string(appId) );
         auto session = read_session(usr->get_name() , appId);
@@ -282,6 +283,7 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
         }
         return;
     }
+
     auto pair = read_form_by_id(appId);
     auto form_ = read_form(pair->second);
     form_runner fr(*usr, *form_);

@@ -1,0 +1,14 @@
+[
+    {
+        "type": "PRIMITIVE",
+        "data_input_from_user": "Art class"
+    },
+    {
+        "type": "PRIMITIVE",
+        "data_input_from_user": 15
+    },
+    {
+        "type": "PRIMITIVE",
+        "data_input_from_user": 15.4
+    }
+]

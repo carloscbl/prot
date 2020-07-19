@@ -8,6 +8,7 @@
 
 
 using namespace std;
+// DEPRECATED
 template<typename T,typename Y,typename ... args>
 any get_value(string s,Y conversor, args ... extra){
     char * p = nullptr;
@@ -20,14 +21,14 @@ any get_value(string s,Y conversor, args ... extra){
     }
 }
 
-std::map<string,function<any(string)>> conversors_map{
-    {"INTEGER", (function<any(string)>)[](string s) -> any{ return get_value<int>(s,strtol,10) ; }},
-    {"DOUBLE", (function<any(string)>)[](string s)->any{ return get_value<double>(s,strtod);}},
-    // {"BOOL", (function<optional<bool>(string)>)[](string s) -> bool{ return static_cast<bool>(strtol(s.c_str(), &p, 10));}},
-    {"STRING", (function<any(string)>)[](string s)->any{ return s;}},
-    {"SELECT", (function<any(string)>)[](string s)->any{ return s;}},
-    {"MATRIX", (function<any(string)>)[](string s)->any{ return s;}},
-    {"VECTOR", (function<any(string)>)[](string s)->any{ return s;}},
+std::map<string,function<any(const json &)>> conversors_map{
+    {"INTEGER",(function<any(const json &)>)[](const json & s)->any{ return s["data_input_from_user"].get<int>(); }},
+    {"DOUBLE", (function<any(const json &)>)[](const json & s)->any{ return s["data_input_from_user"].get<double>();}},
+    {"BOOL",   (function<any(const json &)>)[](const json & s)->any{ return s["data_input_from_user"].get<bool>();}},
+    {"STRING", (function<any(const json &)>)[](const json & s)->any{ return s["data_input_from_user"].get<string>();}},
+    {"SELECT", (function<any(const json &)>)[](const json & s)->any{ return s;}},
+    {"MATRIX", (function<any(const json &)>)[](const json & s)->any{ return s;}},
+    {"VECTOR", (function<any(const json &)>)[](const json & s)->any{ return s;}},
 };
 
 #endif //TYPE_CONTAINER_H

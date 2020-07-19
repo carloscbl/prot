@@ -145,16 +145,16 @@ private:
     int next_branch_id = static_cast<int>(e_branches::RESTART);
     map<string,json> variables;
 
-    strategy_return enroute_json_type(const json & question_obj, const string & answer);
+    strategy_return enroute_json_type(const json & question_obj, const json & answer);
 
-    unique_ptr <next_question_data> get_next(const string & answer);
+    unique_ptr <next_question_data> get_next(const json & answer);
 
     std::optional<json> find_questions_by_id(int id) const noexcept;
     
-    unique_ptr <next_question_data> form_traverse(const string & answer){
+    unique_ptr <next_question_data> form_traverse(const json & answer_input){
         //int id = current_id;
         //cout << "A: " << answer << endl;
-        return get_next(answer);
+        return get_next(answer_input);
     }
 
     inline bool is_traversable_id(int id){
@@ -172,11 +172,6 @@ private:
     }
 
     void form_ready(){}
-    //Here we should send to our scheduler the whole set of commands
-
-    // void schedule_tasktory(const json & taskstory){
-    //     command_expr_evaluator cee (taskstory, variables);
-    // }
 
     void user_import_preferences(){
         variables["user.user"] = "carlos";
@@ -184,15 +179,10 @@ private:
 
 public:
 
-    unique_ptr <next_question_data> form_next_in_pipeline(const string & answer){
-        //The follow order should be consider
-        //1-Ready to get the bare minimum to run
-        //2-Publish every preavailable variable
-        //3-Traverse once and Get the results, tasktories(commands)
-        //4-Execute the commands, via interpreter or direct
-        //5-Send back the next question
+    unique_ptr <next_question_data> form_next_in_pipeline(const json & answer_input){
+        //The follow order
         form_ready();
-        auto next_question = form_traverse(answer);
+        auto next_question = form_traverse(answer_input);
         form_publisher_vars();
 
         user_import_preferences(); //This overrides default form vars, that are configurables
