@@ -55,10 +55,10 @@ strategy_return form_parser::enroute_json_type(const json &question_obj, const j
     auto conversor = conversors_map.find(expected_answer_type);
     if (conversor != conversors_map.end())
     {
-        converted_answer = conversor->second(answer_input);
+        converted_answer = conversor->second(answer_input); // For a matrix this will result in the very same input json
         if (converted_answer.has_value())
         {
-            std::type_index index(converted_answer.type());
+            std::type_index index(converted_answer.type());// json, string, int etc
             auto func = type_names.find(index);
             if (func != type_names.end())
             {
@@ -204,6 +204,7 @@ void answer_branches<T>::enroute(const json &j)
             cout << "Not implemented or not finded implementation" << endl;
             return;
         }
+
         const auto &opt = it->second(v, any(this->answer));
         //cout << "the next is: " << opt.value().if_branch << endl;
         if (opt.has_value())

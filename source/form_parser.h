@@ -74,11 +74,11 @@ private:
 
     //C++17, with inline you can use header :O
     const map<std::string_view, function<std::optional<strategy_return>(const json & current_selector,std::any)>> kind_branch_t_map{
-        {"custom",[this](const json & j,std::any s){ return custom(j,std::any_cast<string>(s));}},
-        {"ranges",[this](const json & j,std::any s){ return ranges(j,std::any_cast<int>(s));}},
-        {"any",[this](const json & j,std::any s)   { return any_strategy(j,std::any_cast<string>(s));}},
+        {"custom",[this](const json & j,std::any s){ return custom(j,std::any_cast<string>(s));}},  // String mandatory
+        {"ranges",[this](const json & j,std::any s){ return ranges(j,std::any_cast<int>(s));}},     // int mandatory
+        {"any",[this](const json & j,std::any s)   { return any_strategy(j,std::any_cast<string>(s));}}, // can be any type mandatory
         {"predefined_boolean_yes_no_affirmative_yes", 
-            [this](const json & j,std::any s){ return predefined_boolean_yes_no_affirmative_yes(j,std::any_cast<string>(s));}},
+            [this](const json & j,std::any s){ return predefined_boolean_yes_no_affirmative_yes(j,std::any_cast<string>(s));}}, // String mandatory
     };
 
     void enroute(const json & j);
