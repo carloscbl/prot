@@ -8,7 +8,6 @@
 
 
 using namespace std;
-// DEPRECATED
 template<typename T,typename Y,typename ... args>
 any get_value(string s,Y conversor, args ... extra){
     char * p = nullptr;
