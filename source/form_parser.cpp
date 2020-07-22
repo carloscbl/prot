@@ -1,5 +1,3 @@
-#include <typeindex>
-#include <typeinfo>
 #include "form_parser.h"
 #include "type_container.h"
 
@@ -327,7 +325,7 @@ template <typename T>
 std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, string arg)
     const noexcept
 {
-    const auto &modulated_answer = arg;
+    const auto & modulated_answer = arg;
     optional<string> taskstory_id = get_taskstory_id(j);
     if (!modulated_answer.empty())
     {
@@ -349,8 +347,8 @@ std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, s
     }
 }
 
-template <>
-std::optional<strategy_return> answer_branches<json>::any_strategy(const json &j, string arg)
+template <typename T>
+std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, json arg)
     const noexcept
 {
     const auto &modulated_answer = arg;

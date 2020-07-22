@@ -10,6 +10,8 @@
 #include <memory>
 #include <boost/algorithm/string.hpp>
 #include <optional>
+#include <typeindex>
+#include <typeinfo>
 #include <unordered_set>
 #include <string_view>
 #include "json.hpp"
@@ -71,12 +73,18 @@ private:
     std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg)const noexcept;
     std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
     std::optional<strategy_return> any_strategy (const json & j, string arg)const noexcept;
+    std::optional<strategy_return> any_strategy (const json & j, json arg)const noexcept;
 
     //C++17, with inline you can use header :O
     const map<std::string_view, function<std::optional<strategy_return>(const json & current_selector,std::any)>> kind_branch_t_map{
         {"custom",[this](const json & j,std::any s){ return custom(j,std::any_cast<string>(s));}},  // String mandatory
         {"ranges",[this](const json & j,std::any s){ return ranges(j,std::any_cast<int>(s));}},     // int mandatory
-        {"any",[this](const json & j,std::any s)   { return any_strategy(j,std::any_cast<string>(s));}}, // can be any type mandatory
+        {"any",[this](const json & j,std::any s)   { 
+                if (std::type_index(typeid(json)) == std::type_index(s.type())){
+                    return any_strategy(j,std::any_cast<json>(s));
+                }
+                return any_strategy(j,std::any_cast<string>(s));
+            }}, // can be any type mandatory
         {"predefined_boolean_yes_no_affirmative_yes", 
             [this](const json & j,std::any s){ return predefined_boolean_yes_no_affirmative_yes(j,std::any_cast<string>(s));}}, // String mandatory
     };
