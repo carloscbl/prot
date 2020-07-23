@@ -177,7 +177,7 @@ void answer_branches<string>::enroute(const json &j)
             return;
         }
 
-        const auto &opt = it->second(v, any(this->answer));
+        const auto & opt = it->second(v, any(this->answer));
         //cout << "the next is: " << opt.value().taskstory_id << endl;
         if (opt.has_value())
         {
@@ -347,17 +347,56 @@ std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, s
     }
 }
 
+bool validate_matrix_input (const json & matrix_input){
+    // things to do with the matrix thing
+    // We need to influence the taskstory TODO: pass it by strategy return
+    // We need to extract the info, validate and group
+    auto cols = matrix_input["metadata"]["cols"].get<size_t>();
+    auto rows = matrix_input["metadata"]["rows"].get<size_t>();
+    if(rows != matrix_input["data_input_from_user"].size()){ return false; }
+    for(auto [k,v] :  matrix_input["data_input_from_user"].items()){
+        if(cols != v.size()){ return false; }
+    }
+    return true;
+}
+
+bool select_type(const json & input){
+    auto type = input["type"].get<string>();
+    if (type =="MATRIX"){
+        return validate_matrix_input(input);
+    }
+    else if (type =="VECTOR")
+    {
+        /* code */
+    }
+    else if (type =="SELECT")
+    {
+        /* code */
+    }
+    else if (type =="DURATION")
+    {
+        /* code */
+    }
+    else{
+
+    }
+    return false;
+}
+
+
 template <typename T>
 std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, json arg)
     const noexcept
 {
-    const auto &modulated_answer = arg;
+    // So here we should process all the need for the whole set of possibilities for a json structure...
+    if ( !select_type(arg) ){ return nullopt; }
     optional<string> taskstory_id = get_taskstory_id(j);
-    if (!modulated_answer.empty())
+    if (!arg.empty())
     {
         return strategy_return{
             j["true"].get<int>(),
-            taskstory_id
+            taskstory_id,
+            arg
         };
     }
     else if (j.contains("else"))

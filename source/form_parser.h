@@ -56,6 +56,7 @@ struct strategy_return{
 public:
     int if_branch = static_cast<int>(e_branches::ERROR_JSON); //Id of the the next question
     optional<string> taskstory_id;// Name of the taskstory to perform
+    json validated_user_input;
 };
 
 template <typename T>
@@ -73,10 +74,10 @@ private:
     std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg)const noexcept;
     std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
     std::optional<strategy_return> any_strategy (const json & j, string arg)const noexcept;
-    std::optional<strategy_return> any_strategy (const json & j, json arg)const noexcept;
+    std::optional<strategy_return> any_strategy (const json & j,json  arg)const noexcept;
 
     //C++17, with inline you can use header :O
-    const map<std::string_view, function<std::optional<strategy_return>(const json & current_selector,std::any)>> kind_branch_t_map{
+    const map<std::string_view, function<std::optional<strategy_return>(const json & current_selector, std::any )>> kind_branch_t_map{
         {"custom",[this](const json & j,std::any s){ return custom(j,std::any_cast<string>(s));}},  // String mandatory
         {"ranges",[this](const json & j,std::any s){ return ranges(j,std::any_cast<int>(s));}},     // int mandatory
         {"any",[this](const json & j,std::any s)   { 

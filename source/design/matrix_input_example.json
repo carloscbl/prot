@@ -1,26 +1,43 @@
-{
-    "type": "MATRIX",
-    "data_input_from_user": [
-        ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
-        ["natacion", "", "", "", "", "", "dance"],
-        [{
-            "type":"duration",
-            "data_input_from_user" : 90,
-            "metadata": {
-                "ratio": "minutes"
-            }
-        },{},{},{},{},{},{
-            "type":"duration",
-            "data_input_from_user" : 1,
-            "metadata": {
-                "ratio": "hours"
-            }
-        }]
-    ],
-    "metadata":{
-        "cols": 7,
-        "rows": 3,
-        "header_index" : 0,
-        "group_by": "rows"
+[
+    {
+        "type": "MATRIX",
+        "data_input_from_user": [
+            ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
+            ["natacion", "", "", "", "", "", "dance"],
+            [{
+                "type":"DURATION",
+                "data_input_from_user" : 90,
+                "metadata": {
+                    "ratio": "minutes"
+                }
+            },{},{},{},{},{},{
+                "type":"DURATION",
+                "data_input_from_user" : 1,
+                "metadata": {
+                    "ratio": "hours"
+                }
+            }]
+        ],
+        "metadata":{
+            "cols": 7,
+            "rows": 3,
+            "header_index" : 0,
+            "group_by": "rows"
+        }
+    },
+    {
+        "type": "MATRIX",
+        "data_input_from_user": [
+            ["football", 5],
+            ["swim", 10],
+            ["walk", 6],
+            ["run", 8],
+            ["dance", 3]
+        ],
+        "metadata":{
+            "cols": 2,
+            "rows": 5,
+            "group_by": "cols"
+        }
     }
-}
+]
