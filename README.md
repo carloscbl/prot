@@ -9,6 +9,7 @@ Powered by a engine parser of json forms, that provides the set up, pipeline and
 Use docker and docker compose to compile
 ```bash
 docker build --rm --build-arg NBUILDCORES=$CORES -f "prot/Dockerfile.production" -t prot:latest "prot"
+docker-compose up
 ```
 
 ## License
