@@ -1,6 +1,6 @@
 #include "Catch2/catch.hpp"
 #include "json.hpp"
-#include "form_runner.h"
+#include "cloud_app_runner.h"
 #include "user.h"
 #include "form.h"
 #include "task_restrictions.h"
@@ -17,7 +17,7 @@ task_t get_collider(seconds offset_from_today, T_duration duration, string name 
 }
 
 
-TEST_CASE( "test form_runner", "[runner]" ) {
+TEST_CASE( "test cloud_app_runner", "[runner]" ) {
   
     user::users["carloscbl"] = make_shared<user>(user_minimal_data{
         "carloscbl"
@@ -38,7 +38,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(*carlos, *form);
+    cloud_app_runner fr(*carlos, *form);
 
     auto &response = fr.run(qa_request1);
     //cout << response.dump() <<endl;
@@ -96,7 +96,7 @@ TEST_CASE( "test form_runner", "[runner]" ) {
     carlos->clear();
 }
 
-TEST_CASE( "test form_runner industrial", "[runner]" ) {
+TEST_CASE( "test cloud_app_runner industrial", "[runner]" ) {
   
     user::users["carloscbl"] = make_shared<user>(user_minimal_data{
         "carloscbl"
@@ -125,7 +125,7 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(*carlos, *form);
+    cloud_app_runner fr(*carlos, *form);
 
     auto &response = fr.run(qa_request1);
     //cout << response.dump() <<endl;
@@ -167,7 +167,7 @@ TEST_CASE( "test form_runner industrial", "[runner]" ) {
     carlos->clear();
 }
 
-TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
+TEST_CASE( "NEGATIVE test cloud_app_runner industrial", "[runner]" ) {
   
     user::users["carloscbl"] = make_shared<user>(user_minimal_data{
         "carloscbl"
@@ -190,7 +190,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(*carlos, *form);
+    cloud_app_runner fr(*carlos, *form);
     fr.clear_sessions();
 
     auto &response = fr.run(qa_request1);
@@ -232,7 +232,7 @@ TEST_CASE( "NEGATIVE test form_runner industrial", "[runner]" ) {
     carlos->clear();
 }
 
-TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
+TEST_CASE( "test cloud_app_runner task failure invalidation", "[runner]" ) {
   
     user::users["carloscbl"] = make_shared<user>(user_minimal_data{
         "carloscbl"
@@ -256,7 +256,7 @@ TEST_CASE( "test form_runner task failure invalidation", "[runner]" ) {
 
     REQUIRE( form->get_form_name() == "Washer easer" );
 
-    form_runner fr(*carlos, *form);
+    cloud_app_runner fr(*carlos, *form);
 
     auto &response = fr.run(qa_request1);
     // cout << response.dump() <<endl;

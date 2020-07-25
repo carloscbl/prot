@@ -1,5 +1,5 @@
-#ifndef FORM_PARSER_H
-#define FORM_PARSER_H
+#ifndef APP_PARSER_H
+#define APP_PARSER_H
 
 #include <string>
 #include <map>
@@ -120,12 +120,13 @@ class questions{
     questions(const json & j);
 };
 
-struct next_question_data
+struct next_question_data_and_taskstory_input
 {
     string question_str;
     json taskstory_json;
     string taskstory_name;
     map<string,json> form_variables;
+    json user_input;
 };
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
@@ -144,7 +145,7 @@ struct form_state{
 void to_json(nlohmann::json& new_json, const form_state& ref_state);
 void from_json(const nlohmann::json& ref_json, form_state& new_state);
 
-class form_parser{
+class app_parser{
 private:
     const json & j;
     map<string,unique_ptr<form_subsection_ADT>> subsections;
@@ -156,11 +157,11 @@ private:
 
     strategy_return enroute_json_type(const json & question_obj, const json & answer);
 
-    unique_ptr <next_question_data> get_next(const json & answer);
+    unique_ptr <next_question_data_and_taskstory_input> get_next(const json & answer);
 
     std::optional<json> find_questions_by_id(int id) const noexcept;
     
-    unique_ptr <next_question_data> form_traverse(const json & answer_input){
+    unique_ptr <next_question_data_and_taskstory_input> form_traverse(const json & answer_input){
         //int id = current_id;
         //cout << "A: " << answer << endl;
         return get_next(answer_input);
@@ -188,7 +189,7 @@ private:
 
 public:
 
-    unique_ptr <next_question_data> form_next_in_pipeline(const json & answer_input){
+    unique_ptr <next_question_data_and_taskstory_input> form_next_in_pipeline(const json & answer_input){
         //The follow order
         form_ready();
         auto next_question = form_traverse(answer_input);
@@ -199,8 +200,8 @@ public:
         next_question->form_variables = this->variables;
         return next_question;
     }
-    form_parser(const json & j);
-    form_parser(const json & j,const form_state & fs);
+    app_parser(const json & j);
+    app_parser(const json & j,const form_state & fs);
     const vector<string> subsection_names{
         "form", "questions"
     };
@@ -209,13 +210,13 @@ public:
         return subsections["form"]->section["form.name"].get<string>();
     }
     
-    unique_ptr <next_question_data> get_initial_question() const noexcept{
-        auto initial_question = make_unique<next_question_data> ();
+    unique_ptr <next_question_data_and_taskstory_input> get_initial_question() const noexcept{
+        auto initial_question = make_unique<next_question_data_and_taskstory_input> ();
         initial_question->question_str = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
         return initial_question;
     }
-    unique_ptr <next_question_data> get_current_question() const noexcept{
-        auto initial_question = make_unique<next_question_data> ();
+    unique_ptr <next_question_data_and_taskstory_input> get_current_question() const noexcept{
+        auto initial_question = make_unique<next_question_data_and_taskstory_input> ();
         if(static_cast<int>(e_branches::RESTART) == next_branch_id ){
             return get_initial_question();
         }
@@ -230,4 +231,4 @@ public:
         return ptr;
     }
 };
-#endif //FORM_PARSER_H
+#endif //APP_PARSER_H

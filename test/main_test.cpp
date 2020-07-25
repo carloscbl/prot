@@ -2,7 +2,7 @@
 #define CATCH_CONFIG_RUNNER
 #include "Catch2/catch.hpp"
 #include "user.h"
-#include "form_runner.h"
+#include "cloud_app_runner.h"
 #include <iostream>
 #include <ctime>
 #include <fstream>
@@ -15,8 +15,7 @@
 #include <memory>
 #include "task.h"
 #include "form.h"
-#include "form_reader.h"
-#include "form_parser.h"
+#include "app_parser.h"
 #include <cstdlib>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>

@@ -12,7 +12,7 @@
 
 #include "DefaultApiImpl.h"
 #include "db_ops.hpp"
-#include "form_runner.h"
+#include "cloud_app_runner.h"
 
 namespace org {
 namespace openapitools {
@@ -225,7 +225,7 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
         response.send(Pistache::Http::Code::Not_Found, "form does not exists");
         return ;
     }
-    form_runner fr(*usr, *form_);
+    cloud_app_runner fr(*usr, *form_);
     json qa_request1;
     auto & qa_res = fr.run(qa_request1);
     Inline_response_200_1 response_200_1;
@@ -286,7 +286,7 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
 
     auto pair = read_form_by_id(appId);
     auto form_ = read_form(pair->second);
-    form_runner fr(*usr, *form_);
+    cloud_app_runner fr(*usr, *form_);
     json qa_request;
     qa_request["answer"] = inlineObject3.getResponse();
     auto & qa_res = fr.run(qa_request);

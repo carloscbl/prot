@@ -1,7 +1,7 @@
-#include "form_parser.h"
+#include "app_parser.h"
 #include "type_container.h"
 
-form_parser::form_parser(const json &j) : j(j)
+app_parser::app_parser(const json &j) : j(j)
 {
 
     subsections = map<string, unique_ptr<form_subsection_ADT>>();
@@ -20,7 +20,7 @@ form_parser::form_parser(const json &j) : j(j)
         discover[k] = make_unique<form_subsection_ADT>(j, k);
     }
 }
-form_parser::form_parser(const json &j, const form_state &fs) : form_parser(j)
+app_parser::app_parser(const json &j, const form_state &fs) : app_parser(j)
 {
     current_answer = fs.current_answer;
     current_id = fs.current_id;
@@ -41,7 +41,7 @@ std::unordered_map<std::type_index, function<strategy_return(const json &, any)>
     {std::type_index(typeid(json)), make_get_next_branch<json>},
 };
 
-strategy_return form_parser::enroute_json_type(const json &question_obj, const json & answer_input)
+strategy_return app_parser::enroute_json_type(const json &question_obj, const json & answer_input)
 {
 
     string expected_answer_type = question_obj["type_user_input"].get<string>();
@@ -68,7 +68,7 @@ strategy_return form_parser::enroute_json_type(const json &question_obj, const j
     return strategy_return{};
 }
 
-unique_ptr <next_question_data> form_parser::get_next(const json & answer_input)
+unique_ptr <next_question_data_and_taskstory_input> app_parser::get_next(const json & answer_input)
 {
     json question;
     if (this->next_branch_id == static_cast<int>(e_branches::RESTART))
@@ -105,14 +105,15 @@ unique_ptr <next_question_data> form_parser::get_next(const json & answer_input)
         taskstory_ = question["taskstories"][strategy_returned.taskstory_id.value()];
     }
 
-    unique_ptr <next_question_data> nqd = make_unique<next_question_data>();
+    unique_ptr <next_question_data_and_taskstory_input> nqd = make_unique<next_question_data_and_taskstory_input>();
     nqd->question_str = next_question;
     nqd->taskstory_name = strategy_returned.taskstory_id.value_or("");
     nqd->taskstory_json = taskstory_;
+    nqd->user_input = strategy_returned.validated_user_input;
     return nqd;
 }
 
-std::optional<json> form_parser::find_questions_by_id(int id) const noexcept
+std::optional<json> app_parser::find_questions_by_id(int id) const noexcept
 {
     for (const auto &[k, v] : this->subsections.at("questions")->section)
     {

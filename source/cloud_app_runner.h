@@ -1,5 +1,5 @@
-#ifndef FORM_RUNNER_H
-#define FORM_RUNNER_H
+#ifndef CLOUD_APP_RUNNER_H
+#define CLOUD_APP_RUNNER_H
 
 #include <chrono>
 #include <thread>
@@ -10,7 +10,7 @@
 #include <memory>
 #include "json.hpp"
 #include "user.h"
-#include "form_parser.h"
+#include "app_parser.h"
 #include "form.h"
 #include "tasker.h"
 #include "ischeduler.h"
@@ -19,7 +19,7 @@
 using namespace std;
 using namespace chrono_literals;
 
-//So this class will handle the call form_run from form_parser
+//So this class will handle the call form_run from app_parser
 //On construction it will check for the current form being evaluated prevoiously and unfinnised
 //So will find for a existing session and restore it and handle in a threaded way the life time of this session
 //Probably a thread pool is a good idea an a queue, but for now, we will start new threads for simplicity
@@ -28,7 +28,7 @@ using namespace chrono_literals;
 using sessions = map<string, shared_ptr<form_state>>;
 using variables_t = map<string, json>;
 
-class form_runner
+class cloud_app_runner
 {
 private:
     inline static sessions user_running_forms;
@@ -36,11 +36,11 @@ private:
     user & user_;
     form & form_;
     uint64_t user_forms_id;
-    unique_ptr<form_parser> fp;
+    unique_ptr<app_parser> fp;
 
 public:
-    form_runner(user & user_, form &form_);
-    bool perform_taskstory(next_question_data & response);
+    cloud_app_runner(user & user_, form &form_);
+    bool perform_taskstory(next_question_data_and_taskstory_input & response);
     shared_ptr<form_state> get_session() const noexcept;
     shared_ptr<form_state> fetch_next_session() const noexcept;
     shared_ptr<form_state> new_session(const string & session_id) const noexcept;
@@ -53,4 +53,4 @@ public:
     }
 };
 
-#endif //FORM_RUNNER_H
+#endif //CLOUD_APP_RUNNER_H
