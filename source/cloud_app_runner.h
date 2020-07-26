@@ -40,7 +40,7 @@ private:
 
 public:
     cloud_app_runner(user & user_, form &form_);
-    bool perform_taskstory(next_question_data_and_taskstory_input & response);
+    bool schedule_taskstory(next_question_data_and_taskstory_input & response);
     shared_ptr<form_state> get_session() const noexcept;
     shared_ptr<form_state> fetch_next_session() const noexcept;
     shared_ptr<form_state> new_session(const string & session_id) const noexcept;

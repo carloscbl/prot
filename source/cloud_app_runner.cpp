@@ -32,7 +32,6 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     }
     if(response->question_str == "END"){
         delete_session(state->id);
-        // this->user_running_forms.erase(this->get_unique_id_session());
     }else{
         update_session(state->id, *fp.get_state());
     }
@@ -41,7 +40,7 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     response_j["next_question"] = response->question_str;
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler
 
-    if (response->taskstory_json.empty())
+    if (response->taskstory_name.empty())
     {
         return response_j;
     }
@@ -49,7 +48,7 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     ////////////////////////////////////////////////////////
     //Build schedulers and taskers for the given taskstory
     ////////////////////////////////////////////////////////
-    if(!perform_taskstory(*response)){
+    if(!schedule_taskstory(*response)){
         //Set response_j error message
     }
 
@@ -61,7 +60,7 @@ struct failure_report_t{
     task_t no_margin_invalidation;
 };
 
-bool cloud_app_runner::perform_taskstory(next_question_data_and_taskstory_input & response){
+bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input & response){
 
     failure_report_t report;
     for (size_t day = 0; day < 365; day++)

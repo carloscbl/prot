@@ -15,6 +15,7 @@
 #include <unordered_set>
 #include <string_view>
 #include "json.hpp"
+#include "expanded_taskstory.h"
 
 using std::any;
 using std::any_cast;
@@ -123,20 +124,25 @@ class questions{
 struct next_question_data_and_taskstory_input
 {
     string question_str;
-    json taskstory_json;
+    /* 
+    ##taskstory_json; ##
+        holds input tasks, matrix select, vector... should do a step to expand all the info needed, should be formatted and generated here 
+        so the runner is dummy so its able to perform always the same steps if serialized this struct
+    ##taskstory_json; ##
+    */ 
+    raw_taskstory raw_taskstory_;
     string taskstory_name;
     map<string,json> form_variables;
-    json user_input;
+    json user_input; // This will be passed but have no use for now maybe in future
+    unique_ptr<expanded_taskstory> expanded_taskstory_;
 };
+
+
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
 //Lets try to keep us from add more indirection, to find a more direct and concise solution
-
 struct form_state{
     uint64_t id = 0;
-    //int current_QA_id;
-    //queue<command> taskstory;
-    //map<string,string> answers_history;
     int current_id = static_cast<int>(e_branches::FIRST);;
     string current_answer;
     int next_branch_id = static_cast<int>(e_branches::RESTART);;

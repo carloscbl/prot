@@ -27,27 +27,6 @@ using std::string;
 using namespace sqlpp;
 namespace mysql = sqlpp::mysql;
 
-//This is not supported directly by the library, and sql syntax is specific
-//Sparse things to support
-/*
-1 create user OK
-2 read & E user OK
-3 delete user OK
-
-3 CRUDE form OK
-
-4 new instalation OK READ ok
-5 user uninstall OK Not need for update
-
-6 CRUDE tasks
-7 get tasks in interval
-
-9 new questionary session
-10 get/resume session
-11 store responded answers and tag for bigdata
-
-get user tasker scheduler and tasks asociations
-*/
 
 template <typename T>
 auto get_id_member = []() {};
