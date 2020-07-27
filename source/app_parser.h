@@ -15,7 +15,7 @@
 #include <unordered_set>
 #include <string_view>
 #include "json.hpp"
-#include "expanded_taskstory.h"
+#include "expanded_taskstory_t.h"
 
 using std::any;
 using std::any_cast;
@@ -123,18 +123,13 @@ class questions{
 
 struct next_question_data_and_taskstory_input
 {
-    string question_str;
-    /* 
-    ##taskstory_json; ##
-        holds input tasks, matrix select, vector... should do a step to expand all the info needed, should be formatted and generated here 
-        so the runner is dummy so its able to perform always the same steps if serialized this struct
-    ##taskstory_json; ##
-    */ 
-    raw_taskstory raw_taskstory_;
-    string taskstory_name;
-    map<string,json> form_variables;
+    json current_question_obj; // Holds the solved question and to be excuted tasktories
+    string next_question_text; // result of the state machine to be the next question text to show to the user
+    raw_taskstory_t raw_taskstory;
+    string taskstory_name; // Name of the taskstory branch to be executed
+    map<string,json> form_variables; // Variables of the context user + app, to be used on expansion of taskstory
     json user_input; // This will be passed but have no use for now maybe in future
-    unique_ptr<expanded_taskstory> expanded_taskstory_;
+    unique_ptr<json> expanded_taskstory;
 };
 
 
@@ -218,7 +213,7 @@ public:
     
     unique_ptr <next_question_data_and_taskstory_input> get_initial_question() const noexcept{
         auto initial_question = make_unique<next_question_data_and_taskstory_input> ();
-        initial_question->question_str = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+        initial_question->next_question_text = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
         return initial_question;
     }
     unique_ptr <next_question_data_and_taskstory_input> get_current_question() const noexcept{
@@ -226,7 +221,7 @@ public:
         if(static_cast<int>(e_branches::RESTART) == next_branch_id ){
             return get_initial_question();
         }
-        initial_question->question_str = find_questions_by_id(next_branch_id).value()["question"].get<string>();
+        initial_question->next_question_text = find_questions_by_id(next_branch_id).value()["question"].get<string>();
         return initial_question;
     }
     unique_ptr<form_state> get_state() const noexcept{

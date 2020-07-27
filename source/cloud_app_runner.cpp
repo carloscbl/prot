@@ -30,14 +30,14 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     {
         response = fp.form_next_in_pipeline(request_json["answer"]);
     }
-    if(response->question_str == "END"){
+    if(response->next_question_text == "END"){
         delete_session(state->id);
     }else{
         update_session(state->id, *fp.get_state());
     }
 
     json response_j;
-    response_j["next_question"] = response->question_str;
+    response_j["next_question"] = response->next_question_text;
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler
 
     if (response->taskstory_name.empty())
@@ -71,7 +71,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
 
         bool complete = true;
 
-        for (const auto &[k, v] : response.taskstory_json.items())
+        for (const auto &[k, v] : response.expanded_taskstory->items())
         {
             task_t task_test = make_shared<task>(v.get<task>());
             task_test->inner_json["app_id"] = this->form_.get_id();

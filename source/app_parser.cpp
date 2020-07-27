@@ -106,10 +106,11 @@ unique_ptr <next_question_data_and_taskstory_input> app_parser::get_next(const j
     }
 
     unique_ptr <next_question_data_and_taskstory_input> nqd = make_unique<next_question_data_and_taskstory_input>();
-    nqd->question_str = next_question;
+    nqd->next_question_text = next_question;
     nqd->taskstory_name = strategy_returned.taskstory_id.value_or("");
-    nqd->taskstory_json = taskstory_;
+    nqd->raw_taskstory = raw_taskstory_t{taskstory_};
     nqd->user_input = strategy_returned.validated_user_input;
+    nqd->current_question_obj = question;
     return nqd;
 }
 

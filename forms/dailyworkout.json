@@ -68,10 +68,12 @@
               {
                 "type" : "STRING",
                 "description": "Day of the week",
-                "auto_fill" : [
-                  "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
-                ],
-                "readonly": true
+                "user_input_autofill" :{
+                  "input_data":[
+                    "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
+                  ],
+                  "readonly": true
+                }
               },
               {
                 "type" : "STRING",
@@ -82,6 +84,9 @@
                 "description": "How much time will last this session?"
               }
             ]
+          },
+          "wildcard_task_iterations":{
+            "day_week" : [0,1,2,3,4,5,6]
           }
         }
       },
@@ -108,6 +113,9 @@
             "frequency": "some-days",
             "duration": {
               "minutes": 10
+            },
+            "wildcard_task": {
+              "enabled": true
             }
           },
           {
@@ -124,6 +132,9 @@
             "frequency": "some-days",
             "duration": {
               "minutes": 30
+            },
+            "wildcard_task": {
+              "enabled": true
             }
           },
           {
@@ -143,6 +154,9 @@
             "frequency": "some-days",
             "duration": {
               "minutes": 10
+            },
+            "wildcard_task": {
+              "enabled": true
             }
           }
         ]
