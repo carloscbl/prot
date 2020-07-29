@@ -5,11 +5,6 @@
 
 using nlohmann::json;
 
-struct raw_taskstory_t{
-    json taskstory_json;
-};
-
-
 class expand_taskstory_t {
 private:
     next_question_data_and_taskstory_input & m_nqdati;
@@ -18,10 +13,11 @@ public:
     m_nqdati(nqdati){}
 
     bool expand_and_set(); // constructs into m_nqdati reference the expanded_taskstory
+    unique_ptr<json> exapand_matrix(const json & type_details);
 };
 
-void exapand_matrix(const json & type_details, const json & expanded_taskstory){
-    for(auto [k,v] : expanded_taskstory.items()){
+unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
+    for(auto [k,v] : m_nqdati.raw_taskstory.items()){
         
     }
 }

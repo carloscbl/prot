@@ -15,7 +15,6 @@
 #include <unordered_set>
 #include <string_view>
 #include "json.hpp"
-#include "expanded_taskstory_t.h"
 
 using std::any;
 using std::any_cast;
@@ -125,11 +124,11 @@ struct next_question_data_and_taskstory_input
 {
     json current_question_obj; // Holds the solved question and to be excuted tasktories
     string next_question_text; // result of the state machine to be the next question text to show to the user
-    raw_taskstory_t raw_taskstory;
+    json raw_taskstory;
     string taskstory_name; // Name of the taskstory branch to be executed
     map<string,json> form_variables; // Variables of the context user + app, to be used on expansion of taskstory
     json user_input; // This will be passed but have no use for now maybe in future
-    unique_ptr<json> expanded_taskstory;
+    unique_ptr<json> expanded_taskstory = nullptr;
 };
 
 

@@ -115,7 +115,8 @@
               "minutes": 10
             },
             "wildcard_task": {
-              "enabled": true
+              "enabled": true,
+              "only_on user_input": true
             }
           },
           {
@@ -134,7 +135,8 @@
               "minutes": 30
             },
             "wildcard_task": {
-              "enabled": true
+              "enabled": true,
+              "only_on user_input": true
             }
           },
           {
@@ -156,7 +158,8 @@
               "minutes": 10
             },
             "wildcard_task": {
-              "enabled": true
+              "enabled": true,
+              "only_on user_input": true
             }
           }
         ]
