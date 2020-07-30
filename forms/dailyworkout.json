@@ -159,7 +159,7 @@
             },
             "wildcard_task": {
               "enabled": true,
-              "only_on user_input": true
+              "only_on_user_input": true
             }
           }
         ]
