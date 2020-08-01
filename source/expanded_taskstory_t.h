@@ -35,24 +35,26 @@ bool expand_taskstory_t::expand_and_set(){
 }
 
 unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
+    auto expanded_taskstory = make_unique<json>();
     for(auto [k,v] : m_nqdati.raw_taskstory.items()){
         if (!is_wildcard(v)){ continue; }
-
-        // for (size_t i = 0; i < count; i++)
-        // {
-        //     /* code */
-        // }
         
+        for (size_t i = 0; i < type_details["cols"]; i++)
+        {
+            /* code */
+        }
+        expanded_taskstory->push_back(v);
         for(auto [k,v] : type_details[""].items()){
 
         }
     }
-    return make_unique<json>();
+    return expanded_taskstory;
 }
 
 string get_matrix_group_by(const json & subtypes){
     string type_ = subtypes["group_by"];
-    return subtypes["group_types"][type_];
+    // return subtypes["group_types"][type_];
+    return type_;
 }
 
 bool is_wildcard(json raw_task){ // Returns the wil
