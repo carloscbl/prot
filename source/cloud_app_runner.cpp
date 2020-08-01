@@ -2,7 +2,7 @@
 #include "cloud_app_runner.h"
 #include "time_determinator.h"
 #include "db_ops.hpp"
-
+#include "expanded_taskstory_t.h"
 cloud_app_runner::cloud_app_runner(user & user_, form &form_)
     : user_(user_),
       form_(form_),
@@ -48,6 +48,8 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     ////////////////////////////////////////////////////////
     //Build schedulers and taskers for the given taskstory
     ////////////////////////////////////////////////////////
+    expand_taskstory_t ep (*response);
+    ep.expand_and_set();
     if(!schedule_taskstory(*response)){
         //Set response_j error message
     }
