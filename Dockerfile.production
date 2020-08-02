@@ -21,7 +21,7 @@ RUN apt update && apt install -y \
     libmariadbclient-dev \
     && add-apt-repository -y ppa:pistache+team/unstable \
     && add-apt-repository -y ppa:mhier/libboost-latest \
-    && apt update && apt install -y libpistache-dev libboost1.70-dev 
+    && apt update && apt install -y libpistache-dev libboost1.70-dev libfmt-dev
     #&& apt upgrade -y
 
 FROM min-stage as build-stage

@@ -12,10 +12,10 @@ INCLUDE_DIRECTORIES( ${Boost_INCLUDE_DIR} )
 include_directories(${PROJECT_SOURCE_DIR}/source)
 find_package(Threads REQUIRED)
 find_package(Sqlpp11 REQUIRED)
+find_package(fmt)
 include_directories(${CMAKE_SOURCE_DIR}/source)
 include_directories(${CMAKE_SOURCE_DIR}/api/generated)
 include_directories("thirdparty/nlohmann_json")
-
 add_subdirectory(test)
 add_subdirectory(rest_server)
 
@@ -31,4 +31,4 @@ message(${SOURCES})
 
 
 add_library (lprot  ${SOURCES} ) #${PROJECT_SOURCE_DIR}/source/main.cpp
-TARGET_LINK_LIBRARIES( lprot LINK_PUBLIC ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES( lprot LINK_PUBLIC ${Boost_LIBRARIES} fmt::fmt)

@@ -18,6 +18,14 @@ ExternalProject_Add(NLOHMANN
     GIT_TAG master
     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
 )
+
+# ExternalProject_Add(FMT
+#     GIT_REPOSITORY https://github.com/fmtlib/fmt
+#     GIT_TAG master
+#     CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
+# )
+
+find_package(fmt)
 include_directories(${EXTERNAL_INSTALL_LOCATION}/include)
 link_directories(${EXTERNAL_INSTALL_LOCATION}/lib)
 
@@ -40,4 +48,4 @@ target_include_directories(${PROJECT_NAME} PUBLIC ${CMAKE_SOURCE_DIR}/source)
 target_include_directories(${PROJECT_NAME} PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty)
 add_dependencies(${PROJECT_NAME} PISTACHE NLOHMANN)
 #add_dependencies(${PROJECT_NAME} PISTACHE)
-target_link_libraries( ${PROJECT_NAME} pistache pthread lprot sqlpp11 sqlpp-mysql mariadb ${Boost_LIBRARIES})
+target_link_libraries( ${PROJECT_NAME} pistache pthread fmt::fmt lprot sqlpp11 sqlpp-mysql mariadb ${Boost_LIBRARIES})

@@ -73,19 +73,28 @@
                     "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
                   ],
                   "readonly": true
-                }
+                },
+                "missing specification of specificdays like 'mondays' or similar in task fields":""
               },
               {
                 "type" : "STRING",
-                "description": "Put your description of the workouts!"
+                "description": "Put your description of the workouts!",
+                "string_interpolation_fields":{
+                  "task_fields":[
+                    "name",
+                    "description"
+                  ],
+                  "interpolation_name":"exercise_description"
+                }
               },
               {
                 "type" : "DURATION",
-                "description": "How much time will last this session?"
+                "description": "How much time will last this session?",
+                "substitute_whole_field": "duration"
               }
             ]
           },
-          "wildcard_task_iterations":{
+          "wildcard_task_posible_iterations":{
             "day_week" : [0,1,2,3,4,5,6]
           }
         }
@@ -121,7 +130,7 @@
           },
           {
             "tag": "travel_to_activity",
-            "name":"Go to the GYM",
+            "name":"Go to {}",
             "comment": "",
             "when": {
               "after": "base_task_collect"
@@ -159,7 +168,7 @@
             },
             "wildcard_task": {
               "enabled": true,
-              "only_on_user_input": true
+              "this_task_exists_only_if_user_inputs": true
             }
           }
         ]
