@@ -99,26 +99,6 @@ public:
     void print_out();
 };
 
-class taskstory{
-    string command;
-    string name;
-};
-
-class taskstorys{
-    int branch_id;
-    vector<taskstory> taskstory_;
-};
-
-class questions{
-    int id;
-    string question;
-    string answer_tag;
-    string type_user_input;
-    vector<string> mode;
-    
-    map<int,taskstory> taskstorys;
-    questions(const json & j);
-};
 
 struct next_question_data_and_taskstory_input
 {

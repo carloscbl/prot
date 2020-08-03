@@ -1,8 +1,12 @@
 project(test_prot)
 
 
-SET(CMAKE_CXX_FLAGS "-g -Wall -Wno-unused-parameter -Wno-unused-but-set-variable -std=c++17")
-
+SET(CMAKE_CXX_FLAGS "-g -Wall -Wno-unused-parameter -std=c++17")
+SET(FMT_TEST "OFF")
+SET(PISTACHE_TEST "OFF")
+SET(BUILD_TESTING "OFF")
+SET(JSON_BuildTests "OFF")
+SET(FMT_TEST "OFF")
 file(GLOB TEST_SOURCES
     ${PROJECT_SOURCE_DIR}/*.h
     ${PROJECT_SOURCE_DIR}/*.cpp
@@ -12,8 +16,8 @@ file(GLOB TEST_SOURCES
 message(${CMAKE_SOURCE_DIR})
 message(${PROJECT_SOURCE_DIR}/..)
 message(${TEST_SOURCES})
-
-
+# find_package(fmt)
+# SET(FMT_TEST "false")
 
 include_directories(${CMAKE_SOURCE_DIR}/source)
 include_directories(${CMAKE_SOURCE_DIR}/api/generated)
@@ -23,7 +27,7 @@ enable_testing()
 add_executable(test_prot ${TEST_SOURCES})
 target_include_directories(test_prot PUBLIC ${CMAKE_SOURCE_DIR}/source)
 target_include_directories(test_prot PRIVATE ${CMAKE_SOURCE_DIR}/thirdparty)
-TARGET_LINK_LIBRARIES( test_prot LINK_PUBLIC lprot  ${Boost_LIBRARIES})
+TARGET_LINK_LIBRARIES( test_prot LINK_PUBLIC lprot  ${Boost_LIBRARIES} fmt::fmt )
 target_link_libraries( test_prot PRIVATE sqlpp11 sqlpp-mysql mariadb)
  
 add_test(

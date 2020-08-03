@@ -8,12 +8,12 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 # Import target "pistache_shared" for configuration ""
 set_property(TARGET pistache_shared APPEND PROPERTY IMPORTED_CONFIGURATIONS NOCONFIG)
 set_target_properties(pistache_shared PROPERTIES
-  IMPORTED_LOCATION_NOCONFIG "${_IMPORT_PREFIX}/lib/libpistache.so.0.0.002-git20200708"
-  IMPORTED_SONAME_NOCONFIG "libpistache.so.0"
+  IMPORTED_LOCATION_NOCONFIG "${_IMPORT_PREFIX}/lib/libpistache-0.0.002-git20200802.so.0.0"
+  IMPORTED_SONAME_NOCONFIG "libpistache-0.0.002-git20200802.so.0.0"
   )
 
 list(APPEND _IMPORT_CHECK_TARGETS pistache_shared )
-list(APPEND _IMPORT_CHECK_FILES_FOR_pistache_shared "${_IMPORT_PREFIX}/lib/libpistache.so.0.0.002-git20200708" )
+list(APPEND _IMPORT_CHECK_FILES_FOR_pistache_shared "${_IMPORT_PREFIX}/lib/libpistache-0.0.002-git20200802.so.0.0" )
 
 # Import target "pistache_static" for configuration ""
 set_property(TARGET pistache_static APPEND PROPERTY IMPORTED_CONFIGURATIONS NOCONFIG)

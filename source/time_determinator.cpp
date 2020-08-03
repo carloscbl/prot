@@ -135,7 +135,7 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
         return false;
     }
     
-    time_point should_start = system_clock::from_time_t(prev_task_->get_interval().end) + seconds(1);
+    // time_point should_start = system_clock::from_time_t(prev_task_->get_interval().end) + seconds(1);
     
     current_after_t after{
         .prev_task = prev_task_,

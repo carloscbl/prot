@@ -67,6 +67,10 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
     return expanded_taskstory;
 }
 
+
+// in order to parse all the multiple specified fields and interpolations we need to convert a vector to variadic argument
+
+
 string get_matrix_group_by(const json & subtypes){
     string type_ = subtypes["group_by"];
     // return subtypes["group_types"][type_];

@@ -46,7 +46,7 @@ private:
     void add_to_group(const string & task_tag, task_t && params, const string & group);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 public:
-    void print_out();
+    void print_out() override;
     bool empty() const noexcept override;
     size_t size() const noexcept override;
     void add_to_group( task_t && params, const string & group);
@@ -58,6 +58,7 @@ public:
     task_t find_task(const string & tag)  const override;
     inline const map<uint64_t, task_t> & get_tasks() const { return this->tasks_active; }
     tasker(const string & user);
+    virtual ~tasker(){}
 };
 void to_json(nlohmann::json& new_json, const tasker& ref_tasker);
 void from_json(const nlohmann::json& ref_json, tasker& new_tasker);

@@ -90,7 +90,7 @@ private:
     if the policy heuristics fail, and dont find a gap for all of them, then we fail and do nothing
     but return false;
     */
-    bool add_group(queue<task_t> && provisional_taskstory);
+    bool add_group(queue<task_t> && provisional_taskstory) override;
 
 public:
   
@@ -120,7 +120,7 @@ public:
     inline size_t size() const { return this->m_interval_map.iterative_size(); }
     void print_out() const override;
     //This is the correct way to provide groups in a safe manner
-    provisional_scheduler_RAII get_provisional();
+    provisional_scheduler_RAII get_provisional() override;
 };
 
 /*
