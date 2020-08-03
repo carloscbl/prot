@@ -8,6 +8,7 @@
 /Testing/*
 
 !/.vscode/launch.json
+!/.vscode/c_cpp_properties.json
 /.vscode/*
 !/.vscode/tasks.json
 !/.vscode/extensions.json
