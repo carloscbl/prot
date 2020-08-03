@@ -2,10 +2,12 @@
 #define EXPANDED_TASKSTORY_T_H
 #include <optional>
 #include <string>
+#include <any>
 #include "json.hpp"
 #include "app_parser.h"
 #include <fmt/core.h>
 using std::optional;
+using std::any;
 using std::nullopt;
 using std::string;
 using nlohmann::json;
@@ -17,6 +19,7 @@ class expand_taskstory_t {
 private:
     next_question_data_and_taskstory_input & m_nqdati;
     unique_ptr<json> exapand_matrix(const json & type_details);
+    optional<std::any> autofill_strategy(bool & task_is_filled_with_significant_fields,const json & type_description, size_t main_idx, size_t secondary_idx );
 public:
     expand_taskstory_t(next_question_data_and_taskstory_input & nqdati):
     m_nqdati(nqdati){}
@@ -54,11 +57,22 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
             */
             json expanded_task = v;
             expanded_task.erase("wildcard_task");
+            fmt::dynamic_format_arg_store<fmt::format_context> store;
+            bool task_is_filled_with_significant_fields= false;
             for (size_t main_idx = 0; main_idx < type_details[main_tuple].get<size_t>(); main_idx++)
             {
-                
+                // store.push_back(fmt::arg("name", "Pepe3000"));
+                auto type_description = type_details[main_tuple].at(main_idx); // type:STRING, description:"",string_interpolation_fields:{}...
+                auto autofill = autofill_strategy(task_is_filled_with_significant_fields, type_description, main_idx, secondary_idx);
+                if(autofill.has_value()){
+                    
+                    continue;
+                }
             }
-            expanded_taskstory->push_back(v);
+            // std::string interpolation = fmt::vformat(raw, store);
+            if (task_is_filled_with_significant_fields){
+                expanded_taskstory->push_back(v);
+            }
         }
         for(auto [k,v] : type_details[""].items()){
 
@@ -67,6 +81,42 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
     return expanded_taskstory;
 }
 
+void substitution_or_interpolation(std::any & value, json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store){
+    auto interpolation = type_description.find("interpolation_name");
+    auto substitute_whole_field = type_description.find("substitute_whole_field");
+    if(interpolation != type_description.end()){
+        // store.push_back()
+    }else if(substitute_whole_field != type_description.end()){
+
+    }else{
+        return;
+    }
+
+}
+
+optional<std::any> expand_taskstory_t::autofill_strategy(
+    bool & task_is_filled_with_significant_fields,
+    const json & type_description, size_t main_idx, size_t secondary_idx){
+    auto autofill = type_description.find("user_input_autofill");
+    if(autofill != type_description.end() ){
+        // Fill store with, predefined input_data
+        auto autofill_struct = autofill.value();
+        std::any substitution_value;
+        if ( autofill_struct["readonly"].get<bool>() == true){
+            substitution_value = autofill_struct["input_data"].at(secondary_idx);
+        }else{
+            // Fill with user_input
+            substitution_value = this->m_nqdati.user_input["data_input_from_user"].at(main_idx).at(secondary_idx);
+            if(substitution_value.has_value()){
+                task_is_filled_with_significant_fields = true;
+            }
+        }
+        // type_description // format or complete replace field?
+        // store.push_back(fmt::arg("name", substitution_value));
+        return substitution_value;
+    }
+    return nullopt;
+}
 
 // in order to parse all the multiple specified fields and interpolations we need to convert a vector to variadic argument
 

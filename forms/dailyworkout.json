@@ -68,6 +68,7 @@
               {
                 "type" : "STRING",
                 "description": "Day of the week",
+                "interpolation_name":"current_day",
                 "user_input_autofill" :{
                   "input_data":[
                     "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
