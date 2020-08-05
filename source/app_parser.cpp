@@ -1,5 +1,5 @@
 #include "app_parser.h"
-#include "type_container.h"
+
 
 app_parser::app_parser(const json &j) : j(j)
 {
@@ -50,8 +50,8 @@ strategy_return app_parser::enroute_json_type(const json &question_obj, const js
     }
 
     std::any converted_answer;
-    auto conversor = conversors_map.find(expected_answer_type);
-    if (conversor != conversors_map.end())
+    auto conversor = prot::conversors_map.find(expected_answer_type);
+    if (conversor != prot::conversors_map.end())
     {
         converted_answer = conversor->second(answer_input); // For a matrix this will result in the very same input json
         if (converted_answer.has_value())

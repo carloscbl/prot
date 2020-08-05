@@ -80,18 +80,12 @@
               {
                 "type" : "STRING",
                 "description": "Put your description of the workouts!",
-                "string_interpolation_fields":{
-                  "task_fields":[
-                    "name",
-                    "description"
-                  ],
-                  "interpolation_name":"exercise_description"
-                }
+                "interpolation_name":"exercise_description"
               },
               {
                 "type" : "DURATION",
                 "description": "How much time will last this session?",
-                "substitute_whole_field": "duration"
+                "substitute_whole_field": ["duration"]
               }
             ]
           },

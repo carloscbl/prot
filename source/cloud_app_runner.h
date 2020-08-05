@@ -10,6 +10,7 @@
 #include <memory>
 #include "json.hpp"
 #include "user.h"
+#include "expanded_taskstory_t.h"
 #include "app_parser.h"
 #include "form.h"
 #include "tasker.h"

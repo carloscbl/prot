@@ -27,28 +27,14 @@
 #include <functional>
 #include <fmt/core.h>
 #include <fmt/format.h>
+#include "type_conversor.h"
 
 using nlohmann::json;
 using std::function;
 using std::map;
+using std::nullopt;
+using std::optional;
 
-optional<std::string> json_to_string(const json & value){
-    switch (value.type())
-    {
-    case json::value_t::boolean:
-        return std::to_string(value.get<bool>());
-    case json::value_t::number_float:
-        return std::to_string(value.get<float>());
-    case json::value_t::number_integer:
-        return std::to_string(value.get<int>());
-    case json::value_t::number_unsigned:
-        return std::to_string(value.get<size_t>());
-    case json::value_t::string:
-        return value.get<std::string>();
-    default:
-        return nullopt;
-    }
-}
 
 // namespace mysql = sqlpp::mysql;
 int main(int argc, char *argv[])
@@ -59,22 +45,37 @@ int main(int argc, char *argv[])
     auto aresgg = fmt::make_format_args(fmt::arg("name", "Pepe"),fmt::arg("number", 45));
     fmt::print(fmt::vformat(raw, {aresgg}));
     fmt::dynamic_format_arg_store<fmt::format_context> store;
-    store.push_back(fmt::arg("name", "Pepe3000"));
+    std::string raw2 = "Hello, {username_}! The answer is {number}. Goodbye. \n";
+    store.push_back(fmt::arg("username_", "@Pepe3000"));
     store.push_back(fmt::arg("aanumber2", 5000)); // So we can exceed arguments but never less than needed
     store.push_back(fmt::arg("number", 3000));
-    std::string interpolation = fmt::vformat(raw, store);
+    std::string interpolation = fmt::vformat(raw2, store);
 
     std::cout << interpolation << std::endl;
 
     json aa;
     aa["pepe"] = 35;
+    aa["pepeo"] = 35.5;
+    aa["pepeo1"] = false;
+    aa["arr"] = {"kk","xx","pp"};
     std::any ab = aa["pepe"];
 
+    std::cout << prot::json_to_string(aa["pepe"]).value() << std::endl;
+    std::cout << prot::json_to_string(aa["pepeo"]).value() << std::endl;
+    std::cout << prot::json_to_string(aa["pepeo1"]).value() << std::endl;
     // fmt::print(ab.type().name());
-    if(json::value_t::number_unsigned == aa["pepe"].type()){
-        std::cout << aa["pepe"] << std::endl;
+    if(json::value_t::number_integer == aa["pepe"].type()){
+        std::cout << prot::json_to_string(aa["pepe"]).value() << std::endl;
 
     }
+    for (auto& [key, value] : aa["arr"].items()) {
+        std::cout << key << " : " << value << "\n";
+    }
+
+    for (auto&  value: aa["arr"]) {
+        std::cout << value << "\n";
+    }
+
     // fmt::print(aa["pepe"].type());
     // fmt::print("pepe vale {num}", fmt::arg("num",  aa["pepe"].type ));
 

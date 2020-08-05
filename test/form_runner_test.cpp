@@ -1,6 +1,5 @@
 #include "Catch2/catch.hpp"
 #include "json.hpp"
-#include "cloud_app_runner.h"
 #include "user.h"
 #include "form.h"
 #include "task_restrictions.h"

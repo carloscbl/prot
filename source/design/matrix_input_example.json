@@ -6,15 +6,13 @@
             ["natacion", "", "", "", "", "", "dance"],
             [{
                 "type":"DURATION",
-                "data_input_from_user" : 90,
-                "metadata": {
-                    "ratio": "minutes"
+                "data_input_from_user" : {
+                    "minutes":90
                 }
             },{},{},{},{},{},{
                 "type":"DURATION",
-                "data_input_from_user" : 1,
-                "metadata": {
-                    "ratio": "hours"
+                "data_input_from_user" : {
+                    "hours":1
                 }
             }]
         ],
