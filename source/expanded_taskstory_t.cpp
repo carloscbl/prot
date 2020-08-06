@@ -30,72 +30,79 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
             first iterate pert tasks (7)
             then iterate per input so we can generate all the input for a given task
             */
-            json expanded_task = v;
-            expanded_task.erase("wildcard_task");
+            json expanding_task = v;
+            expanding_task.erase("wildcard_task");
             fmt::dynamic_format_arg_store<fmt::format_context> store;
-            bool task_is_filled_with_significant_fields= false;
+
             for (size_t main_idx = 0; main_idx < type_details[main_tuple].get<size_t>(); main_idx++)
             {
                 // store.push_back(fmt::arg("name", "Pepe3000"));
                 auto type_description = type_details[main_tuple].at(main_idx); // type:STRING, description:"",string_interpolation_fields:{}...
-                auto autofill = autofill_strategy(task_is_filled_with_significant_fields, type_description, main_idx, secondary_idx);
-                if(autofill.has_value()){
-                    
+                json autofill_value = autofill_strategy( type_description, main_idx, secondary_idx);
+                if(!autofill_value.empty()){
+                    substitution_or_interpolation(autofill_value, type_description, store, expanding_task); // We can check if there was a failure
                     continue;
                 }
             }
-            // std::string interpolation = fmt::vformat(raw, store);
-            if (task_is_filled_with_significant_fields){
-                expanded_taskstory->push_back(v);
-            }
-        }
-        for(auto [k,v] : type_details[""].items()){
+            //After get the whole store from the main, we should apply it
+            std::for_each(fields_to_interpolate.begin(),fields_to_interpolate.end(), [&store,&expanding_task](const string & field_string){
+                std::string interpolation = fmt::vformat(expanding_task[field_string].get<string>(), store);
+                expanding_task[field_string] = interpolation;
+            });
 
+            expanded_taskstory->push_back(v); // insert the expanded task
         }
     }
     return expanded_taskstory;
 }
 
 
-void substitution_or_interpolation(const json & value, json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store){
+bool substitution_or_interpolation(const json & value,
+ json & type_description,
+ fmt::dynamic_format_arg_store<fmt::format_context> & store,
+ json & expanding_task){
     auto interpolation = type_description.find("interpolation_name");
     auto substitute_whole_field = type_description.find("substitute_whole_field");
+
+    bool success = true; // Good candidate to reporting structure
 
     if(interpolation != type_description.end()){
         store.push_back( fmt::arg(interpolation.value().get<string>().c_str(), prot::json_to_string(value).value() ));
     }
 
     if(substitute_whole_field != type_description.end() && !substitute_whole_field.value().empty()){
-        // for (const auto & [_,field] : substitute_whole_field.value().items())
-        // {
-        //     // auto callable = task_subtype_checker.find(field.get<string>());
-        // }
-        
+        for (const auto & [idx,field] : substitute_whole_field.value().items()) // returns idx it (0,1,2) and array it
+        {   
+            string field_name = field.get<string>();
+            auto pair_callable = prot::task_subtype_checker_and_adaptor.find(field_name);
+            if (pair_callable == prot::task_subtype_checker_and_adaptor.end()){
+                // success = false;
+                fmt::print("Field {0} not match validator, maybe uninplemented or not valid one", field_name );
+                continue;
+            }
+            const json checked_value = pair_callable->second(value);
+            // now we can safely substitute
+            expanding_task[field_name] = checked_value;
+        }
     }
+    return success;
 }
 
-optional<std::any> expand_taskstory_t::autofill_strategy(
-    bool & task_is_filled_with_significant_fields,
-    const json & type_description, size_t main_idx, size_t secondary_idx){
+json expand_taskstory_t::autofill_strategy(
+    const json & type_description, size_t main_idx, size_t secondary_idx)
+{
     auto autofill = type_description.find("user_input_autofill");
     if(autofill != type_description.end() ){
-        // Fill store with, predefined input_data
         auto autofill_struct = autofill.value();
-        std::any substitution_value;
+        json substitution_value;
         if ( autofill_struct["readonly"].get<bool>() == true){
             substitution_value = autofill_struct["input_data"].at(secondary_idx);
         }else{
-            // Fill with user_input
             substitution_value = this->m_nqdati.user_input["data_input_from_user"].at(main_idx).at(secondary_idx);
-            if(substitution_value.has_value()){
-                task_is_filled_with_significant_fields = true;
-            }
         }
-        // type_description // format or complete replace field?
-        // store.push_back(fmt::arg("name", substitution_value));
         return substitution_value;
     }
-    return nullopt;
+    return json();
 }
 
 // in order to parse all the multiple specified fields and interpolations we need to convert a vector to variadic argument

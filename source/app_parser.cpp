@@ -45,7 +45,7 @@ strategy_return app_parser::enroute_json_type(const json &question_obj, const js
 {
 
     string expected_answer_type = question_obj["type_user_input"].get<string>();
-    if  (expected_answer_type != answer_input["type"]){
+    if  (expected_answer_type != answer_input["type"].get<string>()){
         return strategy_return{};
     }
 

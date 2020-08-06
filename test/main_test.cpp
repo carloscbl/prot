@@ -50,8 +50,10 @@ int main(int argc, char *argv[])
     store.push_back(fmt::arg("aanumber2", 5000)); // So we can exceed arguments but never less than needed
     store.push_back(fmt::arg("number", 3000));
     std::string interpolation = fmt::vformat(raw2, store);
+    std::string interpolation2 = fmt::vformat(raw2, store);
 
     std::cout << interpolation << std::endl;
+    std::cout << interpolation2 << std::endl;
 
     json aa;
     aa["pepe"] = 35;
@@ -75,6 +77,23 @@ int main(int argc, char *argv[])
     for (auto&  value: aa["arr"]) {
         std::cout << value << "\n";
     }
+
+    json emp;
+    fmt::print("{}\n",emp.empty());
+    emp = "pepe";
+    fmt::print("{}\n",emp.empty());
+    emp = "";
+    fmt::print("{}\n",emp.empty());
+    emp = nullptr;
+    fmt::print("{}\n",emp.empty());
+    emp = "aa";
+    fmt::print("{}\n",emp.empty());
+    emp = {};
+    fmt::print("{}\n",emp.empty());
+    json pe = json::parse("null");
+    fmt::print("\n\n{}\n",pe.empty());
+    // fmt::print("{}",emp);
+    // fmt::print("{}",emp);
 
     // fmt::print(aa["pepe"].type());
     // fmt::print("pepe vale {num}", fmt::arg("num",  aa["pepe"].type ));

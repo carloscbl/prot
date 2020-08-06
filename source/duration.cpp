@@ -3,7 +3,7 @@
 
 void prot::from_json(const nlohmann::json& j, prot::duration& p){
     //Iterates over all the timers and picks the one found
-    for (auto &[k,conversor] : p.conversors)
+    for (auto &[k,conversor] : time_conversors)
     {
         auto match = j.find(k);
         if(match != j.end()){

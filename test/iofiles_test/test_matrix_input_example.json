@@ -1,0 +1,24 @@
+{
+    "type": "MATRIX",
+    "data_input_from_user": [
+        ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
+        ["natacion", "", "", "", "", "", "dance"],
+        [{
+            "type":"DURATION",
+            "data_input_from_user" : {
+                "minutes":90
+            }
+        },null,null,null,null,null,{
+            "type":"DURATION",
+            "data_input_from_user" : {
+                "hours":1
+            }
+        }]
+    ],
+    "metadata":{
+        "cols": 7,
+        "rows": 3,
+        "header_index" : 0,
+        "group_by": "rows"
+    }
+}

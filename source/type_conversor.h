@@ -8,6 +8,7 @@
 #include <map>
 #include <any>
 #include "json.hpp"
+#include "duration.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
 
@@ -44,7 +45,21 @@ const inline std::map<string,function<std::any(const json &)>> conversors_map{
     {"MATRIX", (function<std::any(const json &)>)[](const json & s)->std::any{ return s;}},
     {"VECTOR", (function<std::any(const json &)>)[](const json & s)->std::any{ return s;}},
 };
+
+const inline map<string, function<json(const json &)>> task_subtype_checker_and_adaptor{
+    {"duration",
+        [](const json & type)-> json { 
+            prot::duration d;
+            type.at("data_input_from_user").get_to(d);
+            json checked_duration;
+            to_json(checked_duration, d);
+            return checked_duration;
+        }
+    },
+};
+
 optional<std::string> json_to_string(const json & value);
+
 };
 
 
