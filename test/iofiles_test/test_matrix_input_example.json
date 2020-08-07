@@ -2,7 +2,8 @@
     "type": "MATRIX",
     "data_input_from_user": [
         ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"],
-        ["natacion", "", "", "", "", "", "dance"],
+        ["natacion", null, null, null, null, null, "dance"],
+        ["30 laps and stretch", null, null, null, null, null, "body combat"],
         [{
             "type":"DURATION",
             "data_input_from_user" : {

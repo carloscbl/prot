@@ -19,3 +19,14 @@ optional<std::string> prot::json_to_string(const json & value){
         return nullopt;
     }
 }
+
+
+bool prot::check_null_or_empty(const json & value){
+    switch (value.type())
+    {
+    case json::value_t::string:
+        return value.get<std::string>().empty();
+    default:
+        return value.empty();
+    }
+}

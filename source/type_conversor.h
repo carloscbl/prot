@@ -59,6 +59,7 @@ const inline map<string, function<json(const json &)>> task_subtype_checker_and_
 };
 
 optional<std::string> json_to_string(const json & value);
+bool check_null_or_empty(const json & value);
 
 };
 

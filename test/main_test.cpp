@@ -78,20 +78,34 @@ int main(int argc, char *argv[])
         std::cout << value << "\n";
     }
 
-    json emp;
-    fmt::print("{}\n",emp.empty());
-    emp = "pepe";
-    fmt::print("{}\n",emp.empty());
-    emp = "";
-    fmt::print("{}\n",emp.empty());
-    emp = nullptr;
-    fmt::print("{}\n",emp.empty());
-    emp = "aa";
-    fmt::print("{}\n",emp.empty());
-    emp = {};
-    fmt::print("{}\n",emp.empty());
-    json pe = json::parse("null");
-    fmt::print("\n\n{}\n",pe.empty());
+    // json emp;
+    // fmt::print("{}\n",emp.empty());
+    // emp = "pepe";
+    // fmt::print("{}\n",emp.empty());
+    // emp = "";
+    // fmt::print("{}\n",emp.empty());
+    // emp = nullptr;
+    // fmt::print("{}\n",emp.empty());
+    // emp = "aa";
+    // fmt::print("{}\n",emp.empty());
+    // emp = {};
+    // fmt::print("{}\n",emp.empty());
+    // json pe = json::parse("null");
+    // fmt::print("\n\n{}\n",pe.empty());
+
+    json pa ;
+    // pa = {};
+
+    json obj1;// = json::object();
+    obj1["nanana"] = 27;
+    json obj2;
+    obj2["aanana"] = 17;
+
+    pa += obj1;
+    pa += obj2;
+    // pa.push_back(obj2);
+    fmt::print("\n\n{}\n",pa.dump(4));
+    
     // fmt::print("{}",emp);
     // fmt::print("{}",emp);
 

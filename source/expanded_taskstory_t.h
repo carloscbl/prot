@@ -18,7 +18,7 @@ using nlohmann::json;
 
 bool is_wildcard(json raw_task);
 string get_matrix_group_by(const json & subtypes);
-bool substitution_or_interpolation(const json & value, json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store, json & expanding_task);
+bool substitution_or_interpolation_store(const json & value,const json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store, json & expanding_task);
 
 const std::vector<string> fields_to_interpolate{
     "name","description",
@@ -28,7 +28,8 @@ class expand_taskstory_t {
 private:
     next_question_data_and_taskstory_input & m_nqdati;
     unique_ptr<json> exapand_matrix(const json & type_details);
-    json autofill_strategy(const json & type_description, size_t main_idx, size_t secondary_idx );
+    json autofill_strategy(const json & type_description, const size_t main_idx, const size_t secondary_idx );
+    json get_input_value(const json & type_description, const size_t main_idx, const size_t secondary_idx );
 public:
     expand_taskstory_t(next_question_data_and_taskstory_input & nqdati):
     m_nqdati(nqdati){}

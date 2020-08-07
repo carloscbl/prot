@@ -71,7 +71,7 @@
                 "interpolation_name":"current_day",
                 "user_input_autofill" :{
                   "input_data":[
-                    "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
+                    "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
                   ],
                   "readonly": true
                 },
@@ -115,7 +115,7 @@
             "tag": "base_task_collect",
             "name":"Fill bag and collect towel and {exercise_name} clothes",
             "comment": "",
-            "description": "Get all the material needed to perform {exercise_description}, Today: {description}",
+            "description": "Get all the material needed to perform {exercise_description}, Today: {exercise_name}",
             "restrictions": [
               "soon"
             ],
@@ -158,7 +158,7 @@
                 "minutes": 10
               }
             },
-            "description": "Start your workout session!",
+            "description": "Start your {exercise_name} session!, Target: {exercise_description}",
             "restrictions": [
               "soon"
             ],

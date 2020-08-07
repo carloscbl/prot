@@ -33,32 +33,53 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
             json expanding_task = v;
             expanding_task.erase("wildcard_task");
             fmt::dynamic_format_arg_store<fmt::format_context> store;
+            bool invalid_input = false;
 
             for (size_t main_idx = 0; main_idx < type_details[main_tuple].get<size_t>(); main_idx++)
             {
                 // store.push_back(fmt::arg("name", "Pepe3000"));
-                auto type_description = type_details[main_tuple].at(main_idx); // type:STRING, description:"",string_interpolation_fields:{}...
+                // fmt::print("{}", type_details["subtypes"]["group_types"][main_tuple].dump(4));
+                auto type_description = type_details["subtypes"]["group_types"][main_tuple].at(main_idx); // type:STRING, description:"",
+
                 json autofill_value = autofill_strategy( type_description, main_idx, secondary_idx);
-                if(!autofill_value.empty()){
-                    substitution_or_interpolation(autofill_value, type_description, store, expanding_task); // We can check if there was a failure
+                if( !prot::check_null_or_empty(autofill_value) )
+                {
+                    substitution_or_interpolation_store(autofill_value, type_description, store, expanding_task); // We can check if there was a failure
                     continue;
                 }
+
+                // get value from input not from type description
+                auto input_value = get_input_value( type_description, main_idx, secondary_idx );
+                if(prot::check_null_or_empty(input_value)){
+                    invalid_input = true;
+                    break;
+                }
+                substitution_or_interpolation_store( input_value, type_description, store, expanding_task); // We can check if there was a failure
+
+            }
+            if(invalid_input){
+                continue;
             }
             //After get the whole store from the main, we should apply it
             std::for_each(fields_to_interpolate.begin(),fields_to_interpolate.end(), [&store,&expanding_task](const string & field_string){
+                std::cout << expanding_task[field_string].get<string>() << std::endl;
+                
                 std::string interpolation = fmt::vformat(expanding_task[field_string].get<string>(), store);
                 expanding_task[field_string] = interpolation;
             });
-
-            expanded_taskstory->push_back(v); // insert the expanded task
+            std::cout << expanding_task.dump(4) << std::endl;
+            *expanded_taskstory += expanding_task; // insert the expanded task
         }
     }
     return expanded_taskstory;
 }
 
+json expand_taskstory_t::get_input_value(const json & type_description, const size_t main_idx, const size_t secondary_idx ){
+    return this->m_nqdati.user_input["data_input_from_user"].at(main_idx).at(secondary_idx);
+}
 
-bool substitution_or_interpolation(const json & value,
- json & type_description,
+bool substitution_or_interpolation_store(const json & value,
+ const json & type_description,
  fmt::dynamic_format_arg_store<fmt::format_context> & store,
  json & expanding_task){
     auto interpolation = type_description.find("interpolation_name");
@@ -67,6 +88,7 @@ bool substitution_or_interpolation(const json & value,
     bool success = true; // Good candidate to reporting structure
 
     if(interpolation != type_description.end()){
+        std::cout << "ADDING ARG: " << interpolation.value().get<string>() << " : " << prot::json_to_string(value).value() << std::endl;
         store.push_back( fmt::arg(interpolation.value().get<string>().c_str(), prot::json_to_string(value).value() ));
     }
 
