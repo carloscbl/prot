@@ -13,13 +13,34 @@ bool expand_taskstory_t::expand_and_set(){
     return false;
 }
 
-unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
+void set_wildcard_task_posible_iterations(const json & type_details, json & expanding_task, size_t secondary_idx, fmt::dynamic_format_arg_store<fmt::format_context> & store)
+{
+    const auto & w_it = type_details.find("wildcard_task_posible_iterations");
+    if (w_it == type_details.cend() || w_it.value().empty()){
+        return;
+    }
+    const auto & [k,v] = w_it.value().items().begin(); // Agnostic, dont matter if day_week or day_month or even hour_day, we need k and v
+    auto res = std::find(v.begin(), v.end(), secondary_idx);
+    std::cout << "a########## " << v.dump(4) <<  " : " <<secondary_idx << std::endl;
+    if (res != v.end()){
+        std::cout << "match!!!" << std::endl;
+        expanding_task[k] = secondary_idx;
+        store.push_back(fmt::arg("prot_idx", std::to_string(secondary_idx) ));
+    }
+    return;
+}
+
+unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
+{
     auto expanded_taskstory = make_unique<json>();
     string main_tuple = get_matrix_group_by(type_details["subtypes"]);
     string secundary_tuple = main_tuple == "cols" ? "rows" : "cols";
-    fmt::print("Hello, world!\n");
+
     for(auto [k,v] : m_nqdati.raw_taskstory.items()){
-        if (!is_wildcard(v)){ continue; }
+        if (!is_wildcard(v)){ 
+            *expanded_taskstory += v;
+            continue; 
+        }
         
         for (size_t secondary_idx = 0; secondary_idx < type_details[secundary_tuple].get<size_t>(); secondary_idx++)
         { 
@@ -34,7 +55,7 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
             expanding_task.erase("wildcard_task");
             fmt::dynamic_format_arg_store<fmt::format_context> store;
             bool invalid_input = false;
-
+            set_wildcard_task_posible_iterations(type_details, expanding_task, secondary_idx, store);
             for (size_t main_idx = 0; main_idx < type_details[main_tuple].get<size_t>(); main_idx++)
             {
                 // store.push_back(fmt::arg("name", "Pepe3000"));
@@ -67,7 +88,6 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details){
                 std::string interpolation = fmt::vformat(expanding_task[field_string].get<string>(), store);
                 expanding_task[field_string] = interpolation;
             });
-            std::cout << expanding_task.dump(4) << std::endl;
             *expanded_taskstory += expanding_task; // insert the expanded task
         }
     }

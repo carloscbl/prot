@@ -40,20 +40,14 @@ using std::optional;
 int main(int argc, char *argv[])
 {
     fmt::print("Hello, world!\n");
-    std::string raw = "Hello, {name}! The answer is {number}. Goodbye. {name}\n";
-    fmt::print(raw, fmt::arg("name", "World"), fmt::arg("number", 42));
-    auto aresgg = fmt::make_format_args(fmt::arg("name", "Pepe"),fmt::arg("number", 45));
-    fmt::print(fmt::vformat(raw, {aresgg}));
+    std::string raw = "Hello, {prot_idx}! The answer is {number}. Goodbye.\n";
     fmt::dynamic_format_arg_store<fmt::format_context> store;
-    std::string raw2 = "Hello, {username_}! The answer is {number}. Goodbye. \n";
-    store.push_back(fmt::arg("username_", "@Pepe3000"));
+    store.push_back(fmt::arg("prot_idx", "@Pepe3000"));
     store.push_back(fmt::arg("aanumber2", 5000)); // So we can exceed arguments but never less than needed
     store.push_back(fmt::arg("number", 3000));
-    std::string interpolation = fmt::vformat(raw2, store);
-    std::string interpolation2 = fmt::vformat(raw2, store);
+    std::string interpolation = fmt::vformat(raw, store);
 
     std::cout << interpolation << std::endl;
-    std::cout << interpolation2 << std::endl;
 
     json aa;
     aa["pepe"] = 35;
@@ -77,34 +71,6 @@ int main(int argc, char *argv[])
     for (auto&  value: aa["arr"]) {
         std::cout << value << "\n";
     }
-
-    // json emp;
-    // fmt::print("{}\n",emp.empty());
-    // emp = "pepe";
-    // fmt::print("{}\n",emp.empty());
-    // emp = "";
-    // fmt::print("{}\n",emp.empty());
-    // emp = nullptr;
-    // fmt::print("{}\n",emp.empty());
-    // emp = "aa";
-    // fmt::print("{}\n",emp.empty());
-    // emp = {};
-    // fmt::print("{}\n",emp.empty());
-    // json pe = json::parse("null");
-    // fmt::print("\n\n{}\n",pe.empty());
-
-    json pa ;
-    // pa = {};
-
-    json obj1;// = json::object();
-    obj1["nanana"] = 27;
-    json obj2;
-    obj2["aanana"] = 17;
-
-    pa += obj1;
-    pa += obj2;
-    // pa.push_back(obj2);
-    fmt::print("\n\n{}\n",pa.dump(4));
     
     // fmt::print("{}",emp);
     // fmt::print("{}",emp);

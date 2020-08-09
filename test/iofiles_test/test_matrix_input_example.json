@@ -9,16 +9,11 @@
             "data_input_from_user" : {
                 "minutes":90
             }
-        },null,null,null,null,null,{
-            "type":"DURATION",
-            "data_input_from_user" : {
-                "hours":1
-            }
-        }]
+        },null,null,null,null,null,null]
     ],
     "metadata":{
         "cols": 7,
-        "rows": 3,
+        "rows": 4,
         "header_index" : 0,
         "group_by": "rows"
     }

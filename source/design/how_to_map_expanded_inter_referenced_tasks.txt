@@ -1,0 +1,7 @@
+como mapear 6 tareas a 2 dias diferentes
+
+"tag": "base_task_collect_{day_wildcard}",
+
+Por ejemplo podria generar un dia especifico para las tareas que mappen a una wildcard el "when":"after"
+
+y que se autoreferencien

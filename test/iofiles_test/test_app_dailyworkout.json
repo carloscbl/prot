@@ -61,6 +61,9 @@
       "type_details": {
         "cols" : 7,
         "rows" : 4,
+        "wildcard_task_posible_iterations":{
+          "day_week" : [0,1,2,3,4,5,6]
+        },
         "subtypes": {
           "group_by" : "rows",
           "group_types":{
@@ -80,7 +83,8 @@
               {
                 "type" : "STRING",
                 "description": "Put the short name of the workout!",
-                "interpolation_name":"exercise_name"
+                "interpolation_name":"exercise_name",
+                "required": true
               },
               {
                 "type" : "STRING",
@@ -93,9 +97,6 @@
                 "substitute_whole_field": ["duration"]
               }
             ]
-          },
-          "wildcard_task_posible_iterations":{
-            "day_week" : [0,1,2,3,4,5,6]
           }
         }
       },
@@ -126,6 +127,19 @@
             "wildcard_task": {
               "enabled": true,
               "only_on user_input": true
+            }
+          },
+          {
+            "tag": "gym_fee",
+            "name":"Pay the gym subscription",
+            "comment": "",
+            "description": "Remember once each month you need to pay the fee",
+            "restrictions": [
+              "soon"
+            ],
+            "frequency": "monthly",
+            "duration": {
+              "minutes": 30
             }
           },
           {
@@ -164,7 +178,7 @@
             ],
             "frequency": "some-days",
             "duration": {
-              "minutes": 10
+              "minutes": 32
             },
             "wildcard_task": {
               "enabled": true,

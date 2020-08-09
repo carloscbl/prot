@@ -35,8 +35,14 @@ TEST_CASE( "test task expansion", "[expanded_tasktory]" ) {
     // for(auto& [k,v]: nqdati.expanded_taskstory->items()){
     //     std::cout << v.dump(4) << std::endl;
     // }
-    // std::cout << nqdati.expanded_taskstory->dump(4) << std::endl;
-    // std::cout << "Taskstory expanded size: " << nqdati.expanded_taskstory->size() << std::endl;
-    REQUIRE(nqdati.expanded_taskstory->size() == 6); // check expansion!
+    std::cout << nqdati.expanded_taskstory->dump(4) << std::endl;
+    std::cout << "Taskstory expanded size: " << nqdati.expanded_taskstory->size() << std::endl;
+    REQUIRE(nqdati.expanded_taskstory->size() == 6+1); // check expansion!
     REQUIRE(true);
 }
+
+// Test next, what happens when you use an empty string "" in the user imput
+// what happens when durating is ill formed
+// test int, float, bool
+// test wrong metadata values
+// test inputs with bad format

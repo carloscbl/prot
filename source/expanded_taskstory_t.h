@@ -21,7 +21,7 @@ string get_matrix_group_by(const json & subtypes);
 bool substitution_or_interpolation_store(const json & value,const json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store, json & expanding_task);
 
 const std::vector<string> fields_to_interpolate{
-    "name","description",
+    "name","description",//"tag"
 };
 
 class expand_taskstory_t {
