@@ -19,6 +19,9 @@ using nlohmann::json;
 bool is_wildcard(json raw_task);
 string get_matrix_group_by(const json & subtypes);
 bool substitution_or_interpolation_store(const json & value,const json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store, json & expanding_task);
+bool is_required(const json & type_description);
+bool this_task_exists_only_if_user_inputs(const json & expanding_task);
+
 
 const std::vector<string> fields_to_interpolate{
     "name","description",//"tag"

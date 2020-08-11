@@ -19,15 +19,32 @@ void set_wildcard_task_posible_iterations(const json & type_details, json & expa
     if (w_it == type_details.cend() || w_it.value().empty()){
         return;
     }
+    size_t time_unit = secondary_idx+1;
     const auto & [k,v] = w_it.value().items().begin(); // Agnostic, dont matter if day_week or day_month or even hour_day, we need k and v
-    auto res = std::find(v.begin(), v.end(), secondary_idx);
-    std::cout << "a########## " << v.dump(4) <<  " : " <<secondary_idx << std::endl;
+    auto res = std::find(v.begin(), v.end(), time_unit);
+    std::cout << "a########## " << v.dump(4) <<  " : " <<time_unit << std::endl;
     if (res != v.end()){
         std::cout << "match!!!" << std::endl;
-        expanding_task[k] = secondary_idx;
-        store.push_back(fmt::arg("prot_idx", std::to_string(secondary_idx) ));
+        expanding_task[k] = time_unit;
+        store.push_back(fmt::arg("prot_idx", std::to_string(time_unit) ));
     }
     return;
+}
+
+bool is_required(const json & type_description){
+    auto required = type_description.find("required");
+    if(required != type_description.end() && required.value().get<bool>()){
+        return true;
+    }
+    return false;
+}
+
+bool this_task_exists_only_if_user_inputs(const json & expanding_task){
+    auto required = expanding_task["wildcard_task"].find("this_task_exists_only_if_user_inputs");
+    if(required != expanding_task.end() && required.value().get<bool>()){
+        return true;
+    }
+    return false;
 }
 
 unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
@@ -52,7 +69,7 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
             then iterate per input so we can generate all the input for a given task
             */
             json expanding_task = v;
-            expanding_task.erase("wildcard_task");
+            
             fmt::dynamic_format_arg_store<fmt::format_context> store;
             bool invalid_input = false;
             set_wildcard_task_posible_iterations(type_details, expanding_task, secondary_idx, store);
@@ -72,8 +89,11 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
                 // get value from input not from type description
                 auto input_value = get_input_value( type_description, main_idx, secondary_idx );
                 if(prot::check_null_or_empty(input_value)){
-                    invalid_input = true;
-                    break;
+                    if(is_required(type_description) ){ // this_task_exists_only_if_user_inputs(expanding_task) none logical for now
+                        invalid_input = true;
+                        break;
+                    }
+                    continue;
                 }
                 substitution_or_interpolation_store( input_value, type_description, store, expanding_task); // We can check if there was a failure
 
@@ -84,10 +104,12 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
             //After get the whole store from the main, we should apply it
             std::for_each(fields_to_interpolate.begin(),fields_to_interpolate.end(), [&store,&expanding_task](const string & field_string){
                 std::cout << expanding_task[field_string].get<string>() << std::endl;
-                
+
                 std::string interpolation = fmt::vformat(expanding_task[field_string].get<string>(), store);
                 expanding_task[field_string] = interpolation;
             });
+
+            expanding_task.erase("wildcard_task");
             *expanded_taskstory += expanding_task; // insert the expanded task
         }
     }
@@ -103,7 +125,9 @@ bool substitution_or_interpolation_store(const json & value,
  fmt::dynamic_format_arg_store<fmt::format_context> & store,
  json & expanding_task){
     auto interpolation = type_description.find("interpolation_name");
-    auto substitute_whole_field = type_description.find("substitute_whole_field");
+    auto substitution_name = type_description.find("substitution_name");
+    auto wildcard_structure = expanding_task["wildcard_task"];
+    auto map_substitution = wildcard_structure.find("map_substitution");
 
     bool success = true; // Good candidate to reporting structure
 
@@ -112,8 +136,18 @@ bool substitution_or_interpolation_store(const json & value,
         store.push_back( fmt::arg(interpolation.value().get<string>().c_str(), prot::json_to_string(value).value() ));
     }
 
-    if(substitute_whole_field != type_description.end() && !substitute_whole_field.value().empty()){
-        for (const auto & [idx,field] : substitute_whole_field.value().items()) // returns idx it (0,1,2) and array it
+    if(substitution_name != type_description.end() && !prot::check_null_or_empty( substitution_name.value() ) 
+    && map_substitution != wildcard_structure.end() && !prot::check_null_or_empty( map_substitution.value() ) ) {
+        string substitution_name_str = substitution_name.value().get<string>();
+        auto map = map_substitution.value();
+        auto match = map.find(substitution_name_str);
+        if( match == map.end() || prot::check_null_or_empty(match.value())){
+            return success;
+        }
+
+        auto fields = match.value();
+
+        for (const auto & [idx,field] : fields.items())
         {   
             string field_name = field.get<string>();
             auto pair_callable = prot::task_subtype_checker_and_adaptor.find(field_name);

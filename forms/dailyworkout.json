@@ -90,7 +90,7 @@
               {
                 "type" : "DURATION",
                 "description": "How much time will last this session?",
-                "substitute_whole_field": ["duration"]
+                "substitution_name":"session_duration"
               }
             ]
           },
