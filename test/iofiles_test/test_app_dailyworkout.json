@@ -1,7 +1,7 @@
 ﻿{
   "form": {
     "version": 0,
-    "form.name": "Daily workout",
+    "form.name": "test Daily workout",
     "author.name": "carlos bernal"
   },
   "questions": [
@@ -77,8 +77,7 @@
                     "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
                   ],
                   "readonly": true
-                },
-                "missing specification of specificdays like 'mondays' or similar in task fields":""
+                }
               },
               {
                 "type" : "STRING",
@@ -115,7 +114,6 @@
           {
             "tag": "base_task_collect",
             "name":"Fill bag and collect towel and {exercise_name} clothes",
-            "comment": "",
             "description": "Get all the material needed to perform {exercise_description}, Today: {exercise_name}",
             "restrictions": [
               "soon"
@@ -132,7 +130,6 @@
           {
             "tag": "gym_fee",
             "name":"Pay the gym subscription",
-            "comment": "",
             "description": "Remember once each month you need to pay the fee",
             "restrictions": [
               "soon"
@@ -145,7 +142,6 @@
           {
             "tag": "travel_to_activity",
             "name":"Go to {exercise_name}",
-            "comment": "",
             "when": {
               "after": "base_task_collect"
             },

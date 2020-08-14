@@ -5,30 +5,27 @@
 bool expand_taskstory_t::expand_and_set(){
     string type_user_input = this->m_nqdati.current_question_obj["type_user_input"];
     if (type_user_input == "MATRIX"){
-        this->m_nqdati.expanded_taskstory = exapand_matrix(this->m_nqdati.current_question_obj["type_details"]);
-    }
-    if(this->m_nqdati.expanded_taskstory != nullptr){
-        return true;
+        return exapand_matrix(this->m_nqdati.current_question_obj["type_details"]);
     }
     return false;
 }
 
-void set_wildcard_task_posible_iterations(const json & type_details, json & expanding_task, size_t secondary_idx, fmt::dynamic_format_arg_store<fmt::format_context> & store)
+bool set_wildcard_task_posible_iterations(const json & type_details, json & expanding_task, size_t secondary_idx, fmt::dynamic_format_arg_store<fmt::format_context> & store)
 {
     const auto & w_it = type_details.find("wildcard_task_posible_iterations");
     if (w_it == type_details.cend() || w_it.value().empty()){
-        return;
+        return true; // We assume is free mode
     }
     size_t time_unit = secondary_idx+1;
     const auto & [k,v] = w_it.value().items().begin(); // Agnostic, dont matter if day_week or day_month or even hour_day, we need k and v
     auto res = std::find(v.begin(), v.end(), time_unit);
-    std::cout << "a########## " << v.dump(4) <<  " : " <<time_unit << std::endl;
+
     if (res != v.end()){
-        std::cout << "match!!!" << std::endl;
         expanding_task[k] = time_unit;
         store.push_back(fmt::arg("prot_idx", std::to_string(time_unit) ));
+        return true;
     }
-    return;
+    return false;
 }
 
 bool is_required(const json & type_description){
@@ -47,18 +44,19 @@ bool this_task_exists_only_if_user_inputs(const json & expanding_task){
     return false;
 }
 
-unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
+bool expand_taskstory_t::exapand_matrix(const json & type_details)
 {
-    auto expanded_taskstory = make_unique<json>();
+    this->m_nqdati.non_wildcard_expanded_taskstory = make_unique<std::vector<json>>();
+    this->m_nqdati.wildcard_expanded_taskstory = make_unique<std::unordered_map<int,std::vector<json>>>();
     string main_tuple = get_matrix_group_by(type_details["subtypes"]);
     string secundary_tuple = main_tuple == "cols" ? "rows" : "cols";
 
     for(auto [k,v] : m_nqdati.raw_taskstory.items()){
         if (!is_wildcard(v)){ 
-            *expanded_taskstory += v;
+            // std::cout << v.dump(4) << std::endl;
+            this->m_nqdati.non_wildcard_expanded_taskstory->push_back(v);
             continue; 
         }
-        
         for (size_t secondary_idx = 0; secondary_idx < type_details[secundary_tuple].get<size_t>(); secondary_idx++)
         { 
             /* eg: "group_by" : "rows", 
@@ -72,7 +70,10 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
             
             fmt::dynamic_format_arg_store<fmt::format_context> store;
             bool invalid_input = false;
-            set_wildcard_task_posible_iterations(type_details, expanding_task, secondary_idx, store);
+            if( !set_wildcard_task_posible_iterations(type_details, expanding_task, secondary_idx, store)){
+                // not matched day so we skip
+                continue;
+            }
             for (size_t main_idx = 0; main_idx < type_details[main_tuple].get<size_t>(); main_idx++)
             {
                 // store.push_back(fmt::arg("name", "Pepe3000"));
@@ -103,17 +104,18 @@ unique_ptr<json> expand_taskstory_t::exapand_matrix(const json & type_details)
             }
             //After get the whole store from the main, we should apply it
             std::for_each(fields_to_interpolate.begin(),fields_to_interpolate.end(), [&store,&expanding_task](const string & field_string){
-                std::cout << expanding_task[field_string].get<string>() << std::endl;
+                // std::cout << expanding_task[field_string].get<string>() << std::endl;
 
                 std::string interpolation = fmt::vformat(expanding_task[field_string].get<string>(), store);
                 expanding_task[field_string] = interpolation;
             });
 
             expanding_task.erase("wildcard_task");
-            *expanded_taskstory += expanding_task; // insert the expanded task
+            auto & umap = *this->m_nqdati.wildcard_expanded_taskstory;
+            umap[secondary_idx].push_back(expanding_task);
         }
     }
-    return expanded_taskstory;
+    return true;
 }
 
 json expand_taskstory_t::get_input_value(const json & type_description, const size_t main_idx, const size_t secondary_idx ){
@@ -132,7 +134,7 @@ bool substitution_or_interpolation_store(const json & value,
     bool success = true; // Good candidate to reporting structure
 
     if(interpolation != type_description.end()){
-        std::cout << "ADDING ARG: " << interpolation.value().get<string>() << " : " << prot::json_to_string(value).value() << std::endl;
+        // // std::cout << "ADDING ARG: " << interpolation.value().get<string>() << " : " << prot::json_to_string(value).value() << std::endl;
         store.push_back( fmt::arg(interpolation.value().get<string>().c_str(), prot::json_to_string(value).value() ));
     }
 

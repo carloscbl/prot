@@ -20,7 +20,7 @@ app_parser::app_parser(const json &j) : j(j)
         discover[k] = make_unique<form_subsection_ADT>(j, k);
     }
 }
-app_parser::app_parser(const json &j, const form_state &fs) : app_parser(j)
+app_parser::app_parser(const json &j, const app_state &fs) : app_parser(j)
 {
     current_answer = fs.current_answer;
     current_id = fs.current_id;
@@ -415,7 +415,7 @@ std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, j
 }
 
 
-void to_json(nlohmann::json& new_json, const form_state& ref_state){
+void to_json(nlohmann::json& new_json, const app_state& ref_state){
     new_json = nlohmann::json{
         {"current_id",     ref_state.current_id},
         {"current_answer",     ref_state.current_answer},
@@ -423,7 +423,7 @@ void to_json(nlohmann::json& new_json, const form_state& ref_state){
     };
 }
 
-void from_json(const nlohmann::json& ref_json, form_state& new_state){
+void from_json(const nlohmann::json& ref_json, app_state& new_state){
     ref_json.at("current_id").get_to(new_state.current_id);
     ref_json.at("current_answer").get_to(new_state.current_answer);
     ref_json.at("next_branch_id").get_to(new_state.next_branch_id);

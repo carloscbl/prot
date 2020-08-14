@@ -26,12 +26,12 @@ using namespace chrono_literals;
 //Probably a thread pool is a good idea an a queue, but for now, we will start new threads for simplicity
 //This will requiere a user and a form name to find if the user have currently existing one
 //If not we will create a session and store it
-using sessions = map<string, shared_ptr<form_state>>;
+using sessions = map<string, shared_ptr<app_state>>;
 using variables_t = map<string, json>;
 
 class cloud_app_runner
 {
-private:
+protected:
     inline static sessions user_running_forms;
     const std::chrono::minutes life_time = 5min;
     user & user_;
@@ -41,11 +41,12 @@ private:
 
 public:
     cloud_app_runner(user & user_, form &form_);
+    cloud_app_runner(user & user_, form &form_, uint64_t user_forms_id); // Used for test
     bool schedule_taskstory(next_question_data_and_taskstory_input & response);
-    shared_ptr<form_state> get_session() const noexcept;
-    shared_ptr<form_state> fetch_next_session() const noexcept;
-    shared_ptr<form_state> new_session(const string & session_id) const noexcept;
-    shared_ptr<form_state> new_session() const noexcept;
+    shared_ptr<app_state> get_session() const noexcept;
+    shared_ptr<app_state> fetch_next_session() const noexcept;
+    shared_ptr<app_state> new_session(const string & session_id) const noexcept;
+    shared_ptr<app_state> new_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
     task_t command_to_task(string &taskstory_command, variables_t &variables);
@@ -53,5 +54,7 @@ public:
         user_running_forms.clear();
     }
 };
+
+
 
 #endif //CLOUD_APP_RUNNER_H

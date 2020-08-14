@@ -35,9 +35,10 @@ TEST_CASE( "test task expansion", "[expanded_tasktory]" ) {
     // for(auto& [k,v]: nqdati.expanded_taskstory->items()){
     //     std::cout << v.dump(4) << std::endl;
     // }
-    std::cout << nqdati.expanded_taskstory->dump(4) << std::endl;
-    std::cout << "Taskstory expanded size: " << nqdati.expanded_taskstory->size() << std::endl;
-    REQUIRE(nqdati.expanded_taskstory->size() == 6+1); // check expansion!
+    REQUIRE(nqdati.wildcard_expanded_taskstory->size() == 2); // check expansion!
+    REQUIRE(nqdati.wildcard_expanded_taskstory->at(0).size() == 3); // check expansion!
+    REQUIRE(nqdati.wildcard_expanded_taskstory->at(6).size() == 3); // check expansion!
+    REQUIRE(nqdati.non_wildcard_expanded_taskstory->size() == 1); // check expansion!
     REQUIRE(true);
 }
 

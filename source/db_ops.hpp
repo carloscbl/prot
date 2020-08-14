@@ -500,7 +500,7 @@ inline uint64_t get_user_forms_id(const uint64_t user_id, const uint64_t form_id
     return user_forms_id;
 }
 
-inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint64_t form_id)
+inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64_t form_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::FormSessions sess;
@@ -508,7 +508,7 @@ inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint6
     if(!user_forms_id){
         return nullptr; // No installation
     }
-    shared_ptr<form_state> new_sess = make_shared<form_state>();
+    shared_ptr<app_state> new_sess = make_shared<app_state>();
     const auto &sess_res = db(insert_into(sess).set(
         sess.json = json(*new_sess).dump(),
         sess.userForms =  user_forms_id,
@@ -523,7 +523,7 @@ inline shared_ptr<form_state> create_session(const uint64_t user_id, const uint6
     return new_sess;
 }
 
-inline shared_ptr<form_state> read_session(const string &username, const uint64_t form_id)
+inline shared_ptr<app_state> read_session(const string &username, const uint64_t form_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::FormSessions sess;
@@ -538,13 +538,13 @@ inline shared_ptr<form_state> read_session(const string &username, const uint64_
     }
     const auto & row = resu.front();
     json js  = json::parse(row.json.value());
-    shared_ptr<form_state> fs = make_shared<form_state>();
+    shared_ptr<app_state> fs = make_shared<app_state>();
     from_json(js,*fs);
     fs->id = row.id;
     return fs;
 }
 
-inline void update_session( const uint64_t fs_id, form_state &new_fs)
+inline void update_session( const uint64_t fs_id, app_state &new_fs)
 {
     auto &db = mysql_db::get_db_lazy().db;
     test_prot::FormSessions sess;

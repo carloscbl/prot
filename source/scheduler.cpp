@@ -12,7 +12,13 @@ void print_time(const im_t &  interval_map)
         return std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
     };
     for ( const auto & [k,v] : interval_map){
-        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_tag() << endl;
+        auto day = v->get_json().find("day_week");
+        if( day != v->get_json().end()){
+            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " iter_day: " << day.value() << " " << v->get_tag() << endl;
+        }else{
+            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_tag() << endl;
+            
+        }
     }
 }
 task_t scheduler::get_task(string tag){

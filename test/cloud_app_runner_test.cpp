@@ -3,17 +3,62 @@
 #include "user.h"
 #include "form.h"
 #include "task_restrictions.h"
+#include "cloud_app_runner.h"
 
-// template<typename T_duration>
-// task_t get_collider(seconds offset_from_today, T_duration duration, string name = "test_probe"){
-//     task_t test_probe = make_shared<task>();
-//     test_probe->set_tag(name);
-//     test_probe->set_id( 9999);
-//     time_t next_day_collider_start = system_clock::to_time_t( floor<days>( system_clock::now()) + offset_from_today);
-//     time_t next_day_collider_end = next_day_collider_start + duration_cast<seconds>(duration).count() ;
-//     test_probe->set_interval( next_day_collider_start, next_day_collider_end);
-//     return test_probe;
-// }
+#include <fstream>
+#include <iostream>
+#include "json.hpp"
+#include <boost/filesystem.hpp>
+namespace fs = boost::filesystem;
+using namespace fs;
+
+
+template<typename T_duration>
+task_t get_collider(seconds offset_from_today, T_duration duration, string name = "test_probe"){
+    task_t test_probe = make_shared<task>();
+    test_probe->set_tag(name);
+    test_probe->set_id( 9999);
+    time_t next_day_collider_start = system_clock::to_time_t( floor<days>( system_clock::now()) + offset_from_today);
+    time_t next_day_collider_end = next_day_collider_start + duration_cast<seconds>(duration).count() ;
+    test_probe->set_interval( next_day_collider_start, next_day_collider_end);
+    return test_probe;
+}
+
+
+TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
+    boost::filesystem::path full_path(boost::filesystem::current_path());
+    std::cout << "Current path is : " << full_path << std::endl;
+    std::ifstream matrix_input_file("../test/iofiles_test/test_matrix_input_example.json", std::fstream::in);
+    std::ifstream test_app_json_file("../test/iofiles_test/test_app_dailyworkout.json", std::fstream::in);
+    json matrix_input;
+    json test_app_json;
+    matrix_input_file >> matrix_input;
+    test_app_json_file >> test_app_json;
+    user::users["carloscbl"] = make_shared<user>(user_minimal_data{
+        "carloscbl"
+    });
+    const auto & carlos = user::users["carloscbl"];
+    REQUIRE( carlos->get_name() == "carloscbl" );
+    form _(test_app_json);
+    const auto & form = form::get_forms_register().at("test Daily workout");
+    cloud_app_runner fr(*carlos, *form, 8);
+    auto question_test = test_app_json["questions"].at(2);
+    next_question_data_and_taskstory_input nqdati;
+    nqdati.next_question_text="bla bla";
+    nqdati.taskstory_name="normal_flow";
+    nqdati.raw_taskstory=question_test["taskstories"]["normal_flow"];
+    nqdati.user_input=matrix_input;
+    nqdati.current_question_obj=question_test;
+
+    expand_taskstory_t et (nqdati);
+
+    REQUIRE(et.expand_and_set()); // check expansion!
+
+    fr.schedule_taskstory(nqdati);
+    int a = 20;
+
+    
+}
 
 
 // TEST_CASE( "test cloud_app_runner", "[runner]" ) {

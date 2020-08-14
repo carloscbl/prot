@@ -109,22 +109,23 @@ struct next_question_data_and_taskstory_input
     string taskstory_name; // Name of the taskstory branch to be executed
     map<string,json> form_variables; // Variables of the context user + app, to be used on expansion of taskstory
     json user_input; // This will be passed but have no use for now maybe in future
-    unique_ptr<json> expanded_taskstory = nullptr;
+    unique_ptr<std::vector<json>> non_wildcard_expanded_taskstory;
+    unique_ptr<std::unordered_map<int,std::vector<json>>> wildcard_expanded_taskstory;
 };
 
 
 //This class handles the formation of a executable machine of states for the user answers flow, and its correct storage and publish
 //Which souns like a to much from a point of design, but lets refactor this ion the future
 //Lets try to keep us from add more indirection, to find a more direct and concise solution
-struct form_state{
+struct app_state{
     uint64_t id = 0;
     int current_id = static_cast<int>(e_branches::FIRST);;
     string current_answer;
     int next_branch_id = static_cast<int>(e_branches::RESTART);;
 };
 
-void to_json(nlohmann::json& new_json, const form_state& ref_state);
-void from_json(const nlohmann::json& ref_json, form_state& new_state);
+void to_json(nlohmann::json& new_json, const app_state& ref_state);
+void from_json(const nlohmann::json& ref_json, app_state& new_state);
 
 class app_parser{
 private:
@@ -182,7 +183,7 @@ public:
         return next_question;
     }
     app_parser(const json & j);
-    app_parser(const json & j,const form_state & fs);
+    app_parser(const json & j,const app_state & fs);
     const vector<string> subsection_names{
         "form", "questions"
     };
@@ -204,8 +205,8 @@ public:
         initial_question->next_question_text = find_questions_by_id(next_branch_id).value()["question"].get<string>();
         return initial_question;
     }
-    unique_ptr<form_state> get_state() const noexcept{
-        auto ptr = make_unique<form_state>();
+    unique_ptr<app_state> get_state() const noexcept{
+        auto ptr = make_unique<app_state>();
         ptr->current_id = this->current_id;
         ptr->current_answer = this->current_answer;
         ptr->next_branch_id = this->next_branch_id;

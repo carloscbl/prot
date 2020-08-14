@@ -11,6 +11,14 @@ cloud_app_runner::cloud_app_runner(user & user_, form &form_)
 
 }
 
+cloud_app_runner::cloud_app_runner(user & user_, form &form_, uint64_t user_forms_id)
+    : user_(user_),
+      form_(form_),
+      user_forms_id(user_forms_id)
+{
+
+}
+
 string cloud_app_runner::get_unique_id_session() const noexcept
 {
     return user_.get_name() + form_.get_form_name();
@@ -73,7 +81,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
 
         bool complete = true;
 
-        for (const auto &[k, v] : response.expanded_taskstory->items())
+        for (const auto &v : *response.non_wildcard_expanded_taskstory)
         {
             task_t task_test = make_shared<task>(v.get<task>());
             task_test->inner_json["app_id"] = this->form_.get_id();
@@ -96,6 +104,31 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
             }
         }
 
+        for (const auto &[k,v] : *response.wildcard_expanded_taskstory)
+        {
+            for (const auto & wildcard_task : v){
+                task_t task_test = make_shared<task>(wildcard_task.get<task>());
+                task_test->inner_json["app_id"] = this->form_.get_id();
+                task_test->set_user(this->user_.get_name());
+                task_test->set_user_forms_id(user_forms_id);
+                time_determinator time_dt(task_test, provisional_scheduler);
+                //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
+                optional<bool> result = time_dt.build(days(day));
+                if(result.has_value() ){
+                    if(result.value()){
+                        //task_test->save();
+                        tasker_.add_to_group(move(task_test), response.taskstory_name);
+                    }else{
+                        report.failures_report.push_back(task_test);
+                        complete = false;
+                    }
+                }else{//Now time to make it fail and control the failure
+                    report.no_margin_invalidation = task_test;
+                    return false;
+                }
+            }
+        }
+
         if(complete){
             commiter.commit(); //Disolves group && activate the tasks
             provisional_scheduler.commit();
@@ -106,7 +139,8 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
     return true;
 }
 
-shared_ptr<form_state> cloud_app_runner::get_session() const noexcept
+
+shared_ptr<app_state> cloud_app_runner::get_session() const noexcept
 {
     //This needs to come from db
     const auto &&state = read_session(this->user_.get_name() , this->form_.get_id() );
@@ -116,7 +150,7 @@ shared_ptr<form_state> cloud_app_runner::get_session() const noexcept
     return state;
 }
 
-shared_ptr<form_state> cloud_app_runner::fetch_next_session() const noexcept
+shared_ptr<app_state> cloud_app_runner::fetch_next_session() const noexcept
 {
     auto session = get_session();
     if(session->next_branch_id < 0){
