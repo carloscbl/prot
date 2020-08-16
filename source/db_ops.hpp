@@ -32,7 +32,7 @@ template <typename T>
 auto get_id_member = []() {};
 
 template <>
-auto get_id_member<test_prot::Users> = []() { return test_prot::Users{}.id; };
+auto get_id_member<orm_prot::Users> = []() { return orm_prot::Users{}.id; };
 
 //-----------------------
 
@@ -40,11 +40,11 @@ template <typename T>
 auto get_data_member = []() {};
 
 template <>
-auto get_data_member<test_prot::Users> = []() { return test_prot::Users{}.username; };
+auto get_data_member<orm_prot::Users> = []() { return orm_prot::Users{}.username; };
 template <>
-auto get_data_member<test_prot::Forms> = []() { return test_prot::Forms{}.name; };
+auto get_data_member<orm_prot::Forms> = []() { return orm_prot::Forms{}.name; };
 template <>
-auto get_data_member<test_prot::Tasks> = []() { return test_prot::Tasks{}.id; };
+auto get_data_member<orm_prot::Tasks> = []() { return orm_prot::Tasks{}.id; };
 
 template <typename T>
 inline bool gen_exists(string unique_val)
@@ -73,20 +73,20 @@ inline optional<uint64_t> get_id(string unique_val)
 
 inline unique_ptr<form> create_form(const json &valid_form, const string &username)
 {
-    using test_prot::Forms;
-    if (gen_exists<test_prot::Forms>(form::get_form_name(valid_form)))
+    using orm_prot::Forms;
+    if (gen_exists<orm_prot::Forms>(form::get_form_name(valid_form)))
     {
         return nullptr;
     }
 
     auto &db = mysql_db::get_db_lazy().db;
-    auto user_id = get_id<test_prot::Users>(username);
+    auto user_id = get_id<orm_prot::Users>(username);
     if (!user_id.has_value())
     {
         return nullptr;
     }
 
-    test_prot::Forms form_;
+    orm_prot::Forms form_;
     unique_ptr<form> protform = make_unique<form>(valid_form);
     const auto &result = db(insert_into(form_).set(
         form_.json = valid_form.dump(),
@@ -101,7 +101,7 @@ inline unique_ptr<form> read_form(const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Forms form_;
+    orm_prot::Forms form_;
     const auto &result = db(sqlpp::select(all_of(form_)).from(form_).where(form_.name == form_name).limit(1U));
     if (result.empty())
     {
@@ -118,8 +118,8 @@ inline unique_ptr<form> read_form(const string &form_name)
 inline map<uint64_t,string> read_forms_by_developer(const string & developer){
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Forms form_;
-    test_prot::Users usr;
+    orm_prot::Forms form_;
+    orm_prot::Users usr;
 
     map<uint64_t,string> dev_forms;
     for( const auto &result : db( sqlpp::select(all_of(form_)).from(form_.join(usr).on(form_.developer == usr.id)).where(usr.username == developer ) )){
@@ -132,7 +132,7 @@ inline optional<pair<uint64_t,string>> read_form_by_id(const int32_t &id)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Forms form_;
+    orm_prot::Forms form_;
     const auto &result = db( sqlpp::select(all_of(form_)).from(form_).where(form_.id == id ).limit(1U) );
     if (result.empty())
     {
@@ -147,7 +147,7 @@ inline map<uint64_t,string> read_form_names()
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Forms form_;
+    orm_prot::Forms form_;
     map<uint64_t,string> forms_names;
 
     for (const auto &result : db(sqlpp::select(form_.id,form_.name).from(form_).unconditionally().limit(1000U)))
@@ -162,7 +162,7 @@ inline void delete_form(const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Forms form_;
+    orm_prot::Forms form_;
     db(remove_from(form_).where(form_.name == form_name));
     form::remove_form(form_name);
 }
@@ -181,7 +181,7 @@ inline void read_db_json()
         }
 
     }
-//     test_prot::Users usr;
+//     orm_prot::Users usr;
 
 //     auto statement = select(select(sqlpp::verbatim(R"--(json->>"$.username")--").as(sqlpp::alias::a)))
 //    .from(usr)
@@ -196,16 +196,16 @@ inline void read_db_json()
 //This class is intended to advance needs until they are correctly categorized
 inline unique_ptr<user> create_user(string username)
 {
-    using test_prot::Users;
-    if (gen_exists<test_prot::Users>(username))
+    using orm_prot::Users;
+    if (gen_exists<orm_prot::Users>(username))
     {
         return nullptr;
     }
 
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    test_prot::Taskers tasker_;
-    test_prot::Schedulers sche;
+    orm_prot::Users usr;
+    orm_prot::Taskers tasker_;
+    orm_prot::Schedulers sche;
 
     auto us = make_unique<user>();
     json j = {{"username", username}};
@@ -219,12 +219,12 @@ inline unique_ptr<user> create_user(string username)
 
 inline unique_ptr<user> read_user(string username)
 {
-    if (!gen_exists<test_prot::Users>(username))
+    if (!gen_exists<orm_prot::Users>(username))
     {
         return nullptr;
     }
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
+    orm_prot::Users usr;
     const auto &row = db(sqlpp::select(all_of(usr)).from(usr).where( usr.username == username).limit(1U)).front();
 
     json juser = json::parse(row.json.text);
@@ -238,7 +238,7 @@ inline bool delete_user(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Users usr;
+    orm_prot::Users usr;
     const auto & result = db(remove_from(usr).where(usr.username == username));
     if(result > 0){
         return true;
@@ -252,8 +252,8 @@ inline bool create_instalation(const string &username, const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Users usr;
-    test_prot::Forms form_;
+    orm_prot::Users usr;
+    orm_prot::Forms form_;
 
     // Exists? TODO JOIN both to get existent one
     const auto &usr_res = db(sqlpp::select(usr.id).from(usr).where(usr.username == username).limit(1U));
@@ -262,7 +262,7 @@ inline bool create_instalation(const string &username, const string &form_name)
     {
         return false;
     }
-    test_prot::UsersForms instls;
+    orm_prot::UsersForms instls;
     const auto &user_form_res = db(sqlpp::select(all_of(instls)).from(instls).where(instls.iduser == usr_res.front().id and instls.idform == form_res.front().id).limit(1U));
 
     if (!user_form_res.empty())
@@ -282,9 +282,9 @@ inline bool create_instalation(const string &username, const string &form_name)
 inline bool delete_instalation(const string &username, const uint64_t form_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    test_prot::UsersForms usr_forms;
-    test_prot::Forms form_;
+    orm_prot::Users usr;
+    orm_prot::UsersForms usr_forms;
+    orm_prot::Forms form_;
 
     db(remove_from(usr_forms).using_(usr, form_, usr_forms).where(usr_forms.iduser == usr.id and usr.username == username and usr_forms.idform == form_.id and form_.id == form_id));
     return true;
@@ -293,9 +293,9 @@ inline bool delete_instalation(const string &username, const uint64_t form_id)
 inline bool delete_instalation(const string &username, const string &form_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    test_prot::UsersForms usr_forms;
-    test_prot::Forms form_;
+    orm_prot::Users usr;
+    orm_prot::UsersForms usr_forms;
+    orm_prot::Forms form_;
 
     db(remove_from(usr_forms).using_(usr, form_, usr_forms).where(usr_forms.iduser == usr.id and usr.username == username and usr_forms.idform == form_.id and form_.name == form_name));
     return true;
@@ -304,9 +304,9 @@ inline bool delete_instalation(const string &username, const string &form_name)
 inline map<uint64_t,string> read_instalations(const string &username, optional<uint64_t> form_id = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    test_prot::Forms form_;
-    test_prot::UsersForms usr_forms;
+    orm_prot::Users usr;
+    orm_prot::Forms form_;
+    orm_prot::UsersForms usr_forms;
     map<uint64_t,string> formsresult;
 
     if(form_id.has_value()){
@@ -331,7 +331,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    test_prot::Tasks tks;
+    orm_prot::Tasks tks;
 
     //["external_id"].get<string>()
     auto jtask = task_.get_json();
@@ -361,9 +361,9 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     }
     task_.set_id(tsk_res);
     for_each(usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
-        test_prot::Taskers tasker_;
-        test_prot::Schedulers sche;
-        test_prot::Users usr;
+        orm_prot::Taskers tasker_;
+        orm_prot::Schedulers sche;
+        orm_prot::Users usr;
 
         const auto result = db(sqlpp::select(all_of(usr), tasker_.idtasker, sche.id.as(alias::a))
                                    .from(usr.join(tasker_).on(tasker_.user == usr.id).join(sche).on(sche.user == usr.id))
@@ -377,7 +377,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         const auto &tasker_id = result.front().idtasker;
         const auto &sche_id = result.front().a;
         //Returns last insert
-        test_prot::TasksTaskers tksTkrs;
+        orm_prot::TasksTaskers tksTkrs;
         //Inserted so we need the binding
         //const auto &res_task_tasker =
          db(insert_into(tksTkrs).set(
@@ -385,7 +385,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
             tksTkrs.idtasker = tasker_id));
         if (binding.second)
         {
-            test_prot::TasksSchedulers tskSche;
+            orm_prot::TasksSchedulers tskSche;
             //const auto &res_task_tasker =
              db(insert_into(tskSche).set(
                 tskSche.idtask = tsk_res,
@@ -399,10 +399,10 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
 inline unique_ptr<task> read_task(const string &username, const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Taskers tasker_;
-    test_prot::TasksTaskers tskTkr;
-    test_prot::Tasks tsk;
-    test_prot::Users usr;
+    orm_prot::Taskers tasker_;
+    orm_prot::TasksTaskers tskTkr;
+    orm_prot::Tasks tsk;
+    orm_prot::Users usr;
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
                                 .where(usr.username == username and tsk.id == task_id);
@@ -421,10 +421,10 @@ inline unique_ptr<task> read_task(const string &username, const uint64_t task_id
 inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Taskers tasker_;
-    test_prot::TasksTaskers tskTkr;
-    test_prot::Tasks tsk;
-    test_prot::Users usr;
+    orm_prot::Taskers tasker_;
+    orm_prot::TasksTaskers tskTkr;
+    orm_prot::Tasks tsk;
+    orm_prot::Users usr;
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
                                 .where(usr.username == username);
@@ -446,17 +446,17 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
 inline void delete_task(const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Tasks tsk;
+    orm_prot::Tasks tsk;
     db(remove_from(tsk).where(tsk.id == task_id));
 }
 
 inline bool delete_task(const string &username, const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Taskers tasker_;
-    test_prot::TasksTaskers tskTkr;
-    test_prot::Tasks tsk;
-    test_prot::Users usr;
+    orm_prot::Taskers tasker_;
+    orm_prot::TasksTaskers tskTkr;
+    orm_prot::Tasks tsk;
+    orm_prot::Users usr;
     
     if(db(remove_from(tsk).using_(usr, tasker_,tskTkr,tsk).where( 
     tasker_.user == usr.id 
@@ -471,7 +471,7 @@ inline bool delete_task(const string &username, const uint64_t task_id)
 inline void update_task( task &new_task , const uint64_t task_id )
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Tasks tsk;
+    orm_prot::Tasks tsk;
     const auto & result = db(update(tsk).set(
         tsk.name = new_task.get_name(),
         tsk.json = json(new_task).dump(),
@@ -486,7 +486,7 @@ inline void update_task( task &new_task , const uint64_t task_id )
 
 inline uint64_t get_user_forms_id(const uint64_t user_id, const uint64_t form_id){
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::UsersForms uforms;
+    orm_prot::UsersForms uforms;
     const auto & select = sqlpp::select(all_of(uforms))
                                 .from(uforms)
                                 .where(uforms.iduser == user_id and uforms.idform == form_id);
@@ -503,7 +503,7 @@ inline uint64_t get_user_forms_id(const uint64_t user_id, const uint64_t form_id
 inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64_t form_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::FormSessions sess;
+    orm_prot::FormSessions sess;
     const uint64_t user_forms_id = get_user_forms_id( user_id, form_id);
     if(!user_forms_id){
         return nullptr; // No installation
@@ -526,9 +526,9 @@ inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64
 inline shared_ptr<app_state> read_session(const string &username, const uint64_t form_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::FormSessions sess;
-    test_prot::Users usr;
-    test_prot::UsersForms uforms;
+    orm_prot::FormSessions sess;
+    orm_prot::Users usr;
+    orm_prot::UsersForms uforms;
     const auto & select = sqlpp::select(all_of(sess))
                                 .from(sess.join(uforms).on(uforms.id == sess.userForms).join(usr).on(uforms.iduser == usr.id))
                                 .where(usr.username == username and uforms.idform == form_id);
@@ -547,7 +547,7 @@ inline shared_ptr<app_state> read_session(const string &username, const uint64_t
 inline void update_session( const uint64_t fs_id, app_state &new_fs)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::FormSessions sess;
+    orm_prot::FormSessions sess;
     const auto & result = db(update(sess).set(
         sess.json = json(new_fs).dump()
     ).where(sess.id == fs_id));
@@ -558,7 +558,7 @@ inline void update_session( const uint64_t fs_id, app_state &new_fs)
 inline bool delete_session(const uint64_t fs_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::FormSessions sess;
+    orm_prot::FormSessions sess;
     if(db(remove_from(sess).using_(sess).where( 
     sess.id == fs_id
     ))){
@@ -571,8 +571,8 @@ inline bool delete_session(const uint64_t fs_id)
 inline void join()
 {
     auto &db = mysql_db::get_db_lazy().db;
-    test_prot::Users usr;
-    test_prot::Forms form_;
+    orm_prot::Users usr;
+    orm_prot::Forms form_;
     for (const auto &row : db(select(all_of(usr)).from(usr.join(form_).on(usr.id == form_.developer)).unconditionally()))
     {
         cout << row.id << " " << row.json << endl;

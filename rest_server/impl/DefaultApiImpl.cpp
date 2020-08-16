@@ -134,7 +134,7 @@ void DefaultApiImpl::user_developer_form_form_id_get(const std::string &develope
 
 void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
     std::string decoded = geturl_decode(username);
-    if(!gen_exists<test_prot::Users>(decoded)){
+    if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
@@ -151,7 +151,7 @@ void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistach
 
 void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response) {
     std::string decoded = geturl_decode(username);
-    if(!gen_exists<test_prot::Users>(decoded)){
+    if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
@@ -169,7 +169,7 @@ void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &us
 
 void DefaultApiImpl::user_username_apps_install_app_id_delete(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response){
     std::string decoded = geturl_decode(username);
-    if(!gen_exists<test_prot::Users>(decoded)){
+    if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
@@ -189,7 +189,7 @@ void DefaultApiImpl::user_username_apps_install_app_id_delete(const std::string 
 
 void DefaultApiImpl::user_username_apps_install_app_id_post(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response){
     std::string decoded = geturl_decode(username);
-    if(!gen_exists<test_prot::Users>(decoded)){
+    if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
@@ -256,7 +256,7 @@ void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistac
 }
 void DefaultApiImpl::user_developer_form_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
     std::string decoded = geturl_decode(developer);
-    if(!gen_exists<test_prot::Users>(decoded)){
+    if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
     json whole_request(inlineObject2);
@@ -320,7 +320,7 @@ void DefaultApiImpl::user_username_task_task_id_get(const std::string &username,
 void DefaultApiImpl::user_username_tasks_post(const std::string &username, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response){
     std::string decoded = geturl_decode(username);
     //Update... delete and new
-    if(!gen_exists<test_prot::Users>(decoded)){
+    if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }

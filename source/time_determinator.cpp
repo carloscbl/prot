@@ -60,6 +60,20 @@ optional<bool> time_determinator::build(days start_offset)
     return false;
 }
 
+
+const optional<size_t> time_determinator::is_specific_period() noexcept{
+    const json & wild_task  = this->task_->get_json();
+    optional<int> period_unit;
+    for(const auto & [k,_] : prot::period_label_to_frequency){
+        if(wild_task.find(k) != wild_task.end()){
+            period_unit = wild_task.at(k).get<int>();
+            this->period = k;
+        }
+    }
+    return period_unit;
+    // wild_task.find("")
+}
+
 //We need to get the current user scheduler,
 //Then we add the restrictions on top
 //Restrictions apply json-land and then user-land configs

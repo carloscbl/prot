@@ -10,7 +10,7 @@
 #include <optional>
 #include <sqlpp11/sqlpp11.h>
 #include <sqlpp11/mysql/mysql.h>
-#include "test_prot.h"
+#include "orm_prot.h"
 using json = nlohmann::json;
 using std::string;
 using std::optional;

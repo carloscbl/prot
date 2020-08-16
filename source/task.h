@@ -5,6 +5,7 @@
 #include <functional>
 #include <vector>
 #include <map>
+#include <algorithm>
 #include <set>
 #include <iostream>
 #include <memory>
@@ -17,7 +18,10 @@
 #include "task_frequency.h"
 #include "task_restrictions.h"
 #include "persistor.h"
-#include "test_prot.h"
+#include "orm_prot.h"
+#include "type_conversor.h"
+
+
 
 using std::vector;
 using std::string;

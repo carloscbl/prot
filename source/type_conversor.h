@@ -6,6 +6,7 @@
 #include <optional>
 #include <functional>
 #include <map>
+#include <unordered_map>
 #include <any>
 #include "json.hpp"
 #include "duration.h"
@@ -14,6 +15,7 @@
 
 using nlohmann::json;
 using std::function;
+using std::unordered_map;
 using std::map;
 using std::any;
 using std::nullopt;
@@ -45,6 +47,13 @@ const inline std::map<string,function<std::any(const json &)>> conversors_map{
     {"MATRIX", (function<std::any(const json &)>)[](const json & s)->std::any{ return s;}},
     {"VECTOR", (function<std::any(const json &)>)[](const json & s)->std::any{ return s;}},
 };
+
+const inline unordered_map<string, string> period_label_to_frequency{
+    {"day_week", "weekly"},
+    {"day_month", "monthly"},
+    {"day_year", "yearly"},
+};
+
 
 const inline map<string, function<json(const json &)>> task_subtype_checker_and_adaptor{
     {"duration",
