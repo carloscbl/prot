@@ -16,7 +16,7 @@ bool set_wildcard_task_posible_iterations(const json & type_details, json & expa
     if (w_it == type_details.cend() || w_it.value().empty()){
         return true; // We assume is free mode
     }
-    size_t time_unit = secondary_idx+1;
+    size_t time_unit = secondary_idx + prot::task_expansion::day_period_user_friendly_offset;
     const auto & [k,v] = w_it.value().items().begin(); // Agnostic, dont matter if day_week or day_month or even hour_day, we need k and v
     auto res = std::find(v.begin(), v.end(), time_unit);
 

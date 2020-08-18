@@ -17,6 +17,10 @@ using std::nullopt;
 using std::string;
 using nlohmann::json;
 
+namespace prot::task_expansion{
+    const int day_period_user_friendly_offset = 1;
+};
+
 bool is_wildcard(json raw_task);
 string get_matrix_group_by(const json & subtypes);
 bool substitution_or_interpolation_store(const json & value,const json & type_description, fmt::dynamic_format_arg_store<fmt::format_context> & store, json & expanding_task);

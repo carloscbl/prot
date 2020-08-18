@@ -3,6 +3,8 @@
 #include "task_frequency.h"
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
+#include "expanded_taskstory_t.h"
+
 
 
 time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(task_), sche_(sche_)
@@ -66,12 +68,11 @@ const optional<size_t> time_determinator::is_specific_period() noexcept{
     optional<int> period_unit;
     for(const auto & [k,_] : prot::period_label_to_frequency){
         if(wild_task.find(k) != wild_task.end()){
-            period_unit = wild_task.at(k).get<int>();
+            period_unit = wild_task.at(k).get<int>() - prot::task_expansion::day_period_user_friendly_offset;
             this->period = k;
         }
     }
     return period_unit;
-    // wild_task.find("")
 }
 
 //We need to get the current user scheduler,
