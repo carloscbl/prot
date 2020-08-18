@@ -15,6 +15,7 @@ RUN apt update && apt install -y \
     wget \
     tar \
     curl \
+    libcurl4-openssl-dev \
     cmake \
     python3.7 \
     python3-pip \

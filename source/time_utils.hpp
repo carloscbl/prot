@@ -2,6 +2,8 @@
 #define TIME_UTILS_H
 #include <chrono>
 #include "task_restrictions.h"
+#include "date/date.h"
+#include "date/tz.h"
 // #include "scheduler.h"
 #include <ctime>
 #include <iomanip>
@@ -72,6 +74,26 @@ inline bool within_same_day(time_point content, time_point container){
     const time_point max = container + days(1);
     const time_point & min = container;
     return content > min && content < max;
+}
+
+inline int get_today_day_week(){
+    {
+        auto now = std::chrono::system_clock::now();
+        date::sys_days now_in_days { std::chrono::time_point_cast<date::days>(now) };
+        date::weekday weekday {now_in_days};
+        std::cout << "############## "<< weekday << " " << weekday.c_encoding() << '\n';
+
+    }
+    {
+        auto now = std::chrono::system_clock::now();
+        
+        auto now_local = date::zoned_time{date::current_zone(), now}. get_local_time();
+
+        auto now_local_in_days = std::chrono::time_point_cast<date::days>(now_local) ;
+        auto weekday_index = date::weekday{now_local_in_days}.c_encoding();
+        std::cout << "############## "<< weekday_index << '\n';
+        return 0;
+    }
 }
 
 #endif //TIME_UTILS_H

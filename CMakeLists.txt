@@ -5,7 +5,7 @@ project(prot)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 SET(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -Wno-missing-field-initializers -Wno-unused-parameter -Wunused-variable -Wno-unused-private-field ")
-
+add_definitions(-Wno-deprecated)
 SET(FMT_TEST "OFF")
 SET(PISTACHE_TEST "OFF")
 SET(BUILD_TESTING "OFF")
@@ -23,6 +23,10 @@ find_package(Sqlpp11 REQUIRED)
 include_directories(${CMAKE_SOURCE_DIR}/source)
 include_directories(${CMAKE_SOURCE_DIR}/api/generated)
 include_directories("thirdparty/nlohmann_json")
+# thirdparty/HowardHinnantDate/date/include/date/tz.h
+# include_directories("thirdparty/HowardHinnantDate")
+# include_directories("thirdparty/HowardHinnantDate/date")
+include_directories("thirdparty/HowardHinnantDate/date/include")
 add_subdirectory(fmt) # Order matters for subdirectories
 add_subdirectory(rest_server)
 add_subdirectory(test)
@@ -33,9 +37,10 @@ file(GLOB SOURCES
     ${PROJECT_SOURCE_DIR}/source/*.h
     ${PROJECT_SOURCE_DIR}/source/*.cpp
     ${PROJECT_SOURCE_DIR}/thirdparty/nlohmann_json/json.hpp
+    ${PROJECT_SOURCE_DIR}/thirdparty/HowardHinnantDate/date/src/tz.cpp
 )
 message(${SOURCES})
 
 
 add_library (lprot  ${SOURCES} ) #${PROJECT_SOURCE_DIR}/source/main.cpp
-TARGET_LINK_LIBRARIES( lprot LINK_PUBLIC ${Boost_LIBRARIES} fmt::fmt )
+TARGET_LINK_LIBRARIES( lprot LINK_PUBLIC pthread ${Boost_LIBRARIES} fmt::fmt curl )

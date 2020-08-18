@@ -8,6 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include "json.hpp"
+#include "time_utils.hpp"
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 using namespace fs;
@@ -56,6 +57,7 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
 
     fr.schedule_taskstory(nqdati);
     int a = 20;
+    get_today_day_week();
 
     
 }
