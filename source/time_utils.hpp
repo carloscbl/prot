@@ -28,6 +28,8 @@ struct time_point_interval{
     string tag;
 };
 
+
+
 //Here enters eg [from=00,to=06], time_stamp
 inline vector<time_point_interval> _24_hour_interval_to_time_point (json_interval interval, time_point start_day){
     vector<time_point_interval> intervals;
@@ -76,24 +78,42 @@ inline bool within_same_day(time_point content, time_point container){
     return content > min && content < max;
 }
 
-inline int get_today_day_week(){
-    {
-        auto now = std::chrono::system_clock::now();
-        date::sys_days now_in_days { std::chrono::time_point_cast<date::days>(now) };
-        date::weekday weekday {now_in_days};
-        std::cout << "############## "<< weekday << " " << weekday.c_encoding() << '\n';
+inline unsigned int get_weekday_index(){
 
-    }
-    {
-        auto now = std::chrono::system_clock::now();
-        
-        auto now_local = date::zoned_time{date::current_zone(), now}. get_local_time();
+    auto now = std::chrono::system_clock::now();
 
-        auto now_local_in_days = std::chrono::time_point_cast<date::days>(now_local) ;
-        auto weekday_index = date::weekday{now_local_in_days}.c_encoding();
-        std::cout << "############## "<< weekday_index << '\n';
-        return 0;
-    }
+    auto now_local = date::zoned_time{date::current_zone(), now}. get_local_time();
+
+    auto now_local_in_days = std::chrono::time_point_cast<date::days>(now_local) ;
+    auto weekday_index = date::weekday{now_local_in_days}.iso_encoding();
+    return weekday_index - 1;
+}
+
+inline unsigned int get_monthday_index(){
+
+    auto now = std::chrono::system_clock::now();
+
+    auto now_local = date::zoned_time{date::current_zone(), now}. get_local_time();
+
+    auto now_local_in_days = std::chrono::time_point_cast<date::days>(now_local) ;
+    date::year_month_day ymd{now_local_in_days};
+    return  static_cast<unsigned int>( ymd.day() );
+}
+
+
+
+inline date::days get_yearday_index(){
+    using namespace date;
+    auto now = std::chrono::system_clock::now();
+    auto now_local = date::zoned_time{date::current_zone(), now}.get_local_time();
+    auto now_local_in_days = std::chrono::floor<date::days>(now_local) ;
+    auto y = year_month_day{now_local_in_days}.year();
+    return now_local_in_days - local_days{y/jan/0};
+}
+
+template <typename T_unit>
+inline std::chrono::seconds duration_to_seconds(unsigned long long time){
+    return std::chrono::duration_cast<std::chrono::seconds>(T_unit(time));
 }
 
 #endif //TIME_UTILS_H

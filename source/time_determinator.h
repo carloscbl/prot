@@ -25,7 +25,13 @@ class time_determinator
 private:
     task_t task_;
     scheduler &sche_;
-    optional<string> period = nullopt;
+    struct wildcard_time_determinator_data{
+        string period_ratio_name; //day_month
+        size_t designated_period; // day -> 27
+        std::chrono::seconds unit_ratio_in_seconds; // -> 1 month -> seconds
+    };
+    optional<wildcard_time_determinator_data> wildcard_data = nullopt;
+
 
 public:
     //Setup

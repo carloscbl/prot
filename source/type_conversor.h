@@ -9,6 +9,7 @@
 #include <unordered_map>
 #include <any>
 #include "json.hpp"
+#include "time_utils.hpp"
 #include "duration.h"
 #include <fmt/core.h>
 #include <fmt/format.h>
@@ -48,12 +49,11 @@ const inline std::map<string,function<std::any(const json &)>> conversors_map{
     {"VECTOR", (function<std::any(const json &)>)[](const json & s)->std::any{ return s;}},
 };
 
-const inline unordered_map<string, string> period_label_to_frequency{
-    {"day_week", "weekly"},
-    {"day_month", "monthly"},
-    {"day_year", "yearly"},
+const inline unordered_map<string, std::function<std::chrono::seconds(unsigned long long)>> designated_periods_to_ratio{
+    {"day_week", &duration_to_seconds<weeks> },
+    {"day_month",&duration_to_seconds<months> },
+    {"day_year", &duration_to_seconds<years> },
 };
-
 
 const inline map<string, function<json(const json &)>> task_subtype_checker_and_adaptor{
     {"duration",

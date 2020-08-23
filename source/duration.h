@@ -13,20 +13,17 @@ namespace prot{
     public:
         duration():m_duration(0){}
         std::chrono::seconds m_duration;
-        template <typename T_unit>
-        void convert(unsigned long long time){
-            m_duration += std::chrono::duration_cast<std::chrono::seconds>(T_unit(time));
-        }
         friend void to_json(nlohmann::json& j, const duration& p);
+        friend void from_json(const nlohmann::json& j, duration& p);
     };
-    const inline std::map<std::string,std::function<void(duration & ,unsigned long long)>> time_conversors{
-        {"seconds", &duration::convert<std::chrono::seconds>},
-        {"minutes", &duration::convert<std::chrono::minutes>},
-        {"hours",   &duration::convert<std::chrono::hours>},
-        {"days",    &duration::convert<days>},
-        {"weeks",   &duration::convert<weeks>},
-        {"months",  &duration::convert<months>},
-        {"years",   &duration::convert<years>},
+    const inline std::map<std::string,std::function<std::chrono::seconds(unsigned long long)>> time_conversors{
+        {"seconds", &duration_to_seconds<std::chrono::seconds>},
+        {"minutes", &duration_to_seconds<std::chrono::minutes>},
+        {"hours",   &duration_to_seconds<std::chrono::hours>},
+        {"days",    &duration_to_seconds<days>},
+        {"weeks",   &duration_to_seconds<weeks>},
+        {"months",  &duration_to_seconds<months>},
+        {"years",   &duration_to_seconds<years>},
     };
     void from_json(const nlohmann::json& j, duration& p);
     void to_json(nlohmann::json& j, const duration& p);

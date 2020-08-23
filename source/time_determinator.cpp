@@ -11,6 +11,17 @@ time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(tas
 {
 }
 
+bool get_wildcard_start_offset(days start_offset){
+    // int today = get_weekday_index();
+    // // size_t offset_day = day;
+    // if(today >= start_offset){
+    //     // offset_day += 7; // we need to support al measures at the same time
+        
+    // }
+
+    return false;
+}
+
 optional<bool> time_determinator::build(days start_offset)
 {
     //Formula:
@@ -65,14 +76,19 @@ optional<bool> time_determinator::build(days start_offset)
 
 const optional<size_t> time_determinator::is_specific_period() noexcept{
     const json & wild_task  = this->task_->get_json();
-    optional<int> period_unit;
-    for(const auto & [k,_] : prot::period_label_to_frequency){
+    optional<size_t> designated_period;
+    for(const auto & [k,ratio_conversor] : prot::designated_periods_to_ratio){
         if(wild_task.find(k) != wild_task.end()){
-            period_unit = wild_task.at(k).get<int>() - prot::task_expansion::day_period_user_friendly_offset;
-            this->period = k;
+            designated_period = wild_task.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset;
+            time_determinator::wildcard_time_determinator_data data_period{
+                .period_ratio_name = k,
+                .designated_period = designated_period.value(),
+                .unit_ratio_in_seconds = ratio_conversor(1),
+            };
+            this->wildcard_data =  data_period;
         }
     }
-    return period_unit;
+    return designated_period;
 }
 
 //We need to get the current user scheduler,

@@ -8,7 +8,7 @@
 #include <fstream>
 #include <iostream>
 #include "json.hpp"
-#include "time_utils.hpp"
+// #include "time_utils.hpp"
 #include <boost/filesystem.hpp>
 namespace fs = boost::filesystem;
 using namespace fs;
@@ -56,8 +56,9 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     REQUIRE(et.expand_and_set()); // check expansion!
 
     fr.schedule_taskstory(nqdati);
+    fmt::print("{}\n",get_yearday_index().count());
+    fmt::print("{}\n",get_monthday_index());
     int a = 20;
-    get_today_day_week();
 
     
 }
