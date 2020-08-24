@@ -49,10 +49,21 @@ const inline std::map<string,function<std::any(const json &)>> conversors_map{
     {"VECTOR", (function<std::any(const json &)>)[](const json & s)->std::any{ return s;}},
 };
 
-const inline unordered_map<string, std::function<std::chrono::seconds(unsigned long long)>> designated_periods_to_ratio{
-    {"day_week", &duration_to_seconds<weeks> },
-    {"day_month",&duration_to_seconds<months> },
-    {"day_year", &duration_to_seconds<years> },
+struct designated_periods_mappings{
+    std::function<std::chrono::seconds(unsigned long long)> get_ratio_seconds;
+    std::function<unsigned int()> get_period_current_index;
+    std::function<days(days)> get_offset_day;
+};
+
+template <typename T>
+days get_offset_day(day today, unsigned int designated_period){
+    // Fill me
+}
+
+const inline unordered_map<string, designated_periods_mappings> designated_periods_to_ratio{
+    {"day_week", designated_periods_mappings{&duration_to_seconds<weeks>, &get_weekday_index , &get_offset_day<weeks> }},
+    {"day_month",designated_periods_mappings{&duration_to_seconds<months>, &get_monthday_index , &get_offset_day<months>  }},
+    {"day_year", designated_periods_mappings{&duration_to_seconds<years>, &get_yearday_index , &get_offset_day<years>  }},
 };
 
 const inline map<string, function<json(const json &)>> task_subtype_checker_and_adaptor{

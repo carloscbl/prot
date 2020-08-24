@@ -97,18 +97,16 @@ inline unsigned int get_monthday_index(){
 
     auto now_local_in_days = std::chrono::time_point_cast<date::days>(now_local) ;
     date::year_month_day ymd{now_local_in_days};
-    return  static_cast<unsigned int>( ymd.day() );
+    return  static_cast<unsigned int>( ymd.day() ) -1; // Should be - 1
 }
 
-
-
-inline date::days get_yearday_index(){
+inline unsigned int get_yearday_index(){
     using namespace date;
     auto now = std::chrono::system_clock::now();
     auto now_local = date::zoned_time{date::current_zone(), now}.get_local_time();
     auto now_local_in_days = std::chrono::floor<date::days>(now_local) ;
     auto y = year_month_day{now_local_in_days}.year();
-    return now_local_in_days - local_days{y/jan/0};
+    return (now_local_in_days - local_days{y/jan/0}).count() -1; // Should be - 1
 }
 
 template <typename T_unit>

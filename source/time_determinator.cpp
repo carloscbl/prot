@@ -11,7 +11,15 @@ time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(tas
 {
 }
 
-bool get_wildcard_start_offset(days start_offset){
+unsigned int time_determinator::get_wildcard_start_offset() const noexcept {
+    this->wildcard_data.value().period_ratio_name;
+    this->wildcard_data.value().designated_period;
+    this->wildcard_data.value().unit_ratio_in_seconds;
+    
+    auto today = this->wildcard_data.value().period_current_index;
+    if(){
+        return
+    }
     // int today = get_weekday_index();
     // // size_t offset_day = day;
     // if(today >= start_offset){
@@ -21,6 +29,14 @@ bool get_wildcard_start_offset(days start_offset){
 
     return false;
 }
+
+// optional<bool> time_determinator::build_wildcard(days start_offset ){
+
+// }
+
+
+// optional<bool> time_determinator::build_non_wildcard(days start_offset ){
+// }
 
 optional<bool> time_determinator::build(days start_offset)
 {
@@ -33,6 +49,11 @@ optional<bool> time_determinator::build(days start_offset)
     */
     //1º Apply restrictions to a period range
     //1.1 Get range
+
+    if (is_specific_period().has_value()){
+        get_wildcard_start_offset()
+    }
+
     time_point end = this->task_->get_frequency().get_period() + system_clock::now();
     time_point start = floor<days>(system_clock::now() + start_offset);
     using pipeline_t = function<bool(time_determinator *,const im_t &, time_point) >;
@@ -76,14 +97,15 @@ optional<bool> time_determinator::build(days start_offset)
 
 const optional<size_t> time_determinator::is_specific_period() noexcept{
     const json & wild_task  = this->task_->get_json();
-    optional<size_t> designated_period;
-    for(const auto & [k,ratio_conversor] : prot::designated_periods_to_ratio){
+    optional<size_t> designated_period = nullopt;
+    for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
         if(wild_task.find(k) != wild_task.end()){
             designated_period = wild_task.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset;
             time_determinator::wildcard_time_determinator_data data_period{
                 .period_ratio_name = k,
                 .designated_period = designated_period.value(),
-                .unit_ratio_in_seconds = ratio_conversor(1),
+                .unit_ratio_in_seconds = mappings.get_ratio_seconds(1),
+                .period_current_index = mappings.get_period_current_index(),
             };
             this->wildcard_data =  data_period;
         }
