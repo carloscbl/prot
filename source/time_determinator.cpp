@@ -12,14 +12,14 @@ time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(tas
 }
 
 unsigned int time_determinator::get_wildcard_start_offset() const noexcept {
-    this->wildcard_data.value().period_ratio_name;
-    this->wildcard_data.value().designated_period;
-    this->wildcard_data.value().unit_ratio_in_seconds;
+    // this->wildcard_data.value().period_ratio_name;
+    // this->wildcard_data.value().designated_period;
+    // this->wildcard_data.value().unit_ratio_in_seconds;
     
-    auto today = this->wildcard_data.value().period_current_index;
-    if(){
-        return
-    }
+    // auto today = this->wildcard_data.value().period_current_index;
+    // if(){
+    //     return
+    // }
     // int today = get_weekday_index();
     // // size_t offset_day = day;
     // if(today >= start_offset){
@@ -51,7 +51,7 @@ optional<bool> time_determinator::build(days start_offset)
     //1.1 Get range
 
     if (is_specific_period().has_value()){
-        get_wildcard_start_offset()
+        get_wildcard_start_offset();
     }
 
     time_point end = this->task_->get_frequency().get_period() + system_clock::now();

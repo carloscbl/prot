@@ -114,4 +114,19 @@ inline std::chrono::seconds duration_to_seconds(unsigned long long time){
     return std::chrono::duration_cast<std::chrono::seconds>(T_unit(time));
 }
 
+template <typename T_period>
+inline days get_offset_day(days today_index, unsigned int designated_period_days){
+    // Fill me
+    // today > designated_period_days
+    // 5|31|269 - 3|22|301
+    if(today_index.count() > designated_period_days){ //is in the past, so we forward to next period
+        auto aa = std::chrono::duration_cast<days>(T_period(1)) + days(designated_period_days);
+        return aa - today_index;
+    }else
+    {
+        return days(designated_period_days) - today_index;
+    }
+
+}
+
 #endif //TIME_UTILS_H

@@ -52,13 +52,8 @@ const inline std::map<string,function<std::any(const json &)>> conversors_map{
 struct designated_periods_mappings{
     std::function<std::chrono::seconds(unsigned long long)> get_ratio_seconds;
     std::function<unsigned int()> get_period_current_index;
-    std::function<days(days)> get_offset_day;
+    std::function<days(days,unsigned int)> get_offset_day;
 };
-
-template <typename T>
-days get_offset_day(day today, unsigned int designated_period){
-    // Fill me
-}
 
 const inline unordered_map<string, designated_periods_mappings> designated_periods_to_ratio{
     {"day_week", designated_periods_mappings{&duration_to_seconds<weeks>, &get_weekday_index , &get_offset_day<weeks> }},
