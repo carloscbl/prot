@@ -25,7 +25,7 @@ void print_time(const im_t &  interval_map)
 
 
 // Now should take the last match but if it finds exact designated group will return that one
-task_t scheduler::get_task(string tag, optional<unsigned int> designated_period){
+task_t scheduler::get_task(const string & tag, optional<unsigned int> designated_period){
     task_t match = nullptr;
     for (auto &&[k,v] : m_interval_map)
     {

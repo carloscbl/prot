@@ -69,8 +69,17 @@ void tasker::commit_group_then_delete(const string & group){
             boost::uuids::uuid uuid = boost::uuids::random_generator()();
             
             task_active->inner_json["prot_id"] = boost::uuids::to_string(uuid);
-            create_task({{this->m_user,false}},*task_active);
-            tasks_active[task_active->get_id()] = task_active;
+            try
+            {
+                create_task({{this->m_user,false}},*task_active);
+                /* code */
+            }
+            catch(const std::exception& e)
+            {
+                std::cerr << e.what() << '\n';
+            }
+            tasks_active[task_active->get_id()] = task_active; // wont work with create_task step
+            
         }
         //And delete
         tasks_dispenser.erase(group);

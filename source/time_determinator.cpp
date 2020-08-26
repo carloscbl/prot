@@ -276,7 +276,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //So here we are limiting to start and end within the same day, but we can start in and end in the next
     //prev_time_upper is garanteed to be within the same day
 
-    if(!after || (after && this->wildcard_data.has_value())){//If we got a when structure we skip other restrictions
+    if(!after || this->wildcard_data.has_value()){//If we got a when structure we skip other restrictions
         if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
             //cout << "edge" << endl;
             return system_clock::from_time_t(prev_time_upper);
