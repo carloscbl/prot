@@ -1,5 +1,6 @@
 #include "task.h"
 #include <set>
+#include "expanded_taskstory_t.h"
 
 
 void task_space::to_json(nlohmann::json& new_json, const task_space::pair_interval& ref_interval) {
@@ -54,6 +55,14 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
     if(ref_json.find("id") != ref_json.end()){
         ref_json.at("id").get_to(new_task.id);
     }
+    for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
+        if(ref_json.find(k) != ref_json.end()){
+            new_task.m_designated_period = task::designated_period{
+                .type_period = k,
+                .value =ref_json.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset,
+            };
+        }
+    }
 }
 
 void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task){
@@ -77,6 +86,14 @@ void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space:
     if(ref_json.find("id") != ref_json.end()){
         ref_json.at("id").get_to(new_task.id);
     }
+    for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
+        if(ref_json.find(k) != ref_json.end()){
+            new_task.m_designated_period = task::designated_period{
+                .type_period = k,
+                .value =ref_json.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset,
+            };
+        }
+    }
 }
 
 void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task){
@@ -99,6 +116,14 @@ void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space:
     }
     if(ref_json.find("id") != ref_json.end()){
         ref_json.at("id").get_to(new_task.id);
+    }
+    for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
+        if(ref_json.find(k) != ref_json.end()){
+            new_task.m_designated_period = task::designated_period{
+                .type_period = k,
+                .value =ref_json.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset,
+            };
+        }
     }
 }
 

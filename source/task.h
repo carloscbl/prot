@@ -54,6 +54,11 @@ namespace task_space{
         restrictions m_restrictions;
         when m_when;
         pair_interval interval;
+        struct designated_period{
+            string type_period;
+            size_t value;
+        };
+        optional<designated_period> m_designated_period = nullopt;
 
         friend void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task);
         friend void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
@@ -92,6 +97,7 @@ namespace task_space{
         inline const prot::duration& get_duration()    const noexcept { return m_duration; }
         inline const when          & get_when()        const noexcept { return m_when; }
         inline const nlohmann::json& get_json()        const noexcept { return inner_json; }
+        inline const optional<designated_period> & get_designated_period() const noexcept { return m_designated_period; }
 
 
         void print_() { cout << id << ":" << tag << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }

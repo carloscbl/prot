@@ -53,6 +53,7 @@ public:
     inline void clear_sessions(){
         user_running_forms.clear();
     }
+    void apply_wildcards(next_question_data_and_taskstory_input & response);
 };
 
 

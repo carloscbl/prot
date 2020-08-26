@@ -105,41 +105,68 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
             }
         }
 
-        for (const auto &[k,v] : *response.wildcard_expanded_taskstory)
-        {
-            for (const auto & wildcard_task : v){
-                task_t task_test = make_shared<task>(wildcard_task.get<task>());
-                task_test->inner_json["app_id"] = this->form_.get_id();
-                task_test->set_user(this->user_.get_name());
-                task_test->set_user_forms_id(user_forms_id);
-                time_determinator time_dt(task_test, provisional_scheduler);
-                //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
-                optional<bool> result = time_dt.build(days(day));
-                if(result.has_value() ){
-                    if(result.value()){
-                        //task_test->save();
-                        tasker_.add_to_group(move(task_test), response.taskstory_name);
-                    }else{
-                        report.failures_report.push_back(task_test);
-                        complete = false;
-                    }
-                }else{//Now time to make it fail and control the failure
-                    report.no_margin_invalidation = task_test;
-                    return false;
-                }
-            }
-        }
-
         if(complete){
             commiter.commit(); //Disolves group && activate the tasks
             provisional_scheduler.commit();
             break;
         }
     }
+    apply_wildcards(response);
 
     return true;
 }
 
+
+void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & response){
+
+    failure_report_t report;
+    for (const auto &[k,v] : *response.wildcard_expanded_taskstory)
+    {
+        provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
+        tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
+        taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
+        bool completed_period = true;
+        fmt::print("-New group {}\n", k );
+        for (const auto & wildcard_task : v){
+            task_t task_test = make_shared<task>(wildcard_task.get<task>());
+            task_test->inner_json["app_id"] = this->form_.get_id();
+            task_test->set_user(this->user_.get_name());
+            task_test->set_user_forms_id(user_forms_id);
+            string tag = task_test->get_tag();
+            fmt::print("-Building {}\n", tag);
+            time_determinator time_dt(task_test, provisional_scheduler, k);
+            //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
+            optional<bool> result = time_dt.build(days(0));
+            if(result.has_value() ){
+                if(result.value()){
+                    //task_test->save();
+                    fmt::print("-added_to_group {}\n", tag);
+                    tasker_.add_to_group(move(task_test), response.taskstory_name);
+                }else{
+                    fmt::print("-Unable to schedule {}\n", tag);
+                    report.failures_report.push_back(task_test);
+                    completed_period = false;
+                    break;
+                }
+            }else{//Now time to make it fail and control the failure
+                fmt::print("-Failed time determination {}\n", tag);
+                report.no_margin_invalidation = task_test;
+                break;
+                // return false;
+            }
+            fmt::print("NEXT ---------> from {}\n-----------\n", tag );
+        }
+        if(completed_period){
+            commiter.commit(); //Disolves group && activate the tasks
+            provisional_scheduler.commit();
+            fmt::print(" COMMITED GROUP {}\n*********************\n", commiter.group );
+        }
+        fmt::print("\n\n===================================================\n\n" );
+    }
+    fmt::print("\n\n===================================================\n\n" );
+    fmt::print("\n\n===================================================\n\n" );
+    fmt::print("\n\n===================================================\n\n" );
+}
 
 shared_ptr<app_state> cloud_app_runner::get_session() const noexcept
 {

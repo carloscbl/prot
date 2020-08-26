@@ -53,11 +53,9 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
 
     expand_taskstory_t et (nqdati);
 
-    REQUIRE(et.expand_and_set()); // check expansion!
+    CHECK(et.expand_and_set()); // check expansion!
 
     fr.schedule_taskstory(nqdati);
-    fmt::print("{}\n",get_yearday_index());
-    fmt::print("{}\n",get_monthday_index());
     int a = 20;
 
     

@@ -3,6 +3,7 @@
 #include <chrono>
 #include <iomanip>
 #include <ctime>
+// #include <ranges>
 
 using task = task_space::task;
 
@@ -21,14 +22,23 @@ void print_time(const im_t &  interval_map)
         }
     }
 }
-task_t scheduler::get_task(string tag){
+
+
+// Now should take the last match but if it finds exact designated group will return that one
+task_t scheduler::get_task(string tag, optional<unsigned int> designated_period){
+    task_t match = nullptr;
     for (auto &&[k,v] : m_interval_map)
     {
         if(v->get_tag() == tag){
-            return v;
+            match = v;
+            if(designated_period.has_value() 
+            && v->get_designated_period().has_value() 
+            && designated_period.value() == v->get_designated_period().value().value){
+                return v;
+            }
         }
     }
-    return nullptr;
+    return match;
 }
 
 scheduler::scheduler(scheduler_policy policy)

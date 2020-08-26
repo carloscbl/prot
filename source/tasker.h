@@ -73,8 +73,9 @@ Then you COMMIT if you are happy with the result
 Then you abandon the scope and everything will be untouched in active_tasks
 */
 class taskstory_commit_RAII {
+public:
+    const string & group;
 private:
-    string & group;
     tasker & tasker_;
     bool commited = false;
 

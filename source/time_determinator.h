@@ -25,11 +25,13 @@ class time_determinator
 private:
     task_t task_;
     scheduler &sche_;
+    optional<size_t> m_designated_period_group;
     struct wildcard_time_determinator_data{
         string period_ratio_name; //day_month
         size_t designated_period; // day -> 27
         std::chrono::seconds unit_ratio_in_seconds; // -> 1 month -> seconds
         unsigned int period_current_index;
+        days offset_day;
     };
     optional<wildcard_time_determinator_data> wildcard_data = nullopt;
 
@@ -60,9 +62,8 @@ public:
 
     bool find_time_gap_edge(time_t prev_upper, const im_t &interval_map, seconds duration_, time_point today) const;
     const optional<size_t> is_specific_period() noexcept;
-    unsigned int get_wildcard_start_offset() const noexcept ;
 
-    time_determinator(task_t task_, scheduler &sche_);
+    time_determinator(task_t task_, scheduler &sche_, optional<size_t> designated_period_group = std::nullopt);
     ~time_determinator() = default;
 };
 

@@ -7,36 +7,10 @@
 
 
 
-time_determinator::time_determinator(task_t task_, scheduler &sche_) : task_(task_), sche_(sche_)
+time_determinator::time_determinator(task_t task_, scheduler &sche_, optional<size_t> designated_period_group) 
+: task_(task_), sche_(sche_),m_designated_period_group(designated_period_group)
 {
 }
-
-unsigned int time_determinator::get_wildcard_start_offset() const noexcept {
-    // this->wildcard_data.value().period_ratio_name;
-    // this->wildcard_data.value().designated_period;
-    // this->wildcard_data.value().unit_ratio_in_seconds;
-    
-    // auto today = this->wildcard_data.value().period_current_index;
-    // if(){
-    //     return
-    // }
-    // int today = get_weekday_index();
-    // // size_t offset_day = day;
-    // if(today >= start_offset){
-    //     // offset_day += 7; // we need to support al measures at the same time
-        
-    // }
-
-    return false;
-}
-
-// optional<bool> time_determinator::build_wildcard(days start_offset ){
-
-// }
-
-
-// optional<bool> time_determinator::build_non_wildcard(days start_offset ){
-// }
 
 optional<bool> time_determinator::build(days start_offset)
 {
@@ -49,12 +23,19 @@ optional<bool> time_determinator::build(days start_offset)
     */
     //1º Apply restrictions to a period range
     //1.1 Get range
+    if(task_->get_tag() == "travel_to_activity"){
+        cout << "aa" << endl;
+    }
+    time_point end;
 
     if (is_specific_period().has_value()){
-        get_wildcard_start_offset();
+        days new_offset_offset = this->wildcard_data.value().offset_day;
+        start_offset += new_offset_offset;
+        end = floor<days>(system_clock::now() + start_offset) + days(1);
+    }else{
+        end = this->task_->get_frequency().get_period() + system_clock::now();
     }
 
-    time_point end = this->task_->get_frequency().get_period() + system_clock::now();
     time_point start = floor<days>(system_clock::now() + start_offset);
     using pipeline_t = function<bool(time_determinator *,const im_t &, time_point) >;
     pipeline_t pipeline = &time_determinator::forward_pipeline;
@@ -69,6 +50,9 @@ optional<bool> time_determinator::build(days start_offset)
     //when_
     //For each day Apply restrictions
     im_t interval_map = sche_.clone_interval_map();
+    print_time(interval_map);
+    
+    cout << "\n"<< "trying " << this->task_->get_tag() << " into offset of " <<  start_offset.count()  <<"\n" << endl;
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
@@ -101,13 +85,17 @@ const optional<size_t> time_determinator::is_specific_period() noexcept{
     for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
         if(wild_task.find(k) != wild_task.end()){
             designated_period = wild_task.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset;
+
+            auto today_index =  mappings.get_period_current_index();
+
             time_determinator::wildcard_time_determinator_data data_period{
                 .period_ratio_name = k,
                 .designated_period = designated_period.value(),
                 .unit_ratio_in_seconds = mappings.get_ratio_seconds(1),
-                .period_current_index = mappings.get_period_current_index(),
+                .period_current_index = today_index,
+                .offset_day = mappings.get_offset_day(days(today_index), designated_period.value()),
             };
-            this->wildcard_data =  data_period;
+            this->wildcard_data = data_period;
         }
     }
     return designated_period;
@@ -182,7 +170,7 @@ bool time_determinator::forward_pipeline(const im_t & interval_map, time_point c
 
 bool time_determinator::when_pipeline( const im_t & interval_map, time_point current_day_begin) {
     const auto & when_ = task_->get_when();
-    auto prev_task_ = sche_.get_task(when_.after);
+    auto prev_task_ = sche_.get_task(when_.after, this->m_designated_period_group); // this is colliding
     if (!prev_task_)
     {
         return false;
@@ -247,7 +235,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
-    // if(task_->get_tag() == "washer_clean_up"){
+    // if(task_->get_tag() == "perform_activity"){
     //     print_time(interval_map);
     // }
     //First check for upper bound of the beggin of the day... with this we find if exists place
@@ -288,7 +276,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
     //So here we are limiting to start and end within the same day, but we can start in and end in the next
     //prev_time_upper is garanteed to be within the same day
 
-    if(!after){//If we got a when structure we skip other restrictions
+    if(!after || (after && this->wildcard_data.has_value())){//If we got a when structure we skip other restrictions
         if(find_time_gap_edge(prev_time_upper, interval_map, duration, day_to_search_in)){
             //cout << "edge" << endl;
             return system_clock::from_time_t(prev_time_upper);
