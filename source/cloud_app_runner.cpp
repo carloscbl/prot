@@ -47,6 +47,7 @@ const json cloud_app_runner::run(const json &request_json) noexcept
 
     json response_j;
     response_j["next_question"] = response->next_question_text;
+    response_j["data_type"] = response->current_question_obj["type_user_input"];
     //TODO: Add pass the taskstory and the parsed variables to the user scheduler
 
     if (response->taskstory_name.empty())

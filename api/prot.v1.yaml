@@ -291,8 +291,11 @@ paths:
                     type: string
                   hints:
                     type: string
+                  data_type:
+                    type: string
                 required:
                   - current_question
+                  - data_type
         '403':
           description: Forbidden
         '404':

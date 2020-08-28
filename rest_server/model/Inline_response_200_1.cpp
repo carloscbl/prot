@@ -23,6 +23,7 @@ Inline_response_200_1::Inline_response_200_1()
     m_Current_question = "";
     m_Hints = "";
     m_HintsIsSet = false;
+    m_Data_type = "";
     
 }
 
@@ -41,6 +42,7 @@ void to_json(nlohmann::json& j, const Inline_response_200_1& o)
     j["current_question"] = o.m_Current_question;
     if(o.hintsIsSet())
         j["hints"] = o.m_Hints;
+    j["data_type"] = o.m_Data_type;
 }
 
 void from_json(const nlohmann::json& j, Inline_response_200_1& o)
@@ -51,6 +53,7 @@ void from_json(const nlohmann::json& j, Inline_response_200_1& o)
         j.at("hints").get_to(o.m_Hints);
         o.m_HintsIsSet = true;
     } 
+    j.at("data_type").get_to(o.m_Data_type);
 }
 
 std::string Inline_response_200_1::getCurrentQuestion() const
@@ -77,6 +80,14 @@ bool Inline_response_200_1::hintsIsSet() const
 void Inline_response_200_1::unsetHints()
 {
     m_HintsIsSet = false;
+}
+std::string Inline_response_200_1::getDataType() const
+{
+    return m_Data_type;
+}
+void Inline_response_200_1::setDataType(std::string const& value)
+{
+    m_Data_type = value;
 }
 
 }

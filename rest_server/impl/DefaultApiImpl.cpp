@@ -230,6 +230,7 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
     auto & qa_res = fr.run(qa_request1);
     Inline_response_200_1 response_200_1;
     response_200_1.setCurrentQuestion(qa_res["next_question"].get<string>());
+    response_200_1.setDataType(qa_res["data_type"].get<string>());
 
     response.send(Pistache::Http::Code::Ok, json(response_200_1).dump(4));
 }

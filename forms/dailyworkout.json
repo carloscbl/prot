@@ -1,7 +1,7 @@
 ﻿{
   "form": {
     "version": 0,
-    "form.name": "Daily workout",
+    "form.name": "test Daily workout",
     "author.name": "carlos bernal"
   },
   "questions": [
@@ -61,6 +61,9 @@
       "type_details": {
         "cols" : 7,
         "rows" : 4,
+        "wildcard_task_posible_iterations":{
+          "day_week" : [1,2,3,4,5,6,7]
+        },
         "subtypes": {
           "group_by" : "rows",
           "group_types":{
@@ -71,16 +74,16 @@
                 "interpolation_name":"current_day",
                 "user_input_autofill" :{
                   "input_data":[
-                    "MON", "TUE", "WED, THU", "FRI", "SAT", "SUN"
+                    "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
                   ],
                   "readonly": true
-                },
-                "missing specification of specificdays like 'mondays' or similar in task fields":""
+                }
               },
               {
                 "type" : "STRING",
                 "description": "Put the short name of the workout!",
-                "interpolation_name":"exercise_name"
+                "interpolation_name":"exercise_name",
+                "required": true
               },
               {
                 "type" : "STRING",
@@ -93,9 +96,6 @@
                 "substitution_name":"session_duration"
               }
             ]
-          },
-          "wildcard_task_posible_iterations":{
-            "day_week" : [0,1,2,3,4,5,6]
           }
         }
       },
@@ -114,8 +114,7 @@
           {
             "tag": "base_task_collect",
             "name":"Fill bag and collect towel and {exercise_name} clothes",
-            "comment": "",
-            "description": "Get all the material needed to perform {exercise_description}, Today: {description}",
+            "description": "Get all the material needed to perform {exercise_description}, Today: {exercise_name}",
             "restrictions": [
               "soon"
             ],
@@ -125,13 +124,24 @@
             },
             "wildcard_task": {
               "enabled": true,
-              "only_on user_input": true
+              "this_task_exists_only_if_user_inputs": false
+            }
+          },
+          {
+            "tag": "gym_fee",
+            "name":"Pay the gym subscription",
+            "description": "Remember once each month you need to pay the fee",
+            "restrictions": [
+              "soon"
+            ],
+            "frequency": "monthly",
+            "duration": {
+              "minutes": 30
             }
           },
           {
             "tag": "travel_to_activity",
             "name":"Go to {exercise_name}",
-            "comment": "",
             "when": {
               "after": "base_task_collect"
             },
@@ -145,7 +155,7 @@
             },
             "wildcard_task": {
               "enabled": true,
-              "only_on user_input": true
+              "this_task_exists_only_if_user_inputs": false
             }
           },
           {
@@ -158,17 +168,20 @@
                 "minutes": 10
               }
             },
-            "description": "Start your workout session!",
+            "description": "Start your {exercise_name} session!, Target: {exercise_description}",
             "restrictions": [
               "soon"
             ],
             "frequency": "some-days",
             "duration": {
-              "minutes": 10
+              "minutes": 32
             },
             "wildcard_task": {
               "enabled": true,
-              "this_task_exists_only_if_user_inputs": true
+              "this_task_exists_only_if_user_inputs": false,
+              "map_substitution":{
+                "session_duration": ["duration"]
+              }
             }
           }
         ]

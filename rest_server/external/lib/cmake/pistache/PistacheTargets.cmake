@@ -16,7 +16,7 @@ set(CMAKE_IMPORT_FILE_VERSION 1)
 set(_targetsDefined)
 set(_targetsNotDefined)
 set(_expectedTargets)
-foreach(_expectedTarget pistache_shared pistache_static)
+foreach(_expectedTarget pistache_static)
   list(APPEND _expectedTargets ${_expectedTarget})
   if(NOT TARGET ${_expectedTarget})
     list(APPEND _targetsNotDefined ${_expectedTarget})
@@ -50,19 +50,11 @@ if(_IMPORT_PREFIX STREQUAL "/")
   set(_IMPORT_PREFIX "")
 endif()
 
-# Create imported target pistache_shared
-add_library(pistache_shared SHARED IMPORTED)
-
-set_target_properties(pistache_shared PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include;${_IMPORT_PREFIX}/include"
-)
-
 # Create imported target pistache_static
 add_library(pistache_static STATIC IMPORTED)
 
 set_target_properties(pistache_static PROPERTIES
-  INTERFACE_INCLUDE_DIRECTORIES "${_IMPORT_PREFIX}/include"
-  INTERFACE_LINK_LIBRARIES "\$<LINK_ONLY:Threads::Threads>"
+  INTERFACE_LINK_LIBRARIES "-latomic;Threads::Threads"
 )
 
 # Load information for each installed configuration.

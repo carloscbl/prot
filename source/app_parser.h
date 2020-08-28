@@ -194,7 +194,9 @@ public:
     
     unique_ptr <next_question_data_and_taskstory_input> get_initial_question() const noexcept{
         auto initial_question = make_unique<next_question_data_and_taskstory_input> ();
-        initial_question->next_question_text = find_questions_by_id(static_cast<int>(e_branches::FIRST)).value()["question"].get<string>();
+        optional<json> question_obj = find_questions_by_id(static_cast<int>(e_branches::FIRST));
+        initial_question->next_question_text = question_obj.value()["question"].get<string>();
+        initial_question->current_question_obj = question_obj.value();
         return initial_question;
     }
     unique_ptr <next_question_data_and_taskstory_input> get_current_question() const noexcept{
