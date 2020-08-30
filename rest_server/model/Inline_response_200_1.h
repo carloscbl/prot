@@ -20,6 +20,7 @@
 
 
 #include <string>
+#include "Object.h"
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -58,6 +59,13 @@ public:
     /// </summary>
     std::string getDataType() const;
     void setDataType(std::string const& value);
+    /// <summary>
+    /// 
+    /// </summary>
+    nlohmann::json getTypeDetails() const;
+    void setTypeDetails(nlohmann::json const& value);
+    bool typeDetailsIsSet() const;
+    void unsetType_details();
 
     friend void to_json(nlohmann::json& j, const Inline_response_200_1& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200_1& o);
@@ -68,6 +76,8 @@ protected:
     bool m_HintsIsSet;
     std::string m_Data_type;
 
+    nlohmann::json m_Type_details;
+    bool m_Type_detailsIsSet;
 };
 
 }

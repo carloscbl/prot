@@ -10,10 +10,6 @@ model/Duration_oneOf_1.cpp
 model/Duration_oneOf_1.h
 model/Helpers.cpp
 model/Helpers.h
-model/Inline_response_200.cpp
-model/Inline_response_200.h
-model/Inline_response_200_1.cpp
-model/Inline_response_200_1.h
 model/Interval.cpp
 model/Interval.h
 model/Prot_app_info.cpp

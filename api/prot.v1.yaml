@@ -293,6 +293,8 @@ paths:
                     type: string
                   data_type:
                     type: string
+                  type_details:
+                    type: object
                 required:
                   - current_question
                   - data_type
