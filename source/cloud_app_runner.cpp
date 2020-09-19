@@ -59,8 +59,16 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     ////////////////////////////////////////////////////////
     //Build schedulers and taskers for the given taskstory
     ////////////////////////////////////////////////////////
-    expand_taskstory_t ep (*response);
-    ep.expand_and_set();
+    try
+    {
+        expand_taskstory_t ep (*response);
+        ep.expand_and_set();
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    
     if(!schedule_taskstory(*response)){
         //Set response_j error message
     }

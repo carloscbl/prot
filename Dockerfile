@@ -71,6 +71,15 @@ COPY  --from=build-stage /opt/prot/api /opt/prot/api
 COPY  --from=build-stage /opt/prot/.vscode /opt/prot/.vscode
 COPY  --from=build-stage /opt/prot/forms /opt/prot/forms
 
+
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install tzdata
+
+ENV TZ=Etc/UTC
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+RUN dpkg-reconfigure --frontend noninteractive tzdata
+
 WORKDIR /opt/prot/build
 ENTRYPOINT [ "/bin/bash" ]
 RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -7,55 +7,7 @@
   "questions": [
     {
       "id": 1,
-      "question": "Where you do or want to workout?",
-      "answer_tag": "workout#kind",
-      "type_user_input": "SELECT",
-      "type_details":{
-        "options":[
-          "home",
-          "gym",
-          "street",
-          "mixed",
-          "other"
-        ]
-      },
-      "mode": [
-        "sequential",
-        "once"
-      ],
-      "answers_branches": {
-        "any": {
-          "true": 2,
-          "else": -5,
-          "taskstory_id": null
-        }
-      }
-    },
-    {
-      "id": 2,
-      "question": "How much duration of workout per day?",
-      "answer_tag": "workout#duration",
-      "type_user_input": "Duration",
-      "type_details":{
-        "magnitude": "minutes",
-        "max": 180,
-        "min": 10
-      },
-      "mode": [
-        "sequential",
-        "once"
-      ],
-      "answers_branches": {
-        "any": {
-          "true": 3,
-          "else": -5,
-          "taskstory_id": null
-        }
-      }
-    },
-    {
-      "id": 3,
-      "question": "How many times per week to workout?",
+      "question": "Define your week of workouts",
       "answer_tag": "workout#times",
       "type_user_input": "MATRIX",
       "type_details": {

@@ -74,8 +74,8 @@ private:
     std::optional<strategy_return> ranges(const json & ranges_array,int arg) const noexcept;
     std::optional<strategy_return> predefined_boolean_yes_no_affirmative_yes(const json & j, string arg)const noexcept;
     std::optional<strategy_return> custom (const json & j, string arg)const noexcept;
-    std::optional<strategy_return> any_strategy (const json & j, string arg)const noexcept;
-    std::optional<strategy_return> any_strategy (const json & j,json  arg)const noexcept;
+    std::optional<strategy_return> any_strategy (const json & j, string arg)const ;
+    std::optional<strategy_return> any_strategy (const json & j,json  arg)const;
 
     //C++17, with inline you can use header :O
     const map<std::string_view, function<std::optional<strategy_return>(const json & current_selector, std::any )>> kind_branch_t_map{
@@ -83,7 +83,8 @@ private:
         {"ranges",[this](const json & j,std::any s){ return ranges(j,std::any_cast<int>(s));}},     // int mandatory
         {"any",[this](const json & j,std::any s)   { 
                 if (std::type_index(typeid(json)) == std::type_index(s.type())){
-                    return any_strategy(j,std::any_cast<json>(s));
+                    auto answer = std::any_cast<json>(s);
+                    return any_strategy(j,answer);
                 }
                 return any_strategy(j,std::any_cast<string>(s));
             }}, // can be any type mandatory

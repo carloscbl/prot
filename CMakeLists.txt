@@ -4,7 +4,7 @@ project(prot)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
-SET(CMAKE_CXX_FLAGS "-g -Wall -Wextra -Werror -Wno-missing-field-initializers -Wno-unused-parameter -Wunused-variable -Wno-unused-private-field ")
+SET(CMAKE_CXX_FLAGS "-pg -ggdb -g3 -Wall -Wextra -Werror -Wno-missing-field-initializers -Wno-unused-parameter -Wunused-variable -Wno-unused-private-field ")
 add_definitions(-Wno-deprecated)
 SET(FMT_TEST "OFF")
 SET(PISTACHE_TEST "OFF")

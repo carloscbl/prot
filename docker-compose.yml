@@ -29,6 +29,7 @@ services:
     #   - internalNetwork
     entrypoint: ./api-server
     environment:
+      TZ: Etc/UTC
       PROT_DB_USER: root
       PROT_DB_SCHEMA: prot
       PROT_DB_PASSW: example

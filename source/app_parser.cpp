@@ -80,6 +80,8 @@ unique_ptr <next_question_data_and_taskstory_input> app_parser::get_next(const j
     {
         question = find_questions_by_id(this->next_branch_id).value();
     }
+    fmt::print("answer_input {}\n",answer_input.dump(4));
+    fmt::print("question {}\n",question.dump(4));
     auto strategy_returned = enroute_json_type(question, answer_input);
     this->next_branch_id = strategy_returned.if_branch;
     //cout << "taskstory " << strategy_returned.taskstory_id << endl;
@@ -204,8 +206,10 @@ void answer_branches<T>::enroute(const json &j)
             cout << "Not implemented or not finded implementation" << endl;
             return;
         }
-
-        const auto &opt = it->second(v, any(this->answer));
+        cout << std::any_cast<json>(this->answer) << endl;
+        // fmt::print("answer_input {}\n",this->answer.get<json>().dump(4));
+        fmt::print("j {}\n",j.dump(4));
+        const auto opt = it->second(v, any(this->answer));
         //cout << "the next is: " << opt.value().if_branch << endl;
         if (opt.has_value())
         {
@@ -325,7 +329,7 @@ std::optional<strategy_return> answer_branches<T>::custom(const json &j, string 
 
 template <typename T>
 std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, string arg)
-    const noexcept
+    const 
 {
     const auto & modulated_answer = arg;
     optional<string> taskstory_id = get_taskstory_id(j);
@@ -353,6 +357,7 @@ bool validate_matrix_input (const json & matrix_input){
     // things to do with the matrix thing
     // We need to influence the taskstory TODO: pass it by strategy return
     // We need to extract the info, validate and group
+    // return true;
     auto cols = matrix_input["metadata"]["cols"].get<size_t>();
     auto rows = matrix_input["metadata"]["rows"].get<size_t>();
     if(rows != matrix_input["data_input_from_user"].size()){ return false; }
@@ -363,6 +368,7 @@ bool validate_matrix_input (const json & matrix_input){
 }
 
 bool select_type(const json & input){
+    fmt::print("answer_input {}\n",input.dump(4));
     auto type = input["type"].get<string>();
     if (type =="MATRIX"){
         return validate_matrix_input(input);
@@ -388,7 +394,7 @@ bool select_type(const json & input){
 
 template <typename T>
 std::optional<strategy_return> answer_branches<T>::any_strategy(const json &j, json arg)
-    const noexcept
+    const 
 {
     // So here we should process all the need for the whole set of possibilities for a json structure...
     if ( !select_type(arg) ){ return nullopt; }
