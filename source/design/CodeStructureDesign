@@ -1,7 +1,7 @@
 Architecture of parser
 -json validator + reader
 -map functionality
-    -general form class containing
+    -general app class containing
         -name
         -author
     -Expressions map k: name V:Expression_t -> args, parsed function callback, argument return

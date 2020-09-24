@@ -69,7 +69,7 @@ COPY  --from=build-stage /opt/prot/source /opt/prot/source
 COPY  --from=build-stage /opt/prot/rest_server /opt/prot/rest_server
 COPY  --from=build-stage /opt/prot/api /opt/prot/api
 COPY  --from=build-stage /opt/prot/.vscode /opt/prot/.vscode
-COPY  --from=build-stage /opt/prot/forms /opt/prot/forms
+COPY  --from=build-stage /opt/prot/apps /opt/prot/apps
 
 
 

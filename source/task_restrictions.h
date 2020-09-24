@@ -25,7 +25,7 @@ class task_restrictions : public api_validated
 private:
     /* data */
 public:
-    task_restrictions() : api_validated("../forms/api/restrictions.json"){};
+    task_restrictions() : api_validated("../apps/api/restrictions.json"){};
     static task_restrictions & get_restrictions_lazy_unique_instance();
 };
 using std::chrono::hours;

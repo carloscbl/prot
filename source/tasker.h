@@ -38,7 +38,7 @@ private:
     this wont be persisted and only wont be deleted on test commands
     but a long standing request... could dangle this groups
     */ 
-    //FIX: TrackLife time of groups and expirate sync with form runner life time
+    //FIX: TrackLife time of groups and expirate sync with app runner life time
     //Taskstory : Name -> each task have a tag
     map<string, map< string, task_t > > tasks_dispenser;
     const string & m_user;

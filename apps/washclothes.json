@@ -1,7 +1,7 @@
 ﻿{
-  "form": {
+  "app": {
     "version": 0,
-    "form.name": "Washer easer",
+    "app.name": "Washer easer",
     "author.name": "carlos bernal"
   },
   "questions": [

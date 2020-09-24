@@ -65,7 +65,7 @@ namespace task_space{
         friend void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task);
 
         uint64_t id;
-        uint64_t user_forms_id = 0;
+        uint64_t user_apps_id = 0;
     public:
         nlohmann::json inner_json;
         task();
@@ -77,7 +77,7 @@ namespace task_space{
         inline void set_tag          (string tag_)             { this->tag = tag_; }
         inline void set_description  (string description_)     { this->description = description_; }
         inline void set_user         (string user_)            { this->m_user = user_; }
-        inline void set_user_forms_id(uint64_t uf_id)          { this->user_forms_id = uf_id; }
+        inline void set_user_apps_id(uint64_t uf_id)          { this->user_apps_id = uf_id; }
         inline void set_json         (nlohmann::json & json_)  { this->inner_json = json_; }
         inline void set_interval(time_t start, time_t end)     {
                                                      this->interval.start = start;
@@ -85,7 +85,7 @@ namespace task_space{
         }
 
         inline uint64_t              get_id()          const noexcept { return id; }
-        inline uint64_t              get_user_forms_id()const noexcept{ return user_forms_id; }
+        inline uint64_t              get_user_apps_id()const noexcept{ return user_apps_id; }
         inline const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;}
         inline const string        & get_tag()         const noexcept { return tag;        }
         inline const string        & get_description() const noexcept { return description; }

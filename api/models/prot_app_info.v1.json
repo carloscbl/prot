@@ -2,15 +2,15 @@
   "title": "prot_app_info",
   "type": "object",
   "properties": {
-    "form_id": {
+    "app_id": {
       "type": "integer"
     },
-    "form_name": {
+    "app_name": {
       "type": "string"
     }
   },
   "required": [
-    "form_id",
-    "form_name"
+    "app_id",
+    "app_name"
   ]
 }

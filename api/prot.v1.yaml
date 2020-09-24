@@ -134,7 +134,7 @@ paths:
           description: OK
         '404':
           description: Not Found
-  '/user/{developer}/form':
+  '/user/{developer}/app':
     parameters:
       - schema:
           type: string
@@ -151,7 +151,7 @@ paths:
             application/json:
               schema:
                 type: array
-                description: 'Returns all the developer, forms_names submited'
+                description: 'Returns all the developer, apps_names submited'
                 items:
                   type: string
     post:
@@ -169,9 +169,9 @@ paths:
             schema:
               type: object
               properties:
-                form_obj:
+                app_obj:
                   type: object
-  '/user/{developer}/form/{formId}':
+  '/user/{developer}/app/{appId}':
     parameters:
       - schema:
           type: string
@@ -180,7 +180,7 @@ paths:
         required: true
       - schema:
           type: integer
-        name: formId
+        name: appId
         in: path
         required: true
     get:

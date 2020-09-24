@@ -1,4 +1,0 @@
-test things
-
-form add -P ../forms/washclothes.json
-form add -P forms/washclothes.json

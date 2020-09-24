@@ -14,7 +14,7 @@
 // #include <vector>
 // #include <memory>
 // #include "task.h"
-// #include "form.h"
+// #include "app.h"
 // #include "app_parser.h"
 // #include <cstdlib>
 // #include <sqlpp11/sqlpp11.h>
@@ -88,11 +88,11 @@ int main(int argc, char *argv[])
     // create_user("carloscbl");
     // create_user("pepe");
     
-    // json jj = form::get_forms_register().at("Washer easer")->get_json();
-    // create_form(jj, "carloscbl");
+    // json jj = app::get_apps_register().at("Washer easer")->get_json();
+    // create_app(jj, "carloscbl");
     // create_instalation("carloscbl", "Washer easer");
     // create_instalation("carloscbl", "Lemon");
-    // create_instalation("carloscbl", "Pepoform");
+    // create_instalation("carloscbl", "Pepoapp");
     // //fill_db();
     // task tk;
     // tk.set_name("lemonsss_task");

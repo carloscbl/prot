@@ -56,9 +56,9 @@ private:
 
     void apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void apps_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void user_developer_form_form_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void user_developer_form_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-    void user_developer_form_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_developer_app_app_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_developer_app_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
+    void user_developer_app_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_username_apps_install_app_id_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
@@ -100,8 +100,8 @@ private:
     /// 
     /// </remarks>
     /// <param name="developer"></param>
-    /// <param name="formId"></param>
-    virtual void user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response) = 0;
+    /// <param name="appId"></param>
+    virtual void user_developer_app_app_id_get(const std::string &developer, const int32_t &appId, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// Your GET endpoint
@@ -110,7 +110,7 @@ private:
     /// 
     /// </remarks>
     /// <param name="developer"></param>
-    virtual void user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void user_developer_app_get(const std::string &developer, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// 
@@ -120,7 +120,7 @@ private:
     /// </remarks>
     /// <param name="developer"></param>
     /// <param name="inlineObject2"> (optional)</param>
-    virtual void user_developer_form_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) = 0;
+    virtual void user_developer_app_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) = 0;
 
     /// <summary>
     /// 

@@ -10,7 +10,7 @@
 #include "tasker.h"
 #include "ischeduler.h"
 #include "scheduler.h"
-#include "form.h"
+#include "app.h"
 #include "orm_prot.h"
 #include "json.hpp"
 
@@ -39,7 +39,7 @@ private:
     friend void from_json(const nlohmann::json& ref_json, user& new_user);
 
 public:
-    map<string,form*> instaled_forms; // List all the forms for a user
+    map<string,app*> instaled_apps; // List all the apps for a user
     user_minimal_data minimal_data;
     user(const user_minimal_data &m_data);
     user(); 

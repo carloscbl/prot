@@ -44,20 +44,20 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    int32_t getFormId() const;
-    void setFormId(int32_t const value);
+    int32_t getAppId() const;
+    void setAppId(int32_t const value);
     /// <summary>
     /// 
     /// </summary>
-    std::string getFormName() const;
-    void setFormName(std::string const& value);
+    std::string getAppName() const;
+    void setAppName(std::string const& value);
 
     friend void to_json(nlohmann::json& j, const Prot_app_info& o);
     friend void from_json(const nlohmann::json& j, Prot_app_info& o);
 protected:
-    int32_t m_Form_id;
+    int32_t m_App_id;
 
-    std::string m_Form_name;
+    std::string m_App_name;
 
 };
 

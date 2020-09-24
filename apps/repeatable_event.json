@@ -1,7 +1,7 @@
 ﻿{
-  "form": {
+  "app": {
     "version": 0,
-    "form.name": "Daily workout",
+    "app.name": "Daily workout",
     "author.name": "carlos bernal"
   },
   "questions": [

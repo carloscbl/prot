@@ -1,13 +1,13 @@
 ﻿{
-  "form": {
+  "app": {
     "version": 0,
-    "form.name": "test Daily workout",
+    "app.name": "test Daily workout",
     "author.name": "carlos bernal"
   },
   "questions": [
     {
       "id": 1,
-      "question": "Define your week of workouts",
+      "question": "How looks your week of workouts?",
       "answer_tag": "workout#times",
       "type_user_input": "MATRIX",
       "type_details": {
@@ -56,7 +56,7 @@
       ],
       "answers_branches": {
         "any": {
-          "true": -1,
+          "true": 2,
           "else": -5,
           "taskstory_id": "normal_flow"
         }
@@ -137,6 +137,22 @@
             }
           }
         ]
+      }
+    },
+    {
+      "id":2,
+      "question": "Do you want GPS tracking?",
+      "answer_tag": "workout#tracking",
+      "type_user_input": "STRING",
+      "mode": [
+        "sequential"
+      ],
+      "answers_branches": {
+        "any": {
+          "true": -1,
+          "else": -5,
+          "taskstory_id": null
+        }
       }
     }
   ]

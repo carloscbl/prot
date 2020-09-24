@@ -4,10 +4,10 @@
 app_parser::app_parser(const json &j) : j(j)
 {
 
-    subsections = map<string, unique_ptr<form_subsection_ADT>>();
+    subsections = map<string, unique_ptr<app_subsection_ADT>>();
     for (const auto &sect : subsection_names)
     {
-        subsections[sect] = make_unique<form_subsection_ADT>(j, sect);
+        subsections[sect] = make_unique<app_subsection_ADT>(j, sect);
     }
 
     for (const auto &[k, v] : j.items())
@@ -17,7 +17,7 @@ app_parser::app_parser(const json &j) : j(j)
         {
             continue;
         }
-        discover[k] = make_unique<form_subsection_ADT>(j, k);
+        discover[k] = make_unique<app_subsection_ADT>(j, k);
     }
 }
 app_parser::app_parser(const json &j, const app_state &fs) : app_parser(j)
@@ -140,7 +140,7 @@ answer_branches<T>::answer_branches(const json &question_obj, const any &answer,
     enroute(question_obj["answers_branches"]);
 }
 
-form_subsection_ADT::form_subsection_ADT(const json &j, string sec_name) : section_name(sec_name)
+app_subsection_ADT::app_subsection_ADT(const json &j, string sec_name) : section_name(sec_name)
 {
     const auto &section_json = j[section_name];
     for (auto &[key, value] : section_json.items())
@@ -149,7 +149,7 @@ form_subsection_ADT::form_subsection_ADT(const json &j, string sec_name) : secti
     }
 }
 
-void form_subsection_ADT::print_section()
+void app_subsection_ADT::print_section()
 {
     cout << "Section: " << this->section_name << endl;
     for (const auto &[k, v] : section)

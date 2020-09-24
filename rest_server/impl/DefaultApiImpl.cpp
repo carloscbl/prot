@@ -83,13 +83,13 @@ void DefaultApiImpl::user_username_delete(const std::string &username, Pistache:
 }
 
 void DefaultApiImpl::apps_get(Pistache::Http::ResponseWriter &response) {
-    auto binds_forms = read_form_names();
+    auto binds_apps = read_app_names();
     vector<Prot_app_info> apps;
-    for (auto &[ k,v] : binds_forms)
+    for (auto &[ k,v] : binds_apps)
     {
         Prot_app_info app;
-        app.setFormId(k);
-        app.setFormName(v);
+        app.setAppId(k);
+        app.setAppName(v);
         apps.push_back(app);
     }
     json jresponse = apps;
@@ -97,39 +97,39 @@ void DefaultApiImpl::apps_get(Pistache::Http::ResponseWriter &response) {
 }
 
 void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response){
-    auto ff = read_form_by_id(id);
+    auto ff = read_app_by_id(id);
     if(!ff.has_value()){
         response.send(Pistache::Http::Code::Not_Found, "app id doesn't match any");
         return;
     }
     auto paired = ff.value();
     Prot_app_info app;
-    app.setFormId(paired.first);
-    app.setFormName(paired.second);
+    app.setAppId(paired.first);
+    app.setAppName(paired.second);
     json jresponse = app;
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4));
 }
 
-void DefaultApiImpl::user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response) {
-    //Need to create a new call that joins forms, by a given developer
-    auto mp = read_forms_by_developer(geturl_decode(developer));
-    vector<string> form_names;
+void DefaultApiImpl::user_developer_app_get(const std::string &developer, Pistache::Http::ResponseWriter &response) {
+    //Need to create a new call that joins apps, by a given developer
+    auto mp = read_apps_by_developer(geturl_decode(developer));
+    vector<string> app_names;
 
-    for_each(mp.begin(), mp.end(), [&form_names](const pair<uint64_t,string>& c){
-        form_names.push_back(c.second);
+    for_each(mp.begin(), mp.end(), [&app_names](const pair<uint64_t,string>& c){
+        app_names.push_back(c.second);
     });
-    json jresponse = form_names;
+    json jresponse = app_names;
     response.send( Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
-void DefaultApiImpl::user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response) {
-    auto form_ =read_form_by_id (formId);
-    if(!form_.has_value()){
-        response.send(Pistache::Http::Code::Not_Found, "not form for that id");
+void DefaultApiImpl::user_developer_app_app_id_get(const std::string &developer, const int32_t &appId, Pistache::Http::ResponseWriter &response) {
+    auto app_ =read_app_by_id (appId);
+    if(!app_.has_value()){
+        response.send(Pistache::Http::Code::Not_Found, "not app for that id");
         return;
     }
-    auto form_res =read_form(form_.value().second);
+    auto app_res =read_app(app_.value().second);
     
-    response.send(Pistache::Http::Code::Ok, form_res->get_json().dump(4));
+    response.send(Pistache::Http::Code::Ok, app_res->get_json().dump(4));
 }
 
 void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response) {
@@ -173,8 +173,8 @@ void DefaultApiImpl::user_username_apps_install_app_id_delete(const std::string 
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    if(!read_form_by_id(installAppId)){
-        response.send(Pistache::Http::Code::Not_Found, "form does not exists");
+    if(!read_app_by_id(installAppId)){
+        response.send(Pistache::Http::Code::Not_Found, "app does not exists");
         return;
     }
     auto res = read_instalations(decoded, installAppId);
@@ -193,9 +193,9 @@ void DefaultApiImpl::user_username_apps_install_app_id_post(const std::string &u
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
         return;
     }
-    auto form_name = read_form_by_id(installAppId);
-    if(!form_name){
-        response.send(Pistache::Http::Code::Not_Found, "form does not exists");
+    auto app_name = read_app_by_id(installAppId);
+    if(!app_name){
+        response.send(Pistache::Http::Code::Not_Found, "app does not exists");
         return;
     }
     auto res = read_instalations(decoded, installAppId);
@@ -203,7 +203,7 @@ void DefaultApiImpl::user_username_apps_install_app_id_post(const std::string &u
         response.send(Pistache::Http::Code::Not_Found, "User already have that instalation");
         return;
     }
-    if(!create_instalation(decoded,form_name.value().second)){
+    if(!create_instalation(decoded,app_name.value().second)){
         response.send(Pistache::Http::Code::Not_Found, "unable to do instalation");
         return;
     }
@@ -219,13 +219,13 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
         return;
     }
 
-    auto pair = read_form_by_id(appId);
-    auto form_ = read_form(pair->second);
-    if(!form_){
-        response.send(Pistache::Http::Code::Not_Found, "form does not exists");
+    auto pair = read_app_by_id(appId);
+    auto app_ = read_app(pair->second);
+    if(!app_){
+        response.send(Pistache::Http::Code::Not_Found, "app does not exists");
         return ;
     }
-    cloud_app_runner fr(*usr, *form_);
+    cloud_app_runner fr(*usr, *app_);
     json qa_request1;
     auto & qa_res = fr.run(qa_request1);
     Inline_response_200_1 response_200_1;
@@ -256,13 +256,13 @@ void DefaultApiImpl::user_username_tasks_get(const std::string &username, Pistac
     
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
-void DefaultApiImpl::user_developer_form_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::user_developer_app_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
     std::string decoded = geturl_decode(developer);
     if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
     json whole_request(inlineObject2);
-    auto res = create_form( whole_request.at("form_obj") ,decoded);
+    auto res = create_app( whole_request.at("app_obj") ,decoded);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
     }
@@ -286,9 +286,9 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
         return;
     }
 
-    auto pair = read_form_by_id(appId);
-    auto form_ = read_form(pair->second);
-    cloud_app_runner fr(*usr, *form_);
+    auto pair = read_app_by_id(appId);
+    auto app_ = read_app(pair->second);
+    cloud_app_runner fr(*usr, *app_);
     json qa_request;
     qa_request["answer"] = inlineObject3.getResponse();
     auto & qa_res = fr.run(qa_request);

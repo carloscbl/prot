@@ -18,7 +18,7 @@ class task_frequency : public api_validated
 {
 private:
 public:
-    task_frequency():api_validated("../forms/api/frequencies.json"){};
+    task_frequency():api_validated("../apps/api/frequencies.json"){};
     static task_frequency & get_frequency_lazy_unique_instance();
 };
 

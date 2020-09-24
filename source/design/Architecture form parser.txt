@@ -1,4 +1,4 @@
-At the most high level, there is the form:
+At the most high level, there is the app:
 A file designed to hold all the machine state and its
 relations with the next steps in the states machine
 
@@ -8,7 +8,7 @@ you can take as example washclothes.json
 
 in which you can have the follow sections:
 
-form : The general meta data about the form, owner, name, estructure
+app : The general meta data about the app, owner, name, estructure
 expressions: where you especifies the functions and its arguments
 variables: where put your constants
 configurables: where you declare which ones are customizables by the final user
@@ -16,7 +16,7 @@ questions: it is a decision tree with questions and posible flow answers, that p
   questions_extended: 
    id: unique id of a node(QA's),
    question: the output text to the user
-   answer_tag: the tag that bring info, that you can use in the future to dont repeat questions of similar forms
+   answer_tag: the tag that bring info, that you can use in the future to dont repeat questions of similar apps
    type: the data type expected of answer INTEGER | BOOL | FLOAT
    mode: this states some flow meta that will alter the flow for special cases
     sequential: means it follows a normal flow,
@@ -26,7 +26,7 @@ questions: it is a decision tree with questions and posible flow answers, that p
     branch_id: select by the posible answer given, if not given, will take the branch id with 0 as id
     taskstory: a sucession of commands that will represent as tasks the choices of the user by a given branch_id
       command: the command to evaluate and perform
-      name: the key to find or refer to this command in this form
+      name: the key to find or refer to this command in this app
     branch_id: tasktory correspond to the given branch_id as answer
   answers_branches: you can define the answer that will enroute the next branch to follow
     custom: you can define any string that you want

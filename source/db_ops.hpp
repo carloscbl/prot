@@ -42,7 +42,7 @@ auto get_data_member = []() {};
 template <>
 auto get_data_member<orm_prot::Users> = []() { return orm_prot::Users{}.username; };
 template <>
-auto get_data_member<orm_prot::Forms> = []() { return orm_prot::Forms{}.name; };
+auto get_data_member<orm_prot::Apps> = []() { return orm_prot::Apps{}.name; };
 template <>
 auto get_data_member<orm_prot::Tasks> = []() { return orm_prot::Tasks{}.id; };
 
@@ -71,10 +71,10 @@ inline optional<uint64_t> get_id(string unique_val)
     return result.front().a;
 }
 
-inline unique_ptr<form> create_form(const json &valid_form, const string &username)
+inline unique_ptr<app> create_app(const json &valid_app, const string &username)
 {
-    using orm_prot::Forms;
-    if (gen_exists<orm_prot::Forms>(form::get_form_name(valid_form)))
+    using orm_prot::Apps;
+    if (gen_exists<orm_prot::Apps>(app::get_app_name(valid_app)))
     {
         return nullptr;
     }
@@ -86,54 +86,54 @@ inline unique_ptr<form> create_form(const json &valid_form, const string &userna
         return nullptr;
     }
 
-    orm_prot::Forms form_;
-    unique_ptr<form> protform = make_unique<form>(valid_form);
-    const auto &result = db(insert_into(form_).set(
-        form_.json = valid_form.dump(),
-        form_.name = form::get_form_name(valid_form),
-        form_.developer = user_id.value() // TODO
+    orm_prot::Apps app_;
+    unique_ptr<app> protapp = make_unique<app>(valid_app);
+    const auto &result = db(insert_into(app_).set(
+        app_.json = valid_app.dump(),
+        app_.name = app::get_app_name(valid_app),
+        app_.developer = user_id.value() // TODO
         ));
-    protform->set_id(result);
-    return protform;
+    protapp->set_id(result);
+    return protapp;
 }
 
-inline unique_ptr<form> read_form(const string &form_name)
+inline unique_ptr<app> read_app(const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    orm_prot::Forms form_;
-    const auto &result = db(sqlpp::select(all_of(form_)).from(form_).where(form_.name == form_name).limit(1U));
+    orm_prot::Apps app_;
+    const auto &result = db(sqlpp::select(all_of(app_)).from(app_).where(app_.name == app_name).limit(1U));
     if (result.empty())
     {
         return nullptr;
     }
 
     const auto &row = result.front();
-    unique_ptr<form> protform = make_unique<form>(json::parse(row.json.text)); //We create it implictly or refresh it
-    protform->set_id(result.front().id);
+    unique_ptr<app> protapp = make_unique<app>(json::parse(row.json.text)); //We create it implictly or refresh it
+    protapp->set_id(result.front().id);
 
-    return protform;
+    return protapp;
 }
 
-inline map<uint64_t,string> read_forms_by_developer(const string & developer){
+inline map<uint64_t,string> read_apps_by_developer(const string & developer){
     auto &db = mysql_db::get_db_lazy().db;
 
-    orm_prot::Forms form_;
+    orm_prot::Apps app_;
     orm_prot::Users usr;
 
-    map<uint64_t,string> dev_forms;
-    for( const auto &result : db( sqlpp::select(all_of(form_)).from(form_.join(usr).on(form_.developer == usr.id)).where(usr.username == developer ) )){
-        dev_forms[result.id] = result.name;
+    map<uint64_t,string> dev_apps;
+    for( const auto &result : db( sqlpp::select(all_of(app_)).from(app_.join(usr).on(app_.developer == usr.id)).where(usr.username == developer ) )){
+        dev_apps[result.id] = result.name;
     }
-    return dev_forms;
+    return dev_apps;
 }
 
-inline optional<pair<uint64_t,string>> read_form_by_id(const int32_t &id)
+inline optional<pair<uint64_t,string>> read_app_by_id(const int32_t &id)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    orm_prot::Forms form_;
-    const auto &result = db( sqlpp::select(all_of(form_)).from(form_).where(form_.id == id ).limit(1U) );
+    orm_prot::Apps app_;
+    const auto &result = db( sqlpp::select(all_of(app_)).from(app_).where(app_.id == id ).limit(1U) );
     if (result.empty())
     {
         return nullopt;
@@ -143,28 +143,28 @@ inline optional<pair<uint64_t,string>> read_form_by_id(const int32_t &id)
     return make_pair(row.id,row.name);
 }
 
-inline map<uint64_t,string> read_form_names()
+inline map<uint64_t,string> read_app_names()
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    orm_prot::Forms form_;
-    map<uint64_t,string> forms_names;
+    orm_prot::Apps app_;
+    map<uint64_t,string> apps_names;
 
-    for (const auto &result : db(sqlpp::select(form_.id,form_.name).from(form_).unconditionally().limit(1000U)))
+    for (const auto &result : db(sqlpp::select(app_.id,app_.name).from(app_).unconditionally().limit(1000U)))
     {
-        forms_names[result.id] = result.name;
+        apps_names[result.id] = result.name;
     }
 
-    return forms_names;
+    return apps_names;
 }
 
-inline void delete_form(const string &form_name)
+inline void delete_app(const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    orm_prot::Forms form_;
-    db(remove_from(form_).where(form_.name == form_name));
-    form::remove_form(form_name);
+    orm_prot::Apps app_;
+    db(remove_from(app_).where(app_.name == app_name));
+    app::remove_app(app_name);
 }
 
 inline void read_db_json()
@@ -248,82 +248,82 @@ inline bool delete_user(const string &username)
 
 }
 
-inline bool create_instalation(const string &username, const string &form_name)
+inline bool create_instalation(const string &username, const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
     orm_prot::Users usr;
-    orm_prot::Forms form_;
+    orm_prot::Apps app_;
 
     // Exists? TODO JOIN both to get existent one
     const auto &usr_res = db(sqlpp::select(usr.id).from(usr).where(usr.username == username).limit(1U));
-    const auto &form_res = db(sqlpp::select(form_.id).from(form_).where(form_.name == form_name).limit(1U));
-    if (usr_res.empty() || form_res.empty())
+    const auto &app_res = db(sqlpp::select(app_.id).from(app_).where(app_.name == app_name).limit(1U));
+    if (usr_res.empty() || app_res.empty())
     {
         return false;
     }
-    orm_prot::UsersForms instls;
-    const auto &user_form_res = db(sqlpp::select(all_of(instls)).from(instls).where(instls.iduser == usr_res.front().id and instls.idform == form_res.front().id).limit(1U));
+    orm_prot::UsersApps instls;
+    const auto &user_app_res = db(sqlpp::select(all_of(instls)).from(instls).where(instls.iduser == usr_res.front().id and instls.idapp == app_res.front().id).limit(1U));
 
-    if (!user_form_res.empty())
+    if (!user_app_res.empty())
     {
         return false;
     }
 
     db(insert_into(instls).set(
         instls.iduser = usr_res.front().id,
-        instls.idform = form_res.front().id));
+        instls.idapp = app_res.front().id));
 
-    //We shouldn't load anything that is not required to perform
-    //user::users.at(username)->instaled_forms[form_name] = form::get_forms_register().at(form_name).get();
+    //We shouldn't load anything that is not required to perapp
+    //user::users.at(username)->instaled_apps[app_name] = app::get_apps_register().at(app_name).get();
     return true;
 }
 
-inline bool delete_instalation(const string &username, const uint64_t form_id)
+inline bool delete_instalation(const string &username, const uint64_t app_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
-    orm_prot::UsersForms usr_forms;
-    orm_prot::Forms form_;
+    orm_prot::UsersApps usr_apps;
+    orm_prot::Apps app_;
 
-    db(remove_from(usr_forms).using_(usr, form_, usr_forms).where(usr_forms.iduser == usr.id and usr.username == username and usr_forms.idform == form_.id and form_.id == form_id));
+    db(remove_from(usr_apps).using_(usr, app_, usr_apps).where(usr_apps.iduser == usr.id and usr.username == username and usr_apps.idapp == app_.id and app_.id == app_id));
     return true;
 }
 
-inline bool delete_instalation(const string &username, const string &form_name)
+inline bool delete_instalation(const string &username, const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
-    orm_prot::UsersForms usr_forms;
-    orm_prot::Forms form_;
+    orm_prot::UsersApps usr_apps;
+    orm_prot::Apps app_;
 
-    db(remove_from(usr_forms).using_(usr, form_, usr_forms).where(usr_forms.iduser == usr.id and usr.username == username and usr_forms.idform == form_.id and form_.name == form_name));
+    db(remove_from(usr_apps).using_(usr, app_, usr_apps).where(usr_apps.iduser == usr.id and usr.username == username and usr_apps.idapp == app_.id and app_.name == app_name));
     return true;
 }
 
-inline map<uint64_t,string> read_instalations(const string &username, optional<uint64_t> form_id = nullopt)
+inline map<uint64_t,string> read_instalations(const string &username, optional<uint64_t> app_id = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
-    orm_prot::Forms form_;
-    orm_prot::UsersForms usr_forms;
-    map<uint64_t,string> formsresult;
+    orm_prot::Apps app_;
+    orm_prot::UsersApps usr_apps;
+    map<uint64_t,string> appsresult;
 
-    if(form_id.has_value()){
-        for (const auto &row : db(select(all_of(form_)).from(usr.join(usr_forms).on(usr.id == usr_forms.iduser).join(form_).on(form_.id == usr_forms.idform))
-        .where(usr.username == username and form_.id == form_id.value() ) ))
+    if(app_id.has_value()){
+        for (const auto &row : db(select(all_of(app_)).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp))
+        .where(usr.username == username and app_.id == app_id.value() ) ))
         {
-            formsresult[row.id] = row.name;
+            appsresult[row.id] = row.name;
         }
-        return formsresult;
+        return appsresult;
     }
 
-    for (const auto &row : db(select(all_of(form_)).from(usr.join(usr_forms).on(usr.id == usr_forms.iduser).join(form_).on(form_.id == usr_forms.idform)
+    for (const auto &row : db(select(all_of(app_)).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp)
     ).where(usr.username == username )))
     {
-        formsresult[row.id] = row.name;
+        appsresult[row.id] = row.name;
     }
-    return formsresult;
+    return appsresult;
 }
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
@@ -350,7 +350,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         tks.start = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().start)),
         tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end)),
         tks.externalId = sqlpp::tvin(external_id),
-        tks.fromUserFormsId = sqlpp::tvin(task_.get_user_forms_id()),
+        tks.fromUserAppsId = sqlpp::tvin(task_.get_user_apps_id()),
         tks.protId = sqlpp::tvin(prot_id)
     ));
     if (tsk_res < 1)
@@ -484,34 +484,34 @@ inline void update_task( task &new_task , const uint64_t task_id )
 
 }
 
-inline uint64_t get_user_forms_id(const uint64_t user_id, const uint64_t form_id){
+inline uint64_t get_user_apps_id(const uint64_t user_id, const uint64_t app_id){
     auto &db = mysql_db::get_db_lazy().db;
-    orm_prot::UsersForms uforms;
-    const auto & select = sqlpp::select(all_of(uforms))
-                                .from(uforms)
-                                .where(uforms.iduser == user_id and uforms.idform == form_id);
+    orm_prot::UsersApps uapps;
+    const auto & select = sqlpp::select(all_of(uapps))
+                                .from(uapps)
+                                .where(uapps.iduser == user_id and uapps.idapp == app_id);
     const auto & resu = db(select);
     if(resu.empty()){
         // No installation
         return 0;
     }
     const auto & row = resu.front();
-    const auto & user_forms_id = row.id ;
-    return user_forms_id;
+    const auto & user_apps_id = row.id ;
+    return user_apps_id;
 }
 
-inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64_t form_id)
+inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64_t app_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    orm_prot::FormSessions sess;
-    const uint64_t user_forms_id = get_user_forms_id( user_id, form_id);
-    if(!user_forms_id){
+    orm_prot::AppSessions sess;
+    const uint64_t user_apps_id = get_user_apps_id( user_id, app_id);
+    if(!user_apps_id){
         return nullptr; // No installation
     }
     shared_ptr<app_state> new_sess = make_shared<app_state>();
     const auto &sess_res = db(insert_into(sess).set(
         sess.json = json(*new_sess).dump(),
-        sess.userForms =  user_forms_id,
+        sess.userApps =  user_apps_id,
         sess.unqName = "asdasd"
         ));
     if (sess_res < 1)
@@ -523,15 +523,15 @@ inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64
     return new_sess;
 }
 
-inline shared_ptr<app_state> read_session(const string &username, const uint64_t form_id)
+inline shared_ptr<app_state> read_session(const string &username, const uint64_t app_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    orm_prot::FormSessions sess;
+    orm_prot::AppSessions sess;
     orm_prot::Users usr;
-    orm_prot::UsersForms uforms;
+    orm_prot::UsersApps uapps;
     const auto & select = sqlpp::select(all_of(sess))
-                                .from(sess.join(uforms).on(uforms.id == sess.userForms).join(usr).on(uforms.iduser == usr.id))
-                                .where(usr.username == username and uforms.idform == form_id);
+                                .from(sess.join(uapps).on(uapps.id == sess.userApps).join(usr).on(uapps.iduser == usr.id))
+                                .where(usr.username == username and uapps.idapp == app_id);
     const auto & resu = db(select);
     if(resu.empty()){
         return nullptr;
@@ -547,7 +547,7 @@ inline shared_ptr<app_state> read_session(const string &username, const uint64_t
 inline void update_session( const uint64_t fs_id, app_state &new_fs)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    orm_prot::FormSessions sess;
+    orm_prot::AppSessions sess;
     const auto & result = db(update(sess).set(
         sess.json = json(new_fs).dump()
     ).where(sess.id == fs_id));
@@ -558,7 +558,7 @@ inline void update_session( const uint64_t fs_id, app_state &new_fs)
 inline bool delete_session(const uint64_t fs_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    orm_prot::FormSessions sess;
+    orm_prot::AppSessions sess;
     if(db(remove_from(sess).using_(sess).where( 
     sess.id == fs_id
     ))){
@@ -572,8 +572,8 @@ inline void join()
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
-    orm_prot::Forms form_;
-    for (const auto &row : db(select(all_of(usr)).from(usr.join(form_).on(usr.id == form_.developer)).unconditionally()))
+    orm_prot::Apps app_;
+    for (const auto &row : db(select(all_of(usr)).from(usr.join(app_).on(usr.id == app_.developer)).unconditionally()))
     {
         cout << row.id << " " << row.json << endl;
     }

@@ -54,9 +54,9 @@ public:
 
     void apps_get(Pistache::Http::ResponseWriter &response);
     void apps_id_get(const int32_t &id, Pistache::Http::ResponseWriter &response);
-    void user_developer_form_form_id_get(const std::string &developer, const int32_t &formId, Pistache::Http::ResponseWriter &response);
-    void user_developer_form_get(const std::string &developer, Pistache::Http::ResponseWriter &response);
-    void user_developer_form_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response);
+    void user_developer_app_app_id_get(const std::string &developer, const int32_t &appId, Pistache::Http::ResponseWriter &response);
+    void user_developer_app_get(const std::string &developer, Pistache::Http::ResponseWriter &response);
+    void user_developer_app_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response);
     void user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response);
     void user_username_apps_get(const std::string &username, Pistache::Http::ResponseWriter &response);
     void user_username_apps_install_app_id_delete(const std::string &username, const int32_t &installAppId, Pistache::Http::ResponseWriter &response);

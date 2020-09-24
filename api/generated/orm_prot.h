@@ -8,7 +8,7 @@
 
 namespace orm_prot
 {
-  namespace FormSessions_
+  namespace AppSessions_
   {
     struct Id
     {
@@ -58,44 +58,44 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::require_insert>;
     };
-    struct UserForms
+    struct UserApps
     {
       struct _alias_t
       {
-        static constexpr const char _literal[] =  "user_forms";
+        static constexpr const char _literal[] =  "user_apps";
         using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
         template<typename T>
         struct _member_t
           {
-            T userForms;
-            T& operator()() { return userForms; }
-            const T& operator()() const { return userForms; }
+            T userApps;
+            T& operator()() { return userApps; }
+            const T& operator()() const { return userApps; }
           };
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
     };
-  } // namespace FormSessions_
+  } // namespace AppSessions_
 
-  struct FormSessions: sqlpp::table_t<FormSessions,
-               FormSessions_::Id,
-               FormSessions_::UnqName,
-               FormSessions_::Json,
-               FormSessions_::UserForms>
+  struct AppSessions: sqlpp::table_t<AppSessions,
+               AppSessions_::Id,
+               AppSessions_::UnqName,
+               AppSessions_::Json,
+               AppSessions_::UserApps>
   {
     struct _alias_t
     {
-      static constexpr const char _literal[] =  "form_sessions";
+      static constexpr const char _literal[] =  "app_sessions";
       using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
       template<typename T>
       struct _member_t
       {
-        T formSessions;
-        T& operator()() { return formSessions; }
-        const T& operator()() const { return formSessions; }
+        T appSessions;
+        T& operator()() { return appSessions; }
+        const T& operator()() const { return appSessions; }
       };
     };
   };
-  namespace Forms_
+  namespace Apps_
   {
     struct Id
     {
@@ -193,26 +193,26 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::tinyint>;
     };
-  } // namespace Forms_
+  } // namespace Apps_
 
-  struct Forms: sqlpp::table_t<Forms,
-               Forms_::Id,
-               Forms_::Json,
-               Forms_::Name,
-               Forms_::Developer,
-               Forms_::IdPublic,
-               Forms_::Disabled>
+  struct Apps: sqlpp::table_t<Apps,
+               Apps_::Id,
+               Apps_::Json,
+               Apps_::Name,
+               Apps_::Developer,
+               Apps_::IdPublic,
+               Apps_::Disabled>
   {
     struct _alias_t
     {
-      static constexpr const char _literal[] =  "forms";
+      static constexpr const char _literal[] =  "apps";
       using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
       template<typename T>
       struct _member_t
       {
-        T forms;
-        T& operator()() { return forms; }
-        const T& operator()() const { return forms; }
+        T apps;
+        T& operator()() { return apps; }
+        const T& operator()() const { return apps; }
       };
     };
   };
@@ -452,18 +452,18 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
-    struct FromUserFormsId
+    struct FromUserAppsId
     {
       struct _alias_t
       {
-        static constexpr const char _literal[] =  "from_user_forms_id";
+        static constexpr const char _literal[] =  "from_user_apps_id";
         using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
         template<typename T>
         struct _member_t
           {
-            T fromUserFormsId;
-            T& operator()() { return fromUserFormsId; }
-            const T& operator()() const { return fromUserFormsId; }
+            T fromUserAppsId;
+            T& operator()() { return fromUserAppsId; }
+            const T& operator()() const { return fromUserAppsId; }
           };
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::can_be_null>;
@@ -527,7 +527,7 @@ namespace orm_prot
                Tasks_::End,
                Tasks_::ConfirmedDone,
                Tasks_::ExternalId,
-               Tasks_::FromUserFormsId,
+               Tasks_::FromUserAppsId,
                Tasks_::ProtId,
                Tasks_::CreatedAt,
                Tasks_::UpdatedAt>
@@ -738,7 +738,7 @@ namespace orm_prot
       };
     };
   };
-  namespace UsersForms_
+  namespace UsersApps_
   {
     struct Id
     {
@@ -772,39 +772,39 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
     };
-    struct Idform
+    struct Idapp
     {
       struct _alias_t
       {
-        static constexpr const char _literal[] =  "idform";
+        static constexpr const char _literal[] =  "idapp";
         using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
         template<typename T>
         struct _member_t
           {
-            T idform;
-            T& operator()() { return idform; }
-            const T& operator()() const { return idform; }
+            T idapp;
+            T& operator()() { return idapp; }
+            const T& operator()() const { return idapp; }
           };
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
     };
-  } // namespace UsersForms_
+  } // namespace UsersApps_
 
-  struct UsersForms: sqlpp::table_t<UsersForms,
-               UsersForms_::Id,
-               UsersForms_::Iduser,
-               UsersForms_::Idform>
+  struct UsersApps: sqlpp::table_t<UsersApps,
+               UsersApps_::Id,
+               UsersApps_::Iduser,
+               UsersApps_::Idapp>
   {
     struct _alias_t
     {
-      static constexpr const char _literal[] =  "users_forms";
+      static constexpr const char _literal[] =  "users_apps";
       using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
       template<typename T>
       struct _member_t
       {
-        T usersForms;
-        T& operator()() { return usersForms; }
-        const T& operator()() const { return usersForms; }
+        T usersApps;
+        T& operator()() { return usersApps; }
+        const T& operator()() const { return usersApps; }
       };
     };
   };

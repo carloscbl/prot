@@ -45,10 +45,10 @@ using enum_of_json_t = nlohmann::detail::value_t;
 using e_branches = if_branch;
 
 
-class form_subsection_ADT{
+class app_subsection_ADT{
 public:
     string section_name;
-    form_subsection_ADT(const json & j,string sec_name);
+    app_subsection_ADT(const json & j,string sec_name);
     void print_section();
     map<string,json> section;
 };
@@ -56,7 +56,7 @@ public:
 struct strategy_return{
 public:
     int if_branch = static_cast<int>(e_branches::ERROR_JSON); //Id of the the next question
-    optional<string> taskstory_id;// Name of the taskstory to perform
+    optional<string> taskstory_id;// Name of the taskstory to perapp
     json validated_user_input;
 };
 
@@ -108,7 +108,7 @@ struct next_question_data_and_taskstory_input
     string next_question_text; // result of the state machine to be the next question text to show to the user
     json raw_taskstory;
     string taskstory_name; // Name of the taskstory branch to be executed
-    map<string,json> form_variables; // Variables of the context user + app, to be used on expansion of taskstory
+    map<string,json> app_variables; // Variables of the context user + app, to be used on expansion of taskstory
     json user_input; // This will be passed but have no use for now maybe in future
     unique_ptr<std::vector<json>> non_wildcard_expanded_taskstory;
     unique_ptr<std::unordered_map<int,std::vector<json>>> wildcard_expanded_taskstory;
@@ -131,8 +131,8 @@ void from_json(const nlohmann::json& ref_json, app_state& new_state);
 class app_parser{
 private:
     const json & j;
-    map<string,unique_ptr<form_subsection_ADT>> subsections;
-    map<string,unique_ptr<form_subsection_ADT>> discover;
+    map<string,unique_ptr<app_subsection_ADT>> subsections;
+    map<string,unique_ptr<app_subsection_ADT>> discover;
     int current_id = static_cast<int>(e_branches::FIRST);
     string current_answer;
     int next_branch_id = static_cast<int>(e_branches::RESTART);
@@ -144,7 +144,7 @@ private:
 
     std::optional<json> find_questions_by_id(int id) const noexcept;
     
-    unique_ptr <next_question_data_and_taskstory_input> form_traverse(const json & answer_input){
+    unique_ptr <next_question_data_and_taskstory_input> app_traverse(const json & answer_input){
         //int id = current_id;
         //cout << "A: " << answer << endl;
         return get_next(answer_input);
@@ -155,8 +155,8 @@ private:
         else {return false;}
     }
 
-    void form_publisher_vars(){
-        for(auto & section : {"form"}){
+    void app_publisher_vars(){
+        for(auto & section : {"app"}){
             for (auto [k,v]: subsections[section]->section){
                 variables[k] = v;
                 //cout << k << v << endl;
@@ -164,7 +164,7 @@ private:
         }
     }
 
-    void form_ready(){}
+    void app_ready(){}
 
     void user_import_preferences(){
         variables["user.user"] = "carlos";
@@ -172,25 +172,25 @@ private:
 
 public:
 
-    unique_ptr <next_question_data_and_taskstory_input> form_next_in_pipeline(const json & answer_input){
+    unique_ptr <next_question_data_and_taskstory_input> app_next_in_pipeline(const json & answer_input){
         //The follow order
-        form_ready();
-        auto next_question = form_traverse(answer_input);
-        form_publisher_vars();
+        app_ready();
+        auto next_question = app_traverse(answer_input);
+        app_publisher_vars();
 
-        user_import_preferences(); //This overrides default form vars, that are configurables
+        user_import_preferences(); //This overrides default app vars, that are configurables
         
-        next_question->form_variables = this->variables;
+        next_question->app_variables = this->variables;
         return next_question;
     }
     app_parser(const json & j);
     app_parser(const json & j,const app_state & fs);
     const vector<string> subsection_names{
-        "form", "questions"
+        "app", "questions"
     };
 
     const string get_name(){
-        return subsections["form"]->section["form.name"].get<string>();
+        return subsections["app"]->section["app.name"].get<string>();
     }
     
     unique_ptr <next_question_data_and_taskstory_input> get_initial_question() const noexcept{

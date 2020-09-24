@@ -1,7 +1,7 @@
 #include "Catch2/catch.hpp"
 #include "json.hpp"
 #include "user.h"
-#include "form.h"
+#include "app.h"
 #include "task_restrictions.h"
 #include "cloud_app_runner.h"
 
@@ -40,9 +40,9 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     });
     const auto & carlos = user::users["carloscbl"];
     REQUIRE( carlos->get_name() == "carloscbl" );
-    form _(test_app_json);
-    const auto & form = form::get_forms_register().at("test Daily workout");
-    cloud_app_runner fr(*carlos, *form, 8);
+    app _(test_app_json);
+    const auto & app = app::get_apps_register().at("test Daily workout");
+    cloud_app_runner fr(*carlos, *app, 8);
     auto question_test = test_app_json["questions"].at(2);
     next_question_data_and_taskstory_input nqdati;
     nqdati.next_question_text="bla bla";
@@ -84,12 +84,12 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
 //     qa_request2["answer"] = "yes";
 //     qa_request3["answer"] = "5";
     
-//     const auto & form = form::get_forms_register().at("Washer easer");
+//     const auto & app = app::get_apps_register().at("Washer easer");
 
 
-//     REQUIRE( form->get_form_name() == "Washer easer" );
+//     REQUIRE( app->get_app_name() == "Washer easer" );
 
-//     cloud_app_runner fr(*carlos, *form);
+//     cloud_app_runner fr(*carlos, *app);
 
 //     auto &response = fr.run(qa_request1);
 //     //cout << response.dump() <<endl;
@@ -171,12 +171,12 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
 //     qa_request3["answer"] = "50";
 //     qa_request4["answer"] = "yes";
     
-//     const auto & form = form::get_forms_register().at("Washer easer");
+//     const auto & app = app::get_apps_register().at("Washer easer");
 
 
-//     REQUIRE( form->get_form_name() == "Washer easer" );
+//     REQUIRE( app->get_app_name() == "Washer easer" );
 
-//     cloud_app_runner fr(*carlos, *form);
+//     cloud_app_runner fr(*carlos, *app);
 
 //     auto &response = fr.run(qa_request1);
 //     //cout << response.dump() <<endl;
@@ -236,12 +236,12 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
 //     qa_request3["answer"] = "50";
 //     qa_request4["answer"] = "yes";
     
-//     const auto & form = form::get_forms_register().at("Washer easer");
+//     const auto & app = app::get_apps_register().at("Washer easer");
 
 
-//     REQUIRE( form->get_form_name() == "Washer easer" );
+//     REQUIRE( app->get_app_name() == "Washer easer" );
 
-//     cloud_app_runner fr(*carlos, *form);
+//     cloud_app_runner fr(*carlos, *app);
 //     fr.clear_sessions();
 
 //     auto &response = fr.run(qa_request1);
@@ -300,14 +300,14 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
 //     qa_request2["answer"] = "yes";
 //     qa_request3["answer"] = "5";
     
-//     const auto & form = form::get_forms_register().at("Washer easer");
+//     const auto & app = app::get_apps_register().at("Washer easer");
 
 //     carlos->get_scheduler().add_single(get_collider(days(1) + hours(1), hours(22)));
 //     //carlos->get_scheduler().print_out();
 
-//     REQUIRE( form->get_form_name() == "Washer easer" );
+//     REQUIRE( app->get_app_name() == "Washer easer" );
 
-//     cloud_app_runner fr(*carlos, *form);
+//     cloud_app_runner fr(*carlos, *app);
 
 //     auto &response = fr.run(qa_request1);
 //     // cout << response.dump() <<endl;

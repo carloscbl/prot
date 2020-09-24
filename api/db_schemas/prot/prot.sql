@@ -11,21 +11,21 @@ DROP DATABASE IF EXISTS `prot`;
 CREATE DATABASE `prot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `prot`;
 
-DROP TABLE IF EXISTS `form_sessions`;
-CREATE TABLE `form_sessions` (
+DROP TABLE IF EXISTS `app_sessions`;
+CREATE TABLE `app_sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `unq_name` varchar(720) NOT NULL,
   `json` json NOT NULL,
-  `user_forms` int(11) NOT NULL,
+  `user_apps` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `unq_name` (`unq_name`),
-  KEY `user_forms` (`user_forms`),
-  CONSTRAINT `form_sessions_ibfk_2` FOREIGN KEY (`user_forms`) REFERENCES `users_forms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `user_apps` (`user_apps`),
+  CONSTRAINT `app_sessions_ibfk_2` FOREIGN KEY (`user_apps`) REFERENCES `users_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-DROP TABLE IF EXISTS `forms`;
-CREATE TABLE `forms` (
+DROP TABLE IF EXISTS `apps`;
+CREATE TABLE `apps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `json` json NOT NULL,
   `name` varchar(360) NOT NULL,
@@ -34,7 +34,7 @@ CREATE TABLE `forms` (
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `developer` (`developer`),
-  CONSTRAINT `forms_ibfk_1` FOREIGN KEY (`developer`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `apps_ibfk_1` FOREIGN KEY (`developer`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -70,7 +70,7 @@ CREATE TABLE `tasks` (
   `end` timestamp NULL DEFAULT NULL,
   `confirmed_done` tinyint(1) DEFAULT NULL,
   `external_id` varchar(360) DEFAULT NULL,
-  `from_user_forms_id` int(11) DEFAULT NULL,
+  `from_user_apps_id` int(11) DEFAULT NULL,
   `prot_id` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -79,9 +79,9 @@ CREATE TABLE `tasks` (
   KEY `name` (`name`),
   KEY `group` (`group`),
   KEY `id` (`id`),
-  KEY `from_user_forms_id` (`from_user_forms_id`),
+  KEY `from_user_apps_id` (`from_user_apps_id`),
   KEY `prot_id` (`prot_id`),
-  CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`from_user_forms_id`) REFERENCES `users_forms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`from_user_apps_id`) REFERENCES `users_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -123,19 +123,19 @@ CREATE TABLE `users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
-DROP TABLE IF EXISTS `users_forms`;
-CREATE TABLE `users_forms` (
+DROP TABLE IF EXISTS `users_apps`;
+CREATE TABLE `users_apps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `iduser` int(11) NOT NULL,
-  `idform` int(11) NOT NULL,
+  `idapp` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
-  UNIQUE KEY `user_form` (`iduser`,`idform`),
+  UNIQUE KEY `user_app` (`iduser`,`idapp`),
   KEY `iduser` (`iduser`),
-  KEY `idform` (`idform`),
+  KEY `idapp` (`idapp`),
   KEY `id_index` (`id`),
-  CONSTRAINT `users_forms_ibfk_3` FOREIGN KEY (`iduser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `users_forms_ibfk_6` FOREIGN KEY (`idform`) REFERENCES `forms` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `users_apps_ibfk_3` FOREIGN KEY (`iduser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `users_apps_ibfk_6` FOREIGN KEY (`idapp`) REFERENCES `apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 

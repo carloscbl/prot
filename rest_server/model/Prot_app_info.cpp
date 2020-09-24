@@ -20,8 +20,8 @@ namespace model {
 
 Prot_app_info::Prot_app_info()
 {
-    m_Form_id = 0;
-    m_Form_name = "";
+    m_App_id = 0;
+    m_App_name = "";
     
 }
 
@@ -37,31 +37,31 @@ void Prot_app_info::validate()
 void to_json(nlohmann::json& j, const Prot_app_info& o)
 {
     j = nlohmann::json();
-    j["form_id"] = o.m_Form_id;
-    j["form_name"] = o.m_Form_name;
+    j["app_id"] = o.m_App_id;
+    j["app_name"] = o.m_App_name;
 }
 
 void from_json(const nlohmann::json& j, Prot_app_info& o)
 {
-    j.at("form_id").get_to(o.m_Form_id);
-    j.at("form_name").get_to(o.m_Form_name);
+    j.at("app_id").get_to(o.m_App_id);
+    j.at("app_name").get_to(o.m_App_name);
 }
 
-int32_t Prot_app_info::getFormId() const
+int32_t Prot_app_info::getAppId() const
 {
-    return m_Form_id;
+    return m_App_id;
 }
-void Prot_app_info::setFormId(int32_t const value)
+void Prot_app_info::setAppId(int32_t const value)
 {
-    m_Form_id = value;
+    m_App_id = value;
 }
-std::string Prot_app_info::getFormName() const
+std::string Prot_app_info::getAppName() const
 {
-    return m_Form_name;
+    return m_App_name;
 }
-void Prot_app_info::setFormName(std::string const& value)
+void Prot_app_info::setAppName(std::string const& value)
 {
-    m_Form_name = value;
+    m_App_name = value;
 }
 
 }
