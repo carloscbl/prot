@@ -20,7 +20,7 @@ namespace model {
 
 Inline_object_2::Inline_object_2()
 {
-    m_Form_objIsSet = false;
+    m_App_objIsSet = false;
     
 }
 
@@ -36,35 +36,35 @@ void Inline_object_2::validate()
 void to_json(nlohmann::json& j, const Inline_object_2& o)
 {
     j = nlohmann::json();
-    if(o.formObjIsSet())
-        j["form_obj"] = o.m_Form_obj;
+    if(o.appObjIsSet())
+        j["app_obj"] = o.m_App_obj;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_2& o)
 {
-    if(j.find("form_obj") != j.end())
+    if(j.find("app_obj") != j.end())
     {
-        o.m_Form_obj = j.at("form_obj");
-        o.m_Form_objIsSet = true;
+        j.at("app_obj").get_to(o.m_App_obj);
+        o.m_App_objIsSet = true;
     } 
 }
 
-Object Inline_object_2::getFormObj() const
+Object Inline_object_2::getAppObj() const
 {
-    return m_Form_obj;
+    return m_App_obj;
 }
-void Inline_object_2::setFormObj(Object const& value)
+void Inline_object_2::setAppObj(Object const& value)
 {
-    m_Form_obj = value;
-    m_Form_objIsSet = true;
+    m_App_obj = value;
+    m_App_objIsSet = true;
 }
-bool Inline_object_2::formObjIsSet() const
+bool Inline_object_2::appObjIsSet() const
 {
-    return m_Form_objIsSet;
+    return m_App_objIsSet;
 }
-void Inline_object_2::unsetForm_obj()
+void Inline_object_2::unsetApp_obj()
 {
-    m_Form_objIsSet = false;
+    m_App_objIsSet = false;
 }
 
 }

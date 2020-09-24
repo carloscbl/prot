@@ -44,16 +44,16 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    Object getFormObj() const;
-    void setFormObj(Object const& value);
-    bool formObjIsSet() const;
-    void unsetForm_obj();
+    Object getAppObj() const;
+    void setAppObj(Object const& value);
+    bool appObjIsSet() const;
+    void unsetApp_obj();
 
     friend void to_json(nlohmann::json& j, const Inline_object_2& o);
     friend void from_json(const nlohmann::json& j, Inline_object_2& o);
 protected:
-    nlohmann::json m_Form_obj;
-    bool m_Form_objIsSet;
+    nlohmann::json m_App_obj;
+    bool m_App_objIsSet;
 };
 
 }

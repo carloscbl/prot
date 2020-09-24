@@ -43,7 +43,7 @@ void to_json(nlohmann::json& j, const Inline_object_1& o)
 void from_json(const nlohmann::json& j, Inline_object_1& o)
 {
     j.at("type_of_task").get_to(o.m_Type_of_task);
-    o.m_Task = j.at("task");
+    j.at("task").get_to(o.m_Task);
 }
 
 std::string Inline_object_1::getTypeOfTask() const
