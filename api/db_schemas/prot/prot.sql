@@ -84,7 +84,7 @@ CREATE TABLE `tasks` (
   KEY `prot_id` (`prot_id`),
   KEY `session_id` (`session_id`),
   CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`from_user_apps_id`) REFERENCES `users_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `tasks_ibfk_3` FOREIGN KEY (`session_id`) REFERENCES `app_sessions` (`id`)
+  CONSTRAINT `tasks_ibfk_7` FOREIGN KEY (`session_id`) REFERENCES `app_sessions` (`id`) ON DELETE SET NULL ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -142,4 +142,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-09-25 16:28:17
+-- 2020-09-25 17:50:49

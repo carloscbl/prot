@@ -426,7 +426,7 @@ inline map<uint64_t,unique_ptr<task>> search_tasks_by_not_this_session_id(const 
     orm_prot::Tasks tsk;
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(tsk)
-                                .where(tsk.sessionId != session_id and tsk.fromUserAppsId == user_apps_id);
+                                .where((tsk.sessionId != session_id or tsk.sessionId.is_null()) and tsk.fromUserAppsId == user_apps_id);
     map<uint64_t,unique_ptr<task>> vtasks;
     for (const auto & row : db(select))
     {
@@ -465,17 +465,22 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
     return vtasks;
 }
 
-inline void delete_task(const vector<uint64_t> task_ids)
+inline void delete_task(const vector<uint64_t> & task_ids)
 {
+    if(task_ids.empty()){
+        return;
+    }
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
-    auto remove_query = dynamic_remove(db).from(tsk).dynamic_where();
-    for (auto &&i : task_ids)
-    {
-        remove_query.where.add(tsk.id == i);
-    }
+    db(remove_from(tsk).where(tsk.id.in(sqlpp::value_list(task_ids))));
+    // auto remove_query = dynamic_remove(db).from(tsk).dynamic_where();
+    // for (auto &&i : task_ids)
+    // {
+    //     tsk.id.not_in
+    //     remove_query.where.add(tsk.id == i);
+    // }
 
-    db(remove_query);
+    // db(remove_query);
 }
 
 inline void delete_task(const uint64_t task_id)
