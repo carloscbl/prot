@@ -516,6 +516,22 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
     };
+    struct SessionId
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "session_id";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T sessionId;
+            T& operator()() { return sessionId; }
+            const T& operator()() const { return sessionId; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::can_be_null>;
+    };
   } // namespace Tasks_
 
   struct Tasks: sqlpp::table_t<Tasks,
@@ -530,7 +546,8 @@ namespace orm_prot
                Tasks_::FromUserAppsId,
                Tasks_::ProtId,
                Tasks_::CreatedAt,
-               Tasks_::UpdatedAt>
+               Tasks_::UpdatedAt,
+               Tasks_::SessionId>
   {
     struct _alias_t
     {

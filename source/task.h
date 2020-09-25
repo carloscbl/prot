@@ -59,6 +59,7 @@ namespace task_space{
             size_t value;
         };
         optional<designated_period> m_designated_period = nullopt;
+        optional<uint64_t> m_session_id = nullopt;
 
         friend void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new_task);
         friend void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
@@ -77,8 +78,9 @@ namespace task_space{
         inline void set_tag          (string tag_)             { this->tag = tag_; }
         inline void set_description  (string description_)     { this->description = description_; }
         inline void set_user         (string user_)            { this->m_user = user_; }
-        inline void set_user_apps_id(uint64_t uf_id)          { this->user_apps_id = uf_id; }
+        inline void set_user_apps_id (uint64_t uf_id)          { this->user_apps_id = uf_id; }
         inline void set_json         (nlohmann::json & json_)  { this->inner_json = json_; }
+        inline void set_session_id   (optional<uint64_t> session_id)  { this->m_session_id = session_id; }
         inline void set_interval(time_t start, time_t end)     {
                                                      this->interval.start = start;
                                                      this->interval.end = end;
@@ -98,6 +100,7 @@ namespace task_space{
         inline const when          & get_when()        const noexcept { return m_when; }
         inline const nlohmann::json& get_json()        const noexcept { return inner_json; }
         inline const optional<designated_period> & get_designated_period() const noexcept { return m_designated_period; }
+        inline const optional<uint64_t> & get_session_id() const noexcept { return m_session_id; }
 
 
         void print_() { cout << id << ":" << tag << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }

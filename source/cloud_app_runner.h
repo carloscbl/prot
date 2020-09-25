@@ -40,6 +40,7 @@ protected:
     unique_ptr<app_parser> fp;
 
 public:
+    uint64_t m_session_id = 0;
     cloud_app_runner(user & user_, app &app_);
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_taskstory(next_question_data_and_taskstory_input & response);

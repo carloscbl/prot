@@ -23,6 +23,7 @@ void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_t
     new_json["restrictions"]= ref_task.get_restrictions().get_restrictions();
     new_json["frequency"]   = ref_task.get_frequency().get_frequency_name();
     new_json["id"]          = ref_task.get_id();
+    new_json["session_id"]  = ref_task.get_session_id().value_or(0);
 
     if(!ref_task.get_when().after.empty()){
         new_json["when"] = ref_task.get_when();
@@ -55,6 +56,9 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
     if(ref_json.find("id") != ref_json.end()){
         ref_json.at("id").get_to(new_task.id);
     }
+    if(ref_json.find("session_id") != ref_json.end()){
+        new_task.set_session_id(ref_json.at("session_id").get<uint64_t>());
+    }
     for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
         if(ref_json.find(k) != ref_json.end()){
             new_task.m_designated_period = task::designated_period{
@@ -86,6 +90,9 @@ void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space:
     if(ref_json.find("id") != ref_json.end()){
         ref_json.at("id").get_to(new_task.id);
     }
+    if(ref_json.find("session_id") != ref_json.end()){
+        new_task.set_session_id(ref_json.at("session_id").get<uint64_t>());
+    }
     for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
         if(ref_json.find(k) != ref_json.end()){
             new_task.m_designated_period = task::designated_period{
@@ -116,6 +123,9 @@ void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space:
     }
     if(ref_json.find("id") != ref_json.end()){
         ref_json.at("id").get_to(new_task.id);
+    }
+    if(ref_json.find("session_id") != ref_json.end()){
+        new_task.set_session_id(ref_json.at("session_id").get<uint64_t>());
     }
     for(const auto & [k,mappings] : prot::designated_periods_to_ratio){
         if(ref_json.find(k) != ref_json.end()){

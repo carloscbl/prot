@@ -1,4 +1,4 @@
--- Adminer 4.7.6 MySQL dump
+-- Adminer 4.7.7 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -74,6 +74,7 @@ CREATE TABLE `tasks` (
   `prot_id` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `created_at` datetime DEFAULT CURRENT_TIMESTAMP,
   `updated_at` datetime DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `session_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `external_id` (`external_id`),
   KEY `name` (`name`),
@@ -81,7 +82,9 @@ CREATE TABLE `tasks` (
   KEY `id` (`id`),
   KEY `from_user_apps_id` (`from_user_apps_id`),
   KEY `prot_id` (`prot_id`),
-  CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`from_user_apps_id`) REFERENCES `users_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `session_id` (`session_id`),
+  CONSTRAINT `tasks_ibfk_2` FOREIGN KEY (`from_user_apps_id`) REFERENCES `users_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `tasks_ibfk_3` FOREIGN KEY (`session_id`) REFERENCES `app_sessions` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -139,4 +142,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-06-28 15:51:02
+-- 2020-09-25 16:28:17

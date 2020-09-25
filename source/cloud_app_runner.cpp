@@ -29,6 +29,7 @@ string cloud_app_runner::get_unique_id_session() const noexcept
 const json cloud_app_runner::run(const json &request_json) noexcept
 {
     const auto &state = fetch_next_session();
+    this->m_session_id = state->id;
     app_parser fp(app_.get_json(), *state); //,*state
     unique_ptr<next_question_data_and_taskstory_input> response;
     if (request_json.is_null()) // Get, for get current state, for example for resume questionary
@@ -69,8 +70,22 @@ const json cloud_app_runner::run(const json &request_json) noexcept
         std::cerr << e.what() << '\n';
     }
     
-    if(!schedule_taskstory(*response)){
-        //Set response_j error message
+    if(schedule_taskstory(*response))
+    {
+        // if we have successfully completed the process means we have to apply domain logic
+        // Delete same user_app tasks already scheduled
+        // this->user_apps_id // To search for the apps
+        // this->m_session_id  // To search for the apps
+        auto tasks_to_delete =  search_tasks_by_not_this_session_id(this->m_session_id, this->user_apps_id);
+        vector<uint64_t> to_delete_ids;
+        to_delete_ids.reserve(tasks_to_delete.size());
+        std::for_each(tasks_to_delete.cbegin(),tasks_to_delete.cend(), [&to_delete_ids](const auto & pair){
+            fmt::print("storing to deleting task {}",pair.first);
+            to_delete_ids.push_back( pair.first );
+        });
+        delete_task(to_delete_ids);
+    }else{
+
     }
 
     return response_j;
@@ -98,6 +113,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
             task_test->inner_json["app_id"] = this->app_.get_id();
             task_test->set_user(this->user_.get_name());
             task_test->set_user_apps_id(user_apps_id);
+            task_test->set_session_id(m_session_id);
             time_determinator time_dt(task_test, provisional_scheduler);
             //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
@@ -141,6 +157,7 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
             task_test->inner_json["app_id"] = this->app_.get_id();
             task_test->set_user(this->user_.get_name());
             task_test->set_user_apps_id(user_apps_id);
+            task_test->set_session_id(m_session_id);
             string tag = task_test->get_tag();
             time_determinator time_dt(task_test, provisional_scheduler, k);
             //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;

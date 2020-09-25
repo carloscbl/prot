@@ -54,7 +54,7 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     expand_taskstory_t et (nqdati);
 
     CHECK(et.expand_and_set()); // check expansion!
-
+    fr.m_session_id = 8;
     fr.schedule_taskstory(nqdati);
     auto & tkr = carlos->get_tasker();
     auto & sche = carlos->get_scheduler();

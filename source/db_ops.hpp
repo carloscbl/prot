@@ -351,7 +351,8 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         tks.end = sqlpp::tvin(system_clock::from_time_t(task_.get_interval().end)),
         tks.externalId = sqlpp::tvin(external_id),
         tks.fromUserAppsId = sqlpp::tvin(task_.get_user_apps_id()),
-        tks.protId = sqlpp::tvin(prot_id)
+        tks.protId = sqlpp::tvin(prot_id),
+        tks.sessionId = sqlpp::tvin(task_.get_session_id().value_or(0))
     ));
     if (tsk_res < 1)
     {
@@ -418,6 +419,27 @@ inline unique_ptr<task> read_task(const string &username, const uint64_t task_id
     return tk;
 }
 
+
+inline map<uint64_t,unique_ptr<task>> search_tasks_by_not_this_session_id(const uint64_t session_id, const uint64_t user_apps_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::Tasks tsk;
+    const auto & select = sqlpp::select(all_of(tsk))
+                                .from(tsk)
+                                .where(tsk.sessionId != session_id and tsk.fromUserAppsId == user_apps_id);
+    map<uint64_t,unique_ptr<task>> vtasks;
+    for (const auto & row : db(select))
+    {
+        json js  = json::parse(row.json.value());
+
+        auto tk = make_unique<task>();
+        from_json(js,*tk);
+        tk->set_id(row.id);
+        vtasks[row.id] = move(tk);
+    }
+    return vtasks;
+}
+
 inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
@@ -441,6 +463,19 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
         vtasks[row.id] = move(tk);
     }
     return vtasks;
+}
+
+inline void delete_task(const vector<uint64_t> task_ids)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::Tasks tsk;
+    auto remove_query = dynamic_remove(db).from(tsk).dynamic_where();
+    for (auto &&i : task_ids)
+    {
+        remove_query.where.add(tsk.id == i);
+    }
+
+    db(remove_query);
 }
 
 inline void delete_task(const uint64_t task_id)
