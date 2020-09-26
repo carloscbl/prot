@@ -1,0 +1,33 @@
+Repeat tasks based on periods POC
+
+# the main idea is that an app have a close range of possible tasks.
+# Every individual tasks have a period pattern "frequency" wich is mapped in the frequency files
+# If is a wildcard tasks is hold into a previous set of tasks pattern, being based on day_week=weekly, day_month=monthly
+#   meaning that the specific set of tasks need to be recreated to the follow period -> next week -> next monthly with the same pattern
+
+# Bussines logic is to delete past(expired) tasks by 1 day.
+# in order to archieve this projection on time we can use few strategies:
+
+#   1º COPY the current stored set of tasks into the next period
+    how: match app in db, get tasks from db, copy them ,extract frequency (individuals and wildcard), solve next period (current + 1<T_period> ), set into db
+    how2:
+        - An worker watcher will dogward current and follow periods ,
+        - Instead a worker, every CRUD of an installed app will set a job to copy into the follow period
+    pros: straighforward, lightweight since dont require answers, should not have breakpoints, since recreated on CRUD App QA
+    cons: external answers will be stored in the future anyway, doenst support next period be different from current
+
+#   2º Recreate them based on a set of answers(can be different of the original):
+    how: match app in db, get target answers, reproducce secuence of answers, solve next period (current + 1<T_period> ), fake starting point using solver new start, create and expand, set into db
+    how2:
+        - An worker watcher will dogward current and follow periods ,
+        - Instead a worker, every CRUD of an installed app will set a job to copy into the follow period
+    how3:
+        -Will requiere a solve a hierarchy of answers..., 
+            -if none, use original, answers
+            -if selected, use selected, one
+            -if multiple, use last one?
+    pros: Very flexible system
+    Cons: we arent there yet, would need to implement
+        GUI  -> selector of answers or edition of answers
+        DB   -> store N amount of SETs of answers
+        PROT -> Select answers, and replay creation is expensive
