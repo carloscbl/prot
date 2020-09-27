@@ -608,7 +608,7 @@ inline bool delete_session(const uint64_t fs_id)
 }
 
 
-inline bool read_prot_jobs(std::chrono::seconds lock_time)
+inline map<uint64_t, unique_ptr<json>> read_prot_jobs(std::chrono::seconds lock_time)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::ProtJobs jobs_;
@@ -621,22 +621,71 @@ inline bool read_prot_jobs(std::chrono::seconds lock_time)
 
     const auto & select = sqlpp::select(all_of(jobs_)).from(jobs_)
             // .where( x  );
-            .where( jobs_.startedAt.is_null()  or  jobs_.startedAt > ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time) );
-    db(select);
-    return true;
-    // const auto & resu = db(select);
-    // for (const auto & row : resu)
-    // {
-    //     cout << row.json.text << endl;
-    //     cout << row.json.value() << endl;
-    // }
-    // if(resu. empty()){
-    //     return nullptr;
-    // }
-    // const auto & row = resu.front();
+            .where( jobs_.startedAt.is_null()  or  jobs_.startedAt < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time) );
+    map<uint64_t,unique_ptr<json>> jobs;
+    for (const auto & row : db(select))
+    {
+        cout << row.jobJson.value() << endl;
+        
+        auto new_job = make_unique<json>( json::parse(row.jobJson.value()) ); 
+        (*new_job)["id"] = row.id.value();
+        jobs[row.id.value()] = move(new_job);
+    }
+    return jobs;
 }
 
+inline uint64_t create_prot_jobs(const json & job )
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::ProtJobs jobs_;
 
+    const  auto & result = db(insert_into(jobs_).set( jobs_.jobJson = job.dump() ));
+    if(result <= 0){ return 0; }
+    return result;
+}
+
+inline bool update_prot_jobs(uint64_t id, const json & job )
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::ProtJobs jobs_;
+
+    auto expr = dynamic_update(db,jobs_).dynamic_set().where(jobs_.id == id);
+    expr.assignments.add( jobs_.jobJson = job.dump() );
+    if(job.find("started_at") != job.end()){
+        expr.assignments.add( jobs_.startedAt = system_clock::from_time_t( job["started_at"].get<uint64_t>() ) );
+    }
+    const  auto & result = db(expr);
+    if(result <= 0){ return false; }
+    return true;
+}
+namespace db_ops{
+
+
+template<typename T_table>
+inline bool remove(uint64_t id){
+    auto &db = mysql_db::get_db_lazy().db;
+    T_table table;
+    if(db(remove_from(table).using_(table).where( 
+    table.id == id
+    ))){
+        return true;
+    }
+    return false;
+}
+
+template<typename T_table>
+inline bool remove_in(vector<uint64_t> ids){
+    auto &db = mysql_db::get_db_lazy().db;
+    T_table table;
+    if(db(remove_from(table).using_(table).where( 
+    table.id.in(sqlpp::value_list(ids))
+    ))){
+        return true;
+    }
+    return false;
+}
+
+}
 //https://github.com/rbock/sqlpp11/wiki/Select
 inline void join()
 {
