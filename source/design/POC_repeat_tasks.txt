@@ -31,3 +31,9 @@ Repeat tasks based on periods POC
         GUI  -> selector of answers or edition of answers
         DB   -> store N amount of SETs of answers
         PROT -> Select answers, and replay creation is expensive
+
+this time:
+we are goint to go with 1º and "- Instead a worker, every CRUD of an installed app will set a job to copy into the follow period"
+
+things to do:
+create jobs system, cpp and db

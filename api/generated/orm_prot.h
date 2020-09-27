@@ -216,6 +216,93 @@ namespace orm_prot
       };
     };
   };
+  namespace ProtJobs_
+  {
+    struct Id
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "id";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T id;
+            T& operator()() { return id; }
+            const T& operator()() const { return id; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::bigint, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+    };
+    struct StartedAt
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "started_at";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T startedAt;
+            T& operator()() { return startedAt; }
+            const T& operator()() const { return startedAt; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
+    };
+    struct JobJson
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "job_json";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T jobJson;
+            T& operator()() { return jobJson; }
+            const T& operator()() const { return jobJson; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::require_insert>;
+    };
+    struct Type
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "type";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T type;
+            T& operator()() { return type; }
+            const T& operator()() const { return type; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
+    };
+  } // namespace ProtJobs_
+
+  struct ProtJobs: sqlpp::table_t<ProtJobs,
+               ProtJobs_::Id,
+               ProtJobs_::StartedAt,
+               ProtJobs_::JobJson,
+               ProtJobs_::Type>
+  {
+    struct _alias_t
+    {
+      static constexpr const char _literal[] =  "prot_jobs";
+      using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+      template<typename T>
+      struct _member_t
+      {
+        T protJobs;
+        T& operator()() { return protJobs; }
+        const T& operator()() const { return protJobs; }
+      };
+    };
+  };
   namespace Schedulers_
   {
     struct Id

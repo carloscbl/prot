@@ -38,6 +38,16 @@ CREATE TABLE `apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
+DROP TABLE IF EXISTS `prot_jobs`;
+CREATE TABLE `prot_jobs` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `started_at` datetime DEFAULT NULL,
+  `job_json` json NOT NULL,
+  `type` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+
 DROP TABLE IF EXISTS `schedulers`;
 CREATE TABLE `schedulers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -142,4 +152,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-09-25 17:50:49
+-- 2020-09-27 16:45:43

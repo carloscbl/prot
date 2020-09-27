@@ -607,6 +607,36 @@ inline bool delete_session(const uint64_t fs_id)
     return false;
 }
 
+
+inline bool read_prot_jobs(std::chrono::seconds lock_time)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::ProtJobs jobs_;
+    using namespace std::chrono;
+    auto restart_time = std::chrono::system_clock::now() - lock_time;
+
+    // auto x = boolean_expression(db, jobs_.startedAt.is_null() );
+    // x = x or sqlpp::boolean_expression(db, ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time) < jobs_.startedAt  );
+    // auto now = floor<::sqlpp::chrono::days>(std::chrono::system_clock::now());
+
+    const auto & select = sqlpp::select(all_of(jobs_)).from(jobs_)
+            // .where( x  );
+            .where( jobs_.startedAt.is_null()  or  jobs_.startedAt > ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time) );
+    db(select);
+    return true;
+    // const auto & resu = db(select);
+    // for (const auto & row : resu)
+    // {
+    //     cout << row.json.text << endl;
+    //     cout << row.json.value() << endl;
+    // }
+    // if(resu. empty()){
+    //     return nullptr;
+    // }
+    // const auto & row = resu.front();
+}
+
+
 //https://github.com/rbock/sqlpp11/wiki/Select
 inline void join()
 {
