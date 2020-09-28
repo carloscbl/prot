@@ -611,6 +611,9 @@ inline bool delete_session(const uint64_t fs_id)
 inline map<uint64_t, unique_ptr<json>> read_prot_jobs(std::chrono::seconds lock_time)
 {
     auto &db = mysql_db::get_db_lazy().db;
+    // db.start_transaction();
+    // db.commit_transaction();
+
     orm_prot::ProtJobs jobs_;
     using namespace std::chrono;
     auto restart_time = std::chrono::system_clock::now() - lock_time;
