@@ -6,7 +6,7 @@ Repeat tasks based on periods POC
 #   meaning that the specific set of tasks need to be recreated to the follow period -> next week -> next monthly with the same pattern
 
 # Bussines logic is to delete past(expired) tasks by 1 day.
-# in order to archieve this projection on time we can use few strategies:
+# in order to achieve this projection on time we can use few strategies:
 
 #   1º COPY the current stored set of tasks into the next period
     how: match app in db, get tasks from db, copy them ,extract frequency (individuals and wildcard), solve next period (current + 1<T_period> ), set into db

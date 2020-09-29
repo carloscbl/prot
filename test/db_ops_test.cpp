@@ -8,7 +8,7 @@ TEST_CASE( "test jobs", "[runner]" ) {
     job["name"] = "do thing";
     auto id_job = create_prot_jobs(job);
     REQUIRE( id_job > 0);
-    auto result = read_prot_jobs(seconds(2));
+    auto result = read_prot_jobs(seconds(0));
     REQUIRE(result.size() >= 1);
 
     (*result[id_job])["started_at"] = system_clock::to_time_t(system_clock::now());
@@ -20,7 +20,13 @@ TEST_CASE( "test jobs", "[runner]" ) {
     {
         cout << v->dump(4) << endl;
     }
-    // REQUIRE( true == db_ops::remove<orm_prot::ProtJobs>(k));
+    
+    for (auto &&[k,v] : result)
+    {
+        REQUIRE( true == db_ops::remove<orm_prot::ProtJobs>(k));
+        
+    }
+    
     REQUIRE(true);
 
 }
