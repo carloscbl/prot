@@ -282,13 +282,30 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
+    struct StartJobAt
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "start_job_at";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T startJobAt;
+            T& operator()() { return startJobAt; }
+            const T& operator()() const { return startJobAt; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
+    };
   } // namespace ProtJobs_
 
   struct ProtJobs: sqlpp::table_t<ProtJobs,
                ProtJobs_::Id,
                ProtJobs_::StartedAt,
                ProtJobs_::JobJson,
-               ProtJobs_::Type>
+               ProtJobs_::Type,
+               ProtJobs_::StartJobAt>
   {
     struct _alias_t
     {

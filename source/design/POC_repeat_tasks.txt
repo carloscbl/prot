@@ -36,4 +36,14 @@ this time:
 we are goint to go with 1º and "- Instead a worker, every CRUD of an installed app will set a job to copy into the follow period"
 
 things to do:
-create jobs system, cpp and db
+create jobs system, cpp and db -> done
+
+maybe is good idea to do it task by task,
+flow:
+    create task -> get creation id -> set a job with task_id and datetime of job execution (floor<day>(task_start) + period(1)), so if it is on monday, from that monday you should be able to see next monday
+    jobs system will be only executed in the day of renovation
+
+    is importan that tasks get only removed at least 1 day after expire
+
+
+

@@ -642,6 +642,15 @@ inline uint64_t create_prot_jobs(const json & job )
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::ProtJobs jobs_;
 
+    auto expr = dynamic_insert_into(db,jobs_).dynamic_set();
+    expr.insert_list.add(jobs_.jobJson = job.dump());
+    if(job.find("type") != job.end()){
+        expr.insert_list.add( jobs_.type = job["type"].get<string>() );
+    }
+    if(job.find("start_job_at") != job.end()){
+        expr.insert_list.add( jobs_.startJobAt = job["start_job_at"].get<time_t>() );
+    }
+
     const  auto & result = db(insert_into(jobs_).set( jobs_.jobJson = job.dump() ));
     if(result <= 0){ return 0; }
     return result;

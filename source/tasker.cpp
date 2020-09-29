@@ -71,8 +71,15 @@ void tasker::commit_group_then_delete(const string & group){
             task_active->inner_json["prot_id"] = boost::uuids::to_string(uuid);
             try
             {
-                create_task({{this->m_user,false}},*task_active);
-                /* code */
+                if(create_task({{this->m_user,false}},*task_active)){
+                    // get expire date
+                    json job;
+                    job["type"] = "task_clone_into_next_period";
+                    job["origin_task_id"] = task_active->get_id();
+                    job["start_job_at"] =  system_clock::to_time_t( std::chrono::floor<days>(system_clock::from_time_t( task_active->get_interval().start)) - days(1));
+                    
+                    create_prot_jobs(task_active->get_id());
+                }
             }
             catch(const std::exception& e)
             {

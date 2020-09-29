@@ -44,6 +44,7 @@ CREATE TABLE `prot_jobs` (
   `started_at` datetime DEFAULT NULL,
   `job_json` json NOT NULL,
   `type` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
+  `start_job_at` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -152,4 +153,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-09-27 16:45:43
+-- 2020-09-29 22:25:32
