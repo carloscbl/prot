@@ -126,7 +126,6 @@ inline days get_offset_day(days today_index, unsigned int designated_period_days
     {
         return days(designated_period_days) - today_index;
     }
-
 }
 
 #endif //TIME_UTILS_H

@@ -75,10 +75,14 @@ void tasker::commit_group_then_delete(const string & group){
                     // get expire date
                     json job;
                     job["type"] = "task_clone_into_next_period";
-                    job["origin_task_id"] = task_active->get_id();
+                    job["origin_task_id"] = task_active->get_id(); // If at the moment of job execution it doesn't exists wont execute the clone
                     job["start_job_at"] =  system_clock::to_time_t( std::chrono::floor<days>(system_clock::from_time_t( task_active->get_interval().start)) - days(1));
+                    auto next_period_start_day = task_space::next_period_start(task_active);
+                    if(next_period_start_day.has_value()){
+                        job["next_period_start"] = system_clock::to_time_t( next_period_start_day.value() );
+                        create_prot_jobs(task_active->get_id()); // it holds next day to schedule the clone task
+                    }
                     
-                    create_prot_jobs(task_active->get_id());
                 }
             }
             catch(const std::exception& e)

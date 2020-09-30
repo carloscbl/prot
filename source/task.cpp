@@ -1,6 +1,7 @@
 #include "task.h"
 #include <set>
 #include "expanded_taskstory_t.h"
+#include "type_conversor.h"
 
 
 void task_space::to_json(nlohmann::json& new_json, const task_space::pair_interval& ref_interval) {
@@ -135,6 +136,27 @@ void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space:
             };
         }
     }
+}
+
+optional<std::chrono::system_clock::time_point> task_space::next_period_start(const task_t task){
+    // get frequency
+    auto period  = task->get_designated_period();
+    if(period.has_value()){
+        auto dpm = prot::designated_periods_to_ratio.find(period.value().type_period);
+        if(dpm !=prot::designated_periods_to_ratio.end()){
+            auto ratio_spacing = dpm->second.get_ratio_seconds(1); // this will get: 1 day (1 week) 1 month 1 year 1 hour
+            auto next_period_start_of_day = chrono::floor<days>( system_clock::from_time_t(task->get_interval().start) + ratio_spacing );
+            return next_period_start_of_day;
+        }
+        return nullopt;
+    }
+
+    //---------------------------
+    auto freq = task->get_frequency();
+    auto ratio_spacing = freq.get_period();
+    auto next_period_start_of_day = chrono::floor<days>( system_clock::from_time_t(task->get_interval().start) + ratio_spacing );
+    return next_period_start_of_day;
+
 }
 
 task_space::task::task() : id(0)
