@@ -616,7 +616,8 @@ inline map<uint64_t, unique_ptr<json>> read_prot_jobs(std::chrono::seconds lock_
 
     orm_prot::ProtJobs jobs_;
     using namespace std::chrono;
-    auto restart_time = std::chrono::system_clock::now() - lock_time;
+    auto now = std::chrono::system_clock::now();
+    auto restart_time = now - lock_time;
 
     // auto x = boolean_expression(db, jobs_.startedAt.is_null() );
     // x = x or sqlpp::boolean_expression(db, ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time) < jobs_.startedAt  );
@@ -624,7 +625,15 @@ inline map<uint64_t, unique_ptr<json>> read_prot_jobs(std::chrono::seconds lock_
 
     const auto & select = sqlpp::select(all_of(jobs_)).from(jobs_)
             // .where( x  );
-            .where( jobs_.startedAt.is_null()  or  jobs_.startedAt < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time) );
+            .where( 
+                (jobs_.startedAt.is_null()  
+                    or  jobs_.startedAt < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time)
+                )
+                and (
+                    jobs_.startJobAt > ::sqlpp::chrono::floor<::std::chrono::milliseconds>(now)
+                    or jobs_.startJobAt.is_null()
+                )
+            );
     map<uint64_t,unique_ptr<json>> jobs;
     for (const auto & row : db(select))
     {
