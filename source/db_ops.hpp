@@ -648,10 +648,13 @@ inline uint64_t create_prot_jobs(const json & job )
         expr.insert_list.add( jobs_.type = job["type"].get<string>() );
     }
     if(job.find("start_job_at") != job.end()){
-        expr.insert_list.add( jobs_.startJobAt = job["start_job_at"].get<time_t>() );
+        expr.insert_list.add( jobs_.startJobAt = system_clock::from_time_t(job["start_job_at"].get<time_t>()) );
+    }
+    if(job.find("task_id") != job.end()){
+        expr.insert_list.add( jobs_.taskId = job["task_id"].get<uint64_t>() );
     }
 
-    const  auto & result = db(insert_into(jobs_).set( jobs_.jobJson = job.dump() ));
+    const  auto & result = db(expr);
     if(result <= 0){ return 0; }
     return result;
 }
@@ -665,6 +668,9 @@ inline bool update_prot_jobs(uint64_t id, const json & job )
     expr.assignments.add( jobs_.jobJson = job.dump() );
     if(job.find("started_at") != job.end()){
         expr.assignments.add( jobs_.startedAt = system_clock::from_time_t( job["started_at"].get<uint64_t>() ) );
+    }
+    if(job.find("task_id") != job.end()){
+        expr.assignments.add( jobs_.taskId = job["task_id"].get<uint64_t>() );
     }
     const  auto & result = db(expr);
     if(result <= 0){ return false; }

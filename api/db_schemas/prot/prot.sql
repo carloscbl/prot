@@ -45,7 +45,10 @@ CREATE TABLE `prot_jobs` (
   `job_json` json NOT NULL,
   `type` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `start_job_at` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  `task_id` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `task_id` (`task_id`),
+  CONSTRAINT `prot_jobs_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
@@ -153,4 +156,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-09-29 22:25:32
+-- 2020-10-01 18:22:41

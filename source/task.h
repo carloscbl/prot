@@ -109,7 +109,7 @@ namespace task_space{
 
     void to_json(nlohmann::json& new_json, const task_space::pair_interval& ref_interval);
     void to_json(nlohmann::json& new_json, const task_space::task& ref_task);
-
+    using task_t = shared_ptr<task_space::task>;
     optional<std::chrono::system_clock::time_point> next_period_start(const task_t task);
 
 }

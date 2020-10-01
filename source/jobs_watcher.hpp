@@ -47,11 +47,11 @@ void prot_jobs_scheduling()
 
 bool task_clone_into_next_period(const json & job){
     cout << "Starting job -> " <<job.dump(4)<< endl;
-    {
-        "type":"task_clone_into_next_period",
-        "origin_task_id": 2,
+    // {
+    //     "type":"task_clone_into_next_period",
+    //     "task_id": 2,
         
-    }
+    // }
     return true;
 
 }

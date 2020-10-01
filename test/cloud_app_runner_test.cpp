@@ -56,13 +56,13 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     CHECK(et.expand_and_set()); // check expansion!
     fr.m_session_id = 8;
     fr.schedule_taskstory(nqdati);
-    auto & tkr = carlos->get_tasker();
+    // auto & tkr = carlos->get_tasker();
     auto & sche = carlos->get_scheduler();
     sche.print_out();
     CHECK(sche.size() == 7);
     // tkr.print_out();
     // CHECK(tkr.size() == 7); //wont work correctly with out db
-    int a = 20;
+    // int a = 20;
 
     
 }
