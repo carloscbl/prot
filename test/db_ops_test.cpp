@@ -23,7 +23,7 @@ TEST_CASE( "test jobs", "[runner]" ) {
     
     for (auto &&[k,v] : result)
     {
-        REQUIRE( true == db_ops::remove<orm_prot::ProtJobs>(k));
+        REQUIRE( true == db_op::remove<orm_prot::ProtJobs>(k));
         
     }
     

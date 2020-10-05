@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <functional>
 #include "db_ops.hpp"
+#include "cloud_app_runner.h"
 
 bool switch_jobs(const json & job);
 
@@ -41,17 +42,40 @@ void prot_jobs_scheduling()
         }
     }
     for (auto &&k : correctly_done_jobs){
-        db_ops::remove<orm_prot::ProtJobs>(k);
+        db_op::remove<orm_prot::ProtJobs>(k);
     }
 }
 
+// This type is intended to clone tasks but using a scheduling from start of the day to avoid collide
 bool task_clone_into_next_period(const json & job){
     cout << "Starting job -> " <<job.dump(4)<< endl;
-    // {
-    //     "type":"task_clone_into_next_period",
-    //     "task_id": 2,
-        
-    // }
+    try
+    {
+        // {
+        //     "type":"task_clone_into_next_period",
+        //     "task_id": 2,
+            
+        // }
+        //steps
+        // read the task from db
+        auto task = read_task(job["task_id"].get<uint64_t>());
+        cout << " job read_task -> " <<task->get_json().dump(4)<< endl;
+        // read from_user_apps_id
+        auto user_app = db_op::get_user_and_app_from_task(task->get_id());
+        cloud_app_runner car(*user_app.first, *user_app.second);
+        car.schedule_single_task(task->get_json());
+        // update start point in scheduler
+        // store in db
+        /* code */
+    }
+    catch(...) //const std::exception& e
+    {
+        cout << "pete bad job" << endl;
+        // std::cerr << e.what() << '\n';
+        // Delete job?
+        return true;
+    }
+
     return true;
 
 }

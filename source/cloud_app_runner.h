@@ -44,13 +44,14 @@ public:
     cloud_app_runner(user & user_, app &app_);
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_taskstory(next_question_data_and_taskstory_input & response);
+    task_t create_task_to_schedule(const json & j_task) const;
+    bool schedule_single_task(const json & j_task) const;
     shared_ptr<app_state> get_session() const noexcept;
     shared_ptr<app_state> fetch_next_session() const noexcept;
     shared_ptr<app_state> new_session(const string & session_id) const noexcept;
     shared_ptr<app_state> new_session() const noexcept;
     string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
-    task_t command_to_task(string &taskstory_command, variables_t &variables);
     inline void clear_sessions(){
         user_running_apps.clear();
     }

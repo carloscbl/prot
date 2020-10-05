@@ -1,0 +1,21 @@
+{
+    "id": 0,
+    "tag": "base_task_collect",
+    "name": "Fill bag and collect towel and aa clothes",
+    "user": "pepeperez@gmail.com",
+    "prot_id": "17594374-0b2c-49f4-a38f-298ebf65eb28",
+    "day_week": 1,
+    "duration": {
+        "seconds": 600
+    },
+    "interval": {
+        "end": 1601878201,
+        "start": 1601877601
+    },
+    "frequency": "some-days",
+    "task_group": "normal_flow",
+    "description": "Get all the material needed to perform bb, Today: aa",
+    "restrictions": [
+        "soon"
+    ]
+}

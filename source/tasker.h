@@ -4,7 +4,7 @@
 #include <set>
 #include "itasker.h"
 #include "task.h"
-#include "orm_prot.h"
+
 
 class taskstory_commit_RAII;
 class tasker;
@@ -42,13 +42,14 @@ private:
     //Taskstory : Name -> each task have a tag
     map<string, map< string, task_t > > tasks_dispenser;
     const string & m_user;
-    void commit_group_then_delete(const string & group);
     void add_to_group(const string & task_tag, task_t && params, const string & group);
+    void commit_group_then_delete(const string & group);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 public:
     void print_out() override;
     bool empty() const noexcept override;
     size_t size() const noexcept override;
+    void commit_single_task(task_t task_active);
     void add_to_group( task_t && params, const string & group);
     //void update_time() override {};
     void clear() override;

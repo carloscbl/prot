@@ -115,6 +115,8 @@ inline unique_ptr<app> read_app(const string &app_name)
     return protapp;
 }
 
+
+
 inline map<uint64_t,string> read_apps_by_developer(const string & developer){
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -234,6 +236,8 @@ inline unique_ptr<user> read_user(string username)
     return us;
 }
 
+
+
 inline bool delete_user(const string &username)
 {
     auto &db = mysql_db::get_db_lazy().db;
@@ -326,9 +330,8 @@ inline map<uint64_t,string> read_instalations(const string &username, optional<u
     return appsresult;
 }
 
-//Users to asociate a task and boolean true to be scheduled not only added to tasker
-inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
-{
+inline uint64_t create_task(task &task_){
+
     auto &db = mysql_db::get_db_lazy().db;
 
     orm_prot::Tasks tks;
@@ -358,9 +361,21 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     {
         // Not insertion
         mysql_db::current_db.reset();
-        return false;
+        return 0;
     }
     task_.set_id(tsk_res);
+    return tsk_res;
+}
+
+
+//Users to asociate a task and boolean true to be scheduled not only added to tasker
+inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    auto tsk_res = create_task(task_);
+    if(tsk_res == 0) return false;
+
     for_each(usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
         orm_prot::Taskers tasker_;
         orm_prot::Schedulers sche;
@@ -397,16 +412,13 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     return true;
 }
 
-inline unique_ptr<task> read_task(const string &username, const uint64_t task_id)
+inline unique_ptr<task> read_task (const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
-    orm_prot::Taskers tasker_;
-    orm_prot::TasksTaskers tskTkr;
     orm_prot::Tasks tsk;
-    orm_prot::Users usr;
     const auto & select = sqlpp::select(all_of(tsk))
-                                .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
-                                .where(usr.username == username and tsk.id == task_id);
+                                .from(tsk)
+                                .where(tsk.id == task_id);
     auto resu = db(select);
     if(resu.empty()){
         return nullptr;
@@ -685,7 +697,7 @@ inline bool update_prot_jobs(uint64_t id, const json & job )
     if(result <= 0){ return false; }
     return true;
 }
-namespace db_ops{
+namespace db_op{
 
 
 template<typename T_table>
@@ -712,7 +724,54 @@ inline bool remove_in(vector<uint64_t> ids){
     return false;
 }
 
+inline unique_ptr<app> read_app(const uint64_t app_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    orm_prot::Apps app_;
+    const auto &result = db(sqlpp::select(all_of(app_)).from(app_).where(app_.id == app_id).limit(1U));
+    if (result.empty())
+    {
+        return nullptr;
+    }
+
+    const auto &row = result.front();
+    unique_ptr<app> protapp = make_unique<app>(json::parse(row.json.text)); //We create it implictly or refresh it
+    protapp->set_id(result.front().id);
+
+    return protapp;
 }
+
+inline unique_ptr<user> read_user(const uint64_t user_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::Users usr;
+    const auto &row = db(sqlpp::select(all_of(usr)).from(usr).where( usr.id == user_id).limit(1U)).front();
+
+    json juser = json::parse(row.json.text);
+    auto us = make_unique<user>();
+    from_json(juser, *us);
+    us->set_id(row.id);
+    return us;
+}
+
+inline std::pair<unique_ptr<user>,unique_ptr<app>> get_user_and_app_from_task(const uint64_t task_id){
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::Tasks tsk;
+    orm_prot::UsersApps user_apps;
+    const auto & select = sqlpp::select( user_apps.idapp, user_apps.iduser )
+                                .from(tsk
+                                    .join(user_apps).on(tsk.fromUserAppsId == user_apps.id)
+                                )
+                                .where(tsk.id == task_id).limit(1U);
+    const auto & resu = db(select).front();
+
+    auto app = db_op::read_app(resu.idapp.value());
+    auto user = db_op::read_user(resu.iduser.value());
+    return make_pair(move(user),move(app));
+}
+
+} // namespace db_op
 //https://github.com/rbock/sqlpp11/wiki/Select
 inline void join()
 {

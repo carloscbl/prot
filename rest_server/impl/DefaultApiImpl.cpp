@@ -310,7 +310,7 @@ void DefaultApiImpl::user_username_task_task_id_delete(const std::string &userna
 
 void DefaultApiImpl::user_username_task_task_id_get(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response){
     std::string decoded = geturl_decode(username);
-    auto result = read_task(decoded, taskId);
+    auto result = read_task( taskId);
     if(!result){
         response.send(Pistache::Http::Code::Not_Found, "Not found!" );
         return;

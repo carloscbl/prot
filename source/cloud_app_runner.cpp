@@ -96,6 +96,28 @@ struct failure_report_t{
     task_t no_margin_invalidation;
 };
 
+bool cloud_app_runner::schedule_single_task(const json & j_task) const{
+    provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
+    tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
+    auto task_test = create_task_to_schedule(j_task);
+    time_determinator time_dt(task_test, provisional_scheduler);
+    optional<bool> result = time_dt.build(days(0));
+    if(!result.has_value() || !result.value()){
+        return false;
+    }
+    tasker_.commit_single_task(move(task_test));
+    return true;
+}
+
+task_t cloud_app_runner::create_task_to_schedule(const json & j_task) const{
+    task_t task_test = make_shared<task>(j_task.get<task>());
+    task_test->inner_json["app_id"] = this->app_.get_id();
+    task_test->set_user(this->user_.get_name());
+    task_test->set_user_apps_id(user_apps_id);
+    task_test->set_session_id(m_session_id);
+    return task_test;
+}
+
 bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input & response){
 
     failure_report_t report;
@@ -109,11 +131,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
 
         for (const auto &v : *response.non_wildcard_expanded_taskstory)
         {
-            task_t task_test = make_shared<task>(v.get<task>());
-            task_test->inner_json["app_id"] = this->app_.get_id();
-            task_test->set_user(this->user_.get_name());
-            task_test->set_user_apps_id(user_apps_id);
-            task_test->set_session_id(m_session_id);
+            task_t task_test = create_task_to_schedule(v);
             time_determinator time_dt(task_test, provisional_scheduler);
             //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
@@ -153,11 +171,7 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
         taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
         bool completed_period = true;
         for (const auto & wildcard_task : v){
-            task_t task_test = make_shared<task>(wildcard_task.get<task>());
-            task_test->inner_json["app_id"] = this->app_.get_id();
-            task_test->set_user(this->user_.get_name());
-            task_test->set_user_apps_id(user_apps_id);
-            task_test->set_session_id(m_session_id);
+            task_t task_test = create_task_to_schedule(wildcard_task.get<task>());
             string tag = task_test->get_tag();
             time_determinator time_dt(task_test, provisional_scheduler, k);
             //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;

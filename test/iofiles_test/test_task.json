@@ -1,0 +1,20 @@
+{
+    "id": 0,
+    "tag": "gym_fee",
+    "name": "Pay the gym subscription",
+    "user": "pepeperez@gmail.com",
+    "prot_id": "f6815925-133c-4b03-9e95-b93300ec6f19",
+    "duration": {
+        "seconds": 1800
+    },
+    "interval": {
+        "end": 1601805675,
+        "start": 1601803875
+    },
+    "frequency": "monthly",
+    "task_group": "normal_flow",
+    "description": "Remember once each month you need to pay the fee",
+    "restrictions": [
+        "soon"
+    ]
+}
