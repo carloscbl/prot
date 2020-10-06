@@ -61,17 +61,21 @@ bool task_clone_into_next_period(const json & job){
         auto task = read_task(job["task_id"].get<uint64_t>());
         cout << " job read_task -> " <<task->get_json().dump(4)<< endl;
         // read from_user_apps_id
-        auto user_app = db_op::get_user_and_app_from_task(task->get_id());
+        auto user_app_opt = db_op::get_user_and_app_from_task(task->get_id());
+        if(!user_app_opt.has_value()){
+            return false;
+        }
+        const auto && user_app = move(user_app_opt.value());
         cloud_app_runner car(*user_app.first, *user_app.second);
         car.schedule_single_task(task->get_json());
         // update start point in scheduler
         // store in db
         /* code */
     }
-    catch(...) //const std::exception& e
+    catch(const std::exception& e)
     {
         cout << "pete bad job" << endl;
-        // std::cerr << e.what() << '\n';
+        std::cerr << e.what() << '\n';
         // Delete job?
         return true;
     }

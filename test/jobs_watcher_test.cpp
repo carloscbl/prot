@@ -7,16 +7,23 @@ TEST_CASE( "test jobs_watcher", "[runner]" ) {
 
     std::ifstream task_json("../test/iofiles_test/test_task.json", std::fstream::in);
     std::ifstream task_wildcard_json("../test/iofiles_test/test_task_wildcard.json", std::fstream::in);
+    std::ifstream app_daily_file("../test/iofiles_test/test_jobs_dailyworkout.json", std::fstream::in);
     json task_;
-    json task_wildcard;
     task_json >> task_;
+    json task_wildcard;
     task_wildcard_json >> task_wildcard;
 
+    json app_daily;
+    app_daily_file >> app_daily;
+    create_user("pepe");    
+    create_app(app_daily, "pepe");
+    auto install_id = create_instalation("pepe", "test Daily workout");
     json job;
     job["name"] = "do thing";
     job["type"] = "task_clone_into_next_period";
     task tk;
     from_json(task_, tk);
+    tk.set_user_apps_id(install_id);
     auto tk_id = create_task( tk );
     job["task_id"] = tk_id;
     // json job2;

@@ -252,7 +252,7 @@ inline bool delete_user(const string &username)
 
 }
 
-inline bool create_instalation(const string &username, const string &app_name)
+inline uint64_t create_instalation(const string &username, const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -264,23 +264,23 @@ inline bool create_instalation(const string &username, const string &app_name)
     const auto &app_res = db(sqlpp::select(app_.id).from(app_).where(app_.name == app_name).limit(1U));
     if (usr_res.empty() || app_res.empty())
     {
-        return false;
+        return 0;
     }
     orm_prot::UsersApps instls;
     const auto &user_app_res = db(sqlpp::select(all_of(instls)).from(instls).where(instls.iduser == usr_res.front().id and instls.idapp == app_res.front().id).limit(1U));
 
     if (!user_app_res.empty())
     {
-        return false;
+        return user_app_res.front().id;
     }
 
-    db(insert_into(instls).set(
+    const auto & result = db(insert_into(instls).set(
         instls.iduser = usr_res.front().id,
         instls.idapp = app_res.front().id));
 
     //We shouldn't load anything that is not required to perapp
     //user::users.at(username)->instaled_apps[app_name] = app::get_apps_register().at(app_name).get();
-    return true;
+    return result;
 }
 
 inline bool delete_instalation(const string &username, const uint64_t app_id)
@@ -755,7 +755,7 @@ inline unique_ptr<user> read_user(const uint64_t user_id)
     return us;
 }
 
-inline std::pair<unique_ptr<user>,unique_ptr<app>> get_user_and_app_from_task(const uint64_t task_id){
+inline optional<std::pair<unique_ptr<user>,unique_ptr<app>>> get_user_and_app_from_task(const uint64_t task_id){
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
     orm_prot::UsersApps user_apps;
@@ -764,7 +764,11 @@ inline std::pair<unique_ptr<user>,unique_ptr<app>> get_user_and_app_from_task(co
                                     .join(user_apps).on(tsk.fromUserAppsId == user_apps.id)
                                 )
                                 .where(tsk.id == task_id).limit(1U);
-    const auto & resu = db(select).front();
+    const auto & res = db(select);
+    if(res.empty()){
+        return nullopt;
+    }
+    const auto & resu = res.front();
 
     auto app = db_op::read_app(resu.idapp.value());
     auto user = db_op::read_user(resu.iduser.value());

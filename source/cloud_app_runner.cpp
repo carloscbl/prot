@@ -97,6 +97,7 @@ struct failure_report_t{
 };
 
 bool cloud_app_runner::schedule_single_task(const json & j_task) const{
+    cout << "## schedule_single_task ##" << endl;
     provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
     auto task_test = create_task_to_schedule(j_task);
@@ -104,8 +105,10 @@ bool cloud_app_runner::schedule_single_task(const json & j_task) const{
     optional<bool> result = time_dt.build(days(0));
     if(!result.has_value() || !result.value()){
         return false;
+        cout << "WRONG" << endl;
     }
     tasker_.commit_single_task(move(task_test));
+    cout << "COMMITED" << endl;
     return true;
 }
 
