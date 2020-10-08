@@ -45,9 +45,9 @@ public:
     // 3º if a lower priority loses the possibility to be allocated then we should allocate the soones as posible within a {max_range}
     // 4º if the max_range is exced then we should inform that with the current scheduler this set of tasks wont be possible, and got excluded
 
-    optional<bool> build(days start_offset);
+    optional<bool> build(days local_start_offset, optional<days> projected_start_offset = nullopt);
     bool build_daily_restrictions(const time_point from, const time_point to, im_t &interval_map, int64_t iteration_day) const noexcept;
-    bool build_elapsed_today_restriction(days start_offset, const time_point &day_from, im_t &interval_map);
+    bool build_elapsed_today_restriction(days local_start_offset, const time_point &day_from, im_t &interval_map);
 
     //Diferent pipelines, they cannot be noexcept signature
     bool forward_pipeline(const im_t &interval_map, time_point current_day_begin);

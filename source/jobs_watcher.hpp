@@ -67,7 +67,12 @@ bool task_clone_into_next_period(const json & job){
         }
         const auto && user_app = move(user_app_opt.value());
         cloud_app_runner car(*user_app.first, *user_app.second);
-        car.schedule_single_task(task->get_json());
+        auto start = job.find("next_period_start");
+        if(start == job.end()){
+            cout << "next_period_start needs to exists!"<< endl;
+            assert( false ) ;
+        } // if doesn't exists it needs to be extracted from the frequency!!
+        return car.schedule_single_task( task->get_json(), system_clock::from_time_t( start.value().get<time_t>() ) );
         // update start point in scheduler
         // store in db
         /* code */

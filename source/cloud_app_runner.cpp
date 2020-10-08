@@ -96,13 +96,25 @@ struct failure_report_t{
     task_t no_margin_invalidation;
 };
 
-bool cloud_app_runner::schedule_single_task(const json & j_task) const{
+bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from) const{
     cout << "## schedule_single_task ##" << endl;
     provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
     auto task_test = create_task_to_schedule(j_task);
+
+    optional<days> projected_next_period_override_start_offset = nullopt;
+    if(start_from.has_value()){
+        auto future = start_from.value();
+        auto now = std::chrono::system_clock::now();
+        if (now > future){
+            cout << "Task cannot be schduled in the past!" << endl;
+            return false;
+        }
+        projected_next_period_override_start_offset = std::chrono::floor<days>(future - std::chrono::floor<days>(now));
+    }
+    
     time_determinator time_dt(task_test, provisional_scheduler);
-    optional<bool> result = time_dt.build(days(0));
+    optional<bool> result = time_dt.build( days(0), projected_next_period_override_start_offset );
     if(!result.has_value() || !result.value()){
         return false;
         cout << "WRONG" << endl;

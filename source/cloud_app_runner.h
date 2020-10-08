@@ -45,7 +45,7 @@ public:
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_taskstory(next_question_data_and_taskstory_input & response);
     task_t create_task_to_schedule(const json & j_task) const;
-    bool schedule_single_task(const json & j_task) const;
+    bool schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from=nullopt) const;
     shared_ptr<app_state> get_session() const noexcept;
     shared_ptr<app_state> fetch_next_session() const noexcept;
     shared_ptr<app_state> new_session(const string & session_id) const noexcept;
