@@ -19,7 +19,7 @@
 #include <signal.h>
 #include <unistd.h>
 #endif
-
+#include "jobs_watcher.hpp"
 #include "DefaultApiImpl.h"
 
 #define PISTACHE_SERVER_THREADS     2
@@ -76,10 +76,10 @@ int main() {
     opts.maxResponseSize(PISTACHE_SERVER_MAX_RESPONSE_SIZE);
     httpEndpoint->init(opts);
 
-    
+
     DefaultApiImpl DefaultApiserver(router);
     DefaultApiserver.init();
-
+    jobs_watcher_start(prot_jobs_scheduling, 3000);
     httpEndpoint->setHandler(router->handler());
     httpEndpoint->serve();
 

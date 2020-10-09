@@ -642,7 +642,7 @@ inline map<uint64_t, unique_ptr<json>> read_prot_jobs(std::chrono::seconds lock_
                     or  jobs_.startedAt < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time)
                 )
                 and (
-                    jobs_.startJobAt > ::sqlpp::chrono::floor<::std::chrono::milliseconds>(now)
+                    jobs_.startJobAt < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(now)
                     or jobs_.startJobAt.is_null()
                 )
             );

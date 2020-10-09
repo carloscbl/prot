@@ -9,8 +9,10 @@
 
 bool switch_jobs(const json & job);
 
+//interval in milliseconds
 void jobs_watcher_start(std::function<void(void)> func, unsigned int interval)
 {
+    std::cout << "Starting job watcher..." << std::endl;
     std::thread([func, interval]() {
         while (true)
         {
@@ -23,7 +25,7 @@ void jobs_watcher_start(std::function<void(void)> func, unsigned int interval)
 
 void prot_jobs_scheduling()
 {
-    std::cout << "Resuming pending jobs ..." << std::endl;
+    // std::cout << "Resuming pending jobs ..." << std::endl;
     auto &db = mysql_db::get_db_lazy().db;
     db.start_transaction();
 
@@ -59,7 +61,8 @@ bool task_clone_into_next_period(const json & job){
         //steps
         // read the task from db
         auto task = read_task(job["task_id"].get<uint64_t>());
-        cout << " job read_task -> " <<task->get_json().dump(4)<< endl;
+        // cout << " job read_task -> " <<task->get_json().dump(4)<< endl;
+        cout << " job read_task id -> " <<task->get_id() << endl;
         // read from_user_apps_id
         auto user_app_opt = db_op::get_user_and_app_from_task(task->get_id());
         if(!user_app_opt.has_value()){
@@ -79,7 +82,7 @@ bool task_clone_into_next_period(const json & job){
     }
     catch(const std::exception& e)
     {
-        cout << "pete bad job" << endl;
+        cout << "bad job was setted" << endl;
         std::cerr << e.what() << '\n';
         // Delete job?
         return true;
