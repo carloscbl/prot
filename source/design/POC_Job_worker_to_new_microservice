@@ -1,0 +1,17 @@
+POC Move Job worker to new microservice
+
+Main idea is to decouple this from prot service
+
+pros:
+    separated trazability
+    can be in different machines with different resources
+
+cons:
+    maintainability? Maybe is harder to hold together
+    
+
+How:
+    the idea is to hold in the same prot project but create a new entrypoint for the docker
+    create a new cmake subproject
+    use lprot lib code in the same way rest_server uses or test_prot does
+    just create a new main that directly creates instanciates this

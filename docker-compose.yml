@@ -41,6 +41,23 @@ services:
       - "3000"
     depends_on:
       - db
+  jobs-watcher:
+    image: prot:latest
+    tty: true
+    stdin_open: true
+    restart: always
+    # networks:
+    #   - internalNetwork
+    entrypoint: ./jobs-watcher
+    environment:
+      TZ: Etc/UTC
+      PROT_DB_USER: root
+      PROT_DB_SCHEMA: prot
+      PROT_DB_PASSW: example
+      PROT_DB_HOST: db
+      PROT_DB_PORT: 3306
+    depends_on:
+      - db
 networks:
   internalNetwork:
     external: false

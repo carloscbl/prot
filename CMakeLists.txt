@@ -30,6 +30,7 @@ include_directories("thirdparty/HowardHinnantDate/date/include")
 add_subdirectory(fmt) # Order matters for subdirectories
 add_subdirectory(rest_server)
 add_subdirectory(test)
+add_subdirectory(jobs_watcher)
 
 
 

@@ -19,8 +19,8 @@
 #include <signal.h>
 #include <unistd.h>
 #endif
-#include "jobs_watcher.hpp"
 #include "DefaultApiImpl.h"
+#include <iostream>
 
 #define PISTACHE_SERVER_THREADS     2
 #define PISTACHE_SERVER_MAX_REQUEST_SIZE 1000000
@@ -79,7 +79,8 @@ int main() {
 
     DefaultApiImpl DefaultApiserver(router);
     DefaultApiserver.init();
-    jobs_watcher_start(prot_jobs_scheduling, 3000);
+    std::cout << "Starting Prot REST server..." << std::endl;
+    
     httpEndpoint->setHandler(router->handler());
     httpEndpoint->serve();
 
