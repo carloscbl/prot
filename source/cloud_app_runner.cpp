@@ -96,7 +96,36 @@ struct failure_report_t{
     task_t no_margin_invalidation;
 };
 
-bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from) const{
+optional<days> deduce_next_period(const json & j_task, task * task_, optional<std::chrono::time_point<system_clock>> start_from){
+    task * tk = task_;
+    if( !tk){
+        from_json(j_task,*tk);
+    }
+    days next_period;
+    auto future = std::chrono::floor<days>(start_from.value());
+    auto now = std::chrono::floor<days>(std::chrono::system_clock::now());
+    cout << "days since epoch (future) " << duration_cast<days>(seconds(future.time_since_epoch())).count() << endl; 
+    cout << "days since epoch (now) " << duration_cast<days>(seconds(now.time_since_epoch())).count() << endl;
+    
+    if (now > future){
+        cout << "Trying to deduce next period..." << endl;
+        auto ratio_opt = task_space::get_period_ratio(*tk);
+        if(!ratio_opt.has_value()){ return nullopt; }
+        days ratio = duration_cast<days>(ratio_opt.value());
+        days offset = now - future; //24 - 22 = 2 days
+        int period_multiplier = floorf64x(offset / ratio) + 1; // floor(2 / 7days) + 1 = 1
+        future = (period_multiplier * ratio) + future ;
+        if(now > future){
+            cout << "ERROR Task cannot be schduled in the past! in(DAYS): " << std::chrono::floor<days>(future - now).count() << endl;
+            return nullopt;
+        }
+        cout << "Success deducing!" << endl;
+    }
+    next_period = std::chrono::floor<days>(future - now);
+    return next_period;
+}
+
+bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from, task * task_) const{
     cout << "## schedule_single_task ##" << endl;
     provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
@@ -104,13 +133,10 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
 
     optional<days> projected_next_period_override_start_offset = nullopt;
     if(start_from.has_value()){
-        auto future = start_from.value();
-        auto now = std::chrono::system_clock::now();
-        if (now > future){
-            cout << "Task cannot be schduled in the past!" << endl;
+        projected_next_period_override_start_offset = deduce_next_period(j_task, task_, start_from);
+        if(!projected_next_period_override_start_offset.has_value()){
             return false;
         }
-        projected_next_period_override_start_offset = std::chrono::floor<days>(future - std::chrono::floor<days>(now));
     }
     
     time_determinator time_dt(task_test, provisional_scheduler);
@@ -131,6 +157,24 @@ task_t cloud_app_runner::create_task_to_schedule(const json & j_task) const{
     task_test->set_user_apps_id(user_apps_id);
     task_test->set_session_id(m_session_id);
     return task_test;
+}
+
+void cloud_app_runner::register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks){
+    if(!done_tasks){
+        return;
+    }
+    optional<vector<task_t>>  current = nullopt;
+    if(this->scheduled_tasks.has_value()){
+        current = this->scheduled_tasks.value();
+    }else{
+        current =vector<task_t>();
+    }
+    for_each(done_tasks->begin(), done_tasks->end(),[&current](const pair<string,task_t>& p){
+        current.value().push_back(p.second);
+    });
+    if(! current.value().empty()){
+        this->scheduled_tasks = current;
+    }
 }
 
 bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input & response){
@@ -165,6 +209,8 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
         }
 
         if(complete){
+            auto done_tasks = commiter.get_group();
+            register_runner_scheduled_tasks(done_tasks);
             commiter.commit(); //Disolves group && activate the tasks
             provisional_scheduler.commit();
             break;
@@ -210,6 +256,8 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
             }
         }
         if(completed_period){
+            auto done_tasks = commiter.get_group();
+            register_runner_scheduled_tasks(done_tasks);
             commiter.commit(); //Disolves group && activate the tasks
             provisional_scheduler.commit();
         }

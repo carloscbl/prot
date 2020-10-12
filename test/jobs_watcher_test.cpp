@@ -56,6 +56,9 @@ TEST_CASE( "test jobs_watcher", "[runner]" ) {
     prot_jobs_scheduling();
         
     auto result = read_prot_jobs(seconds(0));
+    for(auto && [k,v] : result){
+        cout << k << " : " << v->dump(4) << endl;
+    }
     REQUIRE(result.size() == 0);
 
     REQUIRE(true);

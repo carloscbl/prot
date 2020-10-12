@@ -75,7 +75,7 @@ bool task_clone_into_next_period(const json & job){
             cout << "next_period_start needs to exists!"<< endl;
             assert( false ) ;
         } // if doesn't exists it needs to be extracted from the frequency!!
-        return car.schedule_single_task( task->get_json(), system_clock::from_time_t( start.value().get<time_t>() ) );
+        return car.schedule_single_task( task->get_json(), system_clock::from_time_t( start.value().get<time_t>() ), task.get() );
         // update start point in scheduler
         // store in db
         /* code */

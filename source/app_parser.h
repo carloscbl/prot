@@ -205,7 +205,9 @@ public:
         if(static_cast<int>(e_branches::RESTART) == next_branch_id ){
             return get_initial_question();
         }
-        initial_question->next_question_text = find_questions_by_id(next_branch_id).value()["question"].get<string>();
+        optional<json> question_obj = find_questions_by_id(next_branch_id);
+        initial_question->next_question_text = question_obj.value()["question"].get<string>();
+        initial_question->current_question_obj = question_obj.value();
         return initial_question;
     }
     unique_ptr<app_state> get_state() const noexcept{

@@ -288,14 +288,20 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
 
     auto pair = read_app_by_id(appId);
     auto app_ = read_app(pair->second);
-    cloud_app_runner fr(*usr, *app_);
+    cloud_app_runner car(*usr, *app_);
     json qa_request;
     qa_request["answer"] = inlineObject3.getResponse();
-    auto & qa_res = fr.run(qa_request);
+    auto & qa_res = car.run(qa_request);
 
-    Inline_response_200_1 response_200_1;
-    response_200_1.setCurrentQuestion(qa_res["next_question"].get<string>());
-    response.send(Pistache::Http::Code::Ok, json(response_200_1).dump(4));
+    json response_json ={
+        {"next_question", qa_res["next_question"]},
+    };
+    if(car.scheduled_tasks.has_value()){
+        for(auto && v: car.scheduled_tasks.value()){
+            response_json["taskstory"].push_back(v->get_json());
+        }
+    }
+    response.send(Pistache::Http::Code::Ok, response_json.dump(4));
 }
 
 void DefaultApiImpl::user_username_task_task_id_delete(const std::string &username, const int32_t &taskId, Pistache::Http::ResponseWriter &response){

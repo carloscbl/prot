@@ -159,6 +159,24 @@ optional<std::chrono::system_clock::time_point> task_space::next_period_start(co
 
 }
 
+optional<seconds> task_space::get_period_ratio(const task & task){
+    // get frequency
+    auto period  = task.get_designated_period();
+    if(period.has_value()){
+        auto dpm = prot::designated_periods_to_ratio.find(period.value().type_period);
+        if(dpm !=prot::designated_periods_to_ratio.end()){
+            auto ratio_spacing = dpm->second.get_ratio_seconds(1); // this will get: 1 day (1 week) 1 month 1 year 1 hour
+            return ratio_spacing;
+        }
+        return nullopt;
+    }
+
+    //---------------------------
+    auto freq = task.get_frequency();
+    auto ratio_spacing = freq.get_period();
+    return ratio_spacing;
+}
+
 task_space::task::task() : id(0)
 {
     //Acumulation wont happend here, the id will be provided by the db
