@@ -18,7 +18,6 @@ CREATE TABLE `app_sessions` (
   `json` json NOT NULL,
   `user_apps` int(11) NOT NULL,
   PRIMARY KEY (`id`),
-  KEY `unq_name` (`unq_name`),
   KEY `user_apps` (`user_apps`),
   CONSTRAINT `app_sessions_ibfk_2` FOREIGN KEY (`user_apps`) REFERENCES `users_apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -145,6 +144,7 @@ CREATE TABLE `users_apps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `iduser` int(11) NOT NULL,
   `idapp` int(11) NOT NULL,
+  `qa_history` json DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id` (`id`),
   UNIQUE KEY `user_app` (`iduser`,`idapp`),
@@ -156,4 +156,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-10-01 18:22:41
+-- 2020-10-14 19:07:13
