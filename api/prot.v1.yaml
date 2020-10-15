@@ -221,7 +221,7 @@ paths:
               schema:
                 type: array
                 items:
-                  type: object
+                  $ref: ./models/user_apps_get_response.v1.yaml
         '404':
           description: Not Found
   '/user/{username}/apps/{installAppId}':
@@ -245,8 +245,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
-                properties: {}
+                $ref: ./models/user_apps_get_response.v1.yaml
         '404':
           description: Not Found
       description: ''

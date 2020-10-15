@@ -926,12 +926,29 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
     };
+    struct QaHistory
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "qa_history";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T qaHistory;
+            T& operator()() { return qaHistory; }
+            const T& operator()() const { return qaHistory; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::text, sqlpp::tag::can_be_null>;
+    };
   } // namespace UsersApps_
 
   struct UsersApps: sqlpp::table_t<UsersApps,
                UsersApps_::Id,
                UsersApps_::Iduser,
-               UsersApps_::Idapp>
+               UsersApps_::Idapp,
+               UsersApps_::QaHistory>
   {
     struct _alias_t
     {

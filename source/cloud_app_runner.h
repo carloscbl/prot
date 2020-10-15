@@ -39,25 +39,25 @@ protected:
     uint64_t user_apps_id;
     unique_ptr<app_parser> fp;
 
+    bool store_qa_history_status(json addition) const;
+    shared_ptr<app_state> get_session() const noexcept;
+    shared_ptr<app_state> fetch_next_session() const noexcept;
+    shared_ptr<app_state> new_session(const string & session_id) const noexcept;
+    shared_ptr<app_state> new_session() const noexcept;
+    string get_unique_id_session() const noexcept;
+    inline void clear_sessions(){user_running_apps.clear();}
+    void apply_wildcards(next_question_data_and_taskstory_input & response);
+    void register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks);
+    task_t create_task_to_schedule(const json & j_task) const;
+
 public:
     optional<vector<task_t>> scheduled_tasks;
     uint64_t m_session_id = 0;
     cloud_app_runner(user & user_, app &app_);
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_taskstory(next_question_data_and_taskstory_input & response);
-    void register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks);
-    task_t create_task_to_schedule(const json & j_task) const;
     bool schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from=nullopt,  task * task_ = nullptr) const;
-    shared_ptr<app_state> get_session() const noexcept;
-    shared_ptr<app_state> fetch_next_session() const noexcept;
-    shared_ptr<app_state> new_session(const string & session_id) const noexcept;
-    shared_ptr<app_state> new_session() const noexcept;
-    string get_unique_id_session() const noexcept;
     const json run(const json &j) noexcept;
-    inline void clear_sessions(){
-        user_running_apps.clear();
-    }
-    void apply_wildcards(next_question_data_and_taskstory_input & response);
 };
 
 

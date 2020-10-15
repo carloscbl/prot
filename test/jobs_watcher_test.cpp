@@ -64,3 +64,12 @@ TEST_CASE( "test jobs_watcher", "[runner]" ) {
     REQUIRE(true);
 
 }
+
+TEST_CASE( "test store_qa_history_status", "[runner]" ) {
+    REQUIRE (db_op::read_user_instalations(1,1).size());
+    auto instl = db_op::read_user_instalations(1,1);
+    auto tuple = move(*instl.begin());
+    cout << "tuple" << tuple->dump(4) << endl;
+    // cout << ->second.dump(4) << endl;
+    REQUIRE (true);
+}

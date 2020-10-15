@@ -42,7 +42,7 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     REQUIRE( carlos->get_name() == "carloscbl" );
     app _(test_app_json);
     const auto & app = app::get_apps_register().at("test Daily workout");
-    cloud_app_runner fr(*carlos, *app, 8);
+    cloud_app_runner car(*carlos, *app, 8);
     auto question_test = test_app_json["questions"].at(2);
     next_question_data_and_taskstory_input nqdati;
     nqdati.next_question_text="bla bla";
@@ -54,8 +54,8 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     expand_taskstory_t et (nqdati);
 
     CHECK(et.expand_and_set()); // check expansion!
-    fr.m_session_id = 8;
-    fr.schedule_taskstory(nqdati);
+    car.m_session_id = 8;
+    car.schedule_taskstory(nqdati);
     // auto & tkr = carlos->get_tasker();
     auto & sche = carlos->get_scheduler();
     sche.print_out();

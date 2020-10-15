@@ -1,0 +1,9 @@
+title: user_apps_get_response
+type: object
+properties:
+  appID:
+    type: integer
+  appName:
+    type: string
+  completion_status:
+    type: string

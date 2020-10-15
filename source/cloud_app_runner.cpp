@@ -25,6 +25,36 @@ string cloud_app_runner::get_unique_id_session() const noexcept
     return user_.get_name() + app_.get_app_name();
 }
 
+bool cloud_app_runner::store_qa_history_status( json addition) const {
+    // need to detect an already "done": true, maybe we are reconfiguring
+    // So we need to detect it and delete it -> always
+    auto instl = db_op::read_user_instalations( this->user_.get_id(), this->app_.get_id());
+    auto tuple = move(*instl.begin());
+    json new_qa_history = json::object();
+    auto qa_history_it = tuple->find("qa_history");
+    if( qa_history_it != tuple->end() && !tuple->is_null()){
+        // exists so we use it
+        new_qa_history = qa_history_it.value();
+    }
+    cout << "existing" << new_qa_history.dump(4) << endl;
+    new_qa_history.erase("done");
+    cout << "addition" << addition.dump(4) << endl;
+
+    auto add_history = addition.find("history");
+    if(add_history != addition.end() ){
+        for (auto &&i : add_history.value())
+        {
+            new_qa_history["history"].push_back(i);
+        }
+        addition.erase("history");
+    }
+    new_qa_history.merge_patch(addition);
+    cout << "inserting" << new_qa_history.dump(4) << endl;
+
+    auto is_updated = db_op::update_user_instalations(this->user_.get_id(), this->app_.get_id(), new_qa_history);
+    return is_updated;
+}
+
 //FIX: this is a mess composing responses...
 const json cloud_app_runner::run(const json &request_json) noexcept
 {
@@ -32,6 +62,7 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     this->m_session_id = state->id;
     app_parser fp(app_.get_json(), *state); //,*state
     unique_ptr<next_question_data_and_taskstory_input> response;
+    // auto current_question = fp.get_current_question();
     if (request_json.is_null()) // Get, for get current state, for example for resume questionary
     {
         response = fp.get_current_question();
@@ -42,8 +73,31 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     }
     if(response->next_question_text == "END"){
         delete_session(state->id);
+        // App qa_history done!
+        json add_qa_history = {
+            {"done",true},
+            {"history", { 
+                    {"question", response->current_question_obj["question"].get<string>()},
+                    {"user_answer", request_json["answer"]}
+                } 
+            },
+        };
+        store_qa_history_status(add_qa_history);
     }else{
         update_session(state->id, *fp.get_state());
+        if(!request_json.is_null()){
+            json qa = {
+                { 
+                    {"question", response->current_question_obj["question"].get<string>()},
+                    {"user_answer", request_json["answer"]}
+                }
+            };
+            json add_qa_history = {
+                //insert here the Q/A structure
+                {"history", qa },
+            };
+            store_qa_history_status(add_qa_history);
+        }
     }
 
     json response_j;

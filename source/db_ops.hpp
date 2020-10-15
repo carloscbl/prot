@@ -775,6 +775,42 @@ inline optional<std::pair<unique_ptr<user>,unique_ptr<app>>> get_user_and_app_fr
     return make_pair(move(user),move(app));
 }
 
+// returns a map of app_id -> tuple of table user_apps
+inline vector<unique_ptr<json>> read_user_instalations(const uint64_t user_id, optional<uint64_t> app_id = nullopt)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::UsersApps usr_apps;
+    vector<unique_ptr<json>> appsresult;
+
+    auto x_where = boolean_expression(db, usr_apps.iduser == user_id  );
+    if( app_id.has_value() ){
+        x_where = x_where and boolean_expression(db, usr_apps.idapp == app_id.value() );
+    }
+    for (const auto &row : db(select(all_of(usr_apps)).from(usr_apps).where( x_where ) ))
+    {
+        auto tuple = make_unique<json>();
+        (*tuple)["iduser"] = row.iduser.value();
+        (*tuple)["idapp"] = row.idapp.value();
+
+        if(!row.qaHistory.is_null()){
+            (*tuple)["qa_history"] = json::parse(row.qaHistory.text);
+
+        }
+        // cout << "dumping instalation row" << tuple->dump(4) << endl;
+        appsresult.push_back(move(tuple)) ;
+    }
+    return appsresult;
+}
+
+inline bool update_user_instalations(const uint64_t user_id, const uint64_t app_id , const json &  qa_history){
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::UsersApps usr_apps;
+    const auto & result = db(update(usr_apps)
+        .set(usr_apps.qaHistory = json(qa_history).dump())
+        .where( usr_apps.iduser == user_id and usr_apps.idapp == app_id ) );
+    return static_cast<bool>(result);
+}
+
 } // namespace db_op
 //https://github.com/rbock/sqlpp11/wiki/Select
 inline void join()
