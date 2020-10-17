@@ -305,27 +305,43 @@ inline bool delete_instalation(const string &username, const string &app_name)
     return true;
 }
 
-inline map<uint64_t,string> read_instalations(const string &username, optional<uint64_t> app_id = nullopt)
+struct app_installation{
+    string app_name;
+    json qa_history;
+};
+
+inline map<uint64_t,app_installation> read_instalations(const string &username, optional<uint64_t> app_id = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
     orm_prot::Apps app_;
     orm_prot::UsersApps usr_apps;
-    map<uint64_t,string> appsresult;
+    map<uint64_t,app_installation> appsresult;
 
     if(app_id.has_value()){
-        for (const auto &row : db(select(all_of(app_)).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp))
+        for (const auto &row : db(select(app_.id,app_.name, usr_apps.qaHistory).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp))
         .where(usr.username == username and app_.id == app_id.value() ) ))
         {
-            appsresult[row.id] = row.name;
+            json js = row.qaHistory.is_null() ? json::object() : json::parse( row.qaHistory.value() );
+
+            app_installation inst {
+                .app_name = row.name,
+                .qa_history = js,
+            };
+            appsresult[row.id] = inst;
         }
         return appsresult;
     }
 
-    for (const auto &row : db(select(all_of(app_)).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp)
+    for (const auto &row : db(select(app_.id,app_.name, usr_apps.qaHistory).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp)
     ).where(usr.username == username )))
     {
-        appsresult[row.id] = row.name;
+        json js = row.qaHistory.is_null() ? json::object() : json::parse( row.qaHistory.value() );
+        app_installation inst {
+            .app_name = row.name,
+            .qa_history = js,
+        };
+        appsresult[row.id] = inst;
     }
     return appsresult;
 }
@@ -794,7 +810,6 @@ inline vector<unique_ptr<json>> read_user_instalations(const uint64_t user_id, o
 
         if(!row.qaHistory.is_null()){
             (*tuple)["qa_history"] = json::parse(row.qaHistory.text);
-
         }
         // cout << "dumping instalation row" << tuple->dump(4) << endl;
         appsresult.push_back(move(tuple)) ;

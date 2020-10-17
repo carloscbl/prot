@@ -58,6 +58,7 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
 //FIX: this is a mess composing responses...
 const json cloud_app_runner::run(const json &request_json) noexcept
 {
+    measure_execution_raii("cloud_app_runner::run");
     const auto &state = fetch_next_session();
     this->m_session_id = state->id;
     app_parser fp(app_.get_json(), *state); //,*state

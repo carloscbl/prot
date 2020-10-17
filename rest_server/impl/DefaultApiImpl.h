@@ -38,6 +38,7 @@
 #include "Object.h"
 #include "Prot_app_info.h"
 #include "User.h"
+#include "User_apps_get_response.h"
 #include <string>
 
 namespace org {

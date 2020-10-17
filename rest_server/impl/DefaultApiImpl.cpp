@@ -141,8 +141,9 @@ void DefaultApiImpl::user_username_apps_get(const std::string &username, Pistach
     json jsresponse;
     for(const auto & [k,v] : read_instalations(decoded) ){
         json inner;
-        inner["appID"] = k;
-        inner["appName"] = v;
+        inner["app_id"] = k;
+        inner["app_name"] = v.app_name;
+        inner["qa_history"] = v.qa_history;
         jsresponse.push_back(inner);
     }
 
@@ -161,8 +162,9 @@ void DefaultApiImpl::user_username_apps_install_app_id_get(const std::string &us
         return;
     }
     json jsresponse;
-    jsresponse["appID"]= res.begin()->first;
-    jsresponse["appName"]= res.begin()->second;
+    jsresponse["app_id"]= res.begin()->first;
+    jsresponse["app_name"]= res.begin()->second.app_name;
+    jsresponse["qa_history"] = res.begin()->second.qa_history;
 
     response.send(Pistache::Http::Code::Ok, jsresponse.dump(4));
 }

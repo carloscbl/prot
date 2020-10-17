@@ -1,9 +1,9 @@
 title: user_apps_get_response
 type: object
 properties:
-  appID:
+  app_id:
     type: integer
-  appName:
+  app_name:
     type: string
-  completion_status:
-    type: string
+  qa_history:
+    type: object
