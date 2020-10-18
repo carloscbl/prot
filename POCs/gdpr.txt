@@ -1,0 +1,48 @@
+Proof of concept GDPR compliant
+
+N external providers, will be operating in our system like google ads, analytics, and so on...
+
+Our obligations are:
+- explain how user data is used, by us and our providers
+- give optinal usage of this patterns
+
+gtag
+perico1
+foo1
+
+previamente autorizado
+autorizado -> entra preguntar -> si anonimo
+    -> si es registrado -> guardar en db mediante al api su respuesta y/N
+
+{
+    items: [
+        {
+            type: gtag
+            enabled:false
+        },
+        {
+            type: foo1
+            enabled:false
+        },
+        {
+            type: perico1
+            enabled:true
+        },
+    ]
+}
+
+GUI componente {
+    monstrar opciones activar o desactivar
+    prop de la lista de proveedores
+    for 
+    nombre slider off/on
+}
+
+tabla donde almacenarlo.... crear o reutilizar
+ampliar la api, creando un endpoint o reutilizando uno que sirva y ampliandolo CRU
+POST PUT/PATCH GET llamada autenticada
+
+
+
+
+
