@@ -14,8 +14,8 @@ USE `prot`;
 DELIMITER ;;
 
 CREATE EVENT `r_tasks` ON SCHEDULE EVERY 1 HOUR STARTS '2020-10-11 21:15:06' ON COMPLETION NOT PRESERVE ENABLE DO delete FROM tasks 
-WHERE LOCALTIME()> adddate(end, interval 10 day) or
-created_at> ADDDATE(LOCALTIME(), INTERVAL 2 DAY);;
+WHERE LOCALTIME()> adddate(end, interval 10 day) and
+created_at < ADDDATE(LOCALTIME(), INTERVAL 2 DAY);;
 
 DELIMITER ;
 
@@ -164,4 +164,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-10-18 10:31:44
+-- 2020-10-18 21:19:37
