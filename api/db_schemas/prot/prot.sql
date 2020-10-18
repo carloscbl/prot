@@ -1,4 +1,4 @@
--- Adminer 4.7.7 MySQL dump
+-- Adminer 4.7.5 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -10,6 +10,14 @@ SET NAMES utf8mb4;
 DROP DATABASE IF EXISTS `prot`;
 CREATE DATABASE `prot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `prot`;
+
+DELIMITER ;;
+
+CREATE EVENT `r_tasks` ON SCHEDULE EVERY 1 HOUR STARTS '2020-10-11 21:15:06' ON COMPLETION NOT PRESERVE ENABLE DO delete FROM tasks 
+WHERE LOCALTIME()> adddate(end, interval 10 day) or
+created_at> ADDDATE(LOCALTIME(), INTERVAL 2 DAY);;
+
+DELIMITER ;
 
 DROP TABLE IF EXISTS `app_sessions`;
 CREATE TABLE `app_sessions` (
@@ -156,4 +164,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-10-14 19:07:13
+-- 2020-10-18 10:31:44
