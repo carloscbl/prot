@@ -1,7 +1,7 @@
 ﻿{
   "app": {
     "version": 0,
-    "app.name": "test Daily workout",
+    "app.name": "Daily workout",
     "author.name": "carlos bernal"
   },
   "questions": [
