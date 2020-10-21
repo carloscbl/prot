@@ -10,7 +10,7 @@ services:
       #- "./persistence/mysql:/var/lib/mysql"
       - ./api/db_schemas:/docker-entrypoint-initdb.d
     environment:
-      MYSQL_ROOT_PASSWORD: example
+      MYSQL_ROOT_PASSWORD: ${DB_PWD}
     security_opt:
     - seccomp:unconfined
 
@@ -32,7 +32,7 @@ services:
       TZ: Etc/UTC
       PROT_DB_USER: root
       PROT_DB_SCHEMA: prot
-      PROT_DB_PASSW: example
+      PROT_DB_PASSW: ${DB_PWD}
       PROT_DB_HOST: db
       PROT_DB_PORT: 3306
     ports:
@@ -53,7 +53,7 @@ services:
       TZ: Etc/UTC
       PROT_DB_USER: root
       PROT_DB_SCHEMA: prot
-      PROT_DB_PASSW: example
+      PROT_DB_PASSW: ${DB_PWD}
       PROT_DB_HOST: db
       PROT_DB_PORT: 3306
     depends_on:
