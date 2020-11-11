@@ -130,7 +130,7 @@ inline map<uint64_t,string> read_apps_by_developer(const string & developer){
     return dev_apps;
 }
 
-inline optional<pair<uint64_t,string>> read_app_by_id(const int32_t &id)
+inline optional<pair<uint64_t,json>> read_app_by_id(const int32_t &id)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -142,7 +142,16 @@ inline optional<pair<uint64_t,string>> read_app_by_id(const int32_t &id)
     }
 
     const auto &row = result.front();
-    return make_pair(row.id,row.name);
+    json unstructured = json::parse(row.json.text);
+    json js = {
+        {"json",unstructured["app"]}, //Only app part so we dont expose the whole app
+        {"name",row.name.text},
+        {"id",uint64_t(row.id.value())},
+        {"developer",uint64_t(row.developer.value())},
+        {"is_public",row.isPublic.value()},
+        {"disabled",row.disabled.value()},
+    };
+    return make_pair(row.id,js);
 }
 
 inline map<uint64_t,json> read_app_meta()
@@ -157,11 +166,11 @@ inline map<uint64_t,json> read_app_meta()
         json unstructured = json::parse(result.json.text);
         json js = {
             {"json",unstructured["app"]}, //Only app part so we dont expose the whole app
-            // {"name",result.name},
-            // {"id",result.id},
-            // {"developer",result.developer},
-            // {"is_public",result.isPublic.value()},
-            // {"disabled",result.disabled.value()},
+            {"name",result.name.text},
+            {"id",uint64_t(result.id.value())},
+            {"developer",uint64_t(result.developer.value())},
+            {"is_public",result.isPublic.value()},
+            {"disabled",result.disabled.value()},
         };
         apps_names[result.id] = js;
     }

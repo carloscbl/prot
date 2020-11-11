@@ -106,7 +106,8 @@ void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWrit
     auto paired = ff.value();
     Prot_app_info app;
     app.setAppId(paired.first);
-    app.setAppName(paired.second);
+    app.setAppName(paired.second["name"]);
+    app.setAppUnstructuredInfo(paired.second);
     json jresponse = app;
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4));
 }
@@ -128,7 +129,7 @@ void DefaultApiImpl::user_developer_app_app_id_get(const std::string &developer,
         response.send(Pistache::Http::Code::Not_Found, "not app for that id");
         return;
     }
-    auto app_res =read_app(app_.value().second);
+    auto app_res =read_app(app_.value().second["name"]);
     
     response.send(Pistache::Http::Code::Ok, app_res->get_json().dump(4));
 }
@@ -206,7 +207,7 @@ void DefaultApiImpl::user_username_apps_install_app_id_post(const std::string &u
         response.send(Pistache::Http::Code::Not_Found, "User already have that instalation");
         return;
     }
-    if(!create_instalation(decoded,app_name.value().second)){
+    if(!create_instalation(decoded,app_name.value().second["name"])){
         response.send(Pistache::Http::Code::Not_Found, "unable to do instalation");
         return;
     }
@@ -223,7 +224,7 @@ void DefaultApiImpl::user_username_questionary_app_id_get(const std::string &use
     }
 
     auto pair = read_app_by_id(appId);
-    auto app_ = read_app(pair->second);
+    auto app_ = read_app(pair->second["name"]);
     if(!app_){
         response.send(Pistache::Http::Code::Not_Found, "app does not exists");
         return ;
@@ -290,7 +291,7 @@ void DefaultApiImpl::user_username_questionary_app_id_post(const std::string &us
     }
 
     auto pair = read_app_by_id(appId);
-    auto app_ = read_app(pair->second);
+    auto app_ = read_app(pair->second["name"]);
     cloud_app_runner car(*usr, *app_);
     json qa_request;
     qa_request["answer"] = inlineObject3.getResponse();
