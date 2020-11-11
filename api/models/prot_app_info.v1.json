@@ -7,6 +7,9 @@
     },
     "app_name": {
       "type": "string"
+    },
+    "app_unstructured_info": {
+      "type": "object"
     }
   },
   "required": [

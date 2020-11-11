@@ -161,18 +161,18 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
     };
-    struct IdPublic
+    struct IsPublic
     {
       struct _alias_t
       {
-        static constexpr const char _literal[] =  "id_public";
+        static constexpr const char _literal[] =  "is_public";
         using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
         template<typename T>
         struct _member_t
           {
-            T idPublic;
-            T& operator()() { return idPublic; }
-            const T& operator()() const { return idPublic; }
+            T isPublic;
+            T& operator()() { return isPublic; }
+            const T& operator()() const { return isPublic; }
           };
       };
       using _traits = sqlpp::make_traits<sqlpp::tinyint>;
@@ -200,7 +200,7 @@ namespace orm_prot
                Apps_::Json,
                Apps_::Name,
                Apps_::Developer,
-               Apps_::IdPublic,
+               Apps_::IsPublic,
                Apps_::Disabled>
   {
     struct _alias_t

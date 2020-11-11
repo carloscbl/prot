@@ -1,4 +1,4 @@
--- Adminer 4.7.5 MySQL dump
+-- Adminer 4.7.7 MySQL dump
 
 SET NAMES utf8;
 SET time_zone = '+00:00';
@@ -13,7 +13,7 @@ USE `prot`;
 
 DELIMITER ;;
 
-CREATE EVENT `r_tasks` ON SCHEDULE EVERY 1 HOUR STARTS '2020-10-11 21:15:06' ON COMPLETION NOT PRESERVE ENABLE DO delete FROM tasks 
+CREATE EVENT `remove_expired_tasks` ON SCHEDULE EVERY 1 HOUR STARTS '2020-10-11 21:15:06' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'This event will periodically remove all tasks that are expired' DO delete FROM tasks 
 WHERE LOCALTIME()> adddate(end, interval 10 day) and
 created_at < ADDDATE(LOCALTIME(), INTERVAL 2 DAY);;
 
@@ -37,7 +37,7 @@ CREATE TABLE `apps` (
   `json` json NOT NULL,
   `name` varchar(360) NOT NULL,
   `developer` int(11) NOT NULL,
-  `id_public` tinyint(1) NOT NULL DEFAULT '1',
+  `is_public` tinyint(1) NOT NULL DEFAULT '1',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `developer` (`developer`),
@@ -164,4 +164,4 @@ CREATE TABLE `users_apps` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-10-18 21:19:37
+-- 2020-11-11 22:42:25

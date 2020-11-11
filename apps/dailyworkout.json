@@ -2,7 +2,21 @@
   "app": {
     "version": 0,
     "app.name": "Daily workout",
-    "author.name": "carlos bernal"
+    "author.name": "Carlos Bernal",
+    "app.description": "Ready to achieve your workout goals? With Daily workout you will be remainded to be ready to the next session of exercise, but taking good care of all the rest of overhead tasks",
+    "app.tags":[
+      "lifestyle",
+      "workout",
+      "exercise",
+      "social",
+      "weekly"
+    ],
+    "app.tasks_offering":[
+      "Weekly design your schedule",
+      "Pay GYM / Swimming Pool / Sports center / subscription",
+      "Clothes/Bag Care",
+      "GPS Tracking"
+    ]
   },
   "questions": [
     {

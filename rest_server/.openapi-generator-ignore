@@ -27,5 +27,5 @@ impl/DefaultApiImpl.cpp
 main-api-server.cpp
 model/Inline_object*
 model/Inline_response*
-model/User_apps_get_response.cpp
 model/User_apps_get_response*
+model/Prot_app_info*

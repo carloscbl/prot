@@ -22,8 +22,6 @@ model/Tasker.cpp
 model/Tasker.h
 model/User.cpp
 model/User.h
-model/User_apps_get_response.cpp
-model/User_apps_get_response.h
 model/User_params.cpp
 model/User_params.h
 model/When.cpp

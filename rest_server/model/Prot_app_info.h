@@ -20,6 +20,7 @@
 
 
 #include <string>
+#include "Object.h"
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -51,6 +52,13 @@ public:
     /// </summary>
     std::string getAppName() const;
     void setAppName(std::string const& value);
+    /// <summary>
+    /// 
+    /// </summary>
+    nlohmann::json getAppUnstructuredInfo() const;
+    void setAppUnstructuredInfo(nlohmann::json const& value);
+    bool appUnstructuredInfoIsSet() const;
+    void unsetApp_unstructured_info();
 
     friend void to_json(nlohmann::json& j, const Prot_app_info& o);
     friend void from_json(const nlohmann::json& j, Prot_app_info& o);
@@ -59,6 +67,8 @@ protected:
 
     std::string m_App_name;
 
+    nlohmann::json m_App_unstructured_info;
+    bool m_App_unstructured_infoIsSet;
 };
 
 }

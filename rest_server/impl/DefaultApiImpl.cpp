@@ -83,13 +83,14 @@ void DefaultApiImpl::user_username_delete(const std::string &username, Pistache:
 }
 
 void DefaultApiImpl::apps_get(Pistache::Http::ResponseWriter &response) {
-    auto binds_apps = read_app_names();
+    auto binds_apps = read_app_meta();
     vector<Prot_app_info> apps;
     for (auto &[ k,v] : binds_apps)
     {
         Prot_app_info app;
         app.setAppId(k);
-        app.setAppName(v);
+        app.setAppName(v["name"]);
+        app.setAppUnstructuredInfo(v);
         apps.push_back(app);
     }
     json jresponse = apps;

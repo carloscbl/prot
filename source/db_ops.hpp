@@ -145,16 +145,25 @@ inline optional<pair<uint64_t,string>> read_app_by_id(const int32_t &id)
     return make_pair(row.id,row.name);
 }
 
-inline map<uint64_t,string> read_app_names()
+inline map<uint64_t,json> read_app_meta()
 {
     auto &db = mysql_db::get_db_lazy().db;
 
     orm_prot::Apps app_;
-    map<uint64_t,string> apps_names;
+    map<uint64_t,json> apps_names;
 
-    for (const auto &result : db(sqlpp::select(app_.id,app_.name).from(app_).unconditionally().limit(1000U)))
+    for (const auto &result : db(sqlpp::select(all_of(app_)).from(app_).unconditionally().limit(1000U)))
     {
-        apps_names[result.id] = result.name;
+        json unstructured = json::parse(result.json.text);
+        json js = {
+            {"json",unstructured["app"]}, //Only app part so we dont expose the whole app
+            // {"name",result.name},
+            // {"id",result.id},
+            // {"developer",result.developer},
+            // {"is_public",result.isPublic.value()},
+            // {"disabled",result.disabled.value()},
+        };
+        apps_names[result.id] = js;
     }
 
     return apps_names;
