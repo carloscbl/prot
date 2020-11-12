@@ -46,7 +46,9 @@ int main(int argc, char *argv[]){
 #endif
     std::cout << "Starting Prot Jobs Watcher Service..." << std::endl;
     jobs_watcher_start(prot_jobs_scheduling, 3000);
-    while (!end_program);
+    while (!end_program){
+        sleep(2);
+    }
     std::cout << "Ending Prot Jobs Watcher Service" << std::endl;
     return 0;
 }
