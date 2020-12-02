@@ -190,6 +190,7 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
     if(start_from.has_value()){
         projected_next_period_override_start_offset = deduce_next_period(j_task, task_, start_from);
         if(!projected_next_period_override_start_offset.has_value()){
+            cout << "WRONG projected_next_period_override_start_offset" << endl;
             return false;
         }
     }
@@ -197,8 +198,8 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
     time_determinator time_dt(task_test, provisional_scheduler);
     optional<bool> result = time_dt.build( days(0), projected_next_period_override_start_offset );
     if(!result.has_value() || !result.value()){
-        return false;
         cout << "WRONG" << endl;
+        return false;
     }
     tasker_.commit_single_task(move(task_test));
     cout << "COMMITED" << endl;
