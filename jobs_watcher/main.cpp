@@ -6,6 +6,7 @@
 #endif
 
 #include <iostream>
+#include "spdlog/spdlog.h"
 
 
 bool end_program = false;
@@ -44,6 +45,11 @@ int main(int argc, char *argv[]){
     std::vector<int> sigs{SIGQUIT, SIGINT, SIGTERM, SIGHUP};
     setUpUnixSignals(sigs);
 #endif
+    spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
+    SPDLOG_INFO("Welcome to spdlog!");
+    SPDLOG_ERROR("Welcome to spdlog!");
+    SPDLOG_DEBUG("Welcome to spdlog!");
+    SPDLOG_CRITICAL("Welcome to spdlog!");
     std::cout << "Starting Prot Jobs Watcher Service..." << std::endl;
     jobs_watcher_start(prot_jobs_scheduling, 3000);
     while (!end_program){
