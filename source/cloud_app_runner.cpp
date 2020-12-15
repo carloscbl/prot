@@ -3,6 +3,9 @@
 #include "time_determinator.h"
 #include "db_ops.hpp"
 #include "time_utils.hpp"
+#include "spdlog/spdlog.h"
+// SPDLOG_INFO("Welcome to spdlog!");
+// SPDLOG_ERROR("Welcome to spdlog!");
 
 cloud_app_runner::cloud_app_runner(user & user_, app &app_)
     : user_(user_),
@@ -190,7 +193,8 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
     if(start_from.has_value()){
         projected_next_period_override_start_offset = deduce_next_period(j_task, task_, start_from);
         if(!projected_next_period_override_start_offset.has_value()){
-            cout << "WRONG projected_next_period_override_start_offset" << endl;
+            // cout << "WRONG projected_next_period_override_start_offset" << endl;
+            SPDLOG_ERROR("WRONG projected_next_period_override_start_offset");
             return false;
         }
     }

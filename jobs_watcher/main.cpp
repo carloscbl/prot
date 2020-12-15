@@ -6,6 +6,7 @@
 #endif
 
 #include <iostream>
+
 #include "spdlog/spdlog.h"
 
 
@@ -46,6 +47,8 @@ int main(int argc, char *argv[]){
     setUpUnixSignals(sigs);
 #endif
     spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
+    spdlog::set_level(spdlog::level::debug);
+    #include "spdlog/spdlog.h"
     SPDLOG_INFO("Welcome to spdlog!");
     SPDLOG_ERROR("Welcome to spdlog!");
     SPDLOG_DEBUG("Welcome to spdlog!");
