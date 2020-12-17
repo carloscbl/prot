@@ -21,6 +21,7 @@
 #endif
 #include "DefaultApiImpl.h"
 #include <iostream>
+#include "spdlog/spdlog.h"
 
 #define PISTACHE_SERVER_THREADS     2
 #define PISTACHE_SERVER_MAX_REQUEST_SIZE 1000000
@@ -68,6 +69,9 @@ int main() {
 
     httpEndpoint = new Pistache::Http::Endpoint((addr));
     auto router = std::make_shared<Pistache::Rest::Router>();
+    
+    spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
+    spdlog::set_level(spdlog::level::debug);
 
     auto opts = Pistache::Http::Endpoint::options()
         .threads(PISTACHE_SERVER_THREADS);
@@ -79,7 +83,7 @@ int main() {
 
     DefaultApiImpl DefaultApiserver(router);
     DefaultApiserver.init();
-    std::cout << "Starting Prot REST server..." << std::endl;
+    SPDLOG_INFO("Starting Prot REST server...");
     
     httpEndpoint->setHandler(router->handler());
     httpEndpoint->serve();

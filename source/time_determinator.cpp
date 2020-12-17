@@ -4,6 +4,7 @@
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
 #include "expanded_taskstory_t.h"
+#include "spdlog/spdlog.h"
 
 
 
@@ -164,14 +165,13 @@ bool time_determinator::build_daily_restrictions(
 bool time_determinator::forward_pipeline(const im_t & interval_map, time_point current_day_begin) {
 //Restrictions apply before the pipeline 
 //now that restrictions are apply, time to check if there is slot
-    // TODO check when!!!
-    // TODO pack and order group tasks
     auto slot = check_within_day_slot(interval_map ,current_day_begin);
     if( slot.has_value() ){
         return apply_slot(slot.value());
     }
     print_hour(current_day_begin);
     print_time(interval_map);
+    SPDLOG_ERROR("Unable to find slot");
     return false;
 }
 
@@ -180,6 +180,7 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
     auto prev_task_ = sche_.get_task(when_.after, this->m_designated_period_group); // this is colliding
     if (!prev_task_)
     {
+        SPDLOG_ERROR("Unable to find previous task to take reference: {}", when_.after);
         return false;
     }
     
@@ -199,6 +200,7 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
 
     print_hour(current_day_begin);
     print_time(interval_map);
+    SPDLOG_ERROR("Unable to find slot");
     return false;
 }
 
@@ -211,6 +213,7 @@ bool time_determinator::apply_slot(time_point start) noexcept{
     //cout << "Allocating in: " << endl << ctime(&start_) << ctime(&end_) << endl;
     task_->set_interval( start_, end_);
     if(!sche_.add_single(move(this->task_))){
+        SPDLOG_ERROR("Unable to apply slot, probably colliding in scheduler, by policy: {}", sche_.policy);
         return false;
     }
     return true;
