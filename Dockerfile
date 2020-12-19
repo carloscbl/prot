@@ -1,9 +1,9 @@
-FROM ubuntu:19.10 as min-stage
+FROM ubuntu:20.04 as min-stage
 
 ARG NBUILDCORES=3
 #--build-arg NBUILDCORES=12
 
-RUN apt update && apt install -y \
+RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
     software-properties-common \
     git \
     gcc-9 \
@@ -17,7 +17,7 @@ RUN apt update && apt install -y \
     curl \
     libcurl4-openssl-dev \
     cmake \
-    python3.7 \
+    python3 \
     python3-pip \
     libmariadbclient-dev \
     && add-apt-repository -y ppa:pistache+team/unstable \
@@ -33,7 +33,7 @@ RUN dpkg -i ./thirdparty/cmake-data_3.15.4-1ubuntu2_all.deb \
 && dpkg -i ./thirdparty/cmake_3.15.4-1ubuntu2_amd64.deb\
 && apt-get install -f
 
-RUN python3.7 -m pip install -r requirements.txt
+RUN python3 -m pip install -r requirements.txt
 
 WORKDIR /opt/prot/thirdparty/HowardHinnantDate/date/build
 #date
@@ -75,9 +75,9 @@ COPY  --from=build-stage /opt/prot/apps /opt/prot/apps
 
 
 
-RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install tzdata
-
 ENV TZ=Etc/UTC
+RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC DEBCONF_NONINTERACTIVE_SEEN=true apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -y tzdata
+
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
 RUN dpkg-reconfigure --frontend noninteractive tzdata

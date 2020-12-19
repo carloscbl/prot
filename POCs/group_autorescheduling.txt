@@ -1,0 +1,30 @@
+The actual problem is that:
+
+    Tasks are projected into the future based in a table of jobs, with a job with a valid period start
+    this works well for individual tasks, but not for collective or "group tasks"
+
+    Code problem identified is that "after" field is waiting to find in the scheduler in the same day the designated "after"
+    but as they are scheduled individually the in memory scheduler have no register of this "after" task required... even if is in debug
+
+    We could just asure order and gather from db "after" tasks and try in reasonable period again.
+
+    But i think this is not a strong system, in which we can rely
+
+Proposal:
+
+    Asure history of questionary for an app is saved, since this is a feature planed, we can push it directly
+    then with the questionary execute again the cloud_app_runner for a target day of the repetition.
+
+
+    This holds benefits, like we get on every repetition period app updates if the dev changes something important, so next period will get this feature.
+
+    This have another problem, maybe we need to invalidate questionary and ask the user for respond new questionary.
+
+    But i think this is a way to the future, and even in the future we can hold even more control in this invalidations.
+
+    So with this solution we just replay the questionary for a given day.
+
+    And this should work out of the box without additional casuistics in to the algorithm, same bucket of logic, same testing.
+
+How:
+    ...

@@ -1,0 +1,27 @@
+linked with "group_autorescheduling"
+
+Current problem:
+
+    Rigth now when a task is periodic, on every change we commit a future job to perform the scheduling 
+    of the next period.
+    This means, the job after some time will be executed once, and should be able to schedule the same task again 
+    for the next period, but if fails, the job will be ethernally retried.
+
+    This system is unreliable, if we lost any info in DB or in commit, or a mid of any rescheduling we lost forever
+    the ability to keed rescheduling that task.
+
+Proposal:
+
+    Discovery system that will be able based on installed apps and current status of the user, the app,
+    suscription status, to reevaluate on the next cycle the changes needed.
+
+    This means while the user exists and the app is in the account, we will be able to discover and project new tasks.
+    Even if one week or month of the period we loose connection, the system will be able to determine the next period
+    from now and schedule the next skyping the lost one or scheduling if still in time.
+
+    This system keep us decoupled with sync problems, code problems, infrastructure problems, and data migrations.
+
+    We can just start fresh and the system will perform standalone
+
+How:
+    ...
