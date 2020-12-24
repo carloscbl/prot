@@ -81,9 +81,11 @@ const json cloud_app_runner::run(const json &request_json) noexcept
         json add_qa_history = {
             {"done",true},
             {"history", { 
-                    {"question", response->current_question_obj["question"].get<string>()},
-                    {"user_answer", request_json["answer"]}
-                } 
+                    { 
+                        {"question", response->current_question_obj["question"].get<string>()},
+                        {"user_answer", request_json["answer"]}
+                    } 
+                }
             },
         };
         store_qa_history_status(add_qa_history);
