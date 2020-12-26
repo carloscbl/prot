@@ -4,7 +4,7 @@
   "properties": {
     "after": {
       "type": "string",
-      "description": "Tag of the task, that this should be after"
+      "description": "task_id of the task, that this should be after"
     },
     "minumum_delay": {
       "$ref": "./duration.v1.json"

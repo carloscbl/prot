@@ -27,4 +27,15 @@ Proposal:
     And this should work out of the box without additional casuistics in to the algorithm, same bucket of logic, same testing.
 
 How:
+    Currently we store "history" as array format for an iterable ordered question answer with rich types format
+    So we just need to detect a given need of rescheduling
+        New Rescheduling:
+            - Now we have a job per task.
+            - We need to move to a job per group
+            - In the future release can be to a discovery so this pass could be removed, but for easyness of testing... job per group
+            - Store in the job
+        Once we know which group is scheduling,
+        We need a new type of job, for group scheduling, instead the clone one.
+        Will target a specific day, the system will target then the app and the user for a given day in the group scheduler
+        group scheduling will need to be able to filter a specific group? if multiple groups?
     ...

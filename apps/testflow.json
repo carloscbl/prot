@@ -69,7 +69,7 @@
       "taskstories": {
         "normal_user": [
           {
-            "tag": "base_task",
+            "task_id": "base_task",
             "name":"step 1",
             "comment": "The user is implicit",
             "description": "Gather Clothes around home",
@@ -86,7 +86,7 @@
             }
           },
           {
-            "tag": "washer_start",
+            "task_id": "washer_start",
             "name":"step 2",
             "description": "Put them inside and start the machine",
             "restrictions": [
@@ -101,7 +101,7 @@
             }
           },
           {
-            "tag": "washer_intermediate",
+            "task_id": "washer_intermediate",
             "name":"step 3",
             "description": "Put them inside and start the machine",
             "restrictions": [
@@ -118,7 +118,7 @@
             }
           },
           {
-            "tag": "washer_end",
+            "task_id": "washer_end",
             "name":"step 4",
             "description": "Collect and hang out the washing",
             "restrictions": [
@@ -140,7 +140,7 @@
             }
           },
           {
-            "tag": "washer_clean_up",
+            "task_id": "washer_clean_up",
             "name":"step 5",
             "description": "Collect and hang out the washing",
             "restrictions": [
@@ -166,7 +166,7 @@
         ],
         "industrial_user": [
           {
-            "tag": "industrial_start",
+            "task_id": "industrial_start",
             "name":"step 1",
             "description": "start the machinery",
             "restrictions": [
@@ -178,7 +178,7 @@
             }
           },
           {
-            "tag": "industrial_middle",
+            "task_id": "industrial_middle",
             "name":"step 2",
             "description": "start the machinery",
             "restrictions": [

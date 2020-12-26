@@ -15,21 +15,20 @@ void print_time(const im_t &  interval_map)
     for ( const auto & [k,v] : interval_map){
         auto day = v->get_json().find("day_week");
         if( day != v->get_json().end()){
-            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " iter_day: " << day.value() << " " << v->get_tag() << endl;
+            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " iter_day: " << day.value() << " " << v->get_task_id() << endl;
         }else{
-            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_tag() << endl;
+            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_task_id() << endl;
             
         }
     }
 }
 
-
 // Now should take the last match but if it finds exact designated group will return that one
-task_t scheduler::get_task(const string & tag, optional<unsigned int> designated_period){
+task_t scheduler::get_task(const string & task_id, optional<unsigned int> designated_period){
     task_t match = nullptr;
     for (auto &&[k,v] : m_interval_map)
     {
-        if(v->get_tag() == tag){
+        if(v->get_task_id() == task_id){
             match = v;
             if(designated_period.has_value() 
             && v->get_designated_period().has_value() 
@@ -41,12 +40,38 @@ task_t scheduler::get_task(const string & tag, optional<unsigned int> designated
     return match;
 }
 
+
+
+// Now should take the last match but if it finds exact designated group will return that one
+task_t scheduler::get_task_by( prot::scheduler::find_params params ){
+    task_t match = nullptr;
+    for (auto &&[k,v] : m_interval_map)
+    {
+        if( params.search_func(params, v) ){
+            match = v;
+            break;
+        }
+    }
+    return match;
+}
+
+vector<task_t> scheduler::get_tasks_by( prot::scheduler::find_params params ){
+    vector<task_t> matches;
+    for (auto &&[k,v] : m_interval_map)
+    {
+        if( params.search_func(params, v) ){
+            matches.push_back(v);
+        }
+    }
+    return matches;
+}
+
 scheduler::scheduler(scheduler_policy policy)
 :policy(policy)
 {
     switch (policy)
     {
-    case scheduler_policy::deny :
+    case scheduler_policy::deny:
         this->policy_fun = &scheduler::deny_policy;
         break;
     //////////////////////////////////////////////////
@@ -94,8 +119,6 @@ bool scheduler::add_single(const task_t && task_)
     }
 }
 
-
-
 bool scheduler::find_range(time_t start, time_t end){
     return policy_fun(this, policy_relevant_data{
         .start = start,
@@ -109,7 +132,7 @@ void scheduler::print_out() const
         return std::put_time(std::localtime(&t), "%Y-%m-%d %H:%M:%S");
     };
     for ( const auto & [k,v] : m_interval_map){
-        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_tag() << endl;
+        cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_task_id() << endl;
     }
 }
 
@@ -126,10 +149,12 @@ bool scheduler::deny_policy(policy_relevant_data && task_info_for_scheduler ) {
     }
     return true;
 }
+
 void scheduler::clear(){
     std::scoped_lock<mutex> lock (this->scheduler_mutex);
     this->m_interval_map.clear();
 }
+
 //If the whole group got allocation then true;
 bool scheduler::add_group(queue<task_t> && provisional_taskstory){
     bool all_correct = true;
@@ -147,32 +172,32 @@ bool scheduler::add_group(queue<task_t> && provisional_taskstory){
     return all_correct;
 }
 
-bool provisional_scheduler_RAII::add_group(queue<task_t> && provisional_taskstory){
+bool transactional_group_scheduler_RAII::add_group(queue<task_t> && provisional_taskstory){
     this->valid = scheduler::add_group(move(provisional_taskstory));
     return this->valid;
 }
 
-provisional_scheduler_RAII scheduler::get_provisional(){
-    return provisional_scheduler_RAII(*this);
+transactional_group_scheduler_RAII scheduler::get_provisional(){
+    return transactional_group_scheduler_RAII(*this);
 }
 
-provisional_scheduler_RAII::provisional_scheduler_RAII(scheduler & parent)
+transactional_group_scheduler_RAII::transactional_group_scheduler_RAII(scheduler & parent)
 :parent(parent)
 {
     parent.scheduler_mutex.lock();
     m_interval_map = im_t(parent.m_interval_map);
 }
 
-void provisional_scheduler_RAII::commit(){
+void transactional_group_scheduler_RAII::commit(){
     parent.m_interval_map.swap(this->m_interval_map);
 }
 
-provisional_scheduler_RAII::~provisional_scheduler_RAII()
+transactional_group_scheduler_RAII::~transactional_group_scheduler_RAII()
 {
     if(valid){
         parent.m_interval_map.swap(this->m_interval_map);
     }
 
     parent.scheduler_mutex.unlock();
-    //cout << "~provisional_scheduler_RAII " << endl;
+    //cout << "~transactional_group_scheduler_RAII " << endl;
 }

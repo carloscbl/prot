@@ -13,12 +13,6 @@ using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
 //Vector because of the fast cache access as they need to be updated almost in real time, but CUD operations are comparatively rare
 inline map<string,weak_ptr<tasker>> taskers_global; //Global reference to all taskers to cycle them updates on caducity
-struct task_status
-{
-    task_t task_;
-    set<string> tags;//This should be replaced by a (hash, radix, suffix) trie
-    bool commited;
-};
 
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
@@ -39,10 +33,10 @@ private:
     but a long standing request... could dangle this groups
     */ 
     //FIX: TrackLife time of groups and expirate sync with app runner life time
-    //Taskstory : Name -> each task have a tag
+    //Taskstory : Name -> each task have a task_id
     map<string, map< string, task_t > > tasks_dispenser;
     const string & m_user;
-    void add_to_group(const string & task_tag, task_t && params, const string & group);
+    void add_to_group(const string & task_id, task_t && params, const string & group);
     void commit_group_then_delete(const string & group);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 public:
@@ -56,7 +50,7 @@ public:
     const string & get_name() const noexcept;
 
     task_t get_task(const uint64_t id ) const override;
-    task_t find_task(const string & tag)  const override;
+    task_t find_task(const string & task_id)  const override;
     inline const map<uint64_t, task_t> & get_tasks() const { return this->tasks_active; }
     tasker(const string & user);
     virtual ~tasker(){}

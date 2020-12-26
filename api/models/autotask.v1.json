@@ -23,7 +23,7 @@
     "duration": {
       "$ref": "./duration.v1.json"
     },
-    "tag": {
+    "task_id": {
       "type": "string"
     },
     "description": {

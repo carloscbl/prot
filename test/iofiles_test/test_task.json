@@ -1,6 +1,6 @@
 {
     "id": 0,
-    "tag": "gym_fee",
+    "task_id": "gym_fee",
     "name": "Pay the gym subscription",
     "user": "pepe",
     "prot_id": "f6815925-133c-4b03-9e95-b93300ec6f19",

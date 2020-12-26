@@ -6,13 +6,13 @@
 
 tasker::tasker(const string & user):m_user(user){}
 
-void tasker::add_to_group(const string & task_tag,task_t && params, const string & group){
+void tasker::add_to_group(const string & task_id,task_t && params, const string & group){
     params->set_task_group(group);
-    tasks_dispenser[group][task_tag] = (move(params));
+    tasks_dispenser[group][task_id] = (move(params));
 }
 
 void tasker::add_to_group( task_t && params, const string & group){
-    this->add_to_group( params->get_tag(), move(params), group);
+    this->add_to_group( params->get_task_id(), move(params), group);
 }
 
 void tasker::clear(){
@@ -41,10 +41,10 @@ void to_json(nlohmann::json& new_json, const tasker& ref_tasker) {
     });
 }
 
-task_t tasker::find_task(const string & tag) const {
+task_t tasker::find_task(const string & task_id) const {
     for (auto &&[k,v] : tasks_active)
     {
-        if(v->get_tag() == tag){
+        if(v->get_task_id() == task_id){
             return v;
         }
     }

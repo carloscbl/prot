@@ -25,7 +25,7 @@ class time_determinator
 private:
     task_t task_;
     scheduler &sche_;
-    optional<size_t> m_designated_period_group;
+    optional<size_t> m_designated_period_group;// this is a day of week or month or year
     struct wildcard_time_determinator_data{
         string period_ratio_name; //day_month
         size_t designated_period; // day -> 27

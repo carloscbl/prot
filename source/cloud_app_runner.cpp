@@ -187,7 +187,7 @@ optional<days> deduce_next_period(const json & j_task, task * task_, optional<st
 
 bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from, task * task_) const{
     cout << "## schedule_single_task ##" << endl;
-    provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
+    transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
     auto task_test = create_task_to_schedule(j_task);
 
@@ -244,7 +244,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
     failure_report_t report;
     for (size_t day = 0; day < 365; day++)
     {
-        provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
+        transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
         tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
         taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
 
@@ -254,7 +254,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
         {
             task_t task_test = create_task_to_schedule(v);
             time_determinator time_dt(task_test, provisional_scheduler);
-            //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
+            //cout << "checking task: " << task_test->get_task_id() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(day));
             if(result.has_value() ){
                 if(result.value()){
@@ -289,29 +289,29 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
     failure_report_t report;
     for (const auto &[k,v] : *response.wildcard_expanded_taskstory)
     {
-        provisional_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
+        transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
         tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
         taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
         bool completed_period = true;
         for (const auto & wildcard_task : v){
             task_t task_test = create_task_to_schedule(wildcard_task.get<task>());
-            string tag = task_test->get_tag();
+            string task_id = task_test->get_task_id();
             time_determinator time_dt(task_test, provisional_scheduler, k);
-            //cout << "checking task: " << task_test->get_tag() << " day:" << day << endl;
+            //cout << "checking task: " << task_test->get_task_id() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(0));
             if(result.has_value() ){
                 if(result.value()){
                     //task_test->save();
-                    fmt::print("-added_to_group {}\n", tag);
+                    fmt::print("-added_to_group {}\n", task_id);
                     tasker_.add_to_group(move(task_test), response.taskstory_name);
                 }else{
-                    fmt::print("-Unable to schedule {}\n", tag);
+                    fmt::print("-Unable to schedule {}\n", task_id);
                     report.failures_report.push_back(task_test);
                     completed_period = false;
                     break;
                 }
             }else{//Now time to make it fail and control the failure
-                fmt::print("-Failed time determination {}\n", tag);
+                fmt::print("-Failed time determination {}\n", task_id);
                 report.no_margin_invalidation = task_test;
                 break;
                 // return false;

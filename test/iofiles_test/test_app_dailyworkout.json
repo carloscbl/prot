@@ -112,7 +112,7 @@
       "taskstories": {
         "normal_flow": [
           {
-            "tag": "base_task_collect",
+            "task_id": "base_task_collect",
             "name":"Fill bag and collect towel and {exercise_name} clothes",
             "description": "Get all the material needed to perform {exercise_description}, Today: {exercise_name}",
             "restrictions": [
@@ -128,7 +128,7 @@
             }
           },
           {
-            "tag": "gym_fee",
+            "task_id": "gym_fee",
             "name":"Pay the gym subscription",
             "description": "Remember once each month you need to pay the fee",
             "restrictions": [
@@ -140,7 +140,7 @@
             }
           },
           {
-            "tag": "travel_to_activity",
+            "task_id": "travel_to_activity",
             "name":"Go to {exercise_name}",
             "when": {
               "after": "base_task_collect"
@@ -159,7 +159,7 @@
             }
           },
           {
-            "tag": "perform_activity",
+            "task_id": "perform_activity",
             "name":"Workout Time!",
             "comment": "",
             "when": {

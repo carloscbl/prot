@@ -10,6 +10,7 @@
 #include "task.h"
 #include <mutex>
 #include "time_utils.hpp"
+// #include "scheduler_search_functions.h"
 
 #include <boost/icl/interval.hpp>
 #include <boost/icl/interval_map.hpp>
@@ -22,8 +23,17 @@ using task = task_space::task;
 using time_interval = boost::icl::interval<time_t>;
 using task_t = ischeduler::task_t;
 using priority_t = int;
-class provisional_scheduler_RAII;
+class transactional_group_scheduler_RAII;
+namespace prot::scheduler{
 
+struct find_params{
+    std::function<bool(find_params, task_t)> search_func;// = prot::scheduler::find_functions::default_plus_optional_designated;
+
+    const string & task_id;
+    optional<unsigned int> designated_period;
+};
+
+};
 
 typedef boost::icl::interval_map<time_t, task_t> im_t;
 // a time interval
@@ -60,7 +70,7 @@ Euristics to find gaps
 class scheduler : public ischeduler
 {
 public:
-    friend provisional_scheduler_RAII;
+    friend transactional_group_scheduler_RAII;
     enum class scheduler_policy{
         deny,
         priority,
@@ -76,7 +86,7 @@ private:
     bool deny_policy(policy_relevant_data && task_info_for_scheduler );
     bool mod = false;
     mutable std::mutex scheduler_mutex;
-    im_t m_interval_map;       //Here lie the real scheduled task
+    im_t m_interval_map;       //Here lie the real scheduled tasks
     function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;
     /*
     Adding a group, is add an ordered group of task together,
@@ -114,13 +124,15 @@ public:
     optional<vector<task_t>> get_range(time_t start, time_t end) override ;
     bool find_range(time_t start, time_t end) override;
     bool find_relative(task_t item, chrono::seconds after_before, time_t end, time_t min_dur) override;
-    task_t get_task(const string & tag, optional<unsigned int> designated_period= std::nullopt);
+    task_t get_task(const string & task_id, optional<unsigned int> designated_period= std::nullopt);
+    task_t get_task_by(prot::scheduler::find_params params);
+    vector<task_t> get_tasks_by(prot::scheduler::find_params params);
     //Ouput the "[start,end] task_id" of all scheduled tasks
     void clear();
     inline size_t size() const { return this->m_interval_map.iterative_size(); }
     void print_out() const override;
     //This is the correct way to provide groups in a safe manner
-    provisional_scheduler_RAII get_provisional() override;
+    transactional_group_scheduler_RAII get_provisional() override;
 };
 
 /*
@@ -132,24 +144,26 @@ Exposes the add group method to the public, this is the safe way to still provid
 const read ops, with out interfere with the parent taking our time to process the
 whole group of task... because in the future this can reallocate almost all tasks
 */
-class provisional_scheduler_RAII final : public scheduler
+class transactional_group_scheduler_RAII final : public scheduler
 {
 private:
 
     friend scheduler;//Required in order to allow only to scheduler to construct us
     scheduler & parent;
     bool valid = false;
-    provisional_scheduler_RAII(scheduler & parent);
+    transactional_group_scheduler_RAII(scheduler & parent);
     using scheduler::add_group;// This should expose the add_group method
 public:
     bool add_group(queue<task_t> && provisional_taskstory);
     void commit();
-    provisional_scheduler_RAII() = delete;
+    transactional_group_scheduler_RAII() = delete;
     
     //If im not wrong, this should generate copy,assignment as delete, and move assignment not declared
-    provisional_scheduler_RAII( provisional_scheduler_RAII &&) = delete;
-    ~provisional_scheduler_RAII();
+    transactional_group_scheduler_RAII( transactional_group_scheduler_RAII &&) = delete;
+    ~transactional_group_scheduler_RAII();
     
 };
+
+
 
 #endif //SCHEDULER_H

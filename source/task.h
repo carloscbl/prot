@@ -48,7 +48,7 @@ namespace task_space{
         string description;
         string m_user;
         string task_group;
-        string tag;
+        string task_id;
         prot::duration m_duration;
         frequency m_frequency;
         restrictions m_restrictions;
@@ -75,7 +75,7 @@ namespace task_space{
         inline void set_id           (uint64_t id_)            { this->id = id_; }
         inline void set_name         (string name_)            { this->name = name_; }
         inline void set_task_group   (string task_group_)      { this->task_group = task_group_; }
-        inline void set_tag          (string tag_)             { this->tag = tag_; }
+        inline void set_task_id          (string task_id_)             { this->task_id = task_id_; }
         inline void set_description  (string description_)     { this->description = description_; }
         inline void set_user         (string user_)            { this->m_user = user_; }
         inline void set_user_apps_id (uint64_t uf_id)          { this->user_apps_id = uf_id; }
@@ -88,8 +88,8 @@ namespace task_space{
 
         inline uint64_t              get_id()          const noexcept { return id; }
         inline uint64_t              get_user_apps_id()const noexcept{ return user_apps_id; }
-        inline const string        & get_name()        const noexcept { return name.empty() ? get_tag() : name;}
-        inline const string        & get_tag()         const noexcept { return tag;        }
+        inline const string        & get_name()        const noexcept { return name.empty() ? get_task_id() : name;}
+        inline const string        & get_task_id()         const noexcept { return task_id;        }
         inline const string        & get_description() const noexcept { return description; }
         inline const string        & get_m_user()      const noexcept { return m_user;      }
         inline const string        & get_task_group()  const noexcept { return task_group;  }
@@ -103,7 +103,7 @@ namespace task_space{
         inline const optional<uint64_t> & get_session_id() const noexcept { return m_session_id; }
 
 
-        void print_() { cout << id << ":" << tag << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
+        void print_() { cout << id << ":" << task_id << ":" << name << ":" << description << ":" << endl <<ctime(&interval.start) << ctime(&interval.end) << endl; }
 
     };
 

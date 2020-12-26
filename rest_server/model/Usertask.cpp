@@ -55,7 +55,7 @@ void to_json(nlohmann::json& j, const Usertask& o)
     if(o.durationIsSet())
         j["duration"] = o.m_Duration;
     if(o.tagIsSet())
-        j["tag"] = o.m_Tag;
+        j["task_id"] = o.m_Tag;
     if(o.descriptionIsSet())
         j["description"] = o.m_Description;
     j["name"] = o.m_Name;
@@ -79,9 +79,9 @@ void from_json(const nlohmann::json& j, Usertask& o)
         j.at("duration").get_to(o.m_Duration);
         o.m_DurationIsSet = true;
     } 
-    if(j.find("tag") != j.end())
+    if(j.find("task_id") != j.end())
     {
-        j.at("tag").get_to(o.m_Tag);
+        j.at("task_id").get_to(o.m_Tag);
         o.m_TagIsSet = true;
     } 
     if(j.find("description") != j.end())

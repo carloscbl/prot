@@ -26,7 +26,7 @@ using std::chrono::floor;
 struct time_point_interval{
     time_point from ;
     time_point to;
-    string tag;
+    string meta_day;
 };
 
 
@@ -41,18 +41,18 @@ inline vector<time_point_interval> _24_hour_interval_to_time_point (json_interva
         intervals.push_back(time_point_interval {
             .from = from - days(1),
             .to = to,
-            .tag = "prev"
+            .meta_day = "prev"
         });
         intervals.push_back(time_point_interval {
             .from = from,
             .to = to + days(1),
-            .tag = "post"
+            .meta_day = "post"
         });
     }else{
         intervals.push_back(time_point_interval {
             .from = from,
             .to = to,
-            .tag = "within"
+            .meta_day = "within"
         });
     }
     return intervals;

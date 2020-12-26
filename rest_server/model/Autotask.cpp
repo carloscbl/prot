@@ -56,7 +56,7 @@ void to_json(nlohmann::json& j, const Autotask& o)
     j["frequency"] = o.m_Frequency;
     j["duration"] = o.m_Duration;
     if(o.tagIsSet())
-        j["tag"] = o.m_Tag;
+        j["task_id"] = o.m_Tag;
     if(o.descriptionIsSet())
         j["description"] = o.m_Description;
     j["name"] = o.m_Name;
@@ -82,9 +82,9 @@ void from_json(const nlohmann::json& j, Autotask& o)
     } 
     j.at("frequency").get_to(o.m_Frequency);
     j.at("duration").get_to(o.m_Duration);
-    if(j.find("tag") != j.end())
+    if(j.find("task_id") != j.end())
     {
-        j.at("tag").get_to(o.m_Tag);
+        j.at("task_id").get_to(o.m_Tag);
         o.m_TagIsSet = true;
     } 
     if(j.find("description") != j.end())

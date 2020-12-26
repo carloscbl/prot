@@ -29,7 +29,7 @@ bool this_task_exists_only_if_user_inputs(const json & expanding_task);
 bool set_wildcard_task_posible_iterations(const json & type_details, json & expanding_task, size_t secondary_idx, fmt::dynamic_format_arg_store<fmt::format_context> & store);
 
 const std::vector<string> fields_to_interpolate{
-    "name","description",//"tag"
+    "name","description",//"task_id"
 };
 
 class expand_taskstory_t {

@@ -5,6 +5,7 @@
 #include <boost/icl/interval_map.hpp>
 #include "expanded_taskstory_t.h"
 #include "spdlog/spdlog.h"
+#include "scheduler_search_functions.h"
 
 
 
@@ -24,7 +25,7 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
     */
     //1º Apply restrictions to a period range
     //1.1 Get range
-    // if(task_->get_tag() == "travel_to_activity"){
+    // if(task_->get_task_id() == "travel_to_activity"){
     //     cout << "aa" << endl;
     // }
     time_point end;
@@ -59,11 +60,11 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
     im_t interval_map = sche_.clone_interval_map();
     print_time(interval_map);
     
-    cout << "\n"<< "trying " << this->task_->get_tag() << " into offset of " <<  local_start_offset.count()  <<"\n" << endl;
+    cout << "\n"<< "trying " << this->task_->get_task_id() << " into offset of " <<  local_start_offset.count()  <<"\n" << endl;
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
-    // if(task_->get_tag() == "washer_clean_up"){
+    // if(task_->get_task_id() == "washer_clean_up"){
     //     print_time(interval_map);
     // }
     days d = ceil<days>(end - start);
@@ -148,7 +149,7 @@ bool time_determinator::build_daily_restrictions(
                 + "_" 
                 + _24_restriction_interval.restriction_name
                 + "_" 
-                + normalized_interval.tag);
+                + normalized_interval.meta_day);
             time_point start = normalized_interval.from ;
             time_t start_ = system_clock::to_time_t(start);
 
@@ -177,7 +178,13 @@ bool time_determinator::forward_pipeline(const im_t & interval_map, time_point c
 
 bool time_determinator::when_pipeline( const im_t & interval_map, time_point current_day_begin) {
     const auto & when_ = task_->get_when();
-    auto prev_task_ = sche_.get_task(when_.after, this->m_designated_period_group); // this is colliding
+    // auto prev_task_ = sche_.get_task(when_.after, this->m_designated_period_group); // this is colliding
+    auto findparams = prot::scheduler::find_params{
+        .search_func = prot::scheduler::find_functions::first_tasks_optional_designated,
+        .task_id = when_.after,
+        .designated_period = this->m_designated_period_group
+    };
+    auto prev_task_ = sche_.get_task_by(findparams);
     if (!prev_task_)
     {
         SPDLOG_ERROR("Unable to find previous task to take reference: {}", when_.after);
@@ -245,7 +252,7 @@ optional<time_point> time_determinator::check_within_day_slot(const im_t & inter
         }
     }
 
-    // if(task_->get_tag() == "perform_activity"){
+    // if(task_->get_task_id() == "perform_activity"){
     //     print_time(interval_map);
     // }
     //First check for upper bound of the beggin of the day... with this we find if exists place
