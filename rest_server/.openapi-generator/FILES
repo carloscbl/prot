@@ -12,16 +12,6 @@ model/Helpers.cpp
 model/Helpers.h
 model/Inline_object.cpp
 model/Inline_object.h
-model/Inline_object_1.cpp
-model/Inline_object_1.h
-model/Inline_object_2.cpp
-model/Inline_object_2.h
-model/Inline_object_3.cpp
-model/Inline_object_3.h
-model/Inline_response_200.cpp
-model/Inline_response_200.h
-model/Inline_response_200_1.cpp
-model/Inline_response_200_1.h
 model/Interval.cpp
 model/Interval.h
 model/Scheduler.cpp

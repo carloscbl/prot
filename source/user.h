@@ -50,6 +50,8 @@ public:
         this->get_scheduler().clear();
         this->get_tasker().clear();
     }
+    friend void to_json(nlohmann::json& new_json, const user& ref_task);
+    friend void from_json(const nlohmann::json& ref_json, user& new_user);
 
     const string &get_name() const noexcept { return minimal_data.username; }
     string get_id() const noexcept { return this->id; }

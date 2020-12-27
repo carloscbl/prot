@@ -24,7 +24,7 @@ User::User()
     m_ParamsIsSet = false;
     m_TaskerIsSet = false;
     m_SchedulerIsSet = false;
-    m_Id = 0;
+    m_Id = "";
     
 }
 
@@ -130,11 +130,11 @@ void User::unsetScheduler()
 {
     m_SchedulerIsSet = false;
 }
-int32_t User::getId() const
+std::string User::getId() const
 {
     return m_Id;
 }
-void User::setId(int32_t const value)
+void User::setId(std::string const& value)
 {
     m_Id = value;
 }

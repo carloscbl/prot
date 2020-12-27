@@ -231,11 +231,11 @@ inline unique_ptr<user> create_user(string user_id, string username)
     auto us = make_unique<user>();
     json j = {{"id",user_id},{"username", username}};
     from_json(j, *us);
-    const auto &result = db(insert_into(usr).set(usr.id = user_id ,usr.username = username, usr.json = json(*us).dump()));
-    SPDLOG_INFO("{}",result);
+    db(insert_into(usr).set(usr.id = user_id ,usr.username = username, usr.json = json(*us).dump()));
     us->set_id(user_id);
     db(insert_into(tasker_).set(tasker_.user = user_id));
     db(insert_into(sche).set(sche.user = user_id));
+    // SPDLOG_INFO("{}",result);
     return us;
 }
 
@@ -303,25 +303,25 @@ inline uint64_t create_instalation(const string &user_id, const string &app_name
     return result;
 }
 
-inline bool delete_instalation(const string &username, const uint64_t app_id)
+inline bool delete_instalation(const string &userId, const uint64_t app_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
     orm_prot::UsersApps usr_apps;
     orm_prot::Apps app_;
 
-    db(remove_from(usr_apps).using_(usr, app_, usr_apps).where(usr_apps.iduser == usr.id and usr.username == username and usr_apps.idapp == app_.id and app_.id == app_id));
+    db(remove_from(usr_apps).using_(usr, app_, usr_apps).where(usr_apps.iduser == usr.id and usr.id == userId and usr_apps.idapp == app_.id and app_.id == app_id));
     return true;
 }
 
-inline bool delete_instalation(const string &username, const string &app_name)
+inline bool delete_instalation(const string &userId, const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
     orm_prot::UsersApps usr_apps;
     orm_prot::Apps app_;
 
-    db(remove_from(usr_apps).using_(usr, app_, usr_apps).where(usr_apps.iduser == usr.id and usr.username == username and usr_apps.idapp == app_.id and app_.name == app_name));
+    db(remove_from(usr_apps).using_(usr, app_, usr_apps).where(usr_apps.iduser == usr.id and usr.id == userId and usr_apps.idapp == app_.id and app_.name == app_name));
     return true;
 }
 
@@ -330,7 +330,7 @@ struct app_installation{
     json qa_history;
 };
 
-inline map<uint64_t,app_installation> read_instalations(const string &username, optional<uint64_t> app_id = nullopt)
+inline map<uint64_t,app_installation> read_instalations(const string &userId, optional<uint64_t> app_id = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
@@ -340,7 +340,7 @@ inline map<uint64_t,app_installation> read_instalations(const string &username, 
 
     if(app_id.has_value()){
         for (const auto &row : db(select(app_.id,app_.name, usr_apps.qaHistory).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp))
-        .where(usr.username == username and app_.id == app_id.value() ) ))
+        .where(usr.id == userId and app_.id == app_id.value() ) ))
         {
             json js = row.qaHistory.is_null() ? json::object() : json::parse( row.qaHistory.value() );
 
@@ -354,7 +354,7 @@ inline map<uint64_t,app_installation> read_instalations(const string &username, 
     }
 
     for (const auto &row : db(select(app_.id,app_.name, usr_apps.qaHistory).from(usr.join(usr_apps).on(usr.id == usr_apps.iduser).join(app_).on(app_.id == usr_apps.idapp)
-    ).where(usr.username == username )))
+    ).where(usr.id == userId )))
     {
         json js = row.qaHistory.is_null() ? json::object() : json::parse( row.qaHistory.value() );
         app_installation inst {
@@ -448,7 +448,30 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     return true;
 }
 
-inline unique_ptr<task> read_task (const uint64_t task_id)
+inline unique_ptr<task> read_task_secure (const string &userId, const uint64_t task_id)
+{
+
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::Taskers tasker_;
+    orm_prot::TasksTaskers tskTkr;
+    orm_prot::Tasks tsk;
+    orm_prot::Users usr;
+    const auto & select = sqlpp::select(all_of(tsk))
+                                .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
+                                .where(usr.id == userId and tsk.id == task_id).limit(1U);
+    auto resu = db(select);
+    if(resu.empty()){
+        return nullptr;
+    }
+    const auto & row = resu.front();
+    json js  = json::parse(row.json.value()); //bad parsing
+    auto tk = make_unique<task>();
+    from_json(js,*tk);
+    tk->set_id(row.id);
+    return tk;
+}
+
+inline unique_ptr<task> read_task_insecure (const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
@@ -488,7 +511,7 @@ inline map<uint64_t,unique_ptr<task>> search_tasks_by_not_this_session_id(const 
     return vtasks;
 }
 
-inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
+inline map<uint64_t,unique_ptr<task>> read_tasks(const string &userId)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Taskers tasker_;
@@ -497,7 +520,7 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &username)
     orm_prot::Users usr;
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
-                                .where(usr.username == username);
+                                .where(usr.id == userId);
     map<uint64_t,unique_ptr<task>> vtasks;
     for (const auto & row : db(select))
     {
@@ -538,7 +561,7 @@ inline void delete_task(const uint64_t task_id)
     db(remove_from(tsk).where(tsk.id == task_id));
 }
 
-inline bool delete_task(const string &username, const uint64_t task_id)
+inline bool delete_task(const string &userId, const uint64_t task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Taskers tasker_;
@@ -548,7 +571,7 @@ inline bool delete_task(const string &username, const uint64_t task_id)
     
     if(db(remove_from(tsk).using_(usr, tasker_,tskTkr,tsk).where( 
     tasker_.user == usr.id 
-    and usr.username == username 
+    and usr.id == userId 
     and tskTkr.idtask == tsk.id
     and tsk.id == task_id))){
         return true;
@@ -611,7 +634,7 @@ inline shared_ptr<app_state> create_session(const string user_id, const uint64_t
     return new_sess;
 }
 
-inline shared_ptr<app_state> read_session(const string &username, const uint64_t app_id)
+inline shared_ptr<app_state> read_session(const string &userId, const uint64_t app_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::AppSessions sess;
@@ -619,7 +642,7 @@ inline shared_ptr<app_state> read_session(const string &username, const uint64_t
     orm_prot::UsersApps uapps;
     const auto & select = sqlpp::select(all_of(sess))
                                 .from(sess.join(uapps).on(uapps.id == sess.userApps).join(usr).on(uapps.iduser == usr.id))
-                                .where(usr.username == username and uapps.idapp == app_id);
+                                .where(usr.id == userId and uapps.idapp == app_id);
     const auto & resu = db(select);
     if(resu.empty()){
         return nullptr;

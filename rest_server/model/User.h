@@ -73,8 +73,8 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    int32_t getId() const;
-    void setId(int32_t const value);
+    std::string getId() const;
+    void setId(std::string const& value);
 
     friend void to_json(nlohmann::json& j, const User& o);
     friend void from_json(const nlohmann::json& j, User& o);
@@ -87,7 +87,7 @@ protected:
     bool m_TaskerIsSet;
     Scheduler m_Scheduler;
     bool m_SchedulerIsSet;
-    int32_t m_Id;
+    std::string m_Id;
 
 };
 

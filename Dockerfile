@@ -69,6 +69,7 @@ COPY  --from=build-stage /opt/prot/build/liblprot.a /opt/prot/build/liblprot.a
 COPY  --from=build-stage /opt/prot/source /opt/prot/source
 COPY  --from=build-stage /opt/prot/jobs_watcher /opt/prot/jobs_watcher
 COPY  --from=build-stage /opt/prot/rest_server /opt/prot/rest_server
+COPY  --from=build-stage /opt/prot/discovery-rescheduler /opt/prot/discovery-rescheduler
 COPY  --from=build-stage /opt/prot/api /opt/prot/api
 COPY  --from=build-stage /opt/prot/.vscode /opt/prot/.vscode
 COPY  --from=build-stage /opt/prot/apps /opt/prot/apps

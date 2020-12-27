@@ -5,11 +5,11 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/user/{username}':
+  '/user/{user_id}':
     parameters:
       - schema:
           type: string
-        name: username
+        name: user_id
         in: path
         required: true
     get:
@@ -61,11 +61,11 @@ paths:
               required:
                 - username
                 - user_id
-  '/user/{username}/tasks':
+  '/user/{user_id}/tasks':
     parameters:
       - schema:
           type: string
-        name: username
+        name: user_id
         in: path
         required: true
     get:
@@ -105,16 +105,16 @@ paths:
               required:
                 - type_of_task
                 - task
-  '/user/{username}/task/{taskId}':
+  '/user/{user_id}/task/{taskId}':
     parameters:
-      - schema:
-          type: string
-        name: username
-        in: path
-        required: true
       - schema:
           type: integer
         name: taskId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: user_id
         in: path
         required: true
     get:
@@ -206,11 +206,11 @@ paths:
               schema:
                 type: object
                 properties: {}
-  '/user/{username}/apps':
+  '/user/{user_id}/apps':
     parameters:
       - schema:
           type: string
-        name: username
+        name: user_id
         in: path
         required: true
     get:
@@ -227,16 +227,16 @@ paths:
                   $ref: ./models/user_apps_get_response.v1.yaml
         '404':
           description: Not Found
-  '/user/{username}/apps/{installAppId}':
+  '/user/{user_id}/apps/{installAppId}':
     parameters:
-      - schema:
-          type: string
-        name: username
-        in: path
-        required: true
       - schema:
           type: integer
         name: installAppId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: user_id
         in: path
         required: true
     get:
@@ -266,16 +266,16 @@ paths:
           description: OK
         '404':
           description: Not Found
-  '/user/{username}/questionary/{appId}':
+  '/user/{user_id}/questionary/{appId}':
     parameters:
-      - schema:
-          type: string
-        name: username
-        in: path
-        required: true
       - schema:
           type: integer
         name: appId
+        in: path
+        required: true
+      - schema:
+          type: string
+        name: user_id
         in: path
         required: true
     get:

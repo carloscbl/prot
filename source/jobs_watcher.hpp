@@ -60,7 +60,7 @@ bool task_clone_into_next_period(const json & job){
         // }
         //steps
         // read the task from db
-        auto task = read_task(job["task_id"].get<uint64_t>());
+        auto task = read_task_insecure(job["task_id"].get<uint64_t>());
         // cout << " job read_task -> " <<task->get_json().dump(4)<< endl;
         cout << " job read_task id -> " <<task->get_id() << endl;
         // read from_user_apps_id

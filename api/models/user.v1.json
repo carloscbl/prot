@@ -15,7 +15,7 @@
       "$ref": "./scheduler.v1.json"
     },
     "id": {
-      "type": "integer"
+      "type": "string"
     }
   },
   "required": [

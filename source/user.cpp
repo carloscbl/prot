@@ -1,5 +1,7 @@
 #include "user.h"
 #include "tasker.h"
+#include "spdlog/spdlog.h"
+
 user::user(const user_minimal_data &m_data): minimal_data(m_data){
     init();
 }
@@ -21,6 +23,7 @@ void to_json(nlohmann::json& new_json, const user& ref_task){
 }
 
 void from_json(const nlohmann::json& ref_json, user& new_user){
-    cout << ref_json.dump(4) << endl;
+    SPDLOG_DEBUG( "{}", ref_json.dump(4) );
     ref_json.at("username").get_to(new_user.minimal_data.username);
+    ref_json.at("id").get_to(new_user.id);
 }
