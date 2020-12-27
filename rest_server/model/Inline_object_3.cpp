@@ -22,7 +22,6 @@ Inline_object_3::Inline_object_3()
 {
     m_Restart = false;
     m_RestartIsSet = false;
-    // m_Response = "";
     m_ResponseIsSet = false;
     
 }
@@ -54,7 +53,7 @@ void from_json(const nlohmann::json& j, Inline_object_3& o)
     } 
     if(j.find("response") != j.end())
     {
-        o.m_Response = j.at("response");
+        j.at("response").get_to(o.m_Response);
         o.m_ResponseIsSet = true;
     } 
 }

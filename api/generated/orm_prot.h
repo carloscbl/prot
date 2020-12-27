@@ -159,7 +159,7 @@ namespace orm_prot
             const T& operator()() const { return developer; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct IsPublic
     {
@@ -369,7 +369,7 @@ namespace orm_prot
             const T& operator()() const { return user; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
   } // namespace Schedulers_
 
@@ -422,7 +422,7 @@ namespace orm_prot
             const T& operator()() const { return user; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
   } // namespace Taskers_
 
@@ -822,7 +822,7 @@ namespace orm_prot
             const T& operator()() const { return id; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct Username
     {
@@ -908,7 +908,7 @@ namespace orm_prot
             const T& operator()() const { return iduser; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct Idapp
     {

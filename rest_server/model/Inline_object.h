@@ -46,11 +46,18 @@ public:
     /// </summary>
     std::string getUsername() const;
     void setUsername(std::string const& value);
+    /// <summary>
+    /// 
+    /// </summary>
+    std::string getUserId() const;
+    void setUserId(std::string const& value);
 
     friend void to_json(nlohmann::json& j, const Inline_object& o);
     friend void from_json(const nlohmann::json& j, Inline_object& o);
 protected:
     std::string m_Username;
+
+    std::string m_User_id;
 
 };
 

@@ -25,7 +25,7 @@
 CMakeLists.txt
 impl/DefaultApiImpl.cpp
 main-api-server.cpp
-model/Inline_object*
-model/Inline_response*
+model/Inline_object_*
+model/Inline_response_*
 model/User_apps_get_response*
 model/Prot_app_info*

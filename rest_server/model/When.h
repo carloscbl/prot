@@ -43,7 +43,7 @@ public:
     /// When members
 
     /// <summary>
-    /// Tag of the task, that this should be after
+    /// task_id of the task, that this should be after
     /// </summary>
     std::string getAfter() const;
     void setAfter(std::string const& value);

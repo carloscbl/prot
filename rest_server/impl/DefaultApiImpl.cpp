@@ -372,7 +372,7 @@ void DefaultApiImpl::user_username_tasks_post(const std::string &username, const
 }
 
 void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response) {
-    auto usr = create_user(inlineObject.getUsername());
+    auto usr = create_user(inlineObject.getUserId(),inlineObject.getUsername());
     if(!usr){
         response.send(Pistache::Http::Code::Bad_Request, "Already exists");
         return;

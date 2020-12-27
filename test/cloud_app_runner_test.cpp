@@ -35,10 +35,9 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     json test_app_json;
     matrix_input_file >> matrix_input;
     test_app_json_file >> test_app_json;
-    user::users["carloscbl"] = make_shared<user>(user_minimal_data{
+    const auto & carlos =  make_shared<user>(user_minimal_data{
         "carloscbl"
     });
-    const auto & carlos = user::users["carloscbl"];
     REQUIRE( carlos->get_name() == "carloscbl" );
     app _(test_app_json);
     const auto & app = app::get_apps_register().at("test Daily workout");

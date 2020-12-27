@@ -23,8 +23,8 @@ Task::Task()
     m_Name = "";
     m_Description = "";
     m_DescriptionIsSet = false;
-    m_Tag = "";
-    m_TagIsSet = false;
+    m_Task_id = "";
+    m_Task_idIsSet = false;
     m_DurationIsSet = false;
     m_Frequency = "";
     m_FrequencyIsSet = false;
@@ -55,8 +55,8 @@ void to_json(nlohmann::json& j, const Task& o)
     j["name"] = o.m_Name;
     if(o.descriptionIsSet())
         j["description"] = o.m_Description;
-    if(o.tagIsSet())
-        j["task_id"] = o.m_Tag;
+    if(o.taskIdIsSet())
+        j["task_id"] = o.m_Task_id;
     if(o.durationIsSet())
         j["duration"] = o.m_Duration;
     if(o.frequencyIsSet())
@@ -85,8 +85,8 @@ void from_json(const nlohmann::json& j, Task& o)
     } 
     if(j.find("task_id") != j.end())
     {
-        j.at("task_id").get_to(o.m_Tag);
-        o.m_TagIsSet = true;
+        j.at("task_id").get_to(o.m_Task_id);
+        o.m_Task_idIsSet = true;
     } 
     if(j.find("duration") != j.end())
     {
@@ -155,22 +155,22 @@ void Task::unsetDescription()
 {
     m_DescriptionIsSet = false;
 }
-std::string Task::getTag() const
+std::string Task::getTaskId() const
 {
-    return m_Tag;
+    return m_Task_id;
 }
-void Task::setTag(std::string const& value)
+void Task::setTaskId(std::string const& value)
 {
-    m_Tag = value;
-    m_TagIsSet = true;
+    m_Task_id = value;
+    m_Task_idIsSet = true;
 }
-bool Task::tagIsSet() const
+bool Task::taskIdIsSet() const
 {
-    return m_TagIsSet;
+    return m_Task_idIsSet;
 }
-void Task::unsetTag()
+void Task::unsetTask_id()
 {
-    m_TagIsSet = false;
+    m_Task_idIsSet = false;
 }
 Duration Task::getDuration() const
 {

@@ -11,14 +11,6 @@ DROP DATABASE IF EXISTS `prot`;
 CREATE DATABASE `prot` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
 USE `prot`;
 
-DELIMITER ;;
-
-CREATE EVENT `remove_expired_tasks` ON SCHEDULE EVERY 1 HOUR STARTS '2020-10-11 21:15:06' ON COMPLETION NOT PRESERVE ENABLE COMMENT 'This event will periodically remove all tasks that are expired' DO delete FROM tasks 
-WHERE LOCALTIME()> adddate(end, interval 10 day) and
-created_at < ADDDATE(LOCALTIME(), INTERVAL 2 DAY);;
-
-DELIMITER ;
-
 DROP TABLE IF EXISTS `app_sessions`;
 CREATE TABLE `app_sessions` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
@@ -36,7 +28,7 @@ CREATE TABLE `apps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `json` json NOT NULL,
   `name` varchar(360) NOT NULL,
-  `developer` int(11) NOT NULL,
+  `developer` varchar(128) NOT NULL,
   `is_public` tinyint(1) NOT NULL DEFAULT '1',
   `disabled` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
@@ -62,10 +54,10 @@ CREATE TABLE `prot_jobs` (
 DROP TABLE IF EXISTS `schedulers`;
 CREATE TABLE `schedulers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) NOT NULL,
+  `user` varchar(128) NOT NULL,
   PRIMARY KEY (`id`,`user`),
-  KEY `user` (`user`),
   KEY `id` (`id`),
+  KEY `user` (`user`),
   CONSTRAINT `schedulers_ibfk_1` FOREIGN KEY (`user`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
@@ -73,7 +65,7 @@ CREATE TABLE `schedulers` (
 DROP TABLE IF EXISTS `taskers`;
 CREATE TABLE `taskers` (
   `idtasker` int(11) NOT NULL AUTO_INCREMENT,
-  `user` int(11) NOT NULL,
+  `user` varchar(128) NOT NULL,
   PRIMARY KEY (`idtasker`),
   UNIQUE KEY `idtaskers_UNIQUE` (`idtasker`),
   KEY `fk_taskers_1_idx` (`user`),
@@ -137,7 +129,7 @@ CREATE TABLE `tasks_taskers` (
 
 DROP TABLE IF EXISTS `users`;
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(128) NOT NULL,
   `username` varchar(360) NOT NULL,
   `json` json DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -150,7 +142,7 @@ CREATE TABLE `users` (
 DROP TABLE IF EXISTS `users_apps`;
 CREATE TABLE `users_apps` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `iduser` int(11) NOT NULL,
+  `iduser` varchar(128) NOT NULL,
   `idapp` int(11) NOT NULL,
   `qa_history` json DEFAULT NULL,
   PRIMARY KEY (`id`),
@@ -159,9 +151,9 @@ CREATE TABLE `users_apps` (
   KEY `iduser` (`iduser`),
   KEY `idapp` (`idapp`),
   KEY `id_index` (`id`),
-  CONSTRAINT `users_apps_ibfk_3` FOREIGN KEY (`iduser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `users_apps_ibfk_6` FOREIGN KEY (`idapp`) REFERENCES `apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `users_apps_ibfk_6` FOREIGN KEY (`idapp`) REFERENCES `apps` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `users_apps_ibfk_7` FOREIGN KEY (`iduser`) REFERENCES `users` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 
--- 2020-11-11 22:42:25
+-- 2020-12-27 09:32:07

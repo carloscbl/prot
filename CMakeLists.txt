@@ -47,6 +47,7 @@ include_directories(${SPDLOG_DIR})
 add_subdirectory(rest_server)
 add_subdirectory(test)
 add_subdirectory(jobs_watcher)
+add_subdirectory(discovery_rescheduler)
 
 
 

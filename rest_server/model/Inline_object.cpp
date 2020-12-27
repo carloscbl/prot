@@ -21,6 +21,7 @@ namespace model {
 Inline_object::Inline_object()
 {
     m_Username = "";
+    m_User_id = "";
     
 }
 
@@ -37,11 +38,13 @@ void to_json(nlohmann::json& j, const Inline_object& o)
 {
     j = nlohmann::json();
     j["username"] = o.m_Username;
+    j["user_id"] = o.m_User_id;
 }
 
 void from_json(const nlohmann::json& j, Inline_object& o)
 {
     j.at("username").get_to(o.m_Username);
+    j.at("user_id").get_to(o.m_User_id);
 }
 
 std::string Inline_object::getUsername() const
@@ -51,6 +54,14 @@ std::string Inline_object::getUsername() const
 void Inline_object::setUsername(std::string const& value)
 {
     m_Username = value;
+}
+std::string Inline_object::getUserId() const
+{
+    return m_User_id;
+}
+void Inline_object::setUserId(std::string const& value)
+{
+    m_User_id = value;
 }
 
 }

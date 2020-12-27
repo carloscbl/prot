@@ -29,11 +29,10 @@ struct user_minimal_data
 class user 
 { //substitute by the final class
 public://FIX: this should be wrapped
-    static inline map<string, shared_ptr<user>> users;
 private:
     shared_ptr<tasker> tasker_;
     unique_ptr<scheduler> scheduler_;
-    uint64_t id;
+    string id;
 
     void init();
     friend void from_json(const nlohmann::json& ref_json, user& new_user);
@@ -53,11 +52,9 @@ public:
     }
 
     const string &get_name() const noexcept { return minimal_data.username; }
-    uint64_t get_id() const noexcept { return this->id; }
-    void set_id(const uint64_t target_id) noexcept { this->id = target_id; }
+    string get_id() const noexcept { return this->id; }
+    void set_id(const string target_id) noexcept { this->id = target_id; }
 
-
-    user & get_user(const string & user_) noexcept { return static_cast<user&>(*users[user_]); }
 };
 void to_json(nlohmann::json& new_json, const user& ref_task);
 void from_json(const nlohmann::json& ref_json, user& new_user);

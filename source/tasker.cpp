@@ -1,8 +1,7 @@
 #include "tasker.h"
 #include "db_ops.hpp"
-#include <boost/uuid/uuid.hpp>            // uuid class
-#include <boost/uuid/uuid_generators.hpp> // generators
-#include <boost/uuid/uuid_io.hpp>         // streaming operators etc.
+#include "prot_specifics.hpp"
+#include "json.hpp"
 
 tasker::tasker(const string & user):m_user(user){}
 
@@ -24,7 +23,7 @@ const string & tasker::get_name() const noexcept{
     return this->m_user;
 }
 
-void from_json(const nlohmann::json& ref_json, tasker& new_tasker){
+void from_json(const nlohmann::json & ref_json, tasker& new_tasker){
     for (const auto &i : ref_json.items())
     {
         const auto & task_ = i.value();
@@ -61,9 +60,7 @@ task_t tasker::get_task(const uint64_t id ) const{
 }
 
 void tasker::commit_single_task(task_t task_active){
-    boost::uuids::uuid uuid = boost::uuids::random_generator()();
-        
-    task_active->inner_json["prot_id"] = boost::uuids::to_string(uuid);
+    task_active->inner_json["prot_id"] = prot::specifics::get_uuid() ;
     try
     {
         if(create_task({{this->m_user,false}},*task_active)){

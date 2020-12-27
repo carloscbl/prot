@@ -20,7 +20,7 @@ namespace model {
 
 Inline_response_200::Inline_response_200()
 {
-    m_User_id = 0;
+    m_User_id = "";
     
 }
 
@@ -44,11 +44,11 @@ void from_json(const nlohmann::json& j, Inline_response_200& o)
     j.at("user_id").get_to(o.m_User_id);
 }
 
-int32_t Inline_response_200::getUserId() const
+std::string Inline_response_200::getUserId() const
 {
     return m_User_id;
 }
-void Inline_response_200::setUserId(int32_t const value)
+void Inline_response_200::setUserId(std::string const& value)
 {
     m_User_id = value;
 }

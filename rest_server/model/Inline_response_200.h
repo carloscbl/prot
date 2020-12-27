@@ -19,6 +19,7 @@
 #define Inline_response_200_H_
 
 
+#include <string>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -43,13 +44,13 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    int32_t getUserId() const;
-    void setUserId(int32_t const value);
+    std::string getUserId() const;
+    void setUserId(std::string const& value);
 
     friend void to_json(nlohmann::json& j, const Inline_response_200& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200& o);
 protected:
-    int32_t m_User_id;
+    std::string m_User_id;
 
 };
 

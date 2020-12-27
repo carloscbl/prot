@@ -43,7 +43,7 @@ paths:
                 type: object
                 properties:
                   user_id:
-                    type: integer
+                    type: string
                 required:
                   - user_id
         '400':
@@ -56,8 +56,11 @@ paths:
               properties:
                 username:
                   type: string
+                user_id:
+                  type: string
               required:
                 - username
+                - user_id
   '/user/{username}/tasks':
     parameters:
       - schema:

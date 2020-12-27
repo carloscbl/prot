@@ -64,16 +64,16 @@ const json cloud_app_runner::run(const json &request_json) noexcept
     measure_execution_raii("cloud_app_runner::run");
     const auto &state = fetch_next_session();
     this->m_session_id = state->id;
-    app_parser fp(app_.get_json(), *state); //,*state
+    app_parser ap(app_.get_json(), *state); //,*state
     unique_ptr<next_question_data_and_taskstory_input> response;
-    // auto current_question = fp.get_current_question();
+    // auto current_question = ap.get_current_question();
     if (request_json.is_null()) // Get, for get current state, for example for resume questionary
     {
-        response = fp.get_current_question();
+        response = ap.get_current_question();
     }
     else
     {
-        response = fp.app_next_in_pipeline(request_json["answer"]);
+        response = ap.app_next_in_pipeline(request_json["answer"]);
     }
     if(response->next_question_text == "END"){
         delete_session(state->id);
@@ -90,7 +90,7 @@ const json cloud_app_runner::run(const json &request_json) noexcept
         };
         store_qa_history_status(add_qa_history);
     }else{
-        update_session(state->id, *fp.get_state());
+        update_session(state->id, *ap.get_state());
         if(!request_json.is_null()){
             json qa = {
                 { 
@@ -144,8 +144,6 @@ const json cloud_app_runner::run(const json &request_json) noexcept
             to_delete_ids.push_back( pair.first );
         });
         delete_task(to_delete_ids);
-    }else{
-
     }
 
     return response_j;

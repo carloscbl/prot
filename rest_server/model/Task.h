@@ -60,10 +60,10 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getTag() const;
-    void setTag(std::string const& value);
-    bool tagIsSet() const;
-    void unsetTag();
+    std::string getTaskId() const;
+    void setTaskId(std::string const& value);
+    bool taskIdIsSet() const;
+    void unsetTask_id();
     /// <summary>
     /// 
     /// </summary>
@@ -128,8 +128,8 @@ protected:
 
     std::string m_Description;
     bool m_DescriptionIsSet;
-    std::string m_Tag;
-    bool m_TagIsSet;
+    std::string m_Task_id;
+    bool m_Task_idIsSet;
     Duration m_Duration;
     bool m_DurationIsSet;
     std::string m_Frequency;

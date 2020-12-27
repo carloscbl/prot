@@ -15,8 +15,8 @@ TEST_CASE( "test jobs_watcher", "[runner]" ) {
 
     json app_daily;
     app_daily_file >> app_daily;
-    create_user("pepe");
-    create_app(app_daily, "pepe");
+    create_user("AAAUID","pepe");
+    create_app(app_daily, "AAAUID");
     auto install_id = create_instalation("pepe", "test Daily workout");
     //-- JOB 1
     json job;
@@ -66,8 +66,8 @@ TEST_CASE( "test jobs_watcher", "[runner]" ) {
 }
 
 TEST_CASE( "test store_qa_history_status", "[runner]" ) {
-    REQUIRE (db_op::read_user_instalations(1,1).size());
-    auto instl = db_op::read_user_instalations(1,1);
+    REQUIRE (db_op::read_user_instalations("1",1).size());
+    auto instl = db_op::read_user_instalations("1",1);
     auto tuple = move(*instl.begin());
     cout << "tuple" << tuple->dump(4) << endl;
     // cout << ->second.dump(4) << endl;

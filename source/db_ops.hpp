@@ -19,6 +19,8 @@
 #include <sqlpp11/functions.h>
 #include <sqlpp11/select.h>
 
+#include "spdlog/spdlog.h"
+
 using nlohmann::json;
 using std::function;
 using std::optional;
@@ -40,7 +42,7 @@ template <typename T>
 auto get_data_member = []() {};
 
 template <>
-auto get_data_member<orm_prot::Users> = []() { return orm_prot::Users{}.username; };
+auto get_data_member<orm_prot::Users> = []() { return orm_prot::Users{}.id; };
 template <>
 auto get_data_member<orm_prot::Apps> = []() { return orm_prot::Apps{}.name; };
 template <>
@@ -71,7 +73,7 @@ inline optional<uint64_t> get_id(string unique_val)
     return result.front().a;
 }
 
-inline unique_ptr<app> create_app(const json &valid_app, const string &username)
+inline unique_ptr<app> create_app(const json &valid_app, const string &user_id)
 {
     using orm_prot::Apps;
     if (gen_exists<orm_prot::Apps>(app::get_app_name(valid_app)))
@@ -80,8 +82,7 @@ inline unique_ptr<app> create_app(const json &valid_app, const string &username)
     }
 
     auto &db = mysql_db::get_db_lazy().db;
-    auto user_id = get_id<orm_prot::Users>(username);
-    if (!user_id.has_value())
+    if (!gen_exists<orm_prot::Users>(user_id))
     {
         return nullptr;
     }
@@ -91,8 +92,8 @@ inline unique_ptr<app> create_app(const json &valid_app, const string &username)
     const auto &result = db(insert_into(app_).set(
         app_.json = valid_app.dump(),
         app_.name = app::get_app_name(valid_app),
-        app_.developer = user_id.value() // TODO
-        ));
+        app_.developer = user_id
+    ));
     protapp->set_id(result);
     return protapp;
 }
@@ -147,7 +148,7 @@ inline optional<pair<uint64_t,json>> read_app_by_id(const int32_t &id)
         {"json",unstructured["app"]}, //Only app part so we dont expose the whole app
         {"name",row.name.text},
         {"id",uint64_t(row.id.value())},
-        {"developer",uint64_t(row.developer.value())},
+        {"developer",row.developer},
         {"is_public",row.isPublic.value()},
         {"disabled",row.disabled.value()},
     };
@@ -168,7 +169,7 @@ inline map<uint64_t,json> read_app_meta()
             {"json",unstructured["app"]}, //Only app part so we dont expose the whole app
             {"name",result.name.text},
             {"id",uint64_t(result.id.value())},
-            {"developer",uint64_t(result.developer.value())},
+            {"developer",result.developer},
             {"is_public",result.isPublic.value()},
             {"disabled",result.disabled.value()},
         };
@@ -214,10 +215,10 @@ inline void read_db_json()
 }
 
 //This class is intended to advance needs until they are correctly categorized
-inline unique_ptr<user> create_user(string username)
+inline unique_ptr<user> create_user(string user_id, string username)
 {
     using orm_prot::Users;
-    if (gen_exists<orm_prot::Users>(username))
+    if (gen_exists<orm_prot::Users>(user_id))
     {
         return nullptr;
     }
@@ -228,24 +229,25 @@ inline unique_ptr<user> create_user(string username)
     orm_prot::Schedulers sche;
 
     auto us = make_unique<user>();
-    json j = {{"username", username}};
+    json j = {{"id",user_id},{"username", username}};
     from_json(j, *us);
-    const auto &result = db(insert_into(usr).set(usr.username = username, usr.json = json(*us).dump()));
-    us->set_id(result);
-    db(insert_into(tasker_).set(tasker_.user = result));
-    db(insert_into(sche).set(sche.user = result));
+    const auto &result = db(insert_into(usr).set(usr.id = user_id ,usr.username = username, usr.json = json(*us).dump()));
+    SPDLOG_INFO("{}",result);
+    us->set_id(user_id);
+    db(insert_into(tasker_).set(tasker_.user = user_id));
+    db(insert_into(sche).set(sche.user = user_id));
     return us;
 }
 
-inline unique_ptr<user> read_user(string username)
+inline unique_ptr<user> read_user(string user_id)
 {
-    if (!gen_exists<orm_prot::Users>(username))
+    if (!gen_exists<orm_prot::Users>(user_id))
     {
         return nullptr;
     }
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
-    const auto &row = db(sqlpp::select(all_of(usr)).from(usr).where( usr.username == username).limit(1U)).front();
+    const auto &row = db(sqlpp::select(all_of(usr)).from(usr).where( usr.id == user_id).limit(1U)).front();
 
     json juser = json::parse(row.json.text);
     auto us = make_unique<user>();
@@ -256,12 +258,12 @@ inline unique_ptr<user> read_user(string username)
 
 
 
-inline bool delete_user(const string &username)
+inline bool delete_user(const string &user_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
     orm_prot::Users usr;
-    const auto & result = db(remove_from(usr).where(usr.username == username));
+    const auto & result = db(remove_from(usr).where(usr.id == user_id));
     if(result > 0){
         return true;
     }else{
@@ -270,7 +272,7 @@ inline bool delete_user(const string &username)
 
 }
 
-inline uint64_t create_instalation(const string &username, const string &app_name)
+inline uint64_t create_instalation(const string &user_id, const string &app_name)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -278,7 +280,7 @@ inline uint64_t create_instalation(const string &username, const string &app_nam
     orm_prot::Apps app_;
 
     // Exists? TODO JOIN both to get existent one
-    const auto &usr_res = db(sqlpp::select(usr.id).from(usr).where(usr.username == username).limit(1U));
+    const auto &usr_res = db(sqlpp::select(usr.id).from(usr).where(usr.id == user_id).limit(1U));
     const auto &app_res = db(sqlpp::select(app_.id).from(app_).where(app_.name == app_name).limit(1U));
     if (usr_res.empty() || app_res.empty())
     {
@@ -570,7 +572,7 @@ inline void update_task( task &new_task , const uint64_t task_id )
 
 }
 
-inline uint64_t get_user_apps_id(const uint64_t user_id, const uint64_t app_id){
+inline uint64_t get_user_apps_id(const string user_id, const uint64_t app_id){
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::UsersApps uapps;
     const auto & select = sqlpp::select(all_of(uapps))
@@ -586,7 +588,7 @@ inline uint64_t get_user_apps_id(const uint64_t user_id, const uint64_t app_id){
     return user_apps_id;
 }
 
-inline shared_ptr<app_state> create_session(const uint64_t user_id, const uint64_t app_id)
+inline shared_ptr<app_state> create_session(const string user_id, const uint64_t app_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::AppSessions sess;
@@ -776,7 +778,7 @@ inline unique_ptr<app> read_app(const uint64_t app_id)
     return protapp;
 }
 
-inline unique_ptr<user> read_user(const uint64_t user_id)
+inline unique_ptr<user> read_user(const string user_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Users usr;
@@ -810,7 +812,7 @@ inline optional<std::pair<unique_ptr<user>,unique_ptr<app>>> get_user_and_app_fr
 }
 
 // returns a map of app_id -> tuple of table user_apps
-inline vector<unique_ptr<json>> read_user_instalations(const uint64_t user_id, optional<uint64_t> app_id = nullopt)
+inline vector<unique_ptr<json>> read_user_instalations(const string user_id, optional<uint64_t> app_id = nullopt)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::UsersApps usr_apps;
@@ -835,7 +837,7 @@ inline vector<unique_ptr<json>> read_user_instalations(const uint64_t user_id, o
     return appsresult;
 }
 
-inline bool update_user_instalations(const uint64_t user_id, const uint64_t app_id , const json &  qa_history){
+inline bool update_user_instalations(const string user_id, const uint64_t app_id , const json &  qa_history){
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::UsersApps usr_apps;
     const auto & result = db(update(usr_apps)
@@ -845,6 +847,7 @@ inline bool update_user_instalations(const uint64_t user_id, const uint64_t app_
 }
 
 } // namespace db_op
+
 //https://github.com/rbock/sqlpp11/wiki/Select
 inline void join()
 {
