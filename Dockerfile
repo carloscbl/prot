@@ -19,6 +19,7 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
     cmake \
     python3 \
     python3-pip \
+    tzdata \
     libmariadbclient-dev \
     && add-apt-repository -y ppa:pistache+team/unstable \
     && add-apt-repository -y ppa:mhier/libboost-latest \
@@ -29,9 +30,11 @@ FROM min-stage as build-stage
 
 COPY ./ /opt/prot
 WORKDIR /opt/prot
-RUN dpkg -i ./thirdparty/cmake-data_3.15.4-1ubuntu2_all.deb \
-&& dpkg -i ./thirdparty/cmake_3.15.4-1ubuntu2_amd64.deb\
-&& apt-get install -f
+
+#no longer needed 20.04 got cmake 3.16
+# RUN dpkg -i ./thirdparty/cmake-data_3.15.4-1ubuntu2_all.deb \
+# && dpkg -i ./thirdparty/cmake_3.15.4-1ubuntu2_amd64.deb\
+# && apt-get install -f
 
 RUN python3 -m pip install -r requirements.txt
 
@@ -65,23 +68,24 @@ FROM min-stage as production-stage
 COPY  --from=build-stage /opt/prot/build/api-server /opt/prot/build/api-server
 COPY  --from=build-stage /opt/prot/build/jobs-watcher /opt/prot/build/jobs-watcher
 COPY  --from=build-stage /opt/prot/build/test_prot /opt/prot/build/test_prot
+COPY  --from=build-stage /opt/prot/build/discovery-rescheduler /opt/prot/build/discovery-rescheduler
 COPY  --from=build-stage /opt/prot/build/liblprot.a /opt/prot/build/liblprot.a
 COPY  --from=build-stage /opt/prot/source /opt/prot/source
 COPY  --from=build-stage /opt/prot/jobs_watcher /opt/prot/jobs_watcher
 COPY  --from=build-stage /opt/prot/rest_server /opt/prot/rest_server
-COPY  --from=build-stage /opt/prot/discovery-rescheduler /opt/prot/discovery-rescheduler
+COPY  --from=build-stage /opt/prot/discovery_rescheduler /opt/prot/discovery_rescheduler
 COPY  --from=build-stage /opt/prot/api /opt/prot/api
 COPY  --from=build-stage /opt/prot/.vscode /opt/prot/.vscode
 COPY  --from=build-stage /opt/prot/apps /opt/prot/apps
 
 
 
-ENV TZ=Etc/UTC
-RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC DEBCONF_NONINTERACTIVE_SEEN=true apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -y tzdata
+# ENV TZ=Etc/UTC
+# RUN DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC DEBCONF_NONINTERACTIVE_SEEN=true apt-get update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC DEBCONF_NONINTERACTIVE_SEEN=true apt-get install -y tzdata
 
-RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+# RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
 
-RUN dpkg-reconfigure --frontend noninteractive tzdata
+# RUN dpkg-reconfigure --frontend noninteractive tzdata
 
 WORKDIR /opt/prot/build
 ENTRYPOINT [ "/bin/bash" ]

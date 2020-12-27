@@ -5,11 +5,11 @@ info:
 servers:
   - url: 'http://localhost:3000'
 paths:
-  '/user/{user_id}':
+  '/user/{userId}':
     parameters:
       - schema:
           type: string
-        name: user_id
+        name: userId
         in: path
         required: true
     get:
@@ -61,11 +61,11 @@ paths:
               required:
                 - username
                 - user_id
-  '/user/{user_id}/tasks':
+  '/user/{userId}/tasks':
     parameters:
       - schema:
           type: string
-        name: user_id
+        name: userId
         in: path
         required: true
     get:
@@ -105,7 +105,7 @@ paths:
               required:
                 - type_of_task
                 - task
-  '/user/{user_id}/task/{taskId}':
+  '/user/{userId}/task/{taskId}':
     parameters:
       - schema:
           type: integer
@@ -114,7 +114,7 @@ paths:
         required: true
       - schema:
           type: string
-        name: user_id
+        name: userId
         in: path
         required: true
     get:
@@ -206,11 +206,11 @@ paths:
               schema:
                 type: object
                 properties: {}
-  '/user/{user_id}/apps':
+  '/user/{userId}/apps':
     parameters:
       - schema:
           type: string
-        name: user_id
+        name: userId
         in: path
         required: true
     get:
@@ -227,7 +227,7 @@ paths:
                   $ref: ./models/user_apps_get_response.v1.yaml
         '404':
           description: Not Found
-  '/user/{user_id}/apps/{installAppId}':
+  '/user/{userId}/apps/{installAppId}':
     parameters:
       - schema:
           type: integer
@@ -236,7 +236,7 @@ paths:
         required: true
       - schema:
           type: string
-        name: user_id
+        name: userId
         in: path
         required: true
     get:
@@ -266,7 +266,7 @@ paths:
           description: OK
         '404':
           description: Not Found
-  '/user/{user_id}/questionary/{appId}':
+  '/user/{userId}/questionary/{appId}':
     parameters:
       - schema:
           type: integer
@@ -275,7 +275,7 @@ paths:
         required: true
       - schema:
           type: string
-        name: user_id
+        name: userId
         in: path
         required: true
     get:

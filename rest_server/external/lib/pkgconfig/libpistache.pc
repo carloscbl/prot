@@ -6,9 +6,9 @@ includedir=/home/cbernal/services_prot/prot/rest_server/external/include/
 Name: libpistache
 URL: http://pistache.io/
 Description: An elegant C++ REST framework.
-Version: 0.0.002-git20200301
+Version: 0.0.002-git20200802
 Requires:
-Libs: -L'${libdir}/' -lpistache -lpthread -latomic
+Libs: -L'${libdir}/' -lpistache -lpthread
 Libs.private:
 Cflags: -I'${includedir}/'
 

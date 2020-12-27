@@ -25,9 +25,13 @@ endmacro()
 ####################################################################################
 
 set_and_check ( Pistache_INCLUDE_DIRS "${PACKAGE_PREFIX_DIR}/include")
-include_directories(${Pistache_INCLUDE_DIRS})
 
 set_and_check ( Pistache_LIBRARIES "${PACKAGE_PREFIX_DIR}/lib")
-link_directories(${Pistache_LIBRARIES})
+
+#Required for the static library
+find_package(Threads REQUIRED)
+if (OFF)
+    find_package(OpenSSL REQUIRED COMPONENTS SSL Crypto)
+endif ()
 
 include("${CMAKE_CURRENT_LIST_DIR}/PistacheTargets.cmake")

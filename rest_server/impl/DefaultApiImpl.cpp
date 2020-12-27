@@ -72,7 +72,9 @@ std::string geturl_decode(const std::string& in){
 
 DefaultApiImpl::DefaultApiImpl(std::shared_ptr<Pistache::Rest::Router> rtr)
     : DefaultApi(rtr)
-    { }
+    {
+        // / rtr->addCustomHandler
+    }
 
 void DefaultApiImpl::user_user_id_delete(const std::string &userId, Pistache::Http::ResponseWriter &response) {
     if(delete_user(userId)){

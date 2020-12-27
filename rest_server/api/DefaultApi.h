@@ -74,7 +74,6 @@ private:
     void user_user_id_tasks_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void user_user_id_tasks_post_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
     void default_api_default_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response);
-
     std::shared_ptr<Pistache::Rest::Router> router;
 
     /// <summary>

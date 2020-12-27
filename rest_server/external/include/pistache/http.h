@@ -83,7 +83,8 @@ public:
   Version version() const;
   Code code() const;
 
-  std::string body() const;
+  const std::string &body() const;
+  std::string body();
 
   const CookieJar &cookies() const;
   CookieJar &cookies();
@@ -255,7 +256,7 @@ public:
 private:
   Timeout(const Timeout &other) = default;
 
-  Timeout(Tcp::Transport *transport_, Handler *handler_, Request request_,
+  Timeout(Tcp::Transport *transport_, Handler *handler_,
           std::weak_ptr<Tcp::Peer> peer_);
 
   void onTimeout(uint64_t numWakeup);
@@ -415,9 +416,15 @@ public:
 
   ResponseWriter clone() const;
 
+  std::shared_ptr<Tcp::Peer> getPeer() const {
+    if (auto sp = peer_.lock())
+      return sp;
+    return nullptr;
+  }
+
 private:
-  ResponseWriter(Tcp::Transport *transport, Request request, Handler *handler,
-                 std::weak_ptr<Tcp::Peer> peer);
+  ResponseWriter(Http::Version version, Tcp::Transport *transport,
+                 Handler *handler, std::weak_ptr<Tcp::Peer> peer);
 
   ResponseWriter(const ResponseWriter &other);
 
@@ -430,9 +437,9 @@ private:
   Response response_;
   std::weak_ptr<Tcp::Peer> peer_;
   DynamicStreamBuf buf_;
-  Tcp::Transport *transport_;
+  Tcp::Transport *transport_ = nullptr;
   Timeout timeout_;
-  ssize_t sent_bytes_;
+  ssize_t sent_bytes_ = 0;
 };
 
 Async::Promise<ssize_t>
@@ -502,6 +509,7 @@ private:
     Message *message;
     size_t bytesRead;
     ssize_t size;
+    ssize_t alreadyAppendedChunkBytes;
   };
 
   State parseContentLength(StreamCursor &cursor,
@@ -580,10 +588,8 @@ public:
 
 private:
   void onConnection(const std::shared_ptr<Tcp::Peer> &peer) override;
-  void onDisconnection(const std::shared_ptr<Tcp::Peer> &peer) override;
   void onInput(const char *buffer, size_t len,
                const std::shared_ptr<Tcp::Peer> &peer) override;
-  RequestParser &getParser(const std::shared_ptr<Tcp::Peer> &peer) const;
 
 private:
   size_t maxRequestSize_ = Const::DefaultMaxRequestSize;
