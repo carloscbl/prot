@@ -43,8 +43,10 @@ public:
     // context means chunked responses could be sent out of order.
     return Async::Promise<ssize_t>(
         [=](Async::Deferred<ssize_t> deferred) mutable {
-          BufferHolder holder{buffer};
-          WriteEntry write(std::move(deferred), std::move(holder), fd, flags);
+          BufferHolder holder(buffer);
+          auto detached = holder.detach();
+          WriteEntry write(std::move(deferred), detached, flags);
+          write.peerFd = fd;
           writesQueue.push(std::move(write));
         });
   }
@@ -102,7 +104,10 @@ private:
       if (!isRaw())
         return BufferHolder(_fd, size_, offset);
 
-      auto detached = _raw.copy(offset);
+      if (_raw.isDetached())
+        return BufferHolder(_raw, offset);
+
+      auto detached = _raw.detach(offset);
       return BufferHolder(detached);
     }
 
@@ -120,14 +125,14 @@ private:
 
   struct WriteEntry {
     WriteEntry(Async::Deferred<ssize_t> deferred_, BufferHolder buffer_,
-               Fd peerFd_, int flags_ = 0)
+               int flags_ = 0)
         : deferred(std::move(deferred_)), buffer(std::move(buffer_)),
-          flags(flags_), peerFd(peerFd_) {}
+          flags(flags_), peerFd(-1) {}
 
     Async::Deferred<ssize_t> deferred;
     BufferHolder buffer;
-    int flags = 0;
-    Fd peerFd = -1;
+    int flags;
+    Fd peerFd;
   };
 
   struct TimerEntry {
@@ -189,8 +194,6 @@ private:
 
   // This will attempt to drain the write queue for the fd
   void asyncWriteImpl(Fd fd);
-  ssize_t sendRawBuffer(Fd fd, const char *buffer, size_t len, int flags);
-  ssize_t sendFile(Fd fd, Fd file, off_t offset, size_t len);
 
   void handlePeerDisconnection(const std::shared_ptr<Peer> &peer);
   void handleIncoming(const std::shared_ptr<Peer> &peer);

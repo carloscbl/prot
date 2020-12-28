@@ -67,9 +67,6 @@ struct Route {
 
   typedef std::function<bool(Http::Request& req, Http::ResponseWriter& resp)> Middleware;
 
-  typedef std::function<void(const std::shared_ptr<Tcp::Peer> &peer)>
-      DisconnectHandler;
-
   explicit Route(Route::Handler handler) : handler_(std::move(handler)) {}
 
   template <typename... Args> void invokeHandler(Args &&... args) const {
@@ -226,12 +223,9 @@ public:
   void addMiddleware(Route::Middleware middleware);
 
   void addNotFoundHandler(Route::Handler handler);
-  void addDisconnectHandler(Route::DisconnectHandler handler);
   inline bool hasNotFoundHandler() { return notFoundHandler != nullptr; }
   void invokeNotFoundHandler(const Http::Request &req,
                              Http::ResponseWriter resp) const;
-
-  void disconnectPeer(const std::shared_ptr<Tcp::Peer> &peer);
 
   Route::Status route(const Http::Request &request,
                       Http::ResponseWriter response);
@@ -244,8 +238,6 @@ private:
   std::vector<Route::Handler> customHandlers;
 
   std::vector<Route::Middleware> middlewares;
-
-  std::vector<Route::DisconnectHandler> disconnectHandlers;
 
   Route::Handler notFoundHandler;
 };
@@ -274,8 +266,6 @@ public:
   void onRequest(const Http::Request &req,
                  Http::ResponseWriter response) override;
 
-  void onDisconnection(const std::shared_ptr<Tcp::Peer> &peer) override;
-
 private:
   std::shared_ptr<Rest::Router> router;
 };
@@ -292,7 +282,7 @@ public:
   std::vector<TypedParam> splat() const;
 
 private:
-  explicit Request(Http::Request request,
+  explicit Request(const Http::Request &request,
                    std::vector<TypedParam> &&params,
                    std::vector<TypedParam> &&splats);
 
@@ -316,72 +306,29 @@ void Head(Router &router, const std::string &resource, Route::Handler handler);
 void NotFound(Router &router, Route::Handler handler);
 
 namespace details {
-template <typename... Args>
-struct TypeList {
-  template <size_t N>
-  struct At {
+template <class... Args> struct TypeList {
+  template <size_t N> struct At {
     static_assert(N < sizeof...(Args), "Invalid index");
-
-    using Type = typename std::tuple_element<N, std::tuple<Args...>>::type;
+    typedef typename std::tuple_element<N, std::tuple<Args...>>::type Type;
   };
 };
 
-template <typename Request, typename Response>
-struct BindChecks {
-  constexpr static bool request_check =
-      std::is_const<typename std::remove_reference<Request>::type>::value &&
-      std::is_lvalue_reference<typename std::remove_cv<Request>::type>::value &&
-      std::is_same<typename std::decay<Request>::type, Rest::Request>::value;
-
-  constexpr static bool response_check =
-      !std::is_const<typename std::remove_reference<Response>::type>::value &&
-      std::is_same<typename std::remove_reference<Response>::type,
-                   Response>::value &&
-      std::is_same<typename std::decay<Response>::type,
-                   Http::ResponseWriter>::value;
-
-  static_assert(
-      request_check && response_check,
-      "Function should accept (const Rest::Request&, HttpResponseWriter)");
-};
-
-template <typename Request, typename Response>
-struct MiddlewareChecks {
-  constexpr static bool request_check =
-      !std::is_const<typename std::remove_reference<Request>::type>::value &&
-      std::is_lvalue_reference<typename std::remove_cv<Request>::type>::value &&
-      std::is_same<typename std::decay<Request>::type, Http::Request>::value;
-
-  constexpr static bool response_check =
-      !std::is_const<typename std::remove_reference<Response>::type>::value &&
-      std::is_lvalue_reference<
-          typename std::remove_cv<Response>::type>::value &&
-      std::is_same<typename std::decay<Response>::type,
-                   Http::ResponseWriter>::value;
-
-  static_assert(request_check && response_check,
-                "Function should accept (Http::Request&, HttpResponseWriter&)");
-};
-
-template <template <typename, typename> class Checks, typename... Args>
-constexpr void static_checks() {
+template <typename... Args> void static_checks() {
   static_assert(sizeof...(Args) == 2, "Function should take 2 parameters");
-
-  using Arguments = details::TypeList<Args...>;
-
-  using Request = typename Arguments::template At<0>::Type;
-  using Response = typename Arguments::template At<1>::Type;
-
-  // instantiate template this way
-  constexpr Checks<Request, Response> checks;
-
-  UNUSED(checks);
+//            typedef details::TypeList<Args...> Arguments;
+// Disabled now as it
+// 1/ does not compile
+// 2/ might not be relevant
+#if 0
+            static_assert(std::is_same<Arguments::At<0>::Type, const Rest::Request&>::value, "First argument should be a const Rest::Request&");
+            static_assert(std::is_same<typename Arguments::At<0>::Type, Http::Response>::value, "Second argument should be a Http::Response");
+#endif
 }
 } // namespace details
 
 template <typename Result, typename Cls, typename... Args, typename Obj>
 Route::Handler bind(Result (Cls::*func)(Args...), Obj obj) {
-  details::static_checks<details::BindChecks, Args...>();
+  details::static_checks<Args...>();
 
   return [=](const Rest::Request &request, Http::ResponseWriter response) {
     (obj->*func)(request, std::move(response));
@@ -392,7 +339,7 @@ Route::Handler bind(Result (Cls::*func)(Args...), Obj obj) {
 
 template <typename Result, typename Cls, typename... Args, typename Obj>
 Route::Handler bind(Result (Cls::*func)(Args...), std::shared_ptr<Obj> objPtr) {
-  details::static_checks<details::BindChecks, Args...>();
+  details::static_checks<Args...>();
 
   return [=](const Rest::Request &request, Http::ResponseWriter response) {
     (objPtr.get()->*func)(request, std::move(response));
@@ -403,7 +350,7 @@ Route::Handler bind(Result (Cls::*func)(Args...), std::shared_ptr<Obj> objPtr) {
 
 template <typename Result, typename... Args>
 Route::Handler bind(Result (*func)(Args...)) {
-  details::static_checks<details::BindChecks, Args...>();
+  details::static_checks<Args...>();
 
   return [=](const Rest::Request &request, Http::ResponseWriter response) {
     func(request, std::move(response));
@@ -414,30 +361,29 @@ Route::Handler bind(Result (*func)(Args...)) {
 
 template <typename Cls, typename... Args, typename Obj>
 Route::Middleware middleware(bool (Cls::*func)(Args...), Obj obj) {
-  details::static_checks<details::MiddlewareChecks, Args...>();
+	details::static_checks<Args...>();
 
-  return [=](Http::Request &request, Http::ResponseWriter &response) {
-    return (obj->*func)(request, response);
-  };
+	return [=](Http::Request &request, Http::ResponseWriter &response) {
+		return (obj->*func)(request, response);
+	};
 }
 
 template <typename Cls, typename... Args, typename Obj>
-Route::Middleware middleware(bool (Cls::*func)(Args...),
-                             std::shared_ptr<Obj> objPtr) {
-  details::static_checks<details::MiddlewareChecks, Args...>();
+Route::Middleware middleware(bool (Cls::*func)(Args...), std::shared_ptr<Obj> objPtr) {
+	details::static_checks<Args...>();
 
-  return [=](Http::Request &request, Http::ResponseWriter &response) {
-    return (objPtr.get()->*func)(request, response);
-  };
+	return [=](Http::Request &request, Http::ResponseWriter &response) {
+		return (objPtr.get()->*func)(request, response);
+	};
 }
 
 template <typename... Args>
 Route::Middleware middleware(bool (*func)(Args...)) {
-  details::static_checks<details::MiddlewareChecks, Args...>();
+	details::static_checks<Args...>();
 
-  return [=](Http::Request &request, Http::ResponseWriter &response) {
-    return func(request, response);
-  };
+	return [=](Http::Request &request, Http::ResponseWriter &response) {
+		return func(request, response);
+	};
 }
 
 } // namespace Routes

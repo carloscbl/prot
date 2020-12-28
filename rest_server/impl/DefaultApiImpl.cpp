@@ -278,7 +278,7 @@ void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, 
 
     if(inlineObject3.restartIsSet()){
         response.send(Pistache::Http::Code::Ok, "Reseted " + std::to_string(appId) );
-        auto session = read_session(usr->get_name() , appId);
+        auto session = read_session(usr->get_id() , appId);
         if (session){
             //We need to delete too, all associated tasks!
             delete_session(session->id);

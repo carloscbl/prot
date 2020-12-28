@@ -23,10 +23,6 @@ cloud_app_runner::cloud_app_runner(user & user_, app &app_, uint64_t user_apps_i
 
 }
 
-string cloud_app_runner::get_unique_id_session() const noexcept
-{
-    return user_.get_name() + app_.get_app_name();
-}
 
 bool cloud_app_runner::store_qa_history_status( json addition) const {
     // need to detect an already "done": true, maybe we are reconfiguring
@@ -213,7 +209,7 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
 task_t cloud_app_runner::create_task_to_schedule(const json & j_task) const{
     task_t task_test = make_shared<task>(j_task.get<task>());
     task_test->inner_json["app_id"] = this->app_.get_id();
-    task_test->set_user(this->user_.get_name());
+    task_test->set_user(this->user_.get_id());
     task_test->set_user_apps_id(user_apps_id);
     task_test->set_session_id(m_session_id);
     return task_test;
@@ -327,7 +323,7 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
 shared_ptr<app_state> cloud_app_runner::get_session() const noexcept
 {
     //This needs to come from db
-    const auto &&state = read_session(this->user_.get_name() , this->app_.get_id() );
+    const auto &&state = read_session(this->user_.get_id() , this->app_.get_id() );
     if (!state){
         return create_session(this->user_.get_id() , this->app_.get_id() );
     }

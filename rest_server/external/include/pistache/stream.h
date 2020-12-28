@@ -103,25 +103,20 @@ private:
   size_t maxSize = Const::MaxBuffer;
 };
 
-struct RawBuffer final {
-  RawBuffer() = default;
-  RawBuffer(std::string data, size_t length);
-  RawBuffer(const char *data, size_t length);
+struct RawBuffer {
+  RawBuffer();
+  RawBuffer(std::string data, size_t length, bool isDetached = false);
+  RawBuffer(const char *data, size_t length, bool isDetached = false);
 
-  RawBuffer(const RawBuffer &) = default;
-  RawBuffer &operator=(const RawBuffer &) = default;
-  RawBuffer(RawBuffer &&) = default;
-  RawBuffer &operator=(RawBuffer &&) = default;
-
-  ~RawBuffer() = default;
-
-  RawBuffer copy(size_t fromIndex = 0u) const;
+  RawBuffer detach(size_t fromIndex);
   const std::string &data() const;
   size_t size() const;
+  bool isDetached() const;
 
 private:
   std::string data_;
-  size_t length_ = 0;
+  size_t length_;
+  bool isDetached_;
 };
 
 struct FileBuffer {

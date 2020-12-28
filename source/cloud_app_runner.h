@@ -44,7 +44,6 @@ protected:
     shared_ptr<app_state> fetch_next_session() const noexcept;
     shared_ptr<app_state> new_session(const string & session_id) const noexcept;
     shared_ptr<app_state> new_session() const noexcept;
-    string get_unique_id_session() const noexcept;
     inline void clear_sessions(){user_running_apps.clear();}
     void apply_wildcards(next_question_data_and_taskstory_input & response);
     void register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks);

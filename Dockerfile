@@ -28,7 +28,8 @@ RUN apt update && DEBIAN_FRONTEND=noninteractive TZ=Etc/UTC apt install -y \
 
 FROM min-stage as build-stage
 
-COPY ./ /opt/prot
+COPY ./thirdparty /opt/prot/thirdparty
+COPY ./requirements.txt /opt/prot/requirements.txt
 WORKDIR /opt/prot
 
 #no longer needed 20.04 got cmake 3.16
@@ -58,6 +59,9 @@ RUN rm -rf * \
 && cmake -DUSE_MARIADB=1 - -DDATE_INCLUDE_DIR=/usr/local/include/ .. \
 && make -j $NBUILDCORES \
 && make install
+
+
+COPY ./ /opt/prot/
 
 WORKDIR /opt/prot/
 RUN ./build.sh

@@ -232,7 +232,6 @@ inline unique_ptr<user> create_user(string user_id, string username)
     json j = {{"id",user_id},{"username", username}};
     from_json(j, *us);
     db(insert_into(usr).set(usr.id = user_id ,usr.username = username, usr.json = json(*us).dump()));
-    us->set_id(user_id);
     db(insert_into(tasker_).set(tasker_.user = user_id));
     db(insert_into(sche).set(sche.user = user_id));
     // SPDLOG_INFO("{}",result);
@@ -252,7 +251,6 @@ inline unique_ptr<user> read_user(string user_id)
     json juser = json::parse(row.json.text);
     auto us = make_unique<user>();
     from_json(juser, *us);
-    us->set_id(row.id);
     return us;
 }
 
@@ -810,7 +808,6 @@ inline unique_ptr<user> read_user(const string user_id)
     json juser = json::parse(row.json.text);
     auto us = make_unique<user>();
     from_json(juser, *us);
-    us->set_id(row.id);
     return us;
 }
 

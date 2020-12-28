@@ -28,7 +28,7 @@ class posthandler_raii{
     public:
     posthandler_raii(const Pistache::Rest::Request &request, const Pistache::Http::ResponseWriter& response):request(request),response(response){}
     ~posthandler_raii(){
-        SPDLOG_DEBUG("{} {} -> {} {}", methodString(request.method()), request.resource(), response.getResponseCode(), codeString(response.getResponseCode()) );
+        SPDLOG_DEBUG("{} {} -> {} {} ", methodString(request.method()), request.resource(), response.getResponseCode(), codeString(response.getResponseCode()) );
     }
 };
 

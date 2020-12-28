@@ -14,7 +14,7 @@ SET(FMT_TEST "OFF")
 
 ExternalProject_Add(PISTACHE
    GIT_REPOSITORY https://github.com/oktal/pistache.git
-   GIT_TAG master
+   GIT_TAG 4e48b6d3da2bc5143e906c5bb80e1a4f6b6e2376
    CMAKE_ARGS -DCMAKE_INSTALL_PREFIX=${EXTERNAL_INSTALL_LOCATION}
 )
 
