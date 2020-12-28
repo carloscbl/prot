@@ -926,6 +926,54 @@ namespace orm_prot
       };
       using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
     };
+    struct LastDiscovered
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "last_discovered";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T lastDiscovered;
+            T& operator()() { return lastDiscovered; }
+            const T& operator()() const { return lastDiscovered; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
+    };
+    struct CreatedAt
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "created_at";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T createdAt;
+            T& operator()() { return createdAt; }
+            const T& operator()() const { return createdAt; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
+    };
+    struct UpdatedAt
+    {
+      struct _alias_t
+      {
+        static constexpr const char _literal[] =  "updated_at";
+        using _name_t = sqlpp::make_char_sequence<sizeof(_literal), _literal>;
+        template<typename T>
+        struct _member_t
+          {
+            T updatedAt;
+            T& operator()() { return updatedAt; }
+            const T& operator()() const { return updatedAt; }
+          };
+      };
+      using _traits = sqlpp::make_traits<sqlpp::time_point, sqlpp::tag::can_be_null>;
+    };
     struct QaHistory
     {
       struct _alias_t
@@ -948,6 +996,9 @@ namespace orm_prot
                UsersApps_::Id,
                UsersApps_::Iduser,
                UsersApps_::Idapp,
+               UsersApps_::LastDiscovered,
+               UsersApps_::CreatedAt,
+               UsersApps_::UpdatedAt,
                UsersApps_::QaHistory>
   {
     struct _alias_t

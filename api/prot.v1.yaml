@@ -31,6 +31,22 @@ paths:
           description: OK
         '404':
           description: Not Found
+    patch:
+      summary: ''
+      operationId: ''
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                forward_projection:
+                  type: integer
+                backwards_projection:
+                  type: integer
   /user:
     post:
       summary: ''

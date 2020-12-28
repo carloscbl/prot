@@ -64,17 +64,7 @@ void tasker::commit_single_task(task_t task_active){
     try
     {
         if(create_task({{this->m_user,false}},*task_active)){
-            // get expire date
-            json job;
-            job["type"] = "task_clone_into_next_period";
-            job["task_id"] = task_active->get_id(); // If at the moment of job execution it doesn't exists wont execute the clone
-            job["start_job_at"] =  system_clock::to_time_t( std::chrono::floor<days>(system_clock::from_time_t( task_active->get_interval().start)) - days(1));
-            auto next_period_start_day = task_space::next_period_start(task_active);
-            if(next_period_start_day.has_value()){
-                job["next_period_start"] = system_clock::to_time_t( next_period_start_day.value() );
-                create_prot_jobs(job); // it holds next day to schedule the clone task
-            }
-            
+
         }
         tasks_active[task_active->get_id()] = task_active; // wont work with create_task step
     }

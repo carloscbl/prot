@@ -1,4 +1,3 @@
-#include "jobs_watcher.hpp"
 #ifdef __linux__
 #include <vector>
 #include <signal.h>
@@ -8,6 +7,7 @@
 #include <iostream>
 
 #include "spdlog/spdlog.h"
+#include "discovery.h"
 
 
 bool end_program = false;
@@ -49,8 +49,11 @@ int main(int argc, char *argv[]){
     spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
     spdlog::set_level(spdlog::level::debug);
     SPDLOG_INFO("Starting Prot Discovery Rescheduler Service...");
-    jobs_watcher_start(prot_jobs_scheduling, 3000);
+    SPDLOG_INFO("Doing nothing yet");
+    // jobs_watcher_start(prot_jobs_scheduling, 3000);
+    discovery<> dscvr;
     while (!end_program){
+        dscvr.deliver();
         sleep(2);
     }
     std::cout << "Ending Prot Jobs Watcher Service" << std::endl;

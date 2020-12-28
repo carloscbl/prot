@@ -866,6 +866,35 @@ inline bool update_user_instalations(const string user_id, const uint64_t app_id
     return static_cast<bool>(result);
 }
 
+template <typename clock = std::chrono::system_clock>
+inline void discover_new_app_refresh()
+{
+    // // Query by user_apps where (last_discovered is NULL AND qa_history is not NULL) or (last_discovered + 1 DAY > NOW()  or last_discovered < updated_at)
+    // last "or" means if was updated but not discovered, then we can trigger again discovery
+    auto &db = mysql_db::get_db_lazy().db;
+    orm_prot::UsersApps usr_apps;
+    auto now = clock::now();
+    auto restart_time = now - days(1);
+    
+    const auto & select = sqlpp::select(all_of(usr_apps)).from(usr_apps)
+            .where( 
+                (usr_apps.lastDiscovered.is_null() and  usr_apps.qaHistory.is_not_null())
+                or (
+                    usr_apps.lastDiscovered < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time)
+                    or usr_apps.lastDiscovered < usr_apps.updatedAt
+                )
+            );
+    for (const auto & row : db(select))
+    {
+        SPDLOG_DEBUG("{}", row.id);
+        
+        // auto new_job = make_unique<json>( json::parse(row.jobJson.value()) ); 
+        // (*new_job)["id"] = row.id.value();
+        // jobs[row.id.value()] = move(new_job);
+    }
+    // return static_cast<bool>(result);
+}
+
 } // namespace db_op
 
 //https://github.com/rbock/sqlpp11/wiki/Select
