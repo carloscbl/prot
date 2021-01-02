@@ -18,6 +18,7 @@
 #include <sqlpp11/connection.h>
 #include <sqlpp11/functions.h>
 #include <sqlpp11/select.h>
+#include "discovered_components.hpp"
 
 #include "spdlog/spdlog.h"
 
@@ -866,33 +867,45 @@ inline bool update_user_instalations(const string user_id, const uint64_t app_id
     return static_cast<bool>(result);
 }
 
-template <typename clock = std::chrono::system_clock>
-inline void discover_new_app_refresh()
+
+inline vector<unique_ptr<discovered_components>> discover_new_app_refresh(system_clock::time_point now_)
 {
     // // Query by user_apps where (last_discovered is NULL AND qa_history is not NULL) or (last_discovered + 1 DAY > NOW()  or last_discovered < updated_at)
     // last "or" means if was updated but not discovered, then we can trigger again discovery
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::UsersApps usr_apps;
-    auto now = clock::now();
-    auto restart_time = now - days(1);
+    
+    std::chrono::system_clock::time_point now {now_};
+    std::chrono::system_clock::time_point restart_time = { now - days(1) };
+    // auto elapsed_us = std::chrono::duration_cast<std::chrono::microseconds>(restart_time);
     
     const auto & select = sqlpp::select(all_of(usr_apps)).from(usr_apps)
             .where( 
                 (usr_apps.lastDiscovered.is_null() and  usr_apps.qaHistory.is_not_null())
                 or (
+                    // usr_apps.lastDiscovered < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time)
                     usr_apps.lastDiscovered < ::sqlpp::chrono::floor<::std::chrono::milliseconds>(restart_time)
                     or usr_apps.lastDiscovered < usr_apps.updatedAt
                 )
             );
+    vector<unique_ptr<discovered_components>> v_dc;
     for (const auto & row : db(select))
     {
-        SPDLOG_DEBUG("{}", row.id);
-        
-        // auto new_job = make_unique<json>( json::parse(row.jobJson.value()) ); 
-        // (*new_job)["id"] = row.id.value();
-        // jobs[row.id.value()] = move(new_job);
+        auto qaHistory = make_unique<json>(json::parse(row.qaHistory.text));
+        std::chrono::system_clock::time_point tp {row.lastDiscovered.value()};
+
+        auto mc = make_unique<discovered_components>(
+            row.iduser,
+            uint64_t(row.idapp.value()),
+            std::move(qaHistory),
+            tp,
+            uint64_t(row.id.value())
+        );
+        v_dc.push_back(std::move(mc));
+        // v_dc.push_back(mc);
+        // SPDLOG_DEBUG("{} {} {} {} {}", row.id, row.lastDiscovered , row.iduser, row.idapp, row.qaHistory);
     }
-    // return static_cast<bool>(result);
+    return v_dc;
 }
 
 } // namespace db_op

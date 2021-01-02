@@ -30,7 +30,7 @@ namespace testing {
     typedef uint64_t rep;
     typedef std::ratio<1l, 1000000000l> period;
     typedef std::chrono::duration<rep, period> duration;
-    typedef std::chrono::time_point<fake_clock> time_point;
+    typedef std::chrono::time_point<std::chrono::system_clock, duration> time_point;
 
     static void advance(duration d) noexcept;
     static void reset_to_epoch() noexcept;
@@ -44,6 +44,7 @@ namespace testing {
     static time_point now_us_;
     static const bool is_steady;
   };
+  
 }
 
 #endif

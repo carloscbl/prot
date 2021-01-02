@@ -1,7 +1,7 @@
-#include "fake_clock.hh"
+#include "fake_clock.h"
+
 
 namespace testing {
-
   fake_clock::time_point fake_clock::now_us_;
   const bool fake_clock::is_steady = false;
 
