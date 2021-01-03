@@ -12,7 +12,7 @@ Current problem:
 
 Proposal:
 
-    Discovery system that will be able based on installed apps and current status of the user, the app,
+    app_discovery system that will be able based on installed apps and current status of the user, the app,
     suscription status, to reevaluate on the next cycle the changes needed.
 
     This means while the user exists and the app is in the account, we will be able to discover and project new tasks.

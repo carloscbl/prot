@@ -72,7 +72,7 @@ FROM min-stage as production-stage
 COPY  --from=build-stage /opt/prot/build/api-server /opt/prot/build/api-server
 COPY  --from=build-stage /opt/prot/build/jobs-watcher /opt/prot/build/jobs-watcher
 COPY  --from=build-stage /opt/prot/build/test_prot /opt/prot/build/test_prot
-COPY  --from=build-stage /opt/prot/build/discovery-rescheduler /opt/prot/build/discovery-rescheduler
+COPY  --from=build-stage /opt/prot/build/app-discovery-rescheduler /opt/prot/build/app-discovery-rescheduler
 COPY  --from=build-stage /opt/prot/build/liblprot.a /opt/prot/build/liblprot.a
 COPY  --from=build-stage /opt/prot/source /opt/prot/source
 COPY  --from=build-stage /opt/prot/jobs_watcher /opt/prot/jobs_watcher

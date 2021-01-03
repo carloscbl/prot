@@ -1,7 +1,7 @@
 
 cmake_minimum_required (VERSION 3.2)
 
-project(discovery-rescheduler)
+project(app-discovery-rescheduler)
 
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pg -ggdb -g3 -rdynamic" )
 

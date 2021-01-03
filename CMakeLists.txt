@@ -35,18 +35,14 @@ include_directories("thirdparty/nlohmann_json")
 include_directories("thirdparty/spdlog")
 include_directories(${CMAKE_SOURCE_DIR}/thirdparty)
 include_directories(${CMAKE_SOURCE_DIR}/thirdparty/spdlog)
-# thirdparty/HowardHinnantDate/date/include/date/tz.h
-# include_directories("thirdparty/HowardHinnantDate")
-# include_directories("thirdparty/HowardHinnantDate/date")
 include_directories("thirdparty/HowardHinnantDate/date/include")
-# add_subdirectory(spdlog) # Order matters for subdirectories
 include_directories(${SPDLOG_DIR})
 
 
 
 add_subdirectory(rest_server)
-add_subdirectory(test)
-add_subdirectory(jobs_watcher)
+# add_subdirectory(test)
+# add_subdirectory(jobs_watcher)
 add_subdirectory(discovery_rescheduler)
 
 
@@ -62,6 +58,6 @@ file(GLOB SOURCES
 message(${SOURCES})
 
 
-add_library (lprot  ${SOURCES} ) #${PROJECT_SOURCE_DIR}/source/main.cpp
+add_library (lprot  ${SOURCES} ) 
 
 TARGET_LINK_LIBRARIES( lprot LINK_PUBLIC pthread ${Boost_LIBRARIES} fmt::fmt curl )

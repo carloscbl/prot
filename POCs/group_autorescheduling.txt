@@ -32,7 +32,7 @@ How:
         New Rescheduling:
             - Now we have a job per task.
             - We need to move to a job per group
-            - In the future release can be to a discovery so this pass could be removed, but for easyness of testing... job per group
+            - In the future release can be to a app_discovery so this pass could be removed, but for easyness of testing... job per group
             - Store in the job
         Once we know which group is scheduling,
         We need a new type of job, for group scheduling, instead the clone one.

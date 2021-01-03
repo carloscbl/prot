@@ -13,7 +13,7 @@ using std::chrono::seconds;
 using std::chrono::minutes;
 using std::chrono::hours;
 using std::chrono::system_clock;
-using time_point = std::chrono::time_point<system_clock>;
+using time_point = system_clock::time_point;
 using days = std::chrono::duration<int64_t,std::ratio<86400>>;
 using weeks = std::chrono::duration<int64_t,std::ratio<604800>>;
 using months = std::chrono::duration<int64_t,std::ratio<2629746>>;

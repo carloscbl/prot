@@ -1,8 +1,9 @@
 #pragma once
 #include <chrono>
 #include "fake_clock.h"
-#include "discovered_components.hpp"
+#include "discovered_components.h"
 #include "db_ops.hpp"
+#include "spdlog/spdlog.h"
 
 
 // This class handles the loop of all missing domain logic and updates of tasks
@@ -19,16 +20,15 @@ struct testing_workmode
 };
 
 template <typename workmode = production_workmode, typename clock = typename workmode::clock >
-class discovery{
+class app_discovery{
     public:
-    discovery(){}
+    app_discovery(){}
     void deliver(){
         // We iterate over all user_apps to determine if something missing
         // iterate all user_apps
 
-        // Query by user_apps where (last_discovered is NULL AND qa_history is not NULL) or (last_discovered + 1 DAY > NOW()  AND last_discovered < updated_at)
-        db_op::discover_new_app_refresh(clock::now());
-        // clock::now()
+        auto discovered_objs = db_op::discover_new_app_refresh(clock::now());
+        // With the apps running, now we should perform projections and cleanups
 
     }
 };

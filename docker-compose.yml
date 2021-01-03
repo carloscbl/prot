@@ -58,14 +58,14 @@ services:
       PROT_DB_PORT: 3306
     depends_on:
       - db
-  discovery-rescheduler:
+  app-discovery-rescheduler:
     image: prot:latest
     tty: true
     stdin_open: true
     restart: always
     # networks:
     #   - internalNetwork
-    entrypoint: ./discovery-rescheduler
+    entrypoint: ./app-discovery-rescheduler
     environment:
       TZ: Etc/UTC
       PROT_DB_USER: root

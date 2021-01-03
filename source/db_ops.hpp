@@ -18,7 +18,7 @@
 #include <sqlpp11/connection.h>
 #include <sqlpp11/functions.h>
 #include <sqlpp11/select.h>
-#include "discovered_components.hpp"
+#include "discovered_components.h"
 
 #include "spdlog/spdlog.h"
 
@@ -99,26 +99,6 @@ inline unique_ptr<app> create_app(const json &valid_app, const string &user_id)
     return protapp;
 }
 
-inline unique_ptr<app> read_app(const string &app_name)
-{
-    auto &db = mysql_db::get_db_lazy().db;
-
-    orm_prot::Apps app_;
-    const auto &result = db(sqlpp::select(all_of(app_)).from(app_).where(app_.name == app_name).limit(1U));
-    if (result.empty())
-    {
-        return nullptr;
-    }
-
-    const auto &row = result.front();
-    unique_ptr<app> protapp = make_unique<app>(json::parse(row.json.text)); //We create it implictly or refresh it
-    protapp->set_id(result.front().id);
-
-    return protapp;
-}
-
-
-
 inline map<uint64_t,string> read_apps_by_developer(const string & developer){
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -132,7 +112,7 @@ inline map<uint64_t,string> read_apps_by_developer(const string & developer){
     return dev_apps;
 }
 
-inline optional<pair<uint64_t,json>> read_app_by_id(const int32_t &id)
+inline optional<pair<unique_ptr<app>,json>> read_app_by_id(const int32_t &id)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
@@ -153,7 +133,9 @@ inline optional<pair<uint64_t,json>> read_app_by_id(const int32_t &id)
         {"is_public",row.isPublic.value()},
         {"disabled",row.disabled.value()},
     };
-    return make_pair(row.id,js);
+    unique_ptr<app> protapp = make_unique<app>(json::parse(row.json.text)); //We create it implictly or refresh it
+    protapp->set_id(result.front().id);
+    return make_pair(move(protapp),js);
 }
 
 inline map<uint64_t,json> read_app_meta()
@@ -186,7 +168,6 @@ inline void delete_app(const string &app_name)
 
     orm_prot::Apps app_;
     db(remove_from(app_).where(app_.name == app_name));
-    app::remove_app(app_name);
 }
 
 inline void read_db_json()
@@ -871,7 +852,7 @@ inline bool update_user_instalations(const string user_id, const uint64_t app_id
 inline vector<unique_ptr<discovered_components>> discover_new_app_refresh(system_clock::time_point now_)
 {
     // // Query by user_apps where (last_discovered is NULL AND qa_history is not NULL) or (last_discovered + 1 DAY > NOW()  or last_discovered < updated_at)
-    // last "or" means if was updated but not discovered, then we can trigger again discovery
+    // last "or" means if was updated but not discovered, then we can trigger again app_discovery
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::UsersApps usr_apps;
     
@@ -902,8 +883,15 @@ inline vector<unique_ptr<discovered_components>> discover_new_app_refresh(system
             uint64_t(row.id.value())
         );
         v_dc.push_back(std::move(mc));
-        // v_dc.push_back(mc);
-        // SPDLOG_DEBUG("{} {} {} {} {}", row.id, row.lastDiscovered , row.iduser, row.idapp, row.qaHistory);
+        SPDLOG_DEBUG("{} {} {} {} ", 
+            uint64_t(row.id.value()),
+            // tp ,
+            row.iduser.value(),
+            row.qaHistory.text,
+            uint64_t(row.idapp.value())
+        );
+
+        // SPDLOG_DEBUG("{}", tp.time_since_epoch() );
     }
     return v_dc;
 }

@@ -1,9 +1,9 @@
 #include "Catch2/catch.hpp"
 #include "json.hpp"
-#include "discovery.h"
+#include "app_discovery.h"
 
 
-TEST_CASE( "test discovery", "[runner]" ) {
-    discovery<testing_workmode> dscvr;
+TEST_CASE( "test app_discovery", "[runner]" ) {
+    app_discovery<testing_workmode> dscvr;
     dscvr.deliver();
 }

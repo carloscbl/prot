@@ -7,7 +7,7 @@
 #include <iostream>
 
 #include "spdlog/spdlog.h"
-#include "discovery.h"
+#include "app_discovery.h"
 
 
 bool end_program = false;
@@ -48,10 +48,10 @@ int main(int argc, char *argv[]){
 #endif
     spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
     spdlog::set_level(spdlog::level::debug);
-    SPDLOG_INFO("Starting Prot Discovery Rescheduler Service...");
+    SPDLOG_INFO("Starting Prot App Discovery Rescheduler Service...");
     SPDLOG_INFO("Doing nothing yet");
     // jobs_watcher_start(prot_jobs_scheduling, 3000);
-    discovery<> dscvr;
+    app_discovery<> dscvr;
     while (!end_program){
         dscvr.deliver();
         sleep(2);
