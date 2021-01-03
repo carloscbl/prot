@@ -3,7 +3,7 @@ cmake_minimum_required (VERSION 3.2)
 
 project(jobs-watcher)
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pg -ggdb -g3 -rdynamic" )
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17 -pg -ggdb -g3 " )
 
 include_directories(${CMAKE_SOURCE_DIR}/source)
 include_directories(${CMAKE_SOURCE_DIR}/api/generated)

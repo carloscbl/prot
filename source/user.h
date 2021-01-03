@@ -21,24 +21,23 @@ struct user_minimal_data
 {
     string username;
 };
-/*
-    User class have one ischeduler and one itasker
-    no one else should have one
 
- */
 class user 
-{ //substitute by the final class
-public://FIX: this should be wrapped
+{
 private:
     shared_ptr<tasker> tasker_;
     unique_ptr<scheduler> scheduler_;
     string id;
+    struct user_conf{
+        int backwards_projection = 1;
+        int forward_projection = 1;
+    };
 
     void init();
     friend void from_json(const nlohmann::json& ref_json, user& new_user);
 
 public:
-    map<string,app*> instaled_apps; // List all the apps for a user
+    user_conf conf;
     user_minimal_data minimal_data;
     user(const user_minimal_data &m_data);
     user(); 

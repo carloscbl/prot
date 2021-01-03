@@ -71,48 +71,7 @@ int main(int argc, char *argv[])
     for (auto&  value: aa["arr"]) {
         std::cout << value << "\n";
     }
-    
-    // fmt::print("{}",emp);
-    // fmt::print("{}",emp);
 
-    // fmt::print(aa["pepe"].type());
-    // fmt::print("pepe vale {num}", fmt::arg("num",  aa["pepe"].type ));
-
-
-    // std::string result = fmt::vformat("{} and {} and {}", aresgg);
-    // check dynamic_format_arg_store
-    // fmt::print(raw, fmt::arg("name", "World"));
-    // fmt::print(raw, fmt::arg("number", 42));
-    // read_db_json();
-    // //delete_user("pepe");
-    // create_user("carloscbl");
-    // create_user("pepe");
-    
-    // json jj = app::get_apps_register().at("Washer easer")->get_json();
-    // create_app(jj, "carloscbl");
-    // create_instalation("carloscbl", "Washer easer");
-    // create_instalation("carloscbl", "Lemon");
-    // create_instalation("carloscbl", "Pepoapp");
-    // //fill_db();
-    // task tk;
-    // tk.set_name("lemonsss_task");
-    // task tk2;
-    // tk2.set_name("pepe_task");
-    // create_task({{"carloscbl",true},{"pepe",false}},tk);
-    // create_task({{"pepe",false}},tk2);
-    // join();
-    // auto tasksss =  read_tasks("pepe");
-
-    // for (auto &&[k,v] : tasksss)
-    // {
-    //     cout << v->get_name() << endl;
-    // }
-    
-
-    // read_instalations("carloscbl");
-    // delete_instalation("carloscbl", "Lemon");
-    // read_instalations("carloscbl");
-    // //delete_user("pepe");
 
 
     int result = Catch::Session().run(argc, argv);

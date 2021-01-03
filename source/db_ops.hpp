@@ -1,3 +1,4 @@
+#pragma once
 #ifndef DB_OPS_H
 #define DB_OPS_H
 
@@ -278,8 +279,6 @@ inline uint64_t create_instalation(const string &user_id, const string &app_name
         instls.iduser = usr_res.front().id,
         instls.idapp = app_res.front().id));
 
-    //We shouldn't load anything that is not required to perapp
-    //user::users.at(username)->instaled_apps[app_name] = app::get_apps_register().at(app_name).get();
     return result;
 }
 
