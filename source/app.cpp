@@ -5,7 +5,6 @@ using namespace std;
 
 app::~app()
 {
-    cout << "app destroyed" << endl;
 }
 
 

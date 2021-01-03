@@ -25,6 +25,7 @@ cloud_app_runner::cloud_app_runner(user & user_, app &app_, uint64_t user_apps_i
 
 
 bool cloud_app_runner::store_qa_history_status( json addition) const {
+    measure_execution_raii(__FUNCTION__);
     // need to detect an already "done": true, maybe we are reconfiguring
     // So we need to detect it and delete it -> always
     auto instl = db_op::read_user_instalations( this->user_.get_id(), this->app_.get_id());
@@ -35,9 +36,7 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
         // exists so we use it
         new_qa_history = qa_history_it.value();
     }
-    cout << "existing" << new_qa_history.dump(4) << endl;
     new_qa_history.erase("done");
-    cout << "addition" << addition.dump(4) << endl;
 
     auto add_history = addition.find("history");
     if(add_history != addition.end() ){
@@ -48,7 +47,6 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
         addition.erase("history");
     }
     new_qa_history.merge_patch(addition);
-    cout << "inserting" << new_qa_history.dump(4) << endl;
 
     auto is_updated = db_op::update_user_instalations(this->user_.get_id(), this->app_.get_id(), new_qa_history);
     return is_updated;
@@ -57,7 +55,7 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
 //FIX: this is a mess composing responses...
 const json cloud_app_runner::run(const json &request_json) noexcept
 {
-    measure_execution_raii("cloud_app_runner::run");
+    measure_execution_raii(__FUNCTION__);
     const auto &state = fetch_next_session();
     this->m_session_id = state->id;
     app_parser ap(app_.get_json(), *state); //,*state

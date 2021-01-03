@@ -23,13 +23,13 @@ if [ -n "$1" ]; then
   CORES=$1
 fi
 
-# if [ -x "$(command -v clang)" ]; then
-#   export CC=/usr/bin/clang
-#   export CXX=/usr/bin/clang++
-#   export CXXFLAGS='-fuse-ld=lld'
-#   export CFLAGS='-fuse-ld=lld'
-#   echo 'Using Clang'
-# fi
+if [ -x "$(command -v clang)" ]; then
+  export CC=/usr/bin/clang
+  export CXX=/usr/bin/clang++
+  # export CXXFLAGS='-fuse-ld=lld'
+  # export CFLAGS='-fuse-ld=lld'
+  echo 'Using Clang'
+fi
 
 # export CC=/usr/bin/gcc-9
 # export CXX=/usr/bin/g++-9

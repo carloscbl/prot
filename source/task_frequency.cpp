@@ -9,12 +9,12 @@ task_frequency & task_frequency::get_frequency_lazy_unique_instance(){
 }
 
 void frequency::set_frequency(const string frequency_){
+    m_frequency = frequency_; 
+    get_json();
     if(task_frequency::get_frequency_lazy_unique_instance().is_valid(frequency_)){
-        m_frequency = frequency_; 
-        get_json();
     }else{
         cout << frequency_ << " is not valid frequency, check api to check is valid" << endl;
-        assert(false);
+        // assert(false);
     }
 }
 

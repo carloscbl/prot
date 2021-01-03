@@ -13,6 +13,8 @@
 #include "DefaultApiImpl.h"
 #include "db_ops.hpp"
 #include "cloud_app_runner.h"
+#include "spdlog/spdlog.h"
+#include "time_utils.hpp"
 
 namespace org {
 namespace openapitools {
@@ -268,7 +270,9 @@ void DefaultApiImpl::user_developer_app_post(const std::string &developer, const
     }
     response.send(Pistache::Http::Code::Created, "Done");
 }
+
 void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, const std::string &userId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) {
+    measure_execution_raii(__FUNCTION__);
     auto usr = read_user(userId);
     if(!usr){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");

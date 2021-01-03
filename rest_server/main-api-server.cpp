@@ -70,7 +70,7 @@ int main() {
     httpEndpoint = new Pistache::Http::Endpoint((addr));
     auto router = std::make_shared<Pistache::Rest::Router>();
     
-    spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
+    spdlog::set_pattern("[%D %H:%M:%S:%e %imcrs %z] %^%l%$ %! %s:%# %v");
     spdlog::set_level(spdlog::level::debug);
 
     auto opts = Pistache::Http::Endpoint::options()

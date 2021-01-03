@@ -46,7 +46,7 @@ int main(int argc, char *argv[]){
     std::vector<int> sigs{SIGQUIT, SIGINT, SIGTERM, SIGHUP};
     setUpUnixSignals(sigs);
 #endif
-    spdlog::set_pattern("[%H:%M:%S %z] %^%l%$ %! %s:%# %v");
+    spdlog::set_pattern("[%H:%M:%S:%e %Fns %z] %^%l%$ %! %s:%# %v");
     spdlog::set_level(spdlog::level::debug);
     SPDLOG_INFO("Starting Prot App Discovery Rescheduler Service...");
     SPDLOG_INFO("Doing nothing yet");

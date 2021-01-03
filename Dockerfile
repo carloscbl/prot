@@ -64,6 +64,11 @@ RUN rm -rf * \
 COPY ./ /opt/prot/
 
 WORKDIR /opt/prot/
+ENV TZ=Etc/UTC
+
+ENV CC=/usr/bin/gcc-9
+ENV CXX=/usr/bin/g++-9
+
 RUN ./build.sh
 WORKDIR /opt/prot/build
 

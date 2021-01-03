@@ -2,6 +2,7 @@
 #include <chrono>
 #include "fake_clock.h"
 #include "discovered_components.h"
+#include "app_projector.h"
 #include "db_ops.hpp"
 #include "spdlog/spdlog.h"
 
@@ -29,7 +30,12 @@ class app_discovery{
 
         auto discovered_objs = db_op::discover_new_app_refresh(clock::now());
         // With the apps running, now we should perform projections and cleanups
-
+        for (auto &&v : discovered_objs)
+        {
+            app_projector ap (*v);
+            ap.project();
+            SPDLOG_DEBUG("{}", v->app_id );
+        }
     }
 };
 

@@ -22,7 +22,6 @@ public:
 
     api_validated(const string & api_file):definitions_file(api_file){
         boost::filesystem::path full_path(boost::filesystem::current_path());
-        std::cout << "Current path is : " << full_path << std::endl;
         std::ifstream file(definitions_file, std::fstream::in);
         file >> api_json;
     };

@@ -8,6 +8,7 @@
 #include <ctime>
 #include <iomanip>
 #include <fmt/core.h>
+#include "spdlog/spdlog.h"
 
 using std::chrono::seconds;
 using std::chrono::minutes;
@@ -136,8 +137,9 @@ public:
     measure_execution_raii(string name_of_measure):name_of_measure(name_of_measure){}
     ~measure_execution_raii(){
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::microseconds>( end - start ).count();
-        fmt::print("Measuring execution of {0} : {1}\n", name_of_measure, duration);
+        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>( end - start ).count();
+        SPDLOG_INFO("Measuring execution of {} : {}ns", name_of_measure, duration);
+        // fmt::print("Measuring execution of {0} : {1}\n", name_of_measure, duration);
     }
 };
 

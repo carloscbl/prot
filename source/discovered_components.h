@@ -11,11 +11,11 @@ using std::unique_ptr;
 
 class discovered_components{
     using time_point = system_clock::time_point;
-    unique_ptr<user> m_user;
-    unique_ptr<app> m_app;
     bool m_built = false;
 
     public:
+    unique_ptr<user> m_user; // bad encapsulation
+    unique_ptr<app> m_app; // bad encapsulation
     const string user_id ;
     const uint64_t app_id = 0;
     const unique_ptr<json> m_qaHistory;
@@ -36,4 +36,6 @@ class discovered_components{
     {};
 
     bool build();
+    bool is_built() const{ return m_built ;}
+    // bool reload();
 };

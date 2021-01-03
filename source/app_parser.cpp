@@ -80,8 +80,8 @@ unique_ptr <next_question_data_and_taskstory_input> app_parser::get_next(const j
     {
         question = find_questions_by_id(this->next_branch_id).value();
     }
-    fmt::print("answer_input {}\n",answer_input.dump(4));
-    fmt::print("question {}\n",question.dump(4));
+    // fmt::print("answer_input {}\n",answer_input.dump(4));
+    // fmt::print("question {}\n",question.dump(4));
     auto strategy_returned = enroute_json_type(question, answer_input);
     this->next_branch_id = strategy_returned.if_branch;
     //cout << "taskstory " << strategy_returned.taskstory_id << endl;
