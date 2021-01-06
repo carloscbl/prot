@@ -40,7 +40,7 @@ public:
     user_conf conf;
     user_minimal_data minimal_data;
     user(const user_minimal_data &m_data);
-    user(); 
+    user(); // used to construct from_json
     virtual ~user() {}
 
     inline tasker &get_tasker() const noexcept { return *tasker_; }

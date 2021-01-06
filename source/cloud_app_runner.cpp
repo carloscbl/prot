@@ -52,7 +52,44 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
     return is_updated;
 }
 
-//FIX: this is a mess composing responses...
+const optional<json> cloud_app_runner::programatic_run_injecting_history_answers(const json &history) noexcept
+{
+    measure_execution_raii(__FUNCTION__);
+    unique_ptr<app_state> state = make_unique<app_state>();
+    app_parser ap(app_.get_json(), *state); 
+
+    for (auto && qa_obj : history)
+    {
+        measure_execution_raii(__FUNCTION__);
+        unique_ptr<next_question_data_and_taskstory_input> response;
+        response = ap.app_next_in_pipeline(qa_obj["user_answer"]);
+        if(response->next_question_text == "END"){
+            return nullopt;
+        }
+
+        if (response->taskstory_name.empty())
+        {
+            continue;
+        }
+        ////////////////////////////////////////////////////////
+        //Build schedulers and taskers for the given taskstory
+        ////////////////////////////////////////////////////////
+        try
+        {
+            expand_taskstory_t ep (*response);
+            ep.expand_and_set();
+        }
+        catch(const std::exception& e)
+        {
+            SPDLOG_ERROR("Failed taskstory expansion {} ", e.what());
+        }
+        
+        schedule_taskstory(*response);
+        continue;
+    }
+    return json();
+}
+
 const json cloud_app_runner::run(const json &request_json) noexcept
 {
     measure_execution_raii(__FUNCTION__);
@@ -156,11 +193,11 @@ optional<days> deduce_next_period(const json & j_task, task * task_, optional<st
     days next_period;
     auto future = std::chrono::floor<days>(start_from.value());
     auto now = std::chrono::floor<days>(std::chrono::system_clock::now());
-    cout << "days since epoch (future) " << duration_cast<days>(seconds(future.time_since_epoch())).count() << endl; 
-    cout << "days since epoch (now) " << duration_cast<days>(seconds(now.time_since_epoch())).count() << endl;
+    SPDLOG_DEBUG("days since epoch (future) {}", duration_cast<days>(seconds(future.time_since_epoch())).count());
+    SPDLOG_DEBUG("days since epoch (now) {}" ,duration_cast<days>(seconds(now.time_since_epoch())).count());
     
     if (now > future){
-        cout << "Trying to deduce next period..." << endl;
+        SPDLOG_DEBUG("Trying to deduce next period...");
         auto ratio_opt = task_space::get_period_ratio(*tk);
         if(!ratio_opt.has_value()){ return nullopt; }
         days ratio = duration_cast<days>(ratio_opt.value());
@@ -168,17 +205,17 @@ optional<days> deduce_next_period(const json & j_task, task * task_, optional<st
         int period_multiplier = floorf64x(offset / ratio) + 1; // floor(2 / 7days) + 1 = 1
         future = (period_multiplier * ratio) + future ;
         if(now > future){
-            cout << "ERROR Task cannot be schduled in the past! in(DAYS): " << std::chrono::floor<days>(future - now).count() << endl;
+            SPDLOG_ERROR("ERROR Task cannot be schduled in the past! in(DAYS): {}", std::chrono::floor<days>(future - now).count());
             return nullopt;
         }
-        cout << "Success deducing!" << endl;
+        SPDLOG_DEBUG("Success deducing!");
     }
     next_period = std::chrono::floor<days>(future - now);
     return next_period;
 }
 
 bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from, task * task_) const{
-    cout << "## schedule_single_task ##" << endl;
+    SPDLOG_DEBUG("## schedule_single_task ##");
     transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
     tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
     auto task_test = create_task_to_schedule(j_task);
@@ -187,7 +224,6 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
     if(start_from.has_value()){
         projected_next_period_override_start_offset = deduce_next_period(j_task, task_, start_from);
         if(!projected_next_period_override_start_offset.has_value()){
-            // cout << "WRONG projected_next_period_override_start_offset" << endl;
             SPDLOG_ERROR("WRONG projected_next_period_override_start_offset");
             return false;
         }
@@ -196,11 +232,11 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
     time_determinator time_dt(task_test, provisional_scheduler);
     optional<bool> result = time_dt.build( days(0), projected_next_period_override_start_offset );
     if(!result.has_value() || !result.value()){
-        cout << "WRONG" << endl;
+        SPDLOG_ERROR("Unable to determine slot for task");
         return false;
     }
     tasker_.commit_single_task(move(task_test));
-    cout << "COMMITED" << endl;
+    SPDLOG_DEBUG("COMMITED task");
     return true;
 }
 
@@ -221,7 +257,7 @@ void cloud_app_runner::register_runner_scheduled_tasks (std::shared_ptr<std::map
     if(this->scheduled_tasks.has_value()){
         current = this->scheduled_tasks.value();
     }else{
-        current =vector<task_t>();
+        current = vector<task_t>();
     }
     for_each(done_tasks->begin(), done_tasks->end(),[&current](const pair<string,task_t>& p){
         current.value().push_back(p.second);
@@ -274,7 +310,6 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
 
     return true;
 }
-
 
 void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & response){
 

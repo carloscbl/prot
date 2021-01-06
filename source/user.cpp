@@ -12,7 +12,6 @@ user::user(){
 void user::init(){
     scheduler_ = make_unique<scheduler>();
     tasker_ = make_shared<tasker>(this->get_name());
-    taskers_global[this->minimal_data.username] = tasker_;
 }
 
 void to_json(nlohmann::json& new_json, const user& ref_task){

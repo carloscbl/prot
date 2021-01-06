@@ -11,8 +11,6 @@ class tasker;
 using task = task_space::task;
 using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
-//Vector because of the fast cache access as they need to be updated almost in real time, but CUD operations are comparatively rare
-inline map<string,weak_ptr<tasker>> taskers_global; //Global reference to all taskers to cycle them updates on caducity
 
 /*
 Provides the concrete implementation for the management of the tasks of a specific user

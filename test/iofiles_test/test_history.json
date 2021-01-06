@@ -1,0 +1,76 @@
+{
+    "history": [
+        {
+            "question": "How looks your week of workouts?",
+            "user_answer": {
+                "type": "MATRIX",
+                "metadata": {
+                    "cols": 7,
+                    "rows": 4,
+                    "group_by": "rows"
+                },
+                "data_input_from_user": [
+                    [
+                        "MON",
+                        "TUE",
+                        "WED",
+                        "THU",
+                        "FRI",
+                        "SAT",
+                        "SUN"
+                    ],
+                    [
+                        "aa",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    [
+                        "bb",
+                        null,
+                        null,
+                        null,
+                        null,
+                        null,
+                        null
+                    ],
+                    [
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {
+                                "minutes": 5
+                            }
+                        },
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {}
+                        },
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {}
+                        },
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {}
+                        },
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {}
+                        },
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {}
+                        },
+                        {
+                            "type": "DURATION",
+                            "data_input_from_user": {}
+                        }
+                    ]
+                ]
+            }
+        }
+    ]
+}

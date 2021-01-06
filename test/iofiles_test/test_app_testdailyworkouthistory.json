@@ -1,8 +1,8 @@
 ﻿{
   "app": {
     "version": 0,
-    "app.name": "test Daily workout",
-    "author.name": "carlos bernal"
+    "app.name": "test Daily workout history",
+    "author.name": "Prot.ai"
   },
   "questions": [
     {

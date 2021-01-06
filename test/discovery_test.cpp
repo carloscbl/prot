@@ -5,5 +5,5 @@
 
 TEST_CASE( "test app_discovery", "[runner]" ) {
     app_discovery<testing_workmode> dscvr;
-    dscvr.deliver();
+    // dscvr.deliver();
 }

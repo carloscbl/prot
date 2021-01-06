@@ -30,7 +30,7 @@ TEST_CASE( "test cloud_app_runner workout", "[runner]" ) {
     boost::filesystem::path full_path(boost::filesystem::current_path());
     std::cout << "Current path is : " << full_path << std::endl;
     std::ifstream matrix_input_file("../test/iofiles_test/test_matrix_input_example.json", std::fstream::in);
-    std::ifstream test_app_json_file("../test/iofiles_test/test_app_dailyworkout.json", std::fstream::in);
+    std::ifstream test_app_json_file("../test/iofiles_test/test_app_testdailyworkout.json", std::fstream::in);
     json matrix_input;
     json test_app_json;
     matrix_input_file >> matrix_input;

@@ -4,8 +4,6 @@
     // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
     "version": "0.2.0",
     "configurations": [
-
-        
         {
             "name": "(gdb) Attach",
             "type": "cppdbg",
@@ -40,33 +38,13 @@
                 }
             ]
         },
-    {
-        "name": "(gdb) Launch",
-        "type": "cppdbg",
-        "request": "launch",
-        "program": "${workspaceFolder}/build/prot",
-        //"args": ["test","sequence", "-p", "../sequences/request"],
-        "args": ["test","sequence", "-p", "../sequences/request_task_movement"],
-        "stopAtEntry": false,
-        "cwd": "${workspaceFolder}/build",
-        "environment": [],
-        "externalConsole": false,
-        "MIMode": "gdb",
-        "setupCommands": [
-            {
-                "description": "Enable pretty-printing for gdb",
-                "text": "-enable-pretty-printing",
-                "ignoreFailures": true
-            }
-        ]
-    },
         {
-            "name": "(gdb) test",
+            "name": "(gdb) Launch",
             "type": "cppdbg",
             "request": "launch",
-            "program": "${workspaceFolder}/build/test_prot",
+            "program": "${workspaceFolder}/build/prot",
             //"args": ["test","sequence", "-p", "../sequences/request"],
-            //"args": ["user","sch", "-s", "90", "-e" , "99"],
+            "args": ["test","sequence", "-p", "../sequences/request_task_movement"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [],
@@ -79,6 +57,52 @@
                     "ignoreFailures": true
                 }
             ]
+        },
+        {
+            "name": "(gdb) test gdb",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/test_prot",
+            //"args": ["test","sequence", "-p", "../sequences/request"],
+            //"args": ["user","sch", "-s", "90", "-e" , "99"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [
+                {"name":"PROT_DB_PASSW", "value":"Prot#654321"}
+            ],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "compile_test"
+        },
+        {
+            "name": "(gdb) test clang++",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${workspaceFolder}/build/test_prot",
+            //"args": ["test","sequence", "-p", "../sequences/request"],
+            //"args": ["user","sch", "-s", "90", "-e" , "99"],
+            "stopAtEntry": false,
+            "cwd": "${workspaceFolder}/build",
+            "environment": [
+                {"name":"PROT_DB_PASSW", "value":"Prot#654321"}
+            ],
+            "externalConsole": false,
+            "MIMode": "lldb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "compile_test"
         }
     ]
 }
