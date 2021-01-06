@@ -11,6 +11,7 @@
 #include <boost/filesystem.hpp>
 #include <boost/algorithm/string.hpp>
 #include "app_projector.h"
+#include "time_utils.hpp"
 namespace fs = boost::filesystem;
 using namespace fs;
 
@@ -55,19 +56,36 @@ TEST_CASE( "testprojector", "[projector]" ) {
     app_t app_ = get_app();
     user_t usr_ = get_user("pepephone");
 
-    // discovered_components dc (
-    //     row.iduser,
-    //     uint64_t(row.idapp.value()),
-    //     std::move(qaHistory),
-    //     tp,
-    //     uint64_t(row.id.value())
-    // );
-
     auto history = get_history_file();
     // app_projector ap ();
     cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
     car.programatic_run_injecting_history_answers((*history)["history"]);
     cout << car.scheduled_tasks->size() << endl;
     REQUIRE(car.scheduled_tasks->size() > 1);
+
+}
+
+
+TEST_CASE( "test projector performance", "[projector]" ) {
+    measure_execution exe("projector performance");
+    uint64_t total_tasks = 0;
+    app_t app_ = get_app();
+    user_t usr_ = get_user("pepephone");
+    for (size_t i = 0; i < 200; i++)
+    {
+        measure_execution_raii r("sub");
+
+        auto history = get_history_file();
+        // app_projector ap ();
+        cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
+        car.programatic_run_injecting_history_answers((*history)["history"]);
+        cout << car.scheduled_tasks->size() << endl;
+        total_tasks += car.scheduled_tasks->size();
+        REQUIRE(car.scheduled_tasks->size() == 4);
+        usr_->clear();
+    }
+    auto stop  =exe.stop();
+    SPDLOG_INFO("{} tasks per second ", total_tasks/chrono::duration_cast<std::chrono::seconds>(stop).count());
+    // 85 tasks per second
 
 }
