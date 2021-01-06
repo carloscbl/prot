@@ -50,7 +50,7 @@ inline user_t get_user(string name){
     return us;
 }
 
-TEST_CASE( "test projector", "[runner]" ) {
+TEST_CASE( "testprojector", "[projector]" ) {
 
     app_t app_ = get_app();
     user_t usr_ = get_user("pepephone");

@@ -1,191 +1,189 @@
 ﻿{
   "app": {
-    "version": 0,
-    "app.name": "test Daily workout history",
-    "author.name": "Prot.ai"
+      "version": 0,
+      "app.name": "test Daily workout history",
+      "author.name": "Prot.ai",
+      "app.description": "Ready to achieve your workout goals? With Daily workout you will be remainded to be ready to the next session of exercise, but taking good care of all the rest of overhead tasks.",
+      "app.tags": [
+          "lifestyle",
+          "workout",
+          "exercise",
+          "social",
+          "weekly"
+      ],
+      "app.tasks_offering": [
+          "Weekly design your schedule",
+          "Pay GYM / Swimming Pool / Sports center / subscription",
+          "Clothes/Bag Care",
+          "GPS Tracking"
+      ]
   },
   "questions": [
-    {
-      "id": 1,
-      "question": "Where you do or want to workout?",
-      "answer_tag": "workout#kind",
-      "type_user_input": "SELECT",
-      "type_details":{
-        "options":[
-          "home",
-          "gym",
-          "street",
-          "mixed",
-          "other"
-        ]
-      },
-      "mode": [
-        "sequential",
-        "once"
-      ],
-      "answers_branches": {
-        "any": {
-          "true": 2,
-          "else": -5,
-          "taskstory_id": null
-        }
-      }
-    },
-    {
-      "id": 2,
-      "question": "How much duration of workout per day?",
-      "answer_tag": "workout#duration",
-      "type_user_input": "Duration",
-      "type_details":{
-        "magnitude": "minutes",
-        "max": 180,
-        "min": 10
-      },
-      "mode": [
-        "sequential",
-        "once"
-      ],
-      "answers_branches": {
-        "any": {
-          "true": 3,
-          "else": -5,
-          "taskstory_id": null
-        }
-      }
-    },
-    {
-      "id": 3,
-      "question": "How many times per week to workout?",
-      "answer_tag": "workout#times",
-      "type_user_input": "MATRIX",
-      "type_details": {
-        "cols" : 7,
-        "rows" : 4,
-        "wildcard_task_posible_iterations":{
-          "day_week" : [1,2,3,4,5,6,7]
-        },
-        "subtypes": {
-          "group_by" : "rows",
-          "group_types":{
-            "rows" : [
-              {
-                "type" : "STRING",
-                "description": "Day of the week",
-                "interpolation_name":"current_day",
-                "user_input_autofill" :{
-                  "input_data":[
-                    "MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"
-                  ],
-                  "readonly": true
-                }
+      {
+          "id": 1,
+          "question": "How looks your week of workouts?",
+          "answer_tag": "workout#times",
+          "type_user_input": "MATRIX",
+          "type_details": {
+              "cols": 7,
+              "rows": 4,
+              "wildcard_task_posible_iterations": {
+                  "day_week": [
+                      1,
+                      2,
+                      3,
+                      4,
+                      5,
+                      6,
+                      7
+                  ]
               },
-              {
-                "type" : "STRING",
-                "description": "Put the short name of the workout!",
-                "interpolation_name":"exercise_name",
-                "required": true
-              },
-              {
-                "type" : "STRING",
-                "description": "Put your description of the workout!",
-                "interpolation_name":"exercise_description"
-              },
-              {
-                "type" : "DURATION",
-                "description": "How much time will last this session?",
-                "substitution_name":"session_duration"
+              "subtypes": {
+                  "group_by": "rows",
+                  "group_types": {
+                      "rows": [
+                          {
+                              "type": "STRING",
+                              "description": "Day of the week",
+                              "interpolation_name": "current_day",
+                              "user_input_autofill": {
+                                  "input_data": [
+                                      "MON",
+                                      "TUE",
+                                      "WED",
+                                      "THU",
+                                      "FRI",
+                                      "SAT",
+                                      "SUN"
+                                  ],
+                                  "readonly": true
+                              }
+                          },
+                          {
+                              "type": "STRING",
+                              "description": "Put the short name of the workout!",
+                              "interpolation_name": "exercise_name",
+                              "required": true
+                          },
+                          {
+                              "type": "STRING",
+                              "description": "Put your description of the workout!",
+                              "interpolation_name": "exercise_description"
+                          },
+                          {
+                              "type": "DURATION",
+                              "description": "How much time will last this session?",
+                              "substitution_name": "session_duration"
+                          }
+                      ]
+                  }
               }
-            ]
+          },
+          "mode": [
+              "sequential"
+          ],
+          "answers_branches": {
+              "any": {
+                  "true": 2,
+                  "else": -5,
+                  "taskstory_id": "normal_flow"
+              }
+          },
+          "taskstories": {
+              "normal_flow": [
+                  {
+                      "task_id": "base_task_collect",
+                      "name": "Fill bag and collect towel and {exercise_name} clothes",
+                      "description": "Get all the material needed to perform {exercise_description}, Today: {exercise_name}",
+                      "restrictions": [
+                          "soon"
+                      ],
+                      "frequency": "some-days",
+                      "duration": {
+                          "minutes": 10
+                      },
+                      "wildcard_task": {
+                          "enabled": true,
+                          "this_task_exists_only_if_user_inputs": false
+                      }
+                  },
+                  {
+                      "task_id": "gym_fee",
+                      "name": "Pay the gym subscription",
+                      "description": "Remember once each month you need to pay the fee",
+                      "restrictions": [
+                          "soon"
+                      ],
+                      "frequency": "monthly",
+                      "duration": {
+                          "minutes": 30
+                      }
+                  },
+                  {
+                      "task_id": "travel_to_activity",
+                      "name": "Go to {exercise_name}",
+                      "when": {
+                          "after": "base_task_collect"
+                      },
+                      "description": "Move to you place of workout",
+                      "restrictions": [
+                          "soon"
+                      ],
+                      "frequency": "some-days",
+                      "duration": {
+                          "minutes": 30
+                      },
+                      "wildcard_task": {
+                          "enabled": true,
+                          "this_task_exists_only_if_user_inputs": false
+                      }
+                  },
+                  {
+                      "task_id": "perform_activity",
+                      "name": "Workout Time!",
+                      "comment": "",
+                      "when": {
+                          "after": "travel_to_activity",
+                          "minimum_delay": {
+                              "minutes": 10
+                          }
+                      },
+                      "description": "Start your {exercise_name} session!, Target: {exercise_description}",
+                      "restrictions": [
+                          "soon"
+                      ],
+                      "frequency": "some-days",
+                      "duration": {
+                          "minutes": 32
+                      },
+                      "wildcard_task": {
+                          "enabled": true,
+                          "this_task_exists_only_if_user_inputs": false,
+                          "map_substitution": {
+                              "session_duration": [
+                                  "duration"
+                              ]
+                          }
+                      }
+                  }
+              ]
           }
-        }
       },
-      "mode": [
-        "sequential"
-      ],
-      "answers_branches": {
-        "any": {
-          "true": -1,
-          "else": -5,
-          "taskstory_id": "normal_flow"
-        }
-      },
-      "taskstories": {
-        "normal_flow": [
-          {
-            "task_id": "base_task_collect",
-            "name":"Fill bag and collect towel and {exercise_name} clothes",
-            "description": "Get all the material needed to perform {exercise_description}, Today: {exercise_name}",
-            "restrictions": [
-              "soon"
-            ],
-            "frequency": "some-days",
-            "duration": {
-              "minutes": 10
-            },
-            "wildcard_task": {
-              "enabled": true,
-              "this_task_exists_only_if_user_inputs": false
-            }
-          },
-          {
-            "task_id": "gym_fee",
-            "name":"Pay the gym subscription",
-            "description": "Remember once each month you need to pay the fee",
-            "restrictions": [
-              "soon"
-            ],
-            "frequency": "monthly",
-            "duration": {
-              "minutes": 30
-            }
-          },
-          {
-            "task_id": "travel_to_activity",
-            "name":"Go to {exercise_name}",
-            "when": {
-              "after": "base_task_collect"
-            },
-            "description": "Move to you place of workout",
-            "restrictions": [
-              "soon"
-            ],
-            "frequency": "some-days",
-            "duration": {
-              "minutes": 30
-            },
-            "wildcard_task": {
-              "enabled": true,
-              "this_task_exists_only_if_user_inputs": false
-            }
-          },
-          {
-            "task_id": "perform_activity",
-            "name":"Workout Time!",
-            "comment": "",
-            "when": {
-              "after": "travel_to_activity",
-              "minimum_delay": {
-                "minutes": 10
+      {
+          "id": 2,
+          "question": "Do you want GPS tracking?",
+          "answer_tag": "workout#tracking",
+          "type_user_input": "STRING",
+          "mode": [
+              "sequential"
+          ],
+          "answers_branches": {
+              "any": {
+                  "true": -1,
+                  "else": -5,
+                  "taskstory_id": null
               }
-            },
-            "description": "Start your {exercise_name} session!, Target: {exercise_description}",
-            "restrictions": [
-              "soon"
-            ],
-            "frequency": "some-days",
-            "duration": {
-              "minutes": 32
-            },
-            "wildcard_task": {
-              "enabled": true,
-              "this_task_exists_only_if_user_inputs": false,
-              "map_substitution":{
-                "session_duration": ["duration"]
-              }
-            }
           }
-        ]
       }
-    }
   ]
 }

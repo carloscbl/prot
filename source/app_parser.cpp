@@ -43,8 +43,8 @@ std::unordered_map<std::type_index, function<strategy_return(const json &, any)>
 
 strategy_return app_parser::enroute_json_type(const json &question_obj, const json & answer_input)
 {
-    SPDLOG_ERROR("answer_input {}",answer_input.dump(4));
-    SPDLOG_ERROR("question_obj {}",question_obj.dump(4));
+    // SPDLOG_ERROR("answer_input {}",answer_input.dump(4));
+    // SPDLOG_ERROR("question_obj {}",question_obj.dump(4));
     string expected_answer_type = question_obj["type_user_input"].get<string>();
     if  (expected_answer_type != answer_input["type"].get<string>()){
         return strategy_return{};
