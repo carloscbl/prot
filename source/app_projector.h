@@ -21,6 +21,7 @@ public:
 
     void project(){
         // This will perform a run of cloud_app_runner
+        
         try
         {
             if ( !discovery.is_built()){
@@ -37,10 +38,16 @@ public:
                 SPDLOG_ERROR(" user '{}' app '{}' doesn't contain qaHistory -> history field json", discovery.user_id, discovery.app_id);
                 return;
             }
-
-
             cloud_app_runner car (*discovery.m_user, *discovery.m_app ); // needs a non sessined mode
-            car.programatic_run_injecting_history_answers(*history);
+            size_t fw_projection = discovery.m_user->conf.forward_projection;
+            size_t bw_projection = discovery.m_user->conf.backwards_projection;
+            for (size_t i = 0; i < fw_projection ; i++)
+            {
+                car.programatic_run_injecting_history_answers(*history);
+            }
+            
+
+            
         }
         catch(const std::exception& e)
         {

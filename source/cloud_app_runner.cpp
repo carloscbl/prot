@@ -23,7 +23,6 @@ cloud_app_runner::cloud_app_runner(user & user_, app &app_, uint64_t user_apps_i
 
 }
 
-
 bool cloud_app_runner::store_qa_history_status( json addition) const {
     measure_execution_raii(__FUNCTION__);
     // need to detect an already "done": true, maybe we are reconfiguring
