@@ -7,6 +7,10 @@ Powered by a engine parser of json forms, that provides the set up, pipeline and
 
 # Moonshot
 The dream is this will be able to coordinate human/robot rutines in the future in a standard way.
+Let's say...
+Firetruck is comming, so the whole traffic jam receive coordinated actions based in the firetruck (clean roads) algorithm, so your car get a top priority rutine to move to a given location.
+Let's say...
+You got a child emergency, so you wont be taking all your appointments. Prot will be rescheduling them for you.
 
 ## Quick - Setup
 Use docker and docker compose to compile
