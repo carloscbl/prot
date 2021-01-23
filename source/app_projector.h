@@ -39,15 +39,10 @@ public:
                 return;
             }
             cloud_app_runner car (*discovery.m_user, *discovery.m_app ); // needs a non sessined mode
-            size_t fw_projection = discovery.m_user->conf.forward_projection;
-            size_t bw_projection = discovery.m_user->conf.backwards_projection;
-            for (size_t i = 0; i < fw_projection ; i++)
-            {
-                car.programatic_run_injecting_history_answers(*history);
-            }
-            
-
-            
+            // size_t fw_projections = discovery.m_user->conf.forward_projection;
+            size_t fw_projections = 2;
+            // size_t bw_projection = discovery.m_user->conf.backwards_projection;
+            car.projected_run(*history, fw_projections);
         }
         catch(const std::exception& e)
         {

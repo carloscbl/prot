@@ -138,6 +138,7 @@ void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space:
     }
 }
 
+//Computes for a task, when should be its next cicle
 optional<std::chrono::system_clock::time_point> task_space::next_period_start(const task_t task){
     // get frequency
     auto period  = task->get_designated_period();
@@ -159,6 +160,7 @@ optional<std::chrono::system_clock::time_point> task_space::next_period_start(co
 
 }
 
+// Just computes the period in seconds
 optional<seconds> task_space::get_period_ratio(const task & task){
     // get frequency
     auto period  = task.get_designated_period();

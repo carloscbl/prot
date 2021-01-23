@@ -59,7 +59,7 @@ TEST_CASE( "testprojector", "[projector]" ) {
     auto history = get_history_file();
     // app_projector ap ();
     cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-    car.programatic_run_injecting_history_answers((*history)["history"]);
+    car.projected_run((*history)["history"], 0);
     cout << car.scheduled_tasks->size() << endl;
     REQUIRE(car.scheduled_tasks->size() > 1);
 
@@ -78,7 +78,7 @@ TEST_CASE( "test projector performance", "[projector]" ) {
         auto history = get_history_file();
         // app_projector ap ();
         cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-        car.programatic_run_injecting_history_answers((*history)["history"]);
+        car.projected_run((*history)["history"],0);
         cout << car.scheduled_tasks->size() << endl;
         total_tasks += car.scheduled_tasks->size();
         REQUIRE(car.scheduled_tasks->size() == 4);

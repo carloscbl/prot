@@ -41,21 +41,23 @@ private:
     shared_ptr<app_state> fetch_next_session() const noexcept;
     shared_ptr<app_state> new_session(const string & session_id) const noexcept;
     shared_ptr<app_state> new_session() const noexcept;
-    void apply_wildcards(next_question_data_and_taskstory_input & response);
+    void apply_wildcards(next_question_data_and_taskstory_input & response, size_t fw_projection = 0);
     void register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks);
     task_t create_task_to_schedule(const json & j_task) const;
+    const optional<json> programatic_run_injecting_history_answers(const json &history, size_t fw_projection = 0, const std::vector<ischeduler::task_t> * prev_period_scheduled = nullptr) noexcept;
+    const vector<task_t> * get_prev_period_scheduled(size_t current_pj) const;
 
 public:
     // public only for testing, dont use in production code directly, use run
-    bool schedule_taskstory(next_question_data_and_taskstory_input & response);
-
+    bool schedule_taskstory(next_question_data_and_taskstory_input & response, size_t fw_projection = 0, const std::vector<ischeduler::task_t> * prev_period_scheduled = nullptr);
     optional<vector<task_t>> scheduled_tasks;
+    unique_ptr<vector<vector<task_t>>> projected_scheduled_tasks = nullptr; // using vector because index match current projecting number, as always starts from zero, no midway projections
     uint64_t m_session_id = 0;
     cloud_app_runner(user & user_, app &app_);
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from=nullopt,  task * task_ = nullptr) const;
     const json run(const json &j) noexcept;
-    const optional<json> programatic_run_injecting_history_answers(const json &history) noexcept;
+    void projected_run(const json &history, size_t fw_projections) noexcept;
 };
 
 

@@ -9,8 +9,8 @@
 
 
 
-time_determinator::time_determinator(task_t task_, scheduler &sche_, optional<size_t> designated_period_group) 
-: task_(task_), sche_(sche_),m_designated_period_group(designated_period_group)
+time_determinator::time_determinator(task_t task_, scheduler &sche_, optional<size_t> designated_period_group, size_t fw_projection) 
+: task_(task_), sche_(sche_),m_designated_period_group(designated_period_group),fw_projection(fw_projection)
 {
 }
 
@@ -29,9 +29,7 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
     //     cout << "aa" << endl;
     // }
     time_point end;
-    if(projected_next_period_override_start_offset.has_value()){
-        cout << "aa" <<endl;
-    }
+    auto cadence = this->task_->get_frequency().get_period();
 
     if (is_specific_period().has_value()){
         days new_offset_offset = this->wildcard_data.value().offset_day;
@@ -40,8 +38,8 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
         end = floor<days>(system_clock::now() + local_start_offset) + days(1);
     }else{
         // made optional projection
-        local_start_offset += projected_next_period_override_start_offset.value_or(days(0));
-        end = this->task_->get_frequency().get_period() + projected_next_period_override_start_offset.value_or(days(0)) + system_clock::now();
+        local_start_offset += projected_next_period_override_start_offset.value_or(days(0)); // This may not be days, but the period
+        end = cadence + projected_next_period_override_start_offset.value_or(days(0)) + system_clock::now();
     }
 
     time_point start = floor<days>(system_clock::now() + local_start_offset);
@@ -51,16 +49,13 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
     auto when_ = this->task_->get_when();
     if(!when_.after.empty()){
         pipeline = &time_determinator::when_pipeline;
-        // start += when_.minimum_delay.m_duration;
-        // end += when_.maximum_delay.m_duration;
     }
 
-    //when_
     //For each day Apply restrictions
     im_t interval_map = sche_.clone_interval_map();
     print_time(interval_map);
     
-    cout << "\n"<< "trying " << this->task_->get_task_id() << " into offset of " <<  local_start_offset.count()  <<"\n" << endl;
+    SPDLOG_DEBUG("trying {}  into offset of {}",this->task_->get_task_id(),  local_start_offset.count());
     //We need to traverse days within the first interval, but we need a policy to know
     // TODO: Policy when we pass the max frequiency range
     // TODO: How to move tasks that are not compatible with the current scheduler
@@ -70,7 +65,7 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
     days d = ceil<days>(end - start);
 
     if(d.count() <= 0){
-        cout << __FILE__ << " EXITING EARLY NOT DAYS TO ALLOCATION" << endl;
+        SPDLOG_ERROR("EXITING EARLY NOT DAYS TO ALLOCATION");
         return nullopt;
     }
     build_elapsed_today_restriction(local_start_offset, start, interval_map);
@@ -100,7 +95,7 @@ const optional<size_t> time_determinator::is_specific_period() noexcept{
             time_determinator::wildcard_time_determinator_data data_period{
                 .period_ratio_name = k,
                 .designated_period = designated_period.value(),
-                .unit_ratio_in_seconds = mappings.get_ratio_seconds(1),
+                .unit_ratio_in_seconds = mappings.get_ratio_seconds( 1 + this->fw_projection),
                 .period_current_index = today_index,
                 .offset_day = mappings.get_offset_day(days(today_index), designated_period.value()),
             };

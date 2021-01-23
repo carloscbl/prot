@@ -51,12 +51,29 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
     return is_updated;
 }
 
-const optional<json> cloud_app_runner::programatic_run_injecting_history_answers(const json &history) noexcept
+// In the future maybe we should separate different cloud runners, interactive and projected, with common deps
+void cloud_app_runner::projected_run(const json &history, size_t fw_projections) noexcept
+{
+    this->projected_scheduled_tasks = make_unique<vector<vector<task_t>>>();
+    for (size_t fw_pj = 0; fw_pj < fw_projections; fw_pj++)
+    {
+        auto prev_period_scheduled = get_prev_period_scheduled(fw_pj);
+        this->programatic_run_injecting_history_answers(history, fw_pj, prev_period_scheduled);
+        //TODO inject get_next_period_by_prev_task and get_prev_period_scheduled into
+        if(!this->scheduled_tasks.has_value()){
+            continue;
+        }
+        this->projected_scheduled_tasks->push_back(*this->scheduled_tasks);
+        this->scheduled_tasks->clear();
+    }
+}
+
+const optional<json> cloud_app_runner::programatic_run_injecting_history_answers(const json &history, size_t fw_projection, const std::vector<ischeduler::task_t> * prev_period_scheduled) noexcept
 {
     measure_execution_raii(__FUNCTION__);
     unique_ptr<app_state> state = make_unique<app_state>();
     app_parser ap(app_.get_json(), *state); 
-
+    
     for (auto && qa_obj : history)
     {
         measure_execution_raii(__FUNCTION__);
@@ -83,7 +100,7 @@ const optional<json> cloud_app_runner::programatic_run_injecting_history_answers
             SPDLOG_ERROR("Failed taskstory expansion {} ", e.what());
         }
         
-        schedule_taskstory(*response);
+        schedule_taskstory(*response, fw_projection, prev_period_scheduled);
         continue;
     }
     return json();
@@ -184,6 +201,44 @@ struct failure_report_t{
     task_t no_margin_invalidation;
 };
 
+// Would be fantastic the static dependency injection here
+optional<days> get_next_period_by_prev_task(string task_id, const vector<task_t> * prev_period_scheduled)
+{
+    if(!prev_period_scheduled){
+        return nullopt;
+    }
+
+    auto first_it = std::find_if(prev_period_scheduled->cbegin(),prev_period_scheduled->cend(), [task_id](task_t t) -> bool{
+        return t->get_task_id() == task_id ? true : false;
+    });
+    if(first_it == prev_period_scheduled->cend()){
+        return nullopt;
+    }
+    task_t prev_tsk = (*first_it);
+    auto next_start = task_space::next_period_start(prev_tsk);
+
+    auto future = std::chrono::floor<days>(next_start.value());
+    auto now = std::chrono::floor<days>(std::chrono::system_clock::now());
+
+    days next_period = std::chrono::floor<days>(future - now);
+    return next_period;
+}
+
+const vector<task_t> * cloud_app_runner::get_prev_period_scheduled(size_t current_fw_pj) const
+{
+    if( current_fw_pj == 0 ){
+        throw runtime_error("The current projection needs to be >= 1 cannot be used in the first iteration");
+    }
+
+    const size_t prev_pj = current_fw_pj - 1 ;
+    if(!this->projected_scheduled_tasks || this->projected_scheduled_tasks->size() < prev_pj){
+        return nullptr;
+    }
+    const auto & prev_period_scheduled = (*projected_scheduled_tasks)[prev_pj];
+    return &prev_period_scheduled;
+}
+
+// DEPRECATE
 optional<days> deduce_next_period(const json & j_task, task * task_, optional<std::chrono::time_point<system_clock>> start_from){
     task * tk = task_;
     if( !tk){
@@ -195,7 +250,7 @@ optional<days> deduce_next_period(const json & j_task, task * task_, optional<st
     SPDLOG_DEBUG("days since epoch (future) {}", duration_cast<days>(seconds(future.time_since_epoch())).count());
     SPDLOG_DEBUG("days since epoch (now) {}" ,duration_cast<days>(seconds(now.time_since_epoch())).count());
     
-    if (now > future){
+    if (now > future){// Recomputing the next period if already expired
         SPDLOG_DEBUG("Trying to deduce next period...");
         auto ratio_opt = task_space::get_period_ratio(*tk);
         if(!ratio_opt.has_value()){ return nullopt; }
@@ -213,6 +268,7 @@ optional<days> deduce_next_period(const json & j_task, task * task_, optional<st
     return next_period;
 }
 
+// DEPRECATE
 bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from, task * task_) const{
     SPDLOG_DEBUG("## schedule_single_task ##");
     transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
@@ -266,10 +322,11 @@ void cloud_app_runner::register_runner_scheduled_tasks (std::shared_ptr<std::map
     }
 }
 
-bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input & response){
+bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input & response, size_t fw_projection, const std::vector<ischeduler::task_t> * prev_period_scheduled ){
 
     failure_report_t report;
-    for (size_t day = 0; day < 365; day++)
+    const size_t max_it_retry_days = 365;// Max over a year... if not fail ## In the future with octo/quadtree or other strategies we can avoid much better iterations to just a few
+    for (size_t retry_day_offset = 0; retry_day_offset < max_it_retry_days; retry_day_offset++)
     {
         transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
         tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
@@ -280,9 +337,13 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
         for (const auto &v : *response.non_wildcard_expanded_taskstory)
         {
             task_t task_test = create_task_to_schedule(v);
-            time_determinator time_dt(task_test, provisional_scheduler);
+            optional<days> projected_next_period_override_start_offset;
+            if(fw_projection){
+                projected_next_period_override_start_offset = get_next_period_by_prev_task( task_test->get_task_id(), prev_period_scheduled);
+            }
+            time_determinator time_dt(task_test, provisional_scheduler, std::nullopt, fw_projection);
             //cout << "checking task: " << task_test->get_task_id() << " day:" << day << endl;
-            optional<bool> result = time_dt.build(days(day));
+            optional<bool> result = time_dt.build(days(retry_day_offset), projected_next_period_override_start_offset);
             if(result.has_value() ){
                 if(result.value()){
                     //task_test->save();
@@ -310,7 +371,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
     return true;
 }
 
-void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & response){
+void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & response, size_t fw_projection){
 
     failure_report_t report;
     for (const auto &[k,v] : *response.wildcard_expanded_taskstory)
@@ -322,7 +383,7 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
         for (const auto & wildcard_task : v){
             task_t task_test = create_task_to_schedule(wildcard_task.get<task>());
             string task_id = task_test->get_task_id();
-            time_determinator time_dt(task_test, provisional_scheduler, k);
+            time_determinator time_dt(task_test, provisional_scheduler, k, fw_projection);
             //cout << "checking task: " << task_test->get_task_id() << " day:" << day << endl;
             optional<bool> result = time_dt.build(days(0));
             if(result.has_value() ){
