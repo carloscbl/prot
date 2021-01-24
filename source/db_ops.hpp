@@ -107,7 +107,7 @@ inline map<uint64_t,string> read_apps_by_developer(const string & developer){
     orm_prot::Users usr;
 
     map<uint64_t,string> dev_apps;
-    for( const auto &result : db( sqlpp::select(all_of(app_)).from(app_.join(usr).on(app_.developer == usr.id)).where(usr.username == developer ) )){
+    for( const auto &result : db( sqlpp::select(all_of(app_)).from(app_.join(usr).on(app_.developer == usr.id)).where(usr.id == developer ) )){
         dev_apps[result.id] = result.name;
     }
     return dev_apps;
