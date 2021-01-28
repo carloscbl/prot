@@ -169,18 +169,18 @@ paths:
           content:
             application/json:
               schema:
-                type: array
-                description: Returns all the app_id created by this developer
-                items:
-                  type: object
-                  properties:
-                    app_id:
-                      type: string
-                    app_name:
-                      type: string
-                  required:
-                    - app_id
-                    - app_name
+                type: object
+                description: 'Returns all the developer, apps_names submited'
+                properties:
+                  items:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        app_id:
+                          type: string
+                        app_name:
+                          type: string
       description: ''
     post:
       summary: ''
@@ -231,6 +231,28 @@ paths:
               schema:
                 type: object
                 properties: {}
+    put:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app_obj:
+                  type: object
+      description: ''
+    delete:
+      summary: ''
+      responses:
+        '200':
+          description: OK
+        '400':
+          description: Bad Request
+      description: ''
   '/user/{userId}/apps':
     parameters:
       - schema:

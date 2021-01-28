@@ -19,7 +19,6 @@
 #define Inline_object_H_
 
 
-#include <string>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -44,21 +43,25 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getUsername() const;
-    void setUsername(std::string const& value);
+    int32_t getForwardProjection() const;
+    void setForwardProjection(int32_t const value);
+    bool forwardProjectionIsSet() const;
+    void unsetForward_projection();
     /// <summary>
     /// 
     /// </summary>
-    std::string getUserId() const;
-    void setUserId(std::string const& value);
+    int32_t getBackwardsProjection() const;
+    void setBackwardsProjection(int32_t const value);
+    bool backwardsProjectionIsSet() const;
+    void unsetBackwards_projection();
 
     friend void to_json(nlohmann::json& j, const Inline_object& o);
     friend void from_json(const nlohmann::json& j, Inline_object& o);
 protected:
-    std::string m_Username;
-
-    std::string m_User_id;
-
+    int32_t m_Forward_projection;
+    bool m_Forward_projectionIsSet;
+    int32_t m_Backwards_projection;
+    bool m_Backwards_projectionIsSet;
 };
 
 }
