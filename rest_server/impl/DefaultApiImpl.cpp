@@ -118,12 +118,14 @@ void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWrit
 void DefaultApiImpl::user_developer_app_get(const std::string &developer, Pistache::Http::ResponseWriter &response) {
     //Need to create a new call that joins apps, by a given developer
     auto mp = read_apps_by_developer(geturl_decode(developer));
-    vector<string> app_names;
+    json jresponse = json::array();
 
-    for_each(mp.begin(), mp.end(), [&app_names](const pair<uint64_t,string>& c){
-        app_names.push_back(c.second);
+    for_each(mp.begin(), mp.end(), [&jresponse](const pair<uint64_t,string>& c){
+        jresponse.push_back({
+            {"app_id",std::to_string(c.first)},
+            {"app_name",c.second}
+        });
     });
-    json jresponse = app_names;
     response.send( Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
 void DefaultApiImpl::user_developer_app_app_id_get(const std::string &developer, const int32_t &appId, Pistache::Http::ResponseWriter &response) {
