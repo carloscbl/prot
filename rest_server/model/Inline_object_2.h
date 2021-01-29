@@ -19,6 +19,7 @@
 #define Inline_object_2_H_
 
 
+#include <string>
 #include "Object.h"
 #include <nlohmann/json.hpp>
 
@@ -44,16 +45,21 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    Object getAppObj() const;
-    void setAppObj(Object const& value);
-    bool appObjIsSet() const;
-    void unsetApp_obj();
+    std::string getTypeOfTask() const;
+    void setTypeOfTask(std::string const& value);
+    /// <summary>
+    /// auto or user... oneOf
+    /// </summary>
+    nlohmann::json getTask() const;
+    void setTask(nlohmann::json const& value);
 
     friend void to_json(nlohmann::json& j, const Inline_object_2& o);
     friend void from_json(const nlohmann::json& j, Inline_object_2& o);
 protected:
-    nlohmann::json m_App_obj;
-    bool m_App_objIsSet;
+    std::string m_Type_of_task;
+
+    nlohmann::json m_Task;
+
 };
 
 }

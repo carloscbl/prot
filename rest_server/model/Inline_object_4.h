@@ -10,13 +10,13 @@
 * Do not edit the class manually.
 */
 /*
- * Inline_object_3.h
+ * Inline_object_4.h
  *
  * 
  */
 
-#ifndef Inline_object_3_H_
-#define Inline_object_3_H_
+#ifndef Inline_object_4_H_
+#define Inline_object_4_H_
 
 
 #include "Object.h"
@@ -30,16 +30,16 @@ namespace model {
 /// <summary>
 /// 
 /// </summary>
-class  Inline_object_3
+class  Inline_object_4
 {
 public:
-    Inline_object_3();
-    virtual ~Inline_object_3();
+    Inline_object_4();
+    virtual ~Inline_object_4();
 
     void validate();
 
     /////////////////////////////////////////////
-    /// Inline_object_3 members
+    /// Inline_object_4 members
 
     /// <summary>
     /// 
@@ -49,8 +49,8 @@ public:
     bool appObjIsSet() const;
     void unsetApp_obj();
 
-    friend void to_json(nlohmann::json& j, const Inline_object_3& o);
-    friend void from_json(const nlohmann::json& j, Inline_object_3& o);
+    friend void to_json(nlohmann::json& j, const Inline_object_4& o);
+    friend void from_json(const nlohmann::json& j, Inline_object_4& o);
 protected:
     nlohmann::json m_App_obj;
     bool m_App_objIsSet;
@@ -61,4 +61,4 @@ protected:
 }
 }
 
-#endif /* Inline_object_3_H_ */
+#endif /* Inline_object_4_H_ */

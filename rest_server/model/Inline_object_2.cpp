@@ -20,7 +20,7 @@ namespace model {
 
 Inline_object_2::Inline_object_2()
 {
-    m_App_objIsSet = false;
+    m_Type_of_task = "";
     
 }
 
@@ -36,35 +36,31 @@ void Inline_object_2::validate()
 void to_json(nlohmann::json& j, const Inline_object_2& o)
 {
     j = nlohmann::json();
-    if(o.appObjIsSet())
-        j["app_obj"] = o.m_App_obj;
+    j["type_of_task"] = o.m_Type_of_task;
+    j["task"] = o.m_Task;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_2& o)
 {
-    if(j.find("app_obj") != j.end())
-    {
-        j.at("app_obj").get_to(o.m_App_obj);
-        o.m_App_objIsSet = true;
-    } 
+    j.at("type_of_task").get_to(o.m_Type_of_task);
+    j.at("task").get_to(o.m_Task);
 }
 
-Object Inline_object_2::getAppObj() const
+std::string Inline_object_2::getTypeOfTask() const
 {
-    return m_App_obj;
+    return m_Type_of_task;
 }
-void Inline_object_2::setAppObj(Object const& value)
+void Inline_object_2::setTypeOfTask(std::string const& value)
 {
-    m_App_obj = value;
-    m_App_objIsSet = true;
+    m_Type_of_task = value;
 }
-bool Inline_object_2::appObjIsSet() const
+nlohmann::json Inline_object_2::getTask() const
 {
-    return m_App_objIsSet;
+    return m_Task;
 }
-void Inline_object_2::unsetApp_obj()
+void Inline_object_2::setTask(nlohmann::json const& value)
 {
-    m_App_objIsSet = false;
+    m_Task = value;
 }
 
 }

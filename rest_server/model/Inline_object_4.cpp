@@ -11,36 +11,36 @@
 */
 
 
-#include "Inline_object_3.h"
+#include "Inline_object_4.h"
 
 namespace org {
 namespace openapitools {
 namespace server {
 namespace model {
 
-Inline_object_3::Inline_object_3()
+Inline_object_4::Inline_object_4()
 {
     m_App_objIsSet = false;
     
 }
 
-Inline_object_3::~Inline_object_3()
+Inline_object_4::~Inline_object_4()
 {
 }
 
-void Inline_object_3::validate()
+void Inline_object_4::validate()
 {
     // TODO: implement validation
 }
 
-void to_json(nlohmann::json& j, const Inline_object_3& o)
+void to_json(nlohmann::json& j, const Inline_object_4& o)
 {
     j = nlohmann::json();
     if(o.appObjIsSet())
         j["app_obj"] = o.m_App_obj;
 }
 
-void from_json(const nlohmann::json& j, Inline_object_3& o)
+void from_json(const nlohmann::json& j, Inline_object_4& o)
 {
     if(j.find("app_obj") != j.end())
     {
@@ -49,20 +49,20 @@ void from_json(const nlohmann::json& j, Inline_object_3& o)
     } 
 }
 
-nlohmann::json Inline_object_3::getAppObj() const
+nlohmann::json Inline_object_4::getAppObj() const
 {
     return m_App_obj;
 }
-void Inline_object_3::setAppObj(nlohmann::json const& value)
+void Inline_object_4::setAppObj(nlohmann::json const& value)
 {
     m_App_obj = value;
     m_App_objIsSet = true;
 }
-bool Inline_object_3::appObjIsSet() const
+bool Inline_object_4::appObjIsSet() const
 {
     return m_App_objIsSet;
 }
-void Inline_object_3::unsetApp_obj()
+void Inline_object_4::unsetApp_obj()
 {
     m_App_objIsSet = false;
 }

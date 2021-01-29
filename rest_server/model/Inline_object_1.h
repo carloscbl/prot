@@ -20,7 +20,6 @@
 
 
 #include <string>
-#include "Object.h"
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -45,20 +44,20 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getTypeOfTask() const;
-    void setTypeOfTask(std::string const& value);
+    std::string getUsername() const;
+    void setUsername(std::string const& value);
     /// <summary>
-    /// auto or user... oneOf
+    /// 
     /// </summary>
-    Object getTask() const;
-    void setTask(Object const& value);
+    std::string getUserId() const;
+    void setUserId(std::string const& value);
 
     friend void to_json(nlohmann::json& j, const Inline_object_1& o);
     friend void from_json(const nlohmann::json& j, Inline_object_1& o);
 protected:
-    std::string m_Type_of_task;
+    std::string m_Username;
 
-    nlohmann::json m_Task;
+    std::string m_User_id;
 
 };
 

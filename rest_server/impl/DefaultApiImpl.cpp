@@ -234,12 +234,12 @@ void DefaultApiImpl::user_user_id_questionary_app_id_get(const int32_t &appId, c
     cloud_app_runner fr(*usr, *app_);
     json qa_request1;
     auto & qa_res = fr.run(qa_request1);
-    Inline_response_200_1 response_200_1;
-    response_200_1.setCurrentQuestion(qa_res["next_question"].get<string>());
-    response_200_1.setDataType(qa_res["data_type"].get<string>());
-    response_200_1.setTypeDetails(qa_res["type_details"]);
+    Inline_response_200_2 response_200_2;
+    response_200_2.setCurrentQuestion(qa_res["next_question"].get<string>());
+    response_200_2.setDataType(qa_res["data_type"].get<string>());
+    response_200_2.setTypeDetails(qa_res["type_details"]);
 
-    response.send(Pistache::Http::Code::Ok, json(response_200_1).dump(4));
+    response.send(Pistache::Http::Code::Ok, json(response_200_2).dump(4));
 }
 
 void DefaultApiImpl::user_user_id_tasks_get(const std::string &userId, Pistache::Http::ResponseWriter &response) {
@@ -370,7 +370,7 @@ void DefaultApiImpl::user_user_id_tasks_post(const std::string &userId, const In
     //create_task()
 }
 
-void DefaultApiImpl::user_post(const Inline_object1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::user_post(const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
     auto usr = create_user(inlineObject1.getUserId(),inlineObject1.getUsername());
     if(!usr){
         response.send(Pistache::Http::Code::Bad_Request, "Already exists");
@@ -397,9 +397,20 @@ void DefaultApiImpl::user_user_id_patch(const std::string &userId, const Inline_
 
 void DefaultApiImpl::user_developer_app_app_id_delete(const std::string &developer, const int32_t &appId, Pistache::Http::ResponseWriter &response){
 
+    if(db_op::delete_app(appId,developer)){
+        response.send(Pistache::Http::Code::Ok);
+        return;
+    }
+    response.send(Pistache::Http::Code::Not_Found);
 }
 
 void DefaultApiImpl::user_developer_app_app_id_put(const std::string &developer, const int32_t &appId, const Inline_object_4 &inlineObject4, Pistache::Http::ResponseWriter &response){
+    auto res = db_op::update_app(inlineObject4.getAppObj(), developer, appId);
+    if(res){
+        response.send(Pistache::Http::Code::Ok);
+        return;
+    }
+    response.send(Pistache::Http::Code::Not_Found);
 
 }
 
