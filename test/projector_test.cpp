@@ -59,10 +59,12 @@ TEST_CASE( "testprojector", "[projector]" ) {
     auto history = get_history_file();
     // app_projector ap ();
     cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-    car.projected_run((*history)["history"], 0);
-    cout << car.scheduled_tasks->size() << endl;
-    REQUIRE(car.scheduled_tasks->size() > 1);
-
+    car.projected_run((*history)["history"], 2);
+    for (auto &&i : *car.projected_scheduled_tasks)
+    {
+        REQUIRE(i.size() == 4);
+    }
+    REQUIRE(car.projected_scheduled_tasks->size() == 3);
 }
 
 
@@ -71,21 +73,24 @@ TEST_CASE( "test projector performance", "[projector]" ) {
     uint64_t total_tasks = 0;
     app_t app_ = get_app();
     user_t usr_ = get_user("pepephone");
-    for (size_t i = 0; i < 200; i++)
-    {
-        measure_execution_raii r("sub");
+    measure_execution_raii r("sub");
 
-        auto history = get_history_file();
-        // app_projector ap ();
-        cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-        car.projected_run((*history)["history"],0);
-        cout << car.scheduled_tasks->size() << endl;
-        total_tasks += car.scheduled_tasks->size();
-        REQUIRE(car.scheduled_tasks->size() == 4);
-        usr_->clear();
+    auto history = get_history_file();
+    // app_projector ap ();
+    cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
+    car.projected_run((*history)["history"],200);
+    // total_tasks += car.scheduled_tasks->size();
+    for (auto &&i : *car.projected_scheduled_tasks)
+    {
+        total_tasks += i.size();
+        REQUIRE(i.size() == 4);
     }
+    REQUIRE(car.projected_scheduled_tasks->size() == 201);
+    
     auto stop  =exe.stop();
-    SPDLOG_INFO("{} tasks per second ", total_tasks/chrono::duration_cast<std::chrono::seconds>(stop).count());
+    auto per_second = total_tasks/chrono::duration_cast<std::chrono::seconds>(stop).count();
+    SPDLOG_INFO("{} tasks per second ", per_second);
+    REQUIRE(per_second > 85);
     // 85 tasks per second
 
 }

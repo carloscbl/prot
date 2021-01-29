@@ -53,7 +53,7 @@ optional<bool> time_determinator::build(days local_start_offset, optional<days> 
 
     //For each day Apply restrictions
     im_t interval_map = sche_.clone_interval_map();
-    print_time(interval_map);
+    // print_time(interval_map);
     
     SPDLOG_DEBUG("trying {}  into offset of {}",this->task_->get_task_id(),  local_start_offset.count());
     //We need to traverse days within the first interval, but we need a policy to know
@@ -95,7 +95,7 @@ const optional<size_t> time_determinator::is_specific_period() noexcept{
             time_determinator::wildcard_time_determinator_data data_period{
                 .period_ratio_name = k,
                 .designated_period = designated_period.value(),
-                .unit_ratio_in_seconds = mappings.get_ratio_seconds( 1 + this->fw_projection),
+                .unit_ratio_in_seconds = mappings.get_ratio_seconds( 1 ),
                 .period_current_index = today_index,
                 .offset_day = mappings.get_offset_day(days(today_index), designated_period.value()),
             };
@@ -140,11 +140,10 @@ bool time_determinator::build_daily_restrictions(
         for_each(normalized_intervals.begin(), normalized_intervals.end(), [&]( time_point_interval & normalized_interval ){
 
             task_t dummy_task = std::make_shared<task>();
-            dummy_task->set_description( "dummy_day_" + to_string(iteration_day) 
-                + "_" 
-                + _24_restriction_interval.restriction_name
-                + "_" 
-                + normalized_interval.meta_day);
+            dummy_task->set_description( fmt::format("dummy_day_{}_{}_{}",
+                iteration_day, // TODO remove this or simplify
+                _24_restriction_interval.restriction_name,
+                normalized_interval.meta_day));
             time_point start = normalized_interval.from ;
             time_t start_ = system_clock::to_time_t(start);
 
@@ -177,8 +176,12 @@ bool time_determinator::when_pipeline( const im_t & interval_map, time_point cur
     auto findparams = prot::scheduler::find_params{
         .search_func = prot::scheduler::find_functions::first_tasks_optional_designated,
         .task_id = when_.after,
-        .designated_period = this->m_designated_period_group
+        .designated_period = this->m_designated_period_group,
+        .fw_projection = this->fw_projection,
     };
+    if(this->fw_projection > 0){
+        findparams.search_func = prot::scheduler::find_functions::first_tasks_optional_designated_matching_projection;
+    }
     auto prev_task_ = sche_.get_task_by(findparams);
     if (!prev_task_)
     {

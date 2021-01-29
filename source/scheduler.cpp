@@ -15,9 +15,23 @@ void print_time(const im_t &  interval_map)
     for ( const auto & [k,v] : interval_map){
         auto day = v->get_json().find("day_week");
         if( day != v->get_json().end()){
-            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " iter_day: " << day.value() << " " << v->get_task_id() << endl;
+            cout << put_time_(k.lower()) 
+            << " - " 
+            << put_time_(k.upper())  
+            << " : Task " << v->get_id() 
+            << ", day_week: " << day.value() 
+            << ", " << v->get_task_id() 
+            << ", fw_p: " << v->get_json()["fw_projection"] 
+            << endl;
         }else{
-            cout << put_time_(k.lower()) << " - " << put_time_(k.upper())  << " : Task " << v->get_id() << " " << v->get_task_id() << endl;
+            cout << put_time_(k.lower()) 
+            << " - " 
+            << put_time_(k.upper()) 
+            << " : Task " 
+            << v->get_id() 
+            << " " 
+            << v->get_task_id() 
+            << endl;
             
         }
     }

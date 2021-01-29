@@ -31,6 +31,7 @@ struct find_params{
 
     const string & task_id;
     optional<unsigned int> designated_period;
+    const size_t fw_projection = 0;
 };
 
 };

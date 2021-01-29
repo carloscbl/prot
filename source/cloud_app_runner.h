@@ -41,9 +41,9 @@ private:
     shared_ptr<app_state> fetch_next_session() const noexcept;
     shared_ptr<app_state> new_session(const string & session_id) const noexcept;
     shared_ptr<app_state> new_session() const noexcept;
-    void apply_wildcards(next_question_data_and_taskstory_input & response, size_t fw_projection = 0);
+    void apply_wildcards(next_question_data_and_taskstory_input & response, size_t fw_projection = 0, const std::vector<ischeduler::task_t> * prev_period_scheduled = nullptr);
     void register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks);
-    task_t create_task_to_schedule(const json & j_task) const;
+    task_t create_task_to_schedule(const json & j_task, size_t fw_projection = 0) const;
     const optional<json> programatic_run_injecting_history_answers(const json &history, size_t fw_projection = 0, const std::vector<ischeduler::task_t> * prev_period_scheduled = nullptr) noexcept;
     const vector<task_t> * get_prev_period_scheduled(size_t current_pj) const;
 

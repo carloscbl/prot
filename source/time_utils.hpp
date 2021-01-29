@@ -130,6 +130,7 @@ inline days get_offset_day(days today_index, unsigned int designated_period_days
     }
 }
 
+typedef std::chrono::duration<double> fsec;
 class measure_execution_raii{
     const std::chrono::high_resolution_clock::time_point start = std::chrono::high_resolution_clock::now();
     const string name_of_measure;
@@ -137,8 +138,8 @@ public:
     measure_execution_raii(string name_of_measure):name_of_measure(name_of_measure){}
     ~measure_execution_raii(){
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>( end - start ).count();
-        SPDLOG_INFO("Measuring execution of {} : '{}'ns", name_of_measure, duration);
+        fsec duration = std::chrono::duration_cast<std::chrono::nanoseconds>( end - start );
+        SPDLOG_INFO("Measuring execution of {} : {:.8f}s", name_of_measure, duration.count());
         // fmt::print("Measuring execution of {0} : {1}\n", name_of_measure, duration);
     }
 };
@@ -148,10 +149,10 @@ class measure_execution{
     const string name_of_measure;
 public:
     measure_execution(string name_of_measure):name_of_measure(name_of_measure){}
-    inline std::chrono::nanoseconds stop(){
+    inline fsec stop(){
         auto end = std::chrono::high_resolution_clock::now();
-        auto duration = std::chrono::duration_cast<std::chrono::nanoseconds>( end - start );
-        SPDLOG_INFO("Measuring execution of {} : '{}'ns", name_of_measure, duration.count());
+        fsec duration = std::chrono::duration_cast<std::chrono::nanoseconds>( end - start );
+        SPDLOG_INFO("Measuring execution of {} : {:.8f}s", name_of_measure, duration.count());
         return duration;
     }
 };
