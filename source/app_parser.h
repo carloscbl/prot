@@ -167,7 +167,7 @@ private:
     void app_ready(){}
 
     void user_import_preferences(){
-        variables["user.user"] = "carlos";
+        variables["system"] = "prot.ai";
     }
 
 public:
