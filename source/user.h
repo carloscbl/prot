@@ -27,7 +27,7 @@ class user
 private:
     shared_ptr<tasker> tasker_;
     unique_ptr<scheduler> scheduler_;
-    string id;
+    string id= "NONE";
     struct user_conf{
         int backwards_projection = 1;
         int forward_projection = 1;

@@ -123,7 +123,6 @@ optional<vector<task_t>> scheduler::get_range(time_t start, time_t end){
 //No check, we assume checked
 bool scheduler::add_single(const task_t && task_)
 {
-    mod = true;
     const auto &interval_ = task_->get_interval();
     if(find_range(interval_.start, interval_.end)){
         this->m_interval_map.set(make_pair(time_interval::closed(interval_.start, interval_.end), task_));

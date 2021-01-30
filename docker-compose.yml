@@ -35,6 +35,7 @@ services:
       PROT_DB_PASSW: ${DB_PWD}
       PROT_DB_HOST: db
       PROT_DB_PORT: 3306
+      PROT_DB_DEBUG: "true"
     ports:
       - 3000:3000
     expose:

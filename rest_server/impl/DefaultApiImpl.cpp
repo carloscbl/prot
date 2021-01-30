@@ -309,7 +309,7 @@ void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, 
     response.send(Pistache::Http::Code::Ok, response_json.dump(4));
 }
 
-void DefaultApiImpl::user_user_id_task_task_id_delete(const int32_t &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response){
+void DefaultApiImpl::user_user_id_task_task_id_delete(const std::string &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response){
     if(delete_task(userId, taskId )){
         response.send(Pistache::Http::Code::Ok, "Done" );
     }
@@ -318,7 +318,7 @@ void DefaultApiImpl::user_user_id_task_task_id_delete(const int32_t &taskId, con
     }
 }
 
-void DefaultApiImpl::user_user_id_task_task_id_get(const int32_t &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response){
+void DefaultApiImpl::user_user_id_task_task_id_get(const std::string &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response){
     auto result = read_task_secure(userId, taskId);
     if(!result){
         response.send(Pistache::Http::Code::Not_Found, "Not found!" );

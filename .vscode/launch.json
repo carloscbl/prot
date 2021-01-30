@@ -64,11 +64,12 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/test_prot",
             //"args": ["test","sequence", "-p", "../sequences/request"],
-            //"args": ["user","sch", "-s", "90", "-e" , "99"],
+            "args": ["[projector]"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [
-                {"name":"PROT_DB_PASSW", "value":"Prot#654321"}
+                {"name":"PROT_DB_PASSW", "value":"Prot#654321"},
+                {"name":"PROT_DB_DEBUG", "value":"true"}
             ],
             "externalConsole": false,
             "MIMode": "gdb",

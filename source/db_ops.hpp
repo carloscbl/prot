@@ -139,6 +139,25 @@ inline optional<pair<unique_ptr<app>,json>> read_app_by_id(const int32_t &id)
     return make_pair(move(protapp),js);
 }
 
+inline unique_ptr<app> read_app_by_unique_name(const string &app_name)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    orm_prot::Apps app_;
+    const auto &result = db(sqlpp::select(all_of(app_)).from(app_).where(app_.name == app_name).limit(1U));
+    if (result.empty())
+    {
+        return nullptr;
+    }
+
+    const auto &row = result.front();
+    unique_ptr<app> protapp = make_unique<app>(json::parse(row.json.text)); //We create it implictly or refresh it
+    protapp->set_id(result.front().id);
+
+    return protapp;
+}
+
+
 inline map<uint64_t,json> read_app_meta()
 {
     auto &db = mysql_db::get_db_lazy().db;
@@ -185,16 +204,6 @@ inline void read_db_json()
         }
 
     }
-//     orm_prot::Users usr;
-
-//     auto statement = select(select(sqlpp::verbatim(R"--(json->>"$.username")--").as(sqlpp::alias::a)))
-//    .from(usr)
-//    .unconditionally();
-
-//     for (const auto &row : db(statement))
-//     {
-//         std::cout << "ID: " << row.a << std::endl;
-//     }
 }
 
 //This class is intended to advance needs until they are correctly categorized
@@ -345,13 +354,12 @@ inline map<uint64_t,app_installation> read_instalations(const string &userId, op
     return appsresult;
 }
 
-inline uint64_t create_task(task &task_){
+inline bool _create_task_obj(task &task_){
 
     auto &db = mysql_db::get_db_lazy().db;
 
     orm_prot::Tasks tks;
 
-    //["external_id"].get<string>()
     auto jtask = task_.get_json();
     string external_id;
     string prot_id;
@@ -362,6 +370,7 @@ inline uint64_t create_task(task &task_){
         prot_id = jtask["prot_id"].get<string>();
     }
     const auto &tsk_res = db(insert_into(tks).set(
+        tks.id = task_.get_id(),
         tks.name = task_.get_name(),
         tks.json = json(task_).dump(),
         tks.group = task_.get_task_group(),
@@ -376,29 +385,31 @@ inline uint64_t create_task(task &task_){
     {
         // Not insertion
         mysql_db::current_db.reset();
-        return 0;
+        return false;
     }
-    task_.set_id(tsk_res);
-    return tsk_res;
+    return true;
 }
 
 
 //Users to asociate a task and boolean true to be scheduled not only added to tasker
-inline bool create_task(const set<pair<string, bool>> &usernames_bindings_optional_scheduler, task &task_)
+inline bool create_task(const set<pair<string, bool>> &user_id_bindings_optional_scheduler, task &task_)
 {
     auto &db = mysql_db::get_db_lazy().db;
 
-    auto tsk_res = create_task(task_);
-    if(tsk_res == 0) return false;
+    auto tsk_res = _create_task_obj(task_);
+    if(!tsk_res ){
+        SPDLOG_ERROR("Unable to create task in db _create_task_obj: {}", task_.inner_json.dump(4));
+        return false;
+    } 
 
-    for_each(usernames_bindings_optional_scheduler.begin(), usernames_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
+    for_each(user_id_bindings_optional_scheduler.begin(), user_id_bindings_optional_scheduler.end(), [&](const pair<string, bool> &binding) {
         orm_prot::Taskers tasker_;
         orm_prot::Schedulers sche;
         orm_prot::Users usr;
 
         const auto result = db(sqlpp::select(all_of(usr), tasker_.idtasker, sche.id.as(alias::a))
                                    .from(usr.join(tasker_).on(tasker_.user == usr.id).join(sche).on(sche.user == usr.id))
-                                   .where(usr.username == binding.first)
+                                   .where(usr.id == binding.first)
                                    .limit(1U));
         if (result.empty())
         {
@@ -412,14 +423,14 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
         //Inserted so we need the binding
         //const auto &res_task_tasker =
          db(insert_into(tksTkrs).set(
-            tksTkrs.idtask = tsk_res,
+            tksTkrs.idtask = task_.get_id(),
             tksTkrs.idtasker = tasker_id));
         if (binding.second)
         {
             orm_prot::TasksSchedulers tskSche;
             //const auto &res_task_tasker =
              db(insert_into(tskSche).set(
-                tskSche.idtask = tsk_res,
+                tskSche.idtask = task_.get_id(),
                 tskSche.idscheduler = sche_id));
         }
     });
@@ -427,7 +438,7 @@ inline bool create_task(const set<pair<string, bool>> &usernames_bindings_option
     return true;
 }
 
-inline unique_ptr<task> read_task_secure (const string &userId, const uint64_t task_id)
+inline unique_ptr<task> read_task_secure (const string &userId, const string task_id)
 {
 
     auto &db = mysql_db::get_db_lazy().db;
@@ -446,11 +457,10 @@ inline unique_ptr<task> read_task_secure (const string &userId, const uint64_t t
     json js  = json::parse(row.json.value()); //bad parsing
     auto tk = make_unique<task>();
     from_json(js,*tk);
-    tk->set_id(row.id);
     return tk;
 }
 
-inline unique_ptr<task> read_task_insecure (const uint64_t task_id)
+inline unique_ptr<task> read_task_insecure (const string task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
@@ -465,32 +475,30 @@ inline unique_ptr<task> read_task_insecure (const uint64_t task_id)
     json js  = json::parse(row.json.value()); //bad parsing
     auto tk = make_unique<task>();
     from_json(js,*tk);
-    tk->set_id(row.id);
     return tk;
 }
 
 
-inline map<uint64_t,unique_ptr<task>> search_tasks_by_not_this_session_id(const uint64_t session_id, const uint64_t user_apps_id)
+inline map<string,unique_ptr<task>> search_tasks_by_not_this_session_id(const uint64_t session_id, const uint64_t user_apps_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(tsk)
                                 .where((tsk.sessionId != session_id or tsk.sessionId.is_null()) and tsk.fromUserAppsId == user_apps_id);
-    map<uint64_t,unique_ptr<task>> vtasks;
+    map<string,unique_ptr<task>> vtasks;
     for (const auto & row : db(select))
     {
         json js  = json::parse(row.json.value());
 
         auto tk = make_unique<task>();
         from_json(js,*tk);
-        tk->set_id(row.id);
         vtasks[row.id] = move(tk);
     }
     return vtasks;
 }
 
-inline map<uint64_t,unique_ptr<task>> read_tasks(const string &userId)
+inline map<string,unique_ptr<task>> read_tasks(const string &userId)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Taskers tasker_;
@@ -500,7 +508,7 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &userId)
     const auto & select = sqlpp::select(all_of(tsk))
                                 .from(usr.join(tasker_).on(tasker_.user == usr.id).join(tskTkr).on(tskTkr.idtasker == tasker_.idtasker).join(tsk).on(tsk.id == tskTkr.idtask))
                                 .where(usr.id == userId);
-    map<uint64_t,unique_ptr<task>> vtasks;
+    map<string,unique_ptr<task>> vtasks;
     for (const auto & row : db(select))
     {
         cout << row.json.text << endl;
@@ -509,13 +517,12 @@ inline map<uint64_t,unique_ptr<task>> read_tasks(const string &userId)
 
         auto tk = make_unique<task>();
         from_json(js,*tk);
-        tk->set_id(row.id);
         vtasks[row.id] = move(tk);
     }
     return vtasks;
 }
 
-inline void delete_task(const vector<uint64_t> & task_ids)
+inline void delete_task(const vector<string> & task_ids)
 {
     if(task_ids.empty()){
         return;
@@ -523,24 +530,16 @@ inline void delete_task(const vector<uint64_t> & task_ids)
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
     db(remove_from(tsk).where(tsk.id.in(sqlpp::value_list(task_ids))));
-    // auto remove_query = dynamic_remove(db).from(tsk).dynamic_where();
-    // for (auto &&i : task_ids)
-    // {
-    //     tsk.id.not_in
-    //     remove_query.where.add(tsk.id == i);
-    // }
-
-    // db(remove_query);
 }
 
-inline void delete_task(const uint64_t task_id)
+inline void delete_task(const string task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
     db(remove_from(tsk).where(tsk.id == task_id));
 }
 
-inline bool delete_task(const string &userId, const uint64_t task_id)
+inline bool delete_task(const string &userId, const string task_id)
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Taskers tasker_;
@@ -558,7 +557,7 @@ inline bool delete_task(const string &userId, const uint64_t task_id)
     return false;
 }
 
-inline void update_task( task &new_task , const uint64_t task_id )
+inline void update_task( task &new_task , const string task_id )
 {
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
@@ -570,8 +569,6 @@ inline void update_task( task &new_task , const uint64_t task_id )
         tsk.end = sqlpp::tvin(system_clock::from_time_t(new_task.get_interval().end))
     ).where(tsk.id == task_id));
     if(result <= 0){ return; }
-    new_task.set_id(result);
-
 }
 
 inline uint64_t get_user_apps_id(const string user_id, const uint64_t app_id){
@@ -710,7 +707,7 @@ inline uint64_t create_prot_jobs(const json & job )
         expr.insert_list.add( jobs_.startJobAt = system_clock::from_time_t(job["start_job_at"].get<time_t>()) );
     }
     if(job.find("task_id") != job.end()){
-        expr.insert_list.add( jobs_.taskId = job["task_id"].get<uint64_t>() );
+        expr.insert_list.add( jobs_.taskId = job["task_id"].get<string>() );
     }
 
     const  auto & result = db(expr);
@@ -729,7 +726,7 @@ inline bool update_prot_jobs(uint64_t id, const json & job )
         expr.assignments.add( jobs_.startedAt = system_clock::from_time_t( job["started_at"].get<uint64_t>() ) );
     }
     if(job.find("task_id") != job.end()){
-        expr.assignments.add( jobs_.taskId = job["task_id"].get<uint64_t>() );
+        expr.assignments.add( jobs_.taskId = job["task_id"].get<string>() );
     }
     const  auto & result = db(expr);
     if(result <= 0){ return false; }
@@ -792,7 +789,7 @@ inline unique_ptr<user> read_user(const string user_id)
     return us;
 }
 
-inline optional<std::pair<unique_ptr<user>,unique_ptr<app>>> get_user_and_app_from_task(const uint64_t task_id){
+inline optional<std::pair<unique_ptr<user>,unique_ptr<app>>> get_user_and_app_from_task(const string task_id){
     auto &db = mysql_db::get_db_lazy().db;
     orm_prot::Tasks tsk;
     orm_prot::UsersApps user_apps;
@@ -894,6 +891,142 @@ inline vector<unique_ptr<discovered_components>> discover_new_app_refresh(system
     }
     return v_dc;
 }
+
+inline bool _create_task_obj_batch(vector<task_t> tasks){
+    try
+    {
+        auto &db = mysql_db::get_db_lazy().db;
+        orm_prot::Tasks tks;
+        auto multi_insert = insert_into(tks).columns(tks.id,tks.name,tks.json,tks.group,tks.start,tks.end,tks.externalId,tks.fromUserAppsId,tks.protId,tks.sessionId);
+        // auto multi_insert = insert_into(tks).columns(tks.name,tks.json,tks.group,tks.start);
+        for (const auto & tasko : tasks)
+        {   
+            const auto & task_ = *tasko;
+            auto jtask = task_.get_json();
+            string external_id;
+            string prot_id;
+            if (jtask.find("external_id") != jtask.end()){
+                external_id = jtask["external_id"].get<string>();
+            }
+            if (jtask.find("prot_id") != jtask.end()){
+                prot_id = jtask["prot_id"].get<string>();
+            }
+            multi_insert.values.add(
+                tks.id = task_.get_id(),
+                tks.name = task_.get_name(),
+                tks.json = json(task_).dump(),
+                tks.group = task_.get_task_group(),
+                tks.start = ::sqlpp::chrono::floor<::std::chrono::microseconds>(system_clock::from_time_t(task_.get_interval().start)),
+                tks.end = ::sqlpp::chrono::floor<::std::chrono::microseconds>(system_clock::from_time_t(task_.get_interval().end)),
+                tks.externalId = sqlpp::tvin(external_id),
+                tks.fromUserAppsId = (int64_t)(task_.get_user_apps_id()),
+                tks.protId = sqlpp::tvin(prot_id),
+                tks.sessionId = sqlpp::tvin((int64_t)(task_.get_session_id().value_or(0)))
+            );
+        }
+        db(multi_insert);
+        return true;
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+        mysql_db::current_db.reset();
+        return false;
+    }
+}
+
+struct create_tasks_user_bindings{
+    const set<pair<string, bool>> user_id_bindings_optional_scheduler; 
+    task_t task_;
+};
+
+//Users to asociate a task and boolean true to be scheduled not only added to tasker
+inline bool create_task_bach(vector< create_tasks_user_bindings > ctub_list)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+    vector<task_t> tasks;
+    for_each(ctub_list.cbegin(), ctub_list.cend(), [&tasks](const create_tasks_user_bindings  &binding) {
+        tasks.push_back(binding.task_);
+    });
+
+    auto tsk_res = _create_task_obj_batch(tasks);
+    if(!tsk_res ){
+        SPDLOG_ERROR("Unable to create task in db _create_task_obj " );
+        return false;
+    } 
+
+    for_each(ctub_list.cbegin(), ctub_list.cend(), [&](const create_tasks_user_bindings  &binding_user) {
+        const auto & user_id_bindings_optional_scheduler = binding_user.user_id_bindings_optional_scheduler;
+        for_each(user_id_bindings_optional_scheduler.cbegin(), user_id_bindings_optional_scheduler.cend(), [&](const pair<string, bool> &binding) {
+            orm_prot::Taskers tasker_;
+            orm_prot::Schedulers sche;
+            orm_prot::Users usr;
+
+            const auto & result = db(sqlpp::select(all_of(usr), tasker_.idtasker, sche.id.as(alias::a))
+                                    .from(usr.join(tasker_).on(tasker_.user == usr.id).join(sche).on(sche.user == usr.id))
+                                    .where(usr.id == binding.first)
+                                    .limit(1U));
+            if (result.empty())
+            {
+                return ;
+            }
+            const auto &tasker_id = result.front().idtasker;
+            const auto &sche_id = result.front().a;
+            //Returns last insert
+            orm_prot::TasksTaskers tksTkrs;
+            //Inserted so we need the binding
+            //const auto &res_task_tasker =
+            auto multi_insert = insert_into(tksTkrs).columns(tksTkrs.idtask, tksTkrs.idtasker);
+            for (const auto &task_ : tasks){
+                multi_insert.values.add(tksTkrs.idtask = task_->get_id() ,
+                tksTkrs.idtasker = tasker_id.value());
+            }
+            db(multi_insert);
+            if (binding.second)
+            {
+                orm_prot::TasksSchedulers tskSche;
+                auto multi_insert2 = insert_into(tskSche).columns(tskSche.idtask, tskSche.idscheduler);
+                for (const auto &task_ : tasks){
+                    multi_insert2.values.add(tskSche.idtask = task_->get_id() ,
+                    tskSche.idscheduler = (int64_t)sche_id);
+                }
+                db(multi_insert2);
+            }
+        });
+    });
+    mysql_db::current_db.reset();
+    return true;
+}
+
+inline uint64_t create_instalation_by_app_id(const string &user_id, const uint64_t app_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    orm_prot::Users usr;
+    orm_prot::Apps app_;
+
+    // Exists? TODO JOIN both to get existent one
+    const auto &usr_res = db(sqlpp::select(usr.id).from(usr).where(usr.id == user_id).limit(1U));
+    const auto &app_res = db( sqlpp::select(app_.id).from(app_).where(app_.id == app_id).limit(1U) );
+    if (usr_res.empty() || app_res.empty())
+    {
+        return 0;
+    }
+    orm_prot::UsersApps instls;
+    const auto &user_app_res = db(sqlpp::select(all_of(instls)).from(instls).where(instls.iduser == usr_res.front().id and instls.idapp == app_id).limit(1U));
+
+    if (!user_app_res.empty())
+    {
+        return user_app_res.front().id;
+    }
+
+    const auto & result = db(insert_into(instls).set(
+        instls.iduser = usr_res.front().id,
+        instls.idapp = app_id));
+
+    return result;
+}
+
 
 } // namespace db_op
 

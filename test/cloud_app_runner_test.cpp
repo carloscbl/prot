@@ -18,7 +18,7 @@ template<typename T_duration>
 task_t get_collider(seconds offset_from_today, T_duration duration, string name = "test_probe"){
     task_t test_probe = make_shared<task>();
     test_probe->set_task_id(name);
-    test_probe->set_id( 9999);
+    test_probe->set_id( "9999");
     time_t next_day_collider_start = system_clock::to_time_t( floor<days>( system_clock::now()) + offset_from_today);
     time_t next_day_collider_end = next_day_collider_start + duration_cast<seconds>(duration).count() ;
     test_probe->set_interval( next_day_collider_start, next_day_collider_end);

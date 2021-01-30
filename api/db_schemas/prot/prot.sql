@@ -44,7 +44,7 @@ CREATE TABLE `prot_jobs` (
   `job_json` json NOT NULL,
   `type` varchar(360) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci DEFAULT NULL,
   `start_job_at` datetime DEFAULT NULL,
-  `task_id` int(11) DEFAULT NULL,
+  `task_id` varchar(128) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `task_id` (`task_id`),
   CONSTRAINT `prot_jobs_ibfk_2` FOREIGN KEY (`task_id`) REFERENCES `tasks` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -75,7 +75,7 @@ CREATE TABLE `taskers` (
 
 DROP TABLE IF EXISTS `tasks`;
 CREATE TABLE `tasks` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `id` varchar(128) NOT NULL,
   `name` varchar(720) NOT NULL,
   `group` varchar(360) NOT NULL,
   `json` json NOT NULL,
@@ -103,7 +103,7 @@ CREATE TABLE `tasks` (
 
 DROP TABLE IF EXISTS `tasks_schedulers`;
 CREATE TABLE `tasks_schedulers` (
-  `idtask` int(11) NOT NULL,
+  `idtask` varchar(128) NOT NULL,
   `idscheduler` int(11) NOT NULL,
   PRIMARY KEY (`idtask`,`idscheduler`),
   KEY `idtask_idx` (`idtask`),
@@ -116,7 +116,7 @@ CREATE TABLE `tasks_schedulers` (
 DROP TABLE IF EXISTS `tasks_taskers`;
 CREATE TABLE `tasks_taskers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `idtask` int(11) NOT NULL,
+  `idtask` varchar(128) NOT NULL,
   `idtasker` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `index2` (`id`),

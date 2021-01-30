@@ -4,6 +4,7 @@
 #include "db_ops.hpp"
 #include "time_utils.hpp"
 #include "spdlog/spdlog.h"
+#include "prot_specifics.hpp"
 // SPDLOG_INFO("Welcome to spdlog!");
 // SPDLOG_ERROR("Welcome to spdlog!");
 
@@ -188,7 +189,7 @@ const json cloud_app_runner::run(const json &request_json) noexcept
         // this->user_apps_id // To search for the apps
         // this->m_session_id  // To search for the apps
         auto tasks_to_delete =  search_tasks_by_not_this_session_id(this->m_session_id, this->user_apps_id);
-        vector<uint64_t> to_delete_ids;
+        vector<string> to_delete_ids;
         to_delete_ids.reserve(tasks_to_delete.size());
         std::for_each(tasks_to_delete.cbegin(),tasks_to_delete.cend(), [&to_delete_ids](const auto & pair){
             fmt::print("storing to deleting task {}",pair.first);
@@ -300,7 +301,13 @@ bool cloud_app_runner::schedule_single_task(const json & j_task, optional<std::c
 }
 
 task_t cloud_app_runner::create_task_to_schedule(const json & j_task, size_t fw_projection) const{
+    // SPDLOG_INFO(" ######6 {}", j_task.dump(4));
     task_t task_test = make_shared<task>(j_task.get<task>());
+    if(task_test->get_id().empty()){
+        auto id = prot::specifics::get_uuid();
+        task_test->set_id( id );
+        task_test->inner_json["id"] = id;
+    }
     task_test->inner_json["app_id"] = this->app_.get_id();
     task_test->inner_json["fw_projection"] = fw_projection;
     task_test->set_user(this->user_.get_id());
@@ -309,7 +316,7 @@ task_t cloud_app_runner::create_task_to_schedule(const json & j_task, size_t fw_
     return task_test;
 }
 
-void cloud_app_runner::register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks){
+void cloud_app_runner::register_runner_scheduled_tasks (std::shared_ptr<std::unordered_map<std::string, task_t>> done_tasks){
     if(!done_tasks){
         return;
     }

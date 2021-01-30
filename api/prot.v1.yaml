@@ -124,7 +124,7 @@ paths:
   '/user/{userId}/task/{taskId}':
     parameters:
       - schema:
-          type: integer
+          type: string
         name: taskId
         in: path
         required: true

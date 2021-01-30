@@ -2,8 +2,8 @@
 #define TASKER_H
 
 #include <set>
-#include "itasker.h"
 #include "task.h"
+#include "unordered_map"
 
 
 class taskstory_commit_RAII;
@@ -12,14 +12,16 @@ using task = task_space::task;
 using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
 
+using std::unordered_map;
+
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
  */
-class tasker : public itasker 
+class tasker 
 {
 private:
     friend taskstory_commit_RAII;
-    map<uint64_t, task_t> tasks_active; // TODO Setters and getters
+    map<string, task_t> tasks_active; // TODO Setters and getters
     //The dispenser is a pre_commit group tasker, that should be used for temporal storage of groups,
     // until its complete submission
 
@@ -32,24 +34,25 @@ private:
     */ 
     //FIX: TrackLife time of groups and expirate sync with app runner life time
     //Taskstory : Name -> each task have a task_id
-    map<string, map< string, task_t > > tasks_dispenser;
-    const string & m_user;
+    unordered_map<string, unordered_map< string, task_t > > tasks_dispenser; //groups, <tasks_ids, tasks>
+    const string & m_user_id;
     void add_to_group(const string & task_id, task_t && params, const string & group);
     void commit_group_then_delete(const string & group);
+    bool commit_batch(unordered_map<string,task_t> & tasks);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 public:
-    void print_out() override;
-    bool empty() const noexcept override;
-    size_t size() const noexcept override;
+    void print_out() ;
+    bool empty() const noexcept ;
+    size_t size() const noexcept ;
     void commit_single_task(task_t task_active);
     void add_to_group( task_t && params, const string & group);
-    //void update_time() override {};
-    void clear() override;
+    //void update_time()  {};
+    void clear() ;
     const string & get_name() const noexcept;
 
-    task_t get_task(const uint64_t id ) const override;
-    task_t find_task(const string & task_id)  const override;
-    inline const map<uint64_t, task_t> & get_tasks() const { return this->tasks_active; }
+    task_t get_task(const string id ) const ;
+    task_t find_task(const string & task_id)  const ;
+    inline const map<string, task_t> & get_tasks() const { return this->tasks_active; }
     tasker(const string & user);
     virtual ~tasker(){}
 };
@@ -79,12 +82,12 @@ public:
         commited = true;
     }
 
-    shared_ptr<map<string,task_t>> get_group(){
+    shared_ptr<unordered_map<string,task_t>> get_group(){
         const auto & match = tasker_.tasks_dispenser.find(group);
         if(match != tasker_.tasks_dispenser.end()){
-            return make_shared<map<string,task_t>>(match->second);
+            return make_shared<unordered_map<string,task_t>>(match->second);
         }else{
-            return shared_ptr<map<string,task_t>>();
+            return shared_ptr<unordered_map<string,task_t>>();
         }
     }
 
