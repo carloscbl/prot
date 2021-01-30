@@ -12,15 +12,15 @@
 /*
  * Inline_response_200_1.h
  *
- * 
+ * Returns all the developer, apps_names submited
  */
 
 #ifndef Inline_response_200_1_H_
 #define Inline_response_200_1_H_
 
 
-#include <string>
-#include "Object.h"
+#include "Inline_response_200_1_items.h"
+#include <vector>
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -29,7 +29,7 @@ namespace server {
 namespace model {
 
 /// <summary>
-/// 
+/// Returns all the developer, apps_names submited
 /// </summary>
 class  Inline_response_200_1
 {
@@ -45,39 +45,16 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getCurrentQuestion() const;
-    void setCurrentQuestion(std::string const& value);
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string getHints() const;
-    void setHints(std::string const& value);
-    bool hintsIsSet() const;
-    void unsetHints();
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string getDataType() const;
-    void setDataType(std::string const& value);
-    /// <summary>
-    /// 
-    /// </summary>
-    nlohmann::json getTypeDetails() const;
-    void setTypeDetails(nlohmann::json const& value);
-    bool typeDetailsIsSet() const;
-    void unsetType_details();
+    std::vector<Inline_response_200_1_items>& getItems();
+    void setItems(std::vector<Inline_response_200_1_items> const& value);
+    bool itemsIsSet() const;
+    void unsetItems();
 
     friend void to_json(nlohmann::json& j, const Inline_response_200_1& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200_1& o);
 protected:
-    std::string m_Current_question;
-
-    std::string m_Hints;
-    bool m_HintsIsSet;
-    std::string m_Data_type;
-
-    nlohmann::json m_Type_details;
-    bool m_Type_detailsIsSet;
+    std::vector<Inline_response_200_1_items> m_Items;
+    bool m_ItemsIsSet;
 };
 
 }

@@ -20,7 +20,8 @@ namespace model {
 
 Inline_object_1::Inline_object_1()
 {
-    m_Type_of_task = "";
+    m_Username = "";
+    m_User_id = "";
     
 }
 
@@ -36,31 +37,31 @@ void Inline_object_1::validate()
 void to_json(nlohmann::json& j, const Inline_object_1& o)
 {
     j = nlohmann::json();
-    j["type_of_task"] = o.m_Type_of_task;
-    j["task"] = o.m_Task;
+    j["username"] = o.m_Username;
+    j["user_id"] = o.m_User_id;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_1& o)
 {
-    j.at("type_of_task").get_to(o.m_Type_of_task);
-    j.at("task").get_to(o.m_Task);
+    j.at("username").get_to(o.m_Username);
+    j.at("user_id").get_to(o.m_User_id);
 }
 
-std::string Inline_object_1::getTypeOfTask() const
+std::string Inline_object_1::getUsername() const
 {
-    return m_Type_of_task;
+    return m_Username;
 }
-void Inline_object_1::setTypeOfTask(std::string const& value)
+void Inline_object_1::setUsername(std::string const& value)
 {
-    m_Type_of_task = value;
+    m_Username = value;
 }
-Object Inline_object_1::getTask() const
+std::string Inline_object_1::getUserId() const
 {
-    return m_Task;
+    return m_User_id;
 }
-void Inline_object_1::setTask(Object const& value)
+void Inline_object_1::setUserId(std::string const& value)
 {
-    m_Task = value;
+    m_User_id = value;
 }
 
 }

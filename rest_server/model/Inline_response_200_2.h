@@ -20,6 +20,7 @@
 
 
 #include <string>
+#include "Object.h"
 #include <nlohmann/json.hpp>
 
 namespace org {
@@ -44,68 +45,39 @@ public:
     /// <summary>
     /// 
     /// </summary>
-    std::string getName() const;
-    void setName(std::string const& value);
+    std::string getCurrentQuestion() const;
+    void setCurrentQuestion(std::string const& value);
     /// <summary>
     /// 
     /// </summary>
-    std::string getPicture() const;
-    void setPicture(std::string const& value);
-    bool pictureIsSet() const;
-    void unsetPicture();
+    std::string getHints() const;
+    void setHints(std::string const& value);
+    bool hintsIsSet() const;
+    void unsetHints();
     /// <summary>
     /// 
     /// </summary>
-    double getStarts() const;
-    void setStarts(double const value);
-    bool startsIsSet() const;
-    void unsetStarts();
+    std::string getDataType() const;
+    void setDataType(std::string const& value);
     /// <summary>
     /// 
     /// </summary>
-    std::string getTags() const;
-    void setTags(std::string const& value);
-    bool tagsIsSet() const;
-    void unsetTags();
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string getDeveloper() const;
-    void setDeveloper(std::string const& value);
-    bool developerIsSet() const;
-    void unsetDeveloper();
-    /// <summary>
-    /// 
-    /// </summary>
-    std::string getDescription() const;
-    void setDescription(std::string const& value);
-    bool descriptionIsSet() const;
-    void unsetDescription();
-    /// <summary>
-    /// 
-    /// </summary>
-    int32_t getDownloads() const;
-    void setDownloads(int32_t const value);
-    bool downloadsIsSet() const;
-    void unsetDownloads();
+    nlohmann::json getTypeDetails() const;
+    void setTypeDetails(nlohmann::json const& value);
+    bool typeDetailsIsSet() const;
+    void unsetType_details();
 
     friend void to_json(nlohmann::json& j, const Inline_response_200_2& o);
     friend void from_json(const nlohmann::json& j, Inline_response_200_2& o);
 protected:
-    std::string m_Name;
+    std::string m_Current_question;
 
-    std::string m_Picture;
-    bool m_PictureIsSet;
-    double m_Starts;
-    bool m_StartsIsSet;
-    std::string m_Tags;
-    bool m_TagsIsSet;
-    std::string m_Developer;
-    bool m_DeveloperIsSet;
-    std::string m_Description;
-    bool m_DescriptionIsSet;
-    int32_t m_Downloads;
-    bool m_DownloadsIsSet;
+    std::string m_Hints;
+    bool m_HintsIsSet;
+    std::string m_Data_type;
+
+    nlohmann::json m_Type_details;
+    bool m_Type_detailsIsSet;
 };
 
 }

@@ -1028,6 +1028,38 @@ inline uint64_t create_instalation_by_app_id(const string &user_id, const uint64
 }
 
 
+
+inline bool delete_app(const uint64_t &app_id, const string& developer)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    orm_prot::Apps app_;
+    if(db(remove_from(app_).where(app_.id == app_id and app_.developer == developer))){
+        return true;
+    }
+    return false;
+}
+
+inline unique_ptr<app> update_app(const json &valid_app, const string &developer, const uint64_t &app_id)
+{
+    auto &db = mysql_db::get_db_lazy().db;
+
+    orm_prot::Apps app_;
+    unique_ptr<app> protapp = make_unique<app>(valid_app);
+
+    const auto &result = db(update(app_).set(
+        app_.json = valid_app.dump(),
+        app_.name = app::get_app_name(valid_app),
+        app_.developer = developer
+    ).where(app_.id == app_id and app_.developer == developer)
+    );
+    if(!result){
+        return nullptr;    
+    }
+    protapp->set_id(result);
+    return protapp;
+}
+
 } // namespace db_op
 
 //https://github.com/rbock/sqlpp11/wiki/Select

@@ -20,8 +20,10 @@ namespace model {
 
 Inline_object::Inline_object()
 {
-    m_Username = "";
-    m_User_id = "";
+    m_Forward_projection = 0;
+    m_Forward_projectionIsSet = false;
+    m_Backwards_projection = 0;
+    m_Backwards_projectionIsSet = false;
     
 }
 
@@ -37,31 +39,59 @@ void Inline_object::validate()
 void to_json(nlohmann::json& j, const Inline_object& o)
 {
     j = nlohmann::json();
-    j["username"] = o.m_Username;
-    j["user_id"] = o.m_User_id;
+    if(o.forwardProjectionIsSet())
+        j["forward_projection"] = o.m_Forward_projection;
+    if(o.backwardsProjectionIsSet())
+        j["backwards_projection"] = o.m_Backwards_projection;
 }
 
 void from_json(const nlohmann::json& j, Inline_object& o)
 {
-    j.at("username").get_to(o.m_Username);
-    j.at("user_id").get_to(o.m_User_id);
+    if(j.find("forward_projection") != j.end())
+    {
+        j.at("forward_projection").get_to(o.m_Forward_projection);
+        o.m_Forward_projectionIsSet = true;
+    } 
+    if(j.find("backwards_projection") != j.end())
+    {
+        j.at("backwards_projection").get_to(o.m_Backwards_projection);
+        o.m_Backwards_projectionIsSet = true;
+    } 
 }
 
-std::string Inline_object::getUsername() const
+int32_t Inline_object::getForwardProjection() const
 {
-    return m_Username;
+    return m_Forward_projection;
 }
-void Inline_object::setUsername(std::string const& value)
+void Inline_object::setForwardProjection(int32_t const value)
 {
-    m_Username = value;
+    m_Forward_projection = value;
+    m_Forward_projectionIsSet = true;
 }
-std::string Inline_object::getUserId() const
+bool Inline_object::forwardProjectionIsSet() const
 {
-    return m_User_id;
+    return m_Forward_projectionIsSet;
 }
-void Inline_object::setUserId(std::string const& value)
+void Inline_object::unsetForward_projection()
 {
-    m_User_id = value;
+    m_Forward_projectionIsSet = false;
+}
+int32_t Inline_object::getBackwardsProjection() const
+{
+    return m_Backwards_projection;
+}
+void Inline_object::setBackwardsProjection(int32_t const value)
+{
+    m_Backwards_projection = value;
+    m_Backwards_projectionIsSet = true;
+}
+bool Inline_object::backwardsProjectionIsSet() const
+{
+    return m_Backwards_projectionIsSet;
+}
+void Inline_object::unsetBackwards_projection()
+{
+    m_Backwards_projectionIsSet = false;
 }
 
 }

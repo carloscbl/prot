@@ -20,11 +20,7 @@ namespace model {
 
 Inline_response_200_1::Inline_response_200_1()
 {
-    m_Current_question = "";
-    m_Hints = "";
-    m_HintsIsSet = false;
-    m_Data_type = "";
-    m_Type_detailsIsSet = false;
+    m_ItemsIsSet = false;
     
 }
 
@@ -40,79 +36,35 @@ void Inline_response_200_1::validate()
 void to_json(nlohmann::json& j, const Inline_response_200_1& o)
 {
     j = nlohmann::json();
-    j["current_question"] = o.m_Current_question;
-    if(o.hintsIsSet())
-        j["hints"] = o.m_Hints;
-    j["data_type"] = o.m_Data_type;
-    if(o.typeDetailsIsSet())
-        j["type_details"] = o.m_Type_details;
+    if(o.itemsIsSet() || !o.m_Items.empty())
+        j["items"] = o.m_Items;
 }
 
 void from_json(const nlohmann::json& j, Inline_response_200_1& o)
 {
-    j.at("current_question").get_to(o.m_Current_question);
-    if(j.find("hints") != j.end())
+    if(j.find("items") != j.end())
     {
-        j.at("hints").get_to(o.m_Hints);
-        o.m_HintsIsSet = true;
-    } 
-    j.at("data_type").get_to(o.m_Data_type);
-    if(j.find("type_details") != j.end())
-    {
-        j.at("type_details").get_to(o.m_Type_details);
-        o.m_Type_detailsIsSet = true;
+        j.at("items").get_to(o.m_Items);
+        o.m_ItemsIsSet = true;
     } 
 }
 
-std::string Inline_response_200_1::getCurrentQuestion() const
+std::vector<Inline_response_200_1_items>& Inline_response_200_1::getItems()
 {
-    return m_Current_question;
+    return m_Items;
 }
-void Inline_response_200_1::setCurrentQuestion(std::string const& value)
+void Inline_response_200_1::setItems(std::vector<Inline_response_200_1_items> const& value)
 {
-    m_Current_question = value;
+    m_Items = value;
+    m_ItemsIsSet = true;
 }
-std::string Inline_response_200_1::getHints() const
+bool Inline_response_200_1::itemsIsSet() const
 {
-    return m_Hints;
+    return m_ItemsIsSet;
 }
-void Inline_response_200_1::setHints(std::string const& value)
+void Inline_response_200_1::unsetItems()
 {
-    m_Hints = value;
-    m_HintsIsSet = true;
-}
-bool Inline_response_200_1::hintsIsSet() const
-{
-    return m_HintsIsSet;
-}
-void Inline_response_200_1::unsetHints()
-{
-    m_HintsIsSet = false;
-}
-std::string Inline_response_200_1::getDataType() const
-{
-    return m_Data_type;
-}
-void Inline_response_200_1::setDataType(std::string const& value)
-{
-    m_Data_type = value;
-}
-nlohmann::json Inline_response_200_1::getTypeDetails() const
-{
-    return m_Type_details;
-}
-void Inline_response_200_1::setTypeDetails(nlohmann::json const& value)
-{
-    m_Type_details = value;
-    m_Type_detailsIsSet = true;
-}
-bool Inline_response_200_1::typeDetailsIsSet() const
-{
-    return m_Type_detailsIsSet;
-}
-void Inline_response_200_1::unsetType_details()
-{
-    m_Type_detailsIsSet = false;
+    m_ItemsIsSet = false;
 }
 
 }

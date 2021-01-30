@@ -20,9 +20,7 @@ namespace model {
 
 Inline_object_3::Inline_object_3()
 {
-    m_Restart = false;
-    m_RestartIsSet = false;
-    m_ResponseIsSet = false;
+    m_App_objIsSet = false;
     
 }
 
@@ -38,59 +36,35 @@ void Inline_object_3::validate()
 void to_json(nlohmann::json& j, const Inline_object_3& o)
 {
     j = nlohmann::json();
-    if(o.restartIsSet())
-        j["restart"] = o.m_Restart;
-    if(o.responseIsSet())
-        j["response"] = o.m_Response;
+    if(o.appObjIsSet())
+        j["app_obj"] = o.m_App_obj;
 }
 
 void from_json(const nlohmann::json& j, Inline_object_3& o)
 {
-    if(j.find("restart") != j.end())
+    if(j.find("app_obj") != j.end())
     {
-        j.at("restart").get_to(o.m_Restart);
-        o.m_RestartIsSet = true;
-    } 
-    if(j.find("response") != j.end())
-    {
-        j.at("response").get_to(o.m_Response);
-        o.m_ResponseIsSet = true;
+        j.at("app_obj").get_to(o.m_App_obj);
+        o.m_App_objIsSet = true;
     } 
 }
 
-bool Inline_object_3::isRestart() const
+nlohmann::json Inline_object_3::getAppObj() const
 {
-    return m_Restart;
+    return m_App_obj;
 }
-void Inline_object_3::setRestart(bool const value)
+void Inline_object_3::setAppObj(nlohmann::json const& value)
 {
-    m_Restart = value;
-    m_RestartIsSet = true;
+    m_App_obj = value;
+    m_App_objIsSet = true;
 }
-bool Inline_object_3::restartIsSet() const
+bool Inline_object_3::appObjIsSet() const
 {
-    return m_RestartIsSet;
+    return m_App_objIsSet;
 }
-void Inline_object_3::unsetRestart()
+void Inline_object_3::unsetApp_obj()
 {
-    m_RestartIsSet = false;
-}
-nlohmann::json Inline_object_3::getResponse() const
-{
-    return m_Response;
-}
-void Inline_object_3::setResponse(nlohmann::json const& value)
-{
-    m_Response = value;
-    m_ResponseIsSet = true;
-}
-bool Inline_object_3::responseIsSet() const
-{
-    return m_ResponseIsSet;
-}
-void Inline_object_3::unsetResponse()
-{
-    m_ResponseIsSet = false;
+    m_App_objIsSet = false;
 }
 
 }

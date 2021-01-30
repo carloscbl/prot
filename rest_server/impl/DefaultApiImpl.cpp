@@ -118,10 +118,11 @@ void DefaultApiImpl::apps_id_get(const int32_t &id, Pistache::Http::ResponseWrit
 void DefaultApiImpl::user_developer_app_get(const std::string &developer, Pistache::Http::ResponseWriter &response) {
     //Need to create a new call that joins apps, by a given developer
     auto mp = read_apps_by_developer(geturl_decode(developer));
-    json jresponse = json::array();
+    json jresponse = json::object();
+    jresponse["items"] = json::array();
 
     for_each(mp.begin(), mp.end(), [&jresponse](const pair<uint64_t,string>& c){
-        jresponse.push_back({
+        jresponse["items"].push_back({
             {"app_id",std::to_string(c.first)},
             {"app_name",c.second}
         });
@@ -233,12 +234,12 @@ void DefaultApiImpl::user_user_id_questionary_app_id_get(const int32_t &appId, c
     cloud_app_runner fr(*usr, *app_);
     json qa_request1;
     auto & qa_res = fr.run(qa_request1);
-    Inline_response_200_1 response_200_1;
-    response_200_1.setCurrentQuestion(qa_res["next_question"].get<string>());
-    response_200_1.setDataType(qa_res["data_type"].get<string>());
-    response_200_1.setTypeDetails(qa_res["type_details"]);
+    Inline_response_200_2 response_200_2;
+    response_200_2.setCurrentQuestion(qa_res["next_question"].get<string>());
+    response_200_2.setDataType(qa_res["data_type"].get<string>());
+    response_200_2.setTypeDetails(qa_res["type_details"]);
 
-    response.send(Pistache::Http::Code::Ok, json(response_200_1).dump(4));
+    response.send(Pistache::Http::Code::Ok, json(response_200_2).dump(4));
 }
 
 void DefaultApiImpl::user_user_id_tasks_get(const std::string &userId, Pistache::Http::ResponseWriter &response) {
@@ -260,12 +261,12 @@ void DefaultApiImpl::user_user_id_tasks_get(const std::string &userId, Pistache:
     
     response.send(Pistache::Http::Code::Ok, jresponse.dump(4) );
 }
-void DefaultApiImpl::user_developer_app_post(const std::string &developer, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::user_developer_app_post(const std::string &developer, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) {
     std::string decoded = geturl_decode(developer);
     if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
-    json whole_request(inlineObject2);
+    json whole_request(inlineObject3);
     auto res = create_app( whole_request.at("app_obj") ,decoded);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
@@ -273,7 +274,7 @@ void DefaultApiImpl::user_developer_app_post(const std::string &developer, const
     response.send(Pistache::Http::Code::Created, "Done");
 }
 
-void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, const std::string &userId, const Inline_object_3 &inlineObject3, Pistache::Http::ResponseWriter &response) {
+void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, const std::string &userId, const Inline_object_5 &inlineObject5, Pistache::Http::ResponseWriter &response) {
     measure_execution_raii(__FUNCTION__);
     auto usr = read_user(userId);
     if(!usr){
@@ -281,7 +282,7 @@ void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, 
         return;
     }
 
-    if(inlineObject3.restartIsSet()){
+    if(inlineObject5.restartIsSet()){
         response.send(Pistache::Http::Code::Ok, "Reseted " + std::to_string(appId) );
         auto session = read_session(usr->get_id() , appId);
         if (session){
@@ -295,7 +296,7 @@ void DefaultApiImpl::user_user_id_questionary_app_id_post(const int32_t &appId, 
     auto app_ = move(pair->first);//read_app(pair->second["name"]);
     cloud_app_runner car(*usr, *app_);
     json qa_request;
-    qa_request["answer"] = inlineObject3.getResponse();
+    qa_request["answer"] = inlineObject5.getResponse();
     auto & qa_res = car.run(qa_request);
 
     json response_json ={
@@ -328,7 +329,7 @@ void DefaultApiImpl::user_user_id_task_task_id_get(const std::string &taskId, co
     response.send(Pistache::Http::Code::Ok, task.dump(4));
 }
 
-void DefaultApiImpl::user_user_id_tasks_post(const std::string &userId, const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response){
+void DefaultApiImpl::user_user_id_tasks_post(const std::string &userId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response){
     //Update... delete and new
     if(!gen_exists<orm_prot::Users>(userId)){
         response.send(Pistache::Http::Code::Not_Found, "user does not exists");
@@ -337,10 +338,10 @@ void DefaultApiImpl::user_user_id_tasks_post(const std::string &userId, const In
     task tk;
     try
     {
-        json jauto = json(inlineObject1)["task"];
-        if(inlineObject1.getTypeOfTask() == "auto"){
+        json jauto = json(inlineObject2)["task"];
+        if(inlineObject2.getTypeOfTask() == "auto"){
             from_json_auto_task(jauto, tk);
-        }else if (inlineObject1.getTypeOfTask() == "user"){
+        }else if (inlineObject2.getTypeOfTask() == "user"){
             if (jauto.find("external_id") == jauto.end()){
                 response.send(Pistache::Http::Code::Not_Found, "if task is from a user calendar it needs an external_id");
                 return;
@@ -369,8 +370,8 @@ void DefaultApiImpl::user_user_id_tasks_post(const std::string &userId, const In
     //create_task()
 }
 
-void DefaultApiImpl::user_post(const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response) {
-    auto usr = create_user(inlineObject.getUserId(),inlineObject.getUsername());
+void DefaultApiImpl::user_post(const Inline_object_1 &inlineObject1, Pistache::Http::ResponseWriter &response) {
+    auto usr = create_user(inlineObject1.getUserId(),inlineObject1.getUsername());
     if(!usr){
         response.send(Pistache::Http::Code::Bad_Request, "Already exists");
         return;
@@ -389,6 +390,30 @@ void DefaultApiImpl::user_user_id_get(const std::string &userId, Pistache::Http:
     json js = *usr;
     response.send(Pistache::Http::Code::Ok, js.dump(4));
 }
+
+void DefaultApiImpl::user_user_id_patch(const std::string &userId, const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response){
+
+}
+
+void DefaultApiImpl::user_developer_app_app_id_delete(const std::string &developer, const int32_t &appId, Pistache::Http::ResponseWriter &response){
+
+    if(db_op::delete_app(appId,developer)){
+        response.send(Pistache::Http::Code::Ok);
+        return;
+    }
+    response.send(Pistache::Http::Code::Not_Found);
+}
+
+void DefaultApiImpl::user_developer_app_app_id_put(const std::string &developer, const int32_t &appId, const Inline_object_4 &inlineObject4, Pistache::Http::ResponseWriter &response){
+    auto res = db_op::update_app(inlineObject4.getAppObj(), developer, appId);
+    if(res){
+        response.send(Pistache::Http::Code::Ok);
+        return;
+    }
+    response.send(Pistache::Http::Code::Not_Found);
+
+}
+
 
 }
 }

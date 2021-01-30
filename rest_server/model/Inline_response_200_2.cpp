@@ -20,19 +20,11 @@ namespace model {
 
 Inline_response_200_2::Inline_response_200_2()
 {
-    m_Name = "";
-    m_Picture = "";
-    m_PictureIsSet = false;
-    m_Starts = 0.0;
-    m_StartsIsSet = false;
-    m_Tags = "";
-    m_TagsIsSet = false;
-    m_Developer = "";
-    m_DeveloperIsSet = false;
-    m_Description = "";
-    m_DescriptionIsSet = false;
-    m_Downloads = 0;
-    m_DownloadsIsSet = false;
+    m_Current_question = "";
+    m_Hints = "";
+    m_HintsIsSet = false;
+    m_Data_type = "";
+    m_Type_detailsIsSet = false;
     
 }
 
@@ -48,165 +40,79 @@ void Inline_response_200_2::validate()
 void to_json(nlohmann::json& j, const Inline_response_200_2& o)
 {
     j = nlohmann::json();
-    j["name"] = o.m_Name;
-    if(o.pictureIsSet())
-        j["picture"] = o.m_Picture;
-    if(o.startsIsSet())
-        j["starts"] = o.m_Starts;
-    if(o.tagsIsSet())
-        j["tags"] = o.m_Tags;
-    if(o.developerIsSet())
-        j["developer"] = o.m_Developer;
-    if(o.descriptionIsSet())
-        j["description"] = o.m_Description;
-    if(o.downloadsIsSet())
-        j["downloads"] = o.m_Downloads;
+    j["current_question"] = o.m_Current_question;
+    if(o.hintsIsSet())
+        j["hints"] = o.m_Hints;
+    j["data_type"] = o.m_Data_type;
+    if(o.typeDetailsIsSet())
+        j["type_details"] = o.m_Type_details;
 }
 
 void from_json(const nlohmann::json& j, Inline_response_200_2& o)
 {
-    j.at("name").get_to(o.m_Name);
-    if(j.find("picture") != j.end())
+    j.at("current_question").get_to(o.m_Current_question);
+    if(j.find("hints") != j.end())
     {
-        j.at("picture").get_to(o.m_Picture);
-        o.m_PictureIsSet = true;
+        j.at("hints").get_to(o.m_Hints);
+        o.m_HintsIsSet = true;
     } 
-    if(j.find("starts") != j.end())
+    j.at("data_type").get_to(o.m_Data_type);
+    if(j.find("type_details") != j.end())
     {
-        j.at("starts").get_to(o.m_Starts);
-        o.m_StartsIsSet = true;
-    } 
-    if(j.find("tags") != j.end())
-    {
-        j.at("tags").get_to(o.m_Tags);
-        o.m_TagsIsSet = true;
-    } 
-    if(j.find("developer") != j.end())
-    {
-        j.at("developer").get_to(o.m_Developer);
-        o.m_DeveloperIsSet = true;
-    } 
-    if(j.find("description") != j.end())
-    {
-        j.at("description").get_to(o.m_Description);
-        o.m_DescriptionIsSet = true;
-    } 
-    if(j.find("downloads") != j.end())
-    {
-        j.at("downloads").get_to(o.m_Downloads);
-        o.m_DownloadsIsSet = true;
+        j.at("type_details").get_to(o.m_Type_details);
+        o.m_Type_detailsIsSet = true;
     } 
 }
 
-std::string Inline_response_200_2::getName() const
+std::string Inline_response_200_2::getCurrentQuestion() const
 {
-    return m_Name;
+    return m_Current_question;
 }
-void Inline_response_200_2::setName(std::string const& value)
+void Inline_response_200_2::setCurrentQuestion(std::string const& value)
 {
-    m_Name = value;
+    m_Current_question = value;
 }
-std::string Inline_response_200_2::getPicture() const
+std::string Inline_response_200_2::getHints() const
 {
-    return m_Picture;
+    return m_Hints;
 }
-void Inline_response_200_2::setPicture(std::string const& value)
+void Inline_response_200_2::setHints(std::string const& value)
 {
-    m_Picture = value;
-    m_PictureIsSet = true;
+    m_Hints = value;
+    m_HintsIsSet = true;
 }
-bool Inline_response_200_2::pictureIsSet() const
+bool Inline_response_200_2::hintsIsSet() const
 {
-    return m_PictureIsSet;
+    return m_HintsIsSet;
 }
-void Inline_response_200_2::unsetPicture()
+void Inline_response_200_2::unsetHints()
 {
-    m_PictureIsSet = false;
+    m_HintsIsSet = false;
 }
-double Inline_response_200_2::getStarts() const
+std::string Inline_response_200_2::getDataType() const
 {
-    return m_Starts;
+    return m_Data_type;
 }
-void Inline_response_200_2::setStarts(double const value)
+void Inline_response_200_2::setDataType(std::string const& value)
 {
-    m_Starts = value;
-    m_StartsIsSet = true;
+    m_Data_type = value;
 }
-bool Inline_response_200_2::startsIsSet() const
+nlohmann::json Inline_response_200_2::getTypeDetails() const
 {
-    return m_StartsIsSet;
+    return m_Type_details;
 }
-void Inline_response_200_2::unsetStarts()
+void Inline_response_200_2::setTypeDetails(nlohmann::json const& value)
 {
-    m_StartsIsSet = false;
+    m_Type_details = value;
+    m_Type_detailsIsSet = true;
 }
-std::string Inline_response_200_2::getTags() const
+bool Inline_response_200_2::typeDetailsIsSet() const
 {
-    return m_Tags;
+    return m_Type_detailsIsSet;
 }
-void Inline_response_200_2::setTags(std::string const& value)
+void Inline_response_200_2::unsetType_details()
 {
-    m_Tags = value;
-    m_TagsIsSet = true;
-}
-bool Inline_response_200_2::tagsIsSet() const
-{
-    return m_TagsIsSet;
-}
-void Inline_response_200_2::unsetTags()
-{
-    m_TagsIsSet = false;
-}
-std::string Inline_response_200_2::getDeveloper() const
-{
-    return m_Developer;
-}
-void Inline_response_200_2::setDeveloper(std::string const& value)
-{
-    m_Developer = value;
-    m_DeveloperIsSet = true;
-}
-bool Inline_response_200_2::developerIsSet() const
-{
-    return m_DeveloperIsSet;
-}
-void Inline_response_200_2::unsetDeveloper()
-{
-    m_DeveloperIsSet = false;
-}
-std::string Inline_response_200_2::getDescription() const
-{
-    return m_Description;
-}
-void Inline_response_200_2::setDescription(std::string const& value)
-{
-    m_Description = value;
-    m_DescriptionIsSet = true;
-}
-bool Inline_response_200_2::descriptionIsSet() const
-{
-    return m_DescriptionIsSet;
-}
-void Inline_response_200_2::unsetDescription()
-{
-    m_DescriptionIsSet = false;
-}
-int32_t Inline_response_200_2::getDownloads() const
-{
-    return m_Downloads;
-}
-void Inline_response_200_2::setDownloads(int32_t const value)
-{
-    m_Downloads = value;
-    m_DownloadsIsSet = true;
-}
-bool Inline_response_200_2::downloadsIsSet() const
-{
-    return m_DownloadsIsSet;
-}
-void Inline_response_200_2::unsetDownloads()
-{
-    m_DownloadsIsSet = false;
+    m_Type_detailsIsSet = false;
 }
 
 }
