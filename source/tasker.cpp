@@ -87,7 +87,7 @@ bool tasker::commit_batch(unordered_map<string,task_t> & tasks){
             };
             bindings.push_back(bndn);
         }
-        if(create_task_bach(bindings)){
+        if(create_task_bach_mono_user(bindings)){
             return true;
         }
     try

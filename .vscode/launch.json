@@ -64,7 +64,7 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/test_prot",
             //"args": ["test","sequence", "-p", "../sequences/request"],
-            "args": ["[projector]"],
+            "args": ["[tperformance_projector]"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [

@@ -21,6 +21,7 @@ using user_t = unique_ptr<user>;
 using app_t = unique_ptr<app>;
 using json_t = unique_ptr<json>;
 
+
 inline app_t get_app(const string & user_id, string name = "test Daily workout history"){
     auto name_file = name;
     boost::filesystem::path full_path(boost::filesystem::current_path());
@@ -87,7 +88,7 @@ TEST_CASE( "test projector performance", "[projector]" ) {
     auto history = get_history_file();
     // app_projector ap ();
     cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-    car.projected_run((*history)["history"],200);
+    car.projected_run((*history)["history"],50);
     // total_tasks += car.scheduled_tasks->size();
     for (auto &&i : *car.projected_scheduled_tasks)
     {
@@ -100,5 +101,115 @@ TEST_CASE( "test projector performance", "[projector]" ) {
     auto per_second = total_tasks/std::chrono::duration_cast<std::chrono::seconds>(stop).count();
     SPDLOG_INFO("{} tasks per second ", per_second);
     REQUIRE(per_second > 70);
+    // 85 tasks per second
+}
+
+
+TEST_CASE( "test projector performance light", "[performance_projector]" ) {
+    SPDLOG_INFO("running test projector performance ... ");
+    measure_execution exe("projector performance");
+    uint64_t total_tasks = 0;
+    user_t usr_ = get_user("pepephone");
+    app_t app_ = get_app(usr_->get_id());
+    db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
+    task_t t = make_unique<task>();
+    t->set_user(usr_->get_id());
+    measure_execution_raii r("sub");
+    for (size_t i = 0; i < 200; i++)
+    {
+        t->set_id(prot::specifics::get_uuid());
+        // _create_task_obj( *t);
+        create_task({{usr_->get_id(), false}}, *t);
+        total_tasks++;
+    }
+    
+    auto stop  =exe.stop();
+    auto per_second = total_tasks/std::chrono::duration_cast<std::chrono::seconds>(stop).count();
+    SPDLOG_INFO("{} tasks per second ", per_second);
+    REQUIRE(per_second > 701);
+    // 85 tasks per second
+}
+
+TEST_CASE( "test projector performance heavy", "[performance_projector]" ) {
+    SPDLOG_INFO("running test projector performance ... ");
+    measure_execution exe("projector performance");
+    uint64_t total_tasks = 0;
+    user_t usr_ = get_user("pepephone");
+    app_t app_ = get_app(usr_->get_id());
+    db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
+    measure_execution_raii r("sub");
+    task_t t = make_unique<task>();
+    t->set_user(usr_->get_id());
+    t->set_description("12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230");
+    for (size_t i = 0; i < 200; i++)
+    {
+        t->set_id(prot::specifics::get_uuid());
+        _create_task_obj( *t);
+        // create_task({{usr_->get_id(), false}}, *t);
+        total_tasks++;
+    }
+    
+    auto stop  =exe.stop();
+    auto per_second = total_tasks/std::chrono::duration_cast<std::chrono::seconds>(stop).count();
+    SPDLOG_INFO("{} tasks per second ", per_second);
+    REQUIRE(per_second > 702);
+    // 85 tasks per second
+}
+
+TEST_CASE( "test projector performance batched", "[performance_projector]" ) {
+    SPDLOG_INFO("running test projector performance ... ");
+    measure_execution exe("projector performance");
+    uint64_t total_tasks = 0;
+    user_t usr_ = get_user("pepephone");
+    app_t app_ = get_app(usr_->get_id());
+    db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
+    measure_execution_raii r("sub");
+    vector<task_t> batch;
+    for (size_t i = 0; i < 1000; i++)
+    {
+        task_t t = make_unique<task>();
+        t->set_user(usr_->get_id());
+        t->set_description("12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230");
+        t->set_id(prot::specifics::get_uuid());
+        total_tasks++;
+        batch.push_back(t);
+    }
+    db_op::_create_task_obj_batch(batch);
+    
+    auto stop  =exe.stop();
+    auto per_second = (float)total_tasks/stop.count();
+    SPDLOG_INFO("{} tasks per second ", per_second);
+    REQUIRE(per_second > 70300);
+    // 85 tasks per second
+}
+
+TEST_CASE( "test projector performance batched complete", "[performance_projector]" ) {
+    SPDLOG_INFO("running test projector performance ... ");
+    measure_execution exe("projector performance");
+    uint64_t total_tasks = 0;
+    user_t usr_ = get_user("pepephone");
+    app_t app_ = get_app(usr_->get_id());
+    db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
+    measure_execution_raii r("sub");
+    vector<db_op::create_tasks_user_bindings> batch;
+    for (size_t i = 0; i < 1000; i++)
+    {
+        task_t t = make_unique<task>();
+        t->set_user(usr_->get_id());
+        t->set_description("12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230 12308120938lkafjlksdhfksh09134809384  dafjlsdjf3290402 kldj df9032409230");
+        t->set_id(prot::specifics::get_uuid());
+        db_op::create_tasks_user_bindings binds{
+            {{usr_->get_id(), false}},
+            t
+        };
+        total_tasks++;
+        batch.push_back(binds);
+    }
+    db_op::create_task_bach_mono_user(batch);
+    
+    auto stop  =exe.stop();
+    auto per_second = (float)total_tasks/stop.count();
+    SPDLOG_INFO("{} tasks per second ", per_second);
+    REQUIRE(per_second > 70300);
     // 85 tasks per second
 }
