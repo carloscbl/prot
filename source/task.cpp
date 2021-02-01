@@ -19,7 +19,7 @@ void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_t
     new_json["user"]        = ref_task.get_m_user();
     new_json["task_group"]  = ref_task.get_task_group();
     new_json["interval"]    = ref_task.get_interval();
-    new_json["task_id"]         = ref_task.get_task_id();
+    new_json["task_id"]     = ref_task.get_task_id();
     new_json["duration"]    = ref_task.get_duration();
     new_json["restrictions"]= ref_task.get_restrictions().get_restrictions();
     new_json["frequency"]   = ref_task.get_frequency().get_frequency_name();
@@ -179,7 +179,7 @@ optional<seconds> task_space::get_period_ratio(const task & task){
     return ratio_spacing;
 }
 
-task_space::task::task() : id(0)
+task_space::task::task()
 {
     //Acumulation wont happend here, the id will be provided by the db
 }

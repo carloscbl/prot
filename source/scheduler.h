@@ -6,7 +6,6 @@
 #include <queue>
 #include <climits>
 #include "ischeduler.h"
-#include "itasker.h"
 #include "task.h"
 #include <mutex>
 #include "time_utils.hpp"
@@ -85,7 +84,6 @@ public:
 private:
     //This policy checks there is not other task actually in the required gap or returns false
     bool deny_policy(policy_relevant_data && task_info_for_scheduler );
-    bool mod = false;
     mutable std::mutex scheduler_mutex;
     im_t m_interval_map;       //Here lie the real scheduled tasks
     function<bool(scheduler *,policy_relevant_data &&)> policy_fun = &scheduler::deny_policy;

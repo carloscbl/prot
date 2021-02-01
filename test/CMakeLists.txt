@@ -1,7 +1,7 @@
 project(test_prot)
 
 
-SET(CMAKE_CXX_FLAGS "-g -Wall -Wno-unused-parameter -std=c++17")
+SET(CMAKE_CXX_FLAGS "-pg -ggdb -g3  -Wall -Wno-unused-parameter -std=c++17")
 SET(FMT_TEST "OFF")
 SET(PISTACHE_TEST "OFF")
 SET(BUILD_TESTING "OFF")

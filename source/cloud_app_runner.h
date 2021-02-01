@@ -35,6 +35,7 @@ private:
     user & user_;
     app & app_;
     uint64_t user_apps_id;
+    shared_ptr<taskstory_commit_batched_raii> batch = nullptr;
 
     bool store_qa_history_status(json addition) const;
     shared_ptr<app_state> get_session() const noexcept;
@@ -42,7 +43,7 @@ private:
     shared_ptr<app_state> new_session(const string & session_id) const noexcept;
     shared_ptr<app_state> new_session() const noexcept;
     void apply_wildcards(next_question_data_and_taskstory_input & response, size_t fw_projection = 0, const std::vector<ischeduler::task_t> * prev_period_scheduled = nullptr);
-    void register_runner_scheduled_tasks (std::shared_ptr<std::map<std::string, task_t>> done_tasks);
+    void register_runner_scheduled_tasks (std::shared_ptr<std::unordered_map<std::string, task_t>> done_tasks);
     task_t create_task_to_schedule(const json & j_task, size_t fw_projection = 0) const;
     const optional<json> programatic_run_injecting_history_answers(const json &history, size_t fw_projection = 0, const std::vector<ischeduler::task_t> * prev_period_scheduled = nullptr) noexcept;
     const vector<task_t> * get_prev_period_scheduled(size_t current_pj) const;
@@ -57,7 +58,7 @@ public:
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from=nullopt,  task * task_ = nullptr) const;
     const json run(const json &j) noexcept;
-    void projected_run(const json &history, size_t fw_projections) noexcept;
+    void projected_run(const json &history, size_t fw_projections, shared_ptr<taskstory_commit_batched_raii> batch = nullptr) noexcept;
 };
 
 

@@ -64,15 +64,22 @@
             "request": "launch",
             "program": "${workspaceFolder}/build/test_prot",
             //"args": ["test","sequence", "-p", "../sequences/request"],
-            //"args": ["user","sch", "-s", "90", "-e" , "99"],
+            "args": ["[projector50]"],
             "stopAtEntry": false,
             "cwd": "${workspaceFolder}/build",
             "environment": [
-                {"name":"PROT_DB_PASSW", "value":"Prot#654321"}
+                {"name":"PROT_DB_PASSW", "value":"Prot#654321"},
+                {"name":"PROT_DB_DEBUG", "value":"true"}
             ],
             "externalConsole": false,
             "MIMode": "gdb",
             "setupCommands": [
+                
+                {
+                    "description": "Enable pretty-printing for gdb",
+                    "text": "python import sys;sys.path.insert(0, '/usr/share/gcc-10/python');from libstdcxx.v6.printers import register_libstdcxx_printers;register_libstdcxx_printers(None)",
+                    "ignoreFailures": false
+                },
                 {
                     "description": "Enable pretty-printing for gdb",
                     "text": "-enable-pretty-printing",

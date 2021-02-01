@@ -46,7 +46,7 @@ namespace task_space{
     private:
         string name;
         string description;
-        string m_user;
+        string m_user_id;
         string task_group;
         string task_id;
         prot::duration m_duration;
@@ -65,19 +65,19 @@ namespace task_space{
         friend void task_space::from_json_auto_task(const nlohmann::json& ref_json, task_space::task& new_task);
         friend void task_space::from_json_user_task(const nlohmann::json& ref_json, task_space::task& new_task);
 
-        uint64_t id;
+        string id = "";
         uint64_t user_apps_id = 0;
     public:
         nlohmann::json inner_json;
         task();
         virtual ~task();
 
-        inline void set_id           (uint64_t id_)            { this->id = id_; }
+        inline void set_id           (string id_)            { this->id = id_; }
         inline void set_name         (string name_)            { this->name = name_; }
         inline void set_task_group   (string task_group_)      { this->task_group = task_group_; }
-        inline void set_task_id          (string task_id_)             { this->task_id = task_id_; }
+        inline void set_task_id      (string task_id_)         { this->task_id = task_id_; }
         inline void set_description  (string description_)     { this->description = description_; }
-        inline void set_user         (string user_)            { this->m_user = user_; }
+        inline void set_user         (string user_)            { this->m_user_id = user_; }
         inline void set_user_apps_id (uint64_t uf_id)          { this->user_apps_id = uf_id; }
         inline void set_json         (nlohmann::json & json_)  { this->inner_json = json_; }
         inline void set_session_id   (optional<uint64_t> session_id)  { this->m_session_id = session_id; }
@@ -86,12 +86,12 @@ namespace task_space{
                                                      this->interval.end = end;
         }
 
-        inline uint64_t              get_id()          const noexcept { return id; }
+        inline string                get_id()          const noexcept { return id; }
         inline uint64_t              get_user_apps_id()const noexcept{ return user_apps_id; }
         inline const string        & get_name()        const noexcept { return name.empty() ? get_task_id() : name;}
         inline const string        & get_task_id()         const noexcept { return task_id;        }
         inline const string        & get_description() const noexcept { return description; }
-        inline const string        & get_m_user()      const noexcept { return m_user;      }
+        inline const string        & get_m_user()      const noexcept { return m_user_id;      }
         inline const string        & get_task_group()  const noexcept { return task_group;  }
         inline const pair_interval & get_interval()    const noexcept { return interval; }
         inline const restrictions  & get_restrictions()const noexcept { return m_restrictions; }

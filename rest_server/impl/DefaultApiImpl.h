@@ -73,8 +73,8 @@ public:
     void user_user_id_patch(const std::string &userId, const Inline_object &inlineObject, Pistache::Http::ResponseWriter &response);
     void user_user_id_questionary_app_id_get(const int32_t &appId, const std::string &userId, Pistache::Http::ResponseWriter &response);
     void user_user_id_questionary_app_id_post(const int32_t &appId, const std::string &userId, const Inline_object_5 &inlineObject5, Pistache::Http::ResponseWriter &response);
-    void user_user_id_task_task_id_delete(const int32_t &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response);
-    void user_user_id_task_task_id_get(const int32_t &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response);
+    void user_user_id_task_task_id_delete(const std::string &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response);
+    void user_user_id_task_task_id_get(const std::string &taskId, const std::string &userId, Pistache::Http::ResponseWriter &response);
     void user_user_id_tasks_get(const std::string &userId, Pistache::Http::ResponseWriter &response);
     void user_user_id_tasks_post(const std::string &userId, const Inline_object_2 &inlineObject2, Pistache::Http::ResponseWriter &response);
 

@@ -312,7 +312,7 @@ namespace orm_prot
             const T& operator()() const { return taskId; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::can_be_null>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::can_be_null>;
     };
   } // namespace ProtJobs_
 
@@ -459,7 +459,7 @@ namespace orm_prot
             const T& operator()() const { return id; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::must_not_insert, sqlpp::tag::must_not_update>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct Name
     {
@@ -699,7 +699,7 @@ namespace orm_prot
             const T& operator()() const { return idtask; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct Idscheduler
     {
@@ -768,7 +768,7 @@ namespace orm_prot
             const T& operator()() const { return idtask; }
           };
       };
-      using _traits = sqlpp::make_traits<sqlpp::integer, sqlpp::tag::require_insert>;
+      using _traits = sqlpp::make_traits<sqlpp::varchar, sqlpp::tag::require_insert>;
     };
     struct Idtasker
     {

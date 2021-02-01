@@ -464,7 +464,7 @@ void DefaultApi::user_user_id_questionary_app_id_post_handler(const Pistache::Re
 void DefaultApi::user_user_id_task_task_id_delete_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
     // Getting the path params
     posthandler_raii ph(request, response);
-    auto taskId = request.param(":taskId").as<int32_t>();
+    auto taskId = request.param(":taskId").as<std::string>();
     auto userId = request.param(":userId").as<std::string>();
     
     try {
@@ -486,7 +486,7 @@ void DefaultApi::user_user_id_task_task_id_delete_handler(const Pistache::Rest::
 void DefaultApi::user_user_id_task_task_id_get_handler(const Pistache::Rest::Request &request, Pistache::Http::ResponseWriter response) {
     // Getting the path params
     posthandler_raii ph(request, response);
-    auto taskId = request.param(":taskId").as<int32_t>();
+    auto taskId = request.param(":taskId").as<std::string>();
     auto userId = request.param(":userId").as<std::string>();
     
     try {
