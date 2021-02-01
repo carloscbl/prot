@@ -53,12 +53,19 @@ bool cloud_app_runner::store_qa_history_status( json addition) const {
 }
 
 // In the future maybe we should separate different cloud runners, interactive and projected, with common deps
-void cloud_app_runner::projected_run(const json &history, size_t fw_projections) noexcept
+void cloud_app_runner::projected_run(const json &history, size_t fw_projections, shared_ptr<taskstory_commit_batched_raii> batch) noexcept
 {
     //projection 0 out of loop
+    this->batch = batch;
+
     this->projected_scheduled_tasks = make_unique<vector<vector<task_t>>>();
     this->programatic_run_injecting_history_answers(history, 0);
     this->projected_scheduled_tasks->push_back(*this->scheduled_tasks);
+    for (const auto &i : *scheduled_tasks)
+    {
+        SPDLOG_INFO(" #23 total {} : {} : fws {}", scheduled_tasks->size(), i->get_name(),  i->inner_json["fw_projection"].get<int>());
+        
+    }
     this->scheduled_tasks->clear();
 
     for (size_t fw_pj = 1; fw_pj <= fw_projections; fw_pj++)
@@ -68,6 +75,12 @@ void cloud_app_runner::projected_run(const json &history, size_t fw_projections)
         if(!this->scheduled_tasks.has_value()){
             continue;
         }
+        for (const auto &i : *scheduled_tasks)
+        {
+            SPDLOG_INFO(" #23 fw {} total {} : {} : fws {}", fw_pj,scheduled_tasks->size(), i->get_name(), i->inner_json["fw_projection"].get<int>());
+            
+        }
+        
         this->projected_scheduled_tasks->push_back(*this->scheduled_tasks);
         this->scheduled_tasks->clear();
     }
@@ -342,7 +355,7 @@ bool cloud_app_runner::schedule_taskstory(next_question_data_and_taskstory_input
     {
         transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
         tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
-        taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
+        taskstory_commit_RAII commiter(response.taskstory_name, tasker_, this->batch);
 
         bool complete = true;
 
@@ -390,7 +403,7 @@ void cloud_app_runner::apply_wildcards(next_question_data_and_taskstory_input & 
     {
         transactional_group_scheduler_RAII provisional_scheduler = this->user_.get_scheduler().get_provisional();
         tasker &tasker_ = static_cast<tasker &>(this->user_.get_tasker());
-        taskstory_commit_RAII commiter(response.taskstory_name, tasker_);
+        taskstory_commit_RAII commiter(response.taskstory_name, tasker_, this->batch);
         bool completed_period = true;
         for (const auto & wildcard_task : v){
             task_t task_test = create_task_to_schedule(wildcard_task.get<task>(), fw_projection);

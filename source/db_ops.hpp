@@ -32,23 +32,20 @@ using namespace sqlpp;
 namespace mysql = sqlpp::mysql;
 
 
-template <typename T>
-auto get_id_member = []() {};
-
-template <>
-auto get_id_member<orm_prot::Users> = []() { return orm_prot::Users{}.id; };
 
 //-----------------------
 
 template <typename T>
-auto get_data_member = []() {};
+inline auto get_data_member = []() {};
+// extern
 
 template <>
-auto get_data_member<orm_prot::Users> = []() { return orm_prot::Users{}.id; };
+inline auto get_data_member<orm_prot::Users> = []() { return orm_prot::Users{}.id; };
 template <>
-auto get_data_member<orm_prot::Apps> = []() { return orm_prot::Apps{}.name; };
+inline auto get_data_member<orm_prot::Apps> = []() { return orm_prot::Apps{}.name; };
 template <>
-auto get_data_member<orm_prot::Tasks> = []() { return orm_prot::Tasks{}.id; };
+inline auto get_data_member<orm_prot::Tasks> = []() { return orm_prot::Tasks{}.id; };
+
 
 template <typename T>
 inline bool gen_exists(string unique_val)
@@ -60,19 +57,6 @@ inline bool gen_exists(string unique_val)
         return true; //Already exists;
     }
     return false;
-}
-
-template <typename T>
-inline optional<uint64_t> get_id(string unique_val)
-{
-    auto &db = mysql_db::get_db_lazy().db;
-    T table;
-    const auto &result = db(select(get_id_member<T>().as(alias::a)).from(table).where(get_data_member<T>() == unique_val));
-    if (result.empty())
-    {
-        return nullopt; //Already exists;
-    }
-    return result.front().a;
 }
 
 inline unique_ptr<app> create_app(const json &valid_app, const string &user_id)

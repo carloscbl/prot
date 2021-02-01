@@ -8,12 +8,12 @@
 
 class taskstory_commit_RAII;
 class tasker;
+class taskstory_commit_batched_raii;
 using task = task_space::task;
 using task_t = shared_ptr<task>;
 using params_map_t = map<char, string>;
 
 using std::unordered_map;
-
 /*
 Provides the concrete implementation for the management of the tasks of a specific user
  */
@@ -21,6 +21,7 @@ class tasker
 {
 private:
     friend taskstory_commit_RAII;
+    friend taskstory_commit_batched_raii;
     map<string, task_t> tasks_active; // TODO Setters and getters
     //The dispenser is a pre_commit group tasker, that should be used for temporal storage of groups,
     // until its complete submission
@@ -38,7 +39,10 @@ private:
     const string & m_user_id;
     void add_to_group(const string & task_id, task_t && params, const string & group);
     void commit_group_then_delete(const string & group);
+    void commit_group_then_delete(const vector<string> & groups);
     bool commit_batch(unordered_map<string,task_t> & tasks);
+    bool commit_batch(const vector<task_t> & tasks);
+    bool group_delete(const string & group);
     friend void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
 public:
     void print_out() ;
@@ -56,8 +60,37 @@ public:
     tasker(const string & user);
     virtual ~tasker(){}
 };
+
 void to_json(nlohmann::json& new_json, const tasker& ref_tasker);
 void from_json(const nlohmann::json& ref_json, tasker& new_tasker);
+
+class taskstory_commit_batched_raii
+{
+private:
+    bool commited = false;
+public:
+    vector<string> groups;
+    tasker & tasker_;
+    vector<task_t> tasks_batch;
+    taskstory_commit_batched_raii(tasker & tasker_):tasker_(tasker_){}
+    ~taskstory_commit_batched_raii(){
+        if(commited){
+            return;
+        }
+
+        for (const auto & group : groups)
+        {
+            this->tasker_.tasks_dispenser.erase( group );
+        }
+    }
+
+    void commit(){
+        tasker_.commit_batch(tasks_batch);       
+        // tasker_.commit_group_then_delete(groups);
+        commited = true;
+    }
+};
+
 /*
 Wraps the group functionality of tasker, you are requiered to commit
 if not we destroy the group at end of scope
@@ -74,11 +107,18 @@ public:
 private:
     tasker & tasker_;
     bool commited = false;
+    shared_ptr<taskstory_commit_batched_raii> batched = nullptr;
 
 public:
 
     void commit(){
-        tasker_.commit_group_then_delete(group);
+        if(!batched){
+            tasker_.commit_group_then_delete(group);
+        }else{
+            store_current_tasks_in(batched->tasks_batch);
+            batched->groups.push_back(group);
+            tasker_.group_delete(group);
+        }
         commited = true;
     }
 
@@ -91,13 +131,27 @@ public:
         }
     }
 
-    taskstory_commit_RAII(string & group, tasker & tasker_ )
-        :group(group),tasker_(tasker_){}
+    bool store_current_tasks_in(vector<task_t> & tasks_batch){
+        const auto & match = tasker_.tasks_dispenser.find(group);
+        if(match != tasker_.tasks_dispenser.end()){
+            for (const auto &[k,v] : match->second)
+            {
+                tasks_batch.push_back(v);
+            }
+            return true;
+        }
+        return false;
+    }
+
+    taskstory_commit_RAII(string & group, tasker & tasker_, shared_ptr<taskstory_commit_batched_raii> batched = nullptr)
+        :group(group),tasker_(tasker_),batched(batched){}
     ~taskstory_commit_RAII(){
-        if(!commited){
+        if(!commited && !batched){
             this->tasker_.tasks_dispenser.erase(this->group);
         }
     }
 };
+
+
 
 #endif //TASKER_H

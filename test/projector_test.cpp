@@ -59,46 +59,48 @@ inline user_t get_user(string name){
 }
 
 TEST_CASE( "testprojector", "[projector]" ) {
-
+    measure_execution_raii exe("projector performance 2 projections");
     user_t usr_ = get_user("pepephone");
     app_t app_ = get_app(usr_->get_id());
     db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
 
     auto history = get_history_file();
     // app_projector ap ();
+    shared_ptr<taskstory_commit_batched_raii> batch = make_shared<taskstory_commit_batched_raii>(usr_->get_tasker());
     cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-    car.projected_run((*history)["history"], 2);
+    car.projected_run((*history)["history"], 2, batch);
     for (auto &&i : *car.projected_scheduled_tasks)
     {
         REQUIRE(i.size() == 4);
     }
+    batch->commit();
     REQUIRE(car.projected_scheduled_tasks->size() == 3);
 }
 
 
-TEST_CASE( "test projector performance", "[projector]" ) {
+TEST_CASE( "test projector performance", "[projector50]" ) {
     SPDLOG_INFO("running test projector performance ... ");
-    measure_execution exe("projector performance");
-    uint64_t total_tasks = 0;
+    measure_execution exe("projector performance 50 projections");
     user_t usr_ = get_user("pepephone");
     app_t app_ = get_app(usr_->get_id());
     db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
-    measure_execution_raii r("sub");
 
     auto history = get_history_file();
     // app_projector ap ();
+    uint64_t total_tasks = 0;
+    shared_ptr<taskstory_commit_batched_raii> batch = make_shared<taskstory_commit_batched_raii>(usr_->get_tasker());
     cloud_app_runner car ( *usr_, *app_ ); // needs a non sessined mode
-    car.projected_run((*history)["history"],50);
-    // total_tasks += car.scheduled_tasks->size();
+    car.projected_run((*history)["history"], 50, batch);
     for (auto &&i : *car.projected_scheduled_tasks)
     {
-        total_tasks += i.size();
         REQUIRE(i.size() == 4);
+        total_tasks += 4;
     }
-    REQUIRE(car.projected_scheduled_tasks->size() == 201);
+    batch->commit();
+    REQUIRE(car.projected_scheduled_tasks->size() == 51);
     
     auto stop  =exe.stop();
-    auto per_second = total_tasks/std::chrono::duration_cast<std::chrono::seconds>(stop).count();
+    auto per_second = (float)total_tasks/stop.count();
     SPDLOG_INFO("{} tasks per second ", per_second);
     REQUIRE(per_second > 70);
     // 85 tasks per second
@@ -108,10 +110,10 @@ TEST_CASE( "test projector performance", "[projector]" ) {
 TEST_CASE( "test projector performance light", "[performance_projector]" ) {
     SPDLOG_INFO("running test projector performance ... ");
     measure_execution exe("projector performance");
-    uint64_t total_tasks = 0;
     user_t usr_ = get_user("pepephone");
     app_t app_ = get_app(usr_->get_id());
     db_op::create_instalation_by_app_id(usr_->get_id(),app_->get_id());
+    uint64_t total_tasks = 0;
     task_t t = make_unique<task>();
     t->set_user(usr_->get_id());
     measure_execution_raii r("sub");
@@ -124,7 +126,7 @@ TEST_CASE( "test projector performance light", "[performance_projector]" ) {
     }
     
     auto stop  =exe.stop();
-    auto per_second = total_tasks/std::chrono::duration_cast<std::chrono::seconds>(stop).count();
+    auto per_second = (float)total_tasks/stop.count();
     SPDLOG_INFO("{} tasks per second ", per_second);
     REQUIRE(per_second > 701);
     // 85 tasks per second
@@ -150,7 +152,7 @@ TEST_CASE( "test projector performance heavy", "[performance_projector]" ) {
     }
     
     auto stop  =exe.stop();
-    auto per_second = total_tasks/std::chrono::duration_cast<std::chrono::seconds>(stop).count();
+    auto per_second = (float)total_tasks/stop.count();
     SPDLOG_INFO("{} tasks per second ", per_second);
     REQUIRE(per_second > 702);
     // 85 tasks per second

@@ -76,6 +76,8 @@ void tasker::commit_single_task(task_t task_active){
 
 
 bool tasker::commit_batch(unordered_map<string,task_t> & tasks){
+    try
+    {
         vector< db_op::create_tasks_user_bindings> bindings;
         for(auto & _task_ : tasks){
             auto & task_ = _task_.second;
@@ -90,8 +92,30 @@ bool tasker::commit_batch(unordered_map<string,task_t> & tasks){
         if(create_task_bach_mono_user(bindings)){
             return true;
         }
+    }
+    catch(const std::exception& e)
+    {
+        std::cerr << e.what() << '\n';
+    }
+    return false;
+}
+
+bool tasker::commit_batch(const vector<task_t> & tasks){
     try
     {
+        vector< db_op::create_tasks_user_bindings> bindings;
+        for(auto & task_ : tasks){
+            task_->inner_json["prot_id"] = prot::specifics::get_uuid();
+            this->tasks_active[task_->get_id()] = task_; // wont work with create_task step
+            const db_op::create_tasks_user_bindings bndn{
+                {{this->m_user_id,false}},
+                .task_ = task_
+            };
+            bindings.push_back(bndn);
+        }
+        if(create_task_bach_mono_user(bindings)){
+            return true;
+        }
     }
     catch(const std::exception& e)
     {
@@ -108,6 +132,34 @@ void tasker::commit_group_then_delete(const string & group){
         //And delete
         tasks_dispenser.erase(group);
     }
+}
+
+bool tasker::group_delete(const string & group){
+    const auto & match = tasks_dispenser.find(group);
+    if(match != tasks_dispenser.end()){
+        tasks_dispenser.erase(group);
+        return true;
+    }
+    return false;
+}
+
+// Not in use
+void tasker::commit_group_then_delete(const vector<string> & groups){
+    vector<task_t> batch_of_tasks;
+    for (auto &&group : groups)
+    {
+        const auto & match = tasks_dispenser.find(group);
+        if(match != tasks_dispenser.end()){
+            //Filling the active tasker
+            for (const auto &[k,v] : match->second)
+            {
+                batch_of_tasks.push_back(v);
+            }
+        }
+        //And delete
+        tasks_dispenser.erase(group);
+    }
+    commit_batch(batch_of_tasks);
 }
 
 void tasker::print_out(){

@@ -35,6 +35,7 @@ private:
     user & user_;
     app & app_;
     uint64_t user_apps_id;
+    shared_ptr<taskstory_commit_batched_raii> batch = nullptr;
 
     bool store_qa_history_status(json addition) const;
     shared_ptr<app_state> get_session() const noexcept;
@@ -57,7 +58,7 @@ public:
     cloud_app_runner(user & user_, app &app_, uint64_t user_apps_id); // Used for test
     bool schedule_single_task(const json & j_task, optional<std::chrono::time_point<system_clock>> start_from=nullopt,  task * task_ = nullptr) const;
     const json run(const json &j) noexcept;
-    void projected_run(const json &history, size_t fw_projections) noexcept;
+    void projected_run(const json &history, size_t fw_projections, shared_ptr<taskstory_commit_batched_raii> batch = nullptr) noexcept;
 };
 
 
