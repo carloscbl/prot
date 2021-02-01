@@ -221,7 +221,9 @@ paths:
             application/json:
               schema:
                 type: object
-                properties: {}
+                properties:
+                  app_obj:
+                    type: object
         '401':
           description: Unauthorized
         '404':

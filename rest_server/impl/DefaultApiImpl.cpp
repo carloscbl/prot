@@ -136,8 +136,9 @@ void DefaultApiImpl::user_developer_app_app_id_get(const std::string &developer,
         return;
     }
     auto app_res = move(app_->first);// read_app(app_.value().second["name"]);
-    
-    response.send(Pistache::Http::Code::Ok, app_res->get_json().dump(4));
+    json res = json::object();
+    res["app_obj"] = app_res->get_json().dump();
+    response.send(Pistache::Http::Code::Ok, res);
 }
 
 void DefaultApiImpl::user_user_id_apps_get(const std::string &userId, Pistache::Http::ResponseWriter &response) {
@@ -266,8 +267,7 @@ void DefaultApiImpl::user_developer_app_post(const std::string &developer, const
     if(!gen_exists<orm_prot::Users>(decoded)){
         response.send(Pistache::Http::Code::Unauthorized, "Developer does not exists as user");
     }
-    json whole_request(inlineObject3);
-    auto res = create_app( whole_request.at("app_obj") ,decoded);
+    auto res = create_app( inlineObject3.getAppObj() ,decoded);
     if(!res){
         response.send(Pistache::Http::Code::Not_Acceptable, "bad json");
     }
