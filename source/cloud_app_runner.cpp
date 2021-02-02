@@ -61,11 +61,6 @@ void cloud_app_runner::projected_run(const json &history, size_t fw_projections,
     this->projected_scheduled_tasks = make_unique<vector<vector<task_t>>>();
     this->programatic_run_injecting_history_answers(history, 0);
     this->projected_scheduled_tasks->push_back(*this->scheduled_tasks);
-    for (const auto &i : *scheduled_tasks)
-    {
-        SPDLOG_INFO(" #23 total {} : {} : fws {}", scheduled_tasks->size(), i->get_name(),  i->inner_json["fw_projection"].get<int>());
-        
-    }
     this->scheduled_tasks->clear();
 
     for (size_t fw_pj = 1; fw_pj <= fw_projections; fw_pj++)
@@ -74,11 +69,6 @@ void cloud_app_runner::projected_run(const json &history, size_t fw_projections,
         this->programatic_run_injecting_history_answers(history, fw_pj, prev_period_scheduled);
         if(!this->scheduled_tasks.has_value()){
             continue;
-        }
-        for (const auto &i : *scheduled_tasks)
-        {
-            SPDLOG_INFO(" #23 fw {} total {} : {} : fws {}", fw_pj,scheduled_tasks->size(), i->get_name(), i->inner_json["fw_projection"].get<int>());
-            
         }
         
         this->projected_scheduled_tasks->push_back(*this->scheduled_tasks);
@@ -322,7 +312,7 @@ task_t cloud_app_runner::create_task_to_schedule(const json & j_task, size_t fw_
         task_test->inner_json["id"] = id;
     }
     task_test->inner_json["app_id"] = this->app_.get_id();
-    task_test->inner_json["fw_projection"] = fw_projection;
+    task_test->set_fw_projection( fw_projection );
     task_test->set_user(this->user_.get_id());
     task_test->set_user_apps_id(user_apps_id);
     task_test->set_session_id(m_session_id);

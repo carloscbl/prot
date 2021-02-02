@@ -25,6 +25,7 @@ void task_space::to_json(nlohmann::json& new_json, const task_space::task& ref_t
     new_json["frequency"]   = ref_task.get_frequency().get_frequency_name();
     new_json["id"]          = ref_task.get_id();
     new_json["session_id"]  = ref_task.get_session_id().value_or(0);
+    new_json["fw_projection"]=ref_task.get_fw_projection();
 
     if(!ref_task.get_when().after.empty()){
         new_json["when"] = ref_task.get_when();
@@ -67,6 +68,9 @@ void task_space::from_json(const nlohmann::json& ref_json, task_space::task& new
                 .value =ref_json.at(k).get<size_t>() - prot::task_expansion::day_period_user_friendly_offset,
             };
         }
+    }
+    if(ref_json.find("fw_projection") != ref_json.end()){
+        ref_json.at("fw_projection").get_to(new_task.fw_projection);
     }
 }
 

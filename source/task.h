@@ -49,6 +49,7 @@ namespace task_space{
         string m_user_id;
         string task_group;
         string task_id;
+        int64_t fw_projection = 0;
         prot::duration m_duration;
         frequency m_frequency;
         restrictions m_restrictions;
@@ -79,6 +80,7 @@ namespace task_space{
         inline void set_description  (string description_)     { this->description = description_; }
         inline void set_user         (string user_)            { this->m_user_id = user_; }
         inline void set_user_apps_id (uint64_t uf_id)          { this->user_apps_id = uf_id; }
+        inline void set_fw_projection(uint64_t fw_projection)   { this->fw_projection = fw_projection; }
         inline void set_json         (nlohmann::json & json_)  { this->inner_json = json_; }
         inline void set_session_id   (optional<uint64_t> session_id)  { this->m_session_id = session_id; }
         inline void set_interval(time_t start, time_t end)     {
@@ -98,6 +100,7 @@ namespace task_space{
         inline const frequency     & get_frequency()   const noexcept { return m_frequency; }
         inline const prot::duration& get_duration()    const noexcept { return m_duration; }
         inline const when          & get_when()        const noexcept { return m_when; }
+        inline uint64_t              get_fw_projection()const noexcept{ return fw_projection; }
         inline const nlohmann::json& get_json()        const noexcept { return inner_json; }
         inline const optional<designated_period> & get_designated_period() const noexcept { return m_designated_period; }
         inline const optional<uint64_t> & get_session_id() const noexcept { return m_session_id; }

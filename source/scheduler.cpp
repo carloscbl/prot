@@ -21,7 +21,7 @@ void print_time(const im_t &  interval_map)
             << " : Task " << v->get_id() 
             << ", day_week: " << day.value() 
             << ", " << v->get_task_id() 
-            << ", fw_p: " << v->get_json()["fw_projection"] 
+            << ", fw_p: " << v->get_fw_projection()
             << endl;
         }else{
             cout << put_time_(k.lower()) 
