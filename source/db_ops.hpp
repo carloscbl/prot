@@ -1022,7 +1022,7 @@ inline bool delete_app(const uint64_t &app_id, const string& developer)
 
 inline unique_ptr<app> update_app(const json &valid_app, const string &developer, const uint64_t &app_id)
 {
-    auto &db = mysql_db::get_db_lazy().db;
+    auto &db = mysql_db::get_db_lazy().db; 
 
     orm_prot::Apps app_;
     unique_ptr<app> protapp = make_unique<app>(valid_app);
